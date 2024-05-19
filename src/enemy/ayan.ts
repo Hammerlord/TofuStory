@@ -28,7 +28,7 @@ export const ayanEnemy: Minion = {
     name: "Ayan",
     image: AyanImage,
     isElite: true,
-    maxHP: 300,
+    maxHP: 350,
     mesos: 50,
     abilities: [
         {

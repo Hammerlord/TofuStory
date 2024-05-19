@@ -31,7 +31,7 @@ export const mushmom: Minion = {
     name: "Mushmom",
     image: MushmomImage,
     isBoss: true,
-    maxHP: 225,
+    maxHP: 300,
     abilities: [
         { ...whomp, resourceCost: 0, castTime: undefined },
         loaf,

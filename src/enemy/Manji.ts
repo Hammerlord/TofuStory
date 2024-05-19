@@ -50,7 +50,7 @@ export const manjiMirrorCounter: Minion = {
     name: "Mirror Image",
     isElite: true,
     image: ManjiImage,
-    maxHP: 14,
+    maxHP: 27,
     abilities: [
         {
             ...attack,
@@ -70,7 +70,7 @@ export const manjiMirrorSpotWeakness: Minion = {
     name: "Mirror Image",
     isElite: true,
     image: ManjiImage,
-    maxHP: 14,
+    maxHP: 27,
     abilities: [
         {
             ...attack,
@@ -102,7 +102,7 @@ const spotWeakness: Ability = {
 
 export const manji: Minion = {
     name: "Manji, the Strongest Swordsman",
-    maxHP: 300,
+    maxHP: 350,
     isElite: true,
     image: ManjiImage,
     mesos: 50,

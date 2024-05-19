@@ -245,7 +245,7 @@ const woodenDummyTechnique2: Effect = {
 
 export const martialArtist: Minion = {
     name: wanderingFighterName,
-    maxHP: 250,
+    maxHP: 350,
     isBoss: true,
     image: PandaImage,
     abilities: [

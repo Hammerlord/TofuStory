@@ -86,7 +86,7 @@ export const wanderingBlacksmith: Minion = {
     name: "Wandering Blacksmith",
     image: SirBlacksmithImage,
     isElite: true,
-    maxHP: 125,
+    maxHP: 150,
     abilities: [
         {
             name: "Ghostly Palm Strike",

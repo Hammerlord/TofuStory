@@ -28,7 +28,7 @@ import { bananaPeelCard } from "./enemy";
 
 export const faust: Minion = {
     name: "Faust",
-    maxHP: 400,
+    maxHP: 500,
     image: FaustImage,
     isBoss: true,
     mesos: 50,

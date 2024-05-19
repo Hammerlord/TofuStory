@@ -79,7 +79,7 @@ const reawakening: Effect = {
 
 export const lostDragon: Minion = {
     name: "Lost Dragon",
-    maxHP: 500,
+    maxHP: 550,
     image: BlueManonImage,
     isBoss: true,
     abilities: [

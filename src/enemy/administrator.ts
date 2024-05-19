@@ -121,9 +121,6 @@ export const administrator: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 50,
-                    secondaryAction: {
-                        effects: [attackPower],
-                    },
                 },
             ],
         },

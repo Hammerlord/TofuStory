@@ -241,11 +241,11 @@ export const weightedShell: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     description: "While this character has armor:",
-    attackPower: 1,
+    attackPower: 2,
     skillBonus: [
         {
             skill: "Rollout",
-            damage: 2,
+            damage: 3,
         },
     ],
     conditions: [

@@ -100,7 +100,7 @@ export const guardWolf: Minion = {
 export const athena: Minion = {
     name: "Athena Pierce",
     isBoss: true,
-    maxHP: 200,
+    maxHP: 250,
     mesos: 40,
     image: AthenaAttackStanceImage,
     resources: 0,
@@ -112,7 +112,7 @@ export const athena: Minion = {
             resourceCost: 0,
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     area: 1,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
@@ -153,7 +153,7 @@ export const athena: Minion = {
         },
         {
             name: "Pierce",
-            description: "Destroys the target's armor. If the target has no armor, deals 3 damage.",
+            description: "Destroys the target's armor. If the target has no armor, deals 5 damage.",
             image: MortalBlowImage,
             resourceCost: 3,
             castTime: 1,
@@ -165,7 +165,7 @@ export const athena: Minion = {
                     icon: AvengersArrowImage,
                     destroyArmor: 1,
                     bonus: {
-                        damage: 3,
+                        damage: 5,
                         conditions: [
                             {
                                 calculationTarget: TRIGGER_TARGET_TYPES.TARGET,

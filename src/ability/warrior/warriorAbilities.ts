@@ -126,7 +126,7 @@ export const furiousStrikeCard: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 2,
-            damage: 3,
+            damage: 2,
         },
     ],
     upgrades: [
@@ -2645,7 +2645,7 @@ export const bluntForce: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.05,
+                        value: 0.1,
                     },
                 },
             ],

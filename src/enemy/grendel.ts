@@ -29,7 +29,7 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
-import { burn, hardy, raging } from "./../ability/Effects";
+import { burn, hardy, raging, chill } from "./../ability/Effects";
 import { lifeLink } from "./effect";
 
 export const grendelIfrit: Minion = {
@@ -38,7 +38,7 @@ export const grendelIfrit: Minion = {
     imageOptions: {
         animation: "float",
     },
-    maxHP: 75,
+    maxHP: 100,
     abilities: [
         {
             name: "Ember",
@@ -90,7 +90,7 @@ export const grendelElquines: Minion = {
     imageOptions: {
         animation: "float",
     },
-    maxHP: 75,
+    maxHP: 100,
     abilities: [
         {
             name: "Ice Bolt",
@@ -101,6 +101,7 @@ export const grendelElquines: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     icon: NimbleJewelImage,
                     damage: 3,
+                    effects: [{ ...chill }],
                 },
             ],
         },
@@ -313,7 +314,7 @@ const grendelMagicClaw: Ability = {
     ],
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -325,7 +326,7 @@ const grendelMagicClaw: Ability = {
             icon: MagicClawProjectileImage,
         },
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -341,8 +342,7 @@ const grendelMagicClaw: Ability = {
 };
 
 export const introGrendel: Minion = {
-    HP: 450,
-    maxHP: 450,
+    maxHP: 500,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
     abilities: [
@@ -485,8 +485,7 @@ const grendelMoltenLaser: Ability = {
 };
 
 export const grendel: Minion = {
-    HP: 450,
-    maxHP: 450,
+    maxHP: 500,
     name: "Grendel the Really Old",
     image: GrendelIdleImage,
     mesos: 75,

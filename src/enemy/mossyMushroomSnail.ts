@@ -18,7 +18,7 @@ export const mossyMushroom: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 6,
+                    damage: 7,
                 },
             ],
         },
@@ -29,7 +29,7 @@ export const mossyMushroom: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 6,
+                    damage: 7,
                 },
             ],
         },
@@ -73,7 +73,7 @@ export const mossySnail: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 6,
                 },
             ],
         },
@@ -83,7 +83,7 @@ export const mossySnail: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 6,
                 },
             ],
         },

@@ -75,7 +75,7 @@ export const kingSlimeEnemy: Minion = {
     image: KingSlimeImage,
     isBoss: true,
     maxHP: 300,
-    armor: 35,
+    armor: 50,
     mesos: 100,
     effects: [
         hardy,
@@ -140,7 +140,7 @@ export const kingSlimeEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                 },
             ],
         },
@@ -152,8 +152,8 @@ export const kingSlimeEnemy: Minion = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                    secondaryDamage: 3,
+                    damage: 10,
+                    secondaryDamage: 5,
                     area: 2,
                     animation: ANIMATION_TYPES.STOMP,
                 },

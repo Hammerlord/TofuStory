@@ -275,7 +275,7 @@ export const miniBean: Minion = {
             name: "Big Suck",
             image: BigSuckImage,
             resourceCost: 3,
-            channelDuration: 2,
+            channelDuration: 1,
             actions: [...suckIn.actions, ...suckIn.actions],
         },
         throwFood,

@@ -160,7 +160,7 @@ export const mutantSnailEnemy: Minion = {
     name: "Mutant Snail",
     image: MutantSnailImage,
     isBoss: true,
-    maxHP: 75,
+    maxHP: 100,
     armor: 100,
     mesos: 50,
     effects: [
@@ -203,7 +203,7 @@ export const mutantSnailEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -277,17 +277,17 @@ export const mutantSnailEnemy: Minion = {
             castTime: 1,
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
                 {
-                    damage: 3,
+                    damage: 4,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
@@ -315,7 +315,7 @@ export const manoEnemy: Minion = {
     name: "Mano",
     image: ManoImage,
     isBoss: true,
-    maxHP: 75,
+    maxHP: 100,
     armor: 100,
     mesos: 50,
     abilities: [

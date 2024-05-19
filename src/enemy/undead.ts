@@ -141,7 +141,7 @@ export const agonyCard: Ability = {
 
 export const undeadMage: Minion = {
     name: "Riche, the Undead Mage",
-    maxHP: 300,
+    maxHP: 350,
     mesos: 100,
     isBoss: true,
     image: RicheImage,
@@ -199,7 +199,7 @@ export const undeadMage: Minion = {
             image: KumbiImage,
             actions: [
                 {
-                    damage: 5,
+                    damage: 12,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     animation: ANIMATION_TYPES.BEAM,
@@ -213,7 +213,6 @@ export const undeadMage: Minion = {
             description: "Summons 3 skeletons. For each that doesn't fit, an existing minion is Tributed.",
             resourceCost: 3,
             castTime: 1,
-            channelDuration: 2,
             dialog: "Arise, minions!!!",
             actions: [
                 {

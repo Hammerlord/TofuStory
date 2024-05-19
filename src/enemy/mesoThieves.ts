@@ -82,7 +82,7 @@ const thiefDarkSight = {
 
 export const mesoThief: Minion = {
     name: "ImaTheif",
-    maxHP: 70,
+    maxHP: 100,
     image: ThiefImage,
     resources: 0,
     mesos: 25,
@@ -102,7 +102,7 @@ export const mesoThief: Minion = {
 export const duoThiefA = {
     ...mesoThief,
     name: "ImaRouge",
-    maxHP: 100,
+    maxHP: 125,
     mesos: 30,
     abilities: [thiefAttack, thiefDoubleStab, { ...thiefDarkSight, dialog: "Lol, try and hit this!" }],
 };
@@ -110,7 +110,7 @@ export const duoThiefA = {
 export const duoThiefB = {
     ...mesoThief,
     name: "ImaStabu",
-    maxHP: 100,
+    maxHP: 125,
     mesos: 30,
     abilities: [thiefDoubleStab, thiefAttack, { ...thiefDarkSight, dialog: "Let's go, Sis!" }],
 };

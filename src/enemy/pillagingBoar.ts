@@ -19,7 +19,7 @@ import { championsRibbon, counterEffect, resist, pigHeaded } from "./effect";
 const boulder: Minion = {
     name: "Boulder",
     image: RockImage,
-    maxHP: 17,
+    maxHP: 22,
     uncontrollable: true,
     abilities: [
         {
@@ -101,7 +101,7 @@ const throwRocks: Action[] = [
 
 export const pillagingWildBoar: Minion = {
     name: "Pillaging Boar",
-    maxHP: 300,
+    maxHP: 350,
     image: PillagingWildBoarImage,
     isBoss: true,
     mesos: 50,

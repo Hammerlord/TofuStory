@@ -256,7 +256,7 @@ const submergeReady: Effect = {
 
 export const dyle: Minion = {
     name: "Dyle",
-    maxHP: 250,
+    maxHP: 300,
     image: DyleIdleImage,
     mesos: 50,
     isBoss: true,
@@ -268,7 +268,7 @@ export const dyle: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                     effects: [
                         {
                             ...bleed,
@@ -291,7 +291,7 @@ export const dyle: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -376,7 +376,7 @@ export const dyle: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                     secondaryDamage: 3,
                     animationOptions: {
                         ricochet: true,
@@ -400,16 +400,15 @@ export const dyle: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 4,
+                    damage: 5,
                     effects: [
                         {
                             ...bleed,
-                            duration: 3,
                         },
                     ],
                 },
@@ -429,7 +428,7 @@ export const dyle: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                     secondaryDamage: 3,
                     animationOptions: {
                         ricochet: true,
