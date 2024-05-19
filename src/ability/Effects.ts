@@ -479,6 +479,7 @@ export const explosive: Effect = {
                     animation: ANIMATION_TYPES.EXPLODE,
                     area: 3,
                     damage: 1,
+                    maxDamage: 15,
                     bonus: {
                         damage: 1,
                         multiplier: {
