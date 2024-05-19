@@ -42,7 +42,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
 import { applyAbilityEventEffects } from "./actions/cardActions";
-import { endEnemyTurn, enemyMoves, startEnemyTurn } from "./actions/enemyTurn";
+import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "./actions/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "./actions/playerTurn";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
@@ -879,14 +879,16 @@ const BattlefieldContainer = () => {
         const targetMap = {};
 
         let previousCombatantStates;
-        enemySide.forEach((enemy) => {
-            const { targeting, id, HP } = enemy || {};
+        getEnemyMoveOrder(enemySide, round).forEach((enemyId) => {
+            const enemyInfo = findCombatantData(() => state, enemyId);
+            const enemy = enemyInfo?.combatant;
+            const { targeting, HP } = enemy || {};
 
-            if (!targeting || HP === 0 || isTurnActionPrevented(findCombatantData(() => state, id))) {
+            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo)) {
                 return;
             }
 
-            const ability = enemy.targeting?.ability || getNextTelegraphedAbility(findCombatantData(() => state, id));
+            const ability = enemy.targeting?.ability || getNextTelegraphedAbility(enemyInfo);
 
             const { index, side } = enemy.targeting;
             const targetId = state.battle[side]?.[index]?.id;

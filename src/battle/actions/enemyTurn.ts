@@ -1,3 +1,4 @@
+import { isSupportAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import { Combatant } from "../../character/types";
@@ -327,42 +328,24 @@ export const enemyMoves = () => {
                 return findCombatantData(getState, combatant?.id);
             });
         };
-        const acted = {};
+
         const isEligibleToMove = (char: Combatant | null) => {
-            return char?.HP > 0 && !acted[char.id] && (char.abilities.length > 0 || char.damage > 0);
+            return char?.HP > 0 && (char.abilities.length > 0 || char.damage > 0);
         };
-        const makeEnemyMove = () => {
-            const { state, enemySide } = getState().battle;
+
+        const makeEnemyMove = (enemyId: string) => {
+            const enemyInfo = findCombatantData(getState, enemyId);
+            const enemy = enemyInfo?.combatant;
+            if (!isEligibleToMove(enemy)) {
+                return;
+            }
+
+            const { state } = getState().battle;
             if (state === BATTLE_STATES.DEFEAT || state === BATTLE_STATES.VICTORY) {
                 return;
             }
 
-            const eligible = shuffle(enemySide)
-                .filter(isEligibleToMove)
-                .sort((a, b) => (b?.isBoss || false) - (a?.isBoss || false));
-
-            const enemy = eligible[0];
-            if (!enemy) {
-                dispatch(checkTurnResourceGain(getEnemySideInfo()));
-                // Queue the next ability unless the combatant is channeling.
-                // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-                getEnemySideInfo().forEach((combatantInfo) => {
-                    if (!combatantInfo) {
-                        return;
-                    }
-
-                    const combatant = combatantInfo.combatant;
-                    if (combatant.HP > 0 && !combatant.casting?.channelDuration) {
-                        dispatch(requeueRecentlyUsedAbility(combatant.id));
-                    }
-                });
-                dispatch(updateBattleState(BATTLE_STATES.TURN_END));
-                return;
-            }
-
             const { id, casting } = enemy;
-            acted[id] = true;
-            const enemyInfo = findCombatantData(getState, id);
             const unableToAct = isTurnActionPrevented(enemyInfo) || !enemy.abilities?.length || enemy.uncontrollable;
 
             // Enemies who are unable to act still must lose a turn when casting an ability
@@ -371,10 +354,30 @@ export const enemyMoves = () => {
             } else if (!unableToAct) {
                 dispatch(enemyAction(id));
             }
-            makeEnemyMove();
         };
 
-        makeEnemyMove();
+        const { enemySide, round } = getState().battle;
+        getEnemyMoveOrder(enemySide, round).forEach(makeEnemyMove);
+
+        const { state } = getState().battle;
+        if (state === BATTLE_STATES.DEFEAT || state === BATTLE_STATES.VICTORY) {
+            return;
+        }
+
+        dispatch(checkTurnResourceGain(getEnemySideInfo()));
+        // Queue the next ability unless the combatant is channeling.
+        // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
+        getEnemySideInfo().forEach((combatantInfo) => {
+            if (!combatantInfo) {
+                return;
+            }
+
+            const combatant = combatantInfo.combatant;
+            if (combatant.HP > 0 && !combatant.casting?.channelDuration) {
+                dispatch(requeueRecentlyUsedAbility(combatant.id));
+            }
+        });
+        dispatch(updateBattleState(BATTLE_STATES.TURN_END));
     };
 };
 
@@ -394,4 +397,32 @@ const checkUseItem = (combatant: Combatant): number | undefined => {
     if (Math.random() > HP / maxHP) {
         return getRandomInt(0, consumablesWorthUsing.length - 1);
     }
+};
+
+/**
+ * Support abilities always go first. Then enemies make their move from middle out.
+ */
+export const getEnemyMoveOrder = (enemies: (Combatant | null)[], round: number): string[] => {
+    const isEvenRound = round % 2 === 0;
+    if (isEvenRound) {
+        enemies = enemies.slice().reverse();
+    }
+
+    return enemies
+        .filter((v) => v)
+        .sort((a, b) => {
+            const aVal = isSupportAbility(a.targeting?.ability) ? 1 : -1;
+            const bVal = isSupportAbility(b.targeting?.ability) ? 1 : -1;
+            const compareSupport = bVal - aVal;
+            if (compareSupport !== 0) {
+                return compareSupport;
+            }
+
+            const middle = 2;
+            const aIndex = enemies.findIndex((enemy: Combatant | null) => enemy?.id === a.id);
+            const bIndex = enemies.findIndex((enemy: Combatant | null) => enemy?.id === b.id);
+
+            return Math.abs(aIndex - middle) - Math.abs(bIndex - middle);
+        })
+        .map((e) => e.id);
 };
