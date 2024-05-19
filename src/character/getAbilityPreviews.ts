@@ -73,7 +73,15 @@ const getAbilityPreviews = ({
         };
     }
 
-    ability.actions.forEach((action: Action) => {
+    const actions: Action[] =
+        ability.resourceCost === "x"
+            ? (Array.from({ length: actor.resources }).reduce((acc: Action[]) => {
+                  acc.push(...ability.actions);
+                  return acc;
+              }, []) as Action[])
+            : ability.actions;
+
+    actions.forEach((action: Action) => {
         if (action.target === TARGET_TYPES.SELF && actor.id !== target.id) {
             return;
         }
