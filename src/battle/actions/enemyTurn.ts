@@ -1,33 +1,20 @@
-import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
-import { getRandomInt, getRandomItem, shuffle } from "../../utils";
+import { getRandomInt, shuffle } from "../../utils";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
-import {
-    clearTurnHistory,
-    getEnabledEffects,
-    getHealableIndices,
-    getPossibleMoveIndices,
-    getPossibleSummonIndices,
-    getValidTargetIndices,
-    isStunnedOrFrozen,
-    isTurnActionPrevented,
-    updateCharacters,
-} from "../utils";
-import { TARGET_TYPES } from "./../../ability/types";
+import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented, updateCharacters } from "../utils";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import {
+    autoSelectActionTarget,
     checkEventTrigger,
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
-    pickHostileIndex,
-    tickDownStatusEffects,
     updateCombatant,
     useAbility,
     useItem,
@@ -36,74 +23,6 @@ import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
-
-/**
- * Given an ability, pick a target that makes sense.
- * Index may be undefined if there were no valid indices to choose from.
- */
-export const autoPickTarget = ({
-    ability,
-    actor,
-}: {
-    ability: Ability;
-    actor: CombatantInfo;
-}): { index: number | undefined; side: BATTLEFIELD_SIDES } => {
-    const { hostile, friendly, friendlySide, hostileSide, index } = actor;
-
-    const { actions = [], minion } = ability;
-    if (minion) {
-        return {
-            side: friendlySide,
-            index: getRandomItem(getPossibleSummonIndices(friendly)),
-        };
-    }
-
-    // For now we only make one selection, and assume that all abilities that contain at least one offensive action must select a hostile target
-    if (isOffensiveAbility(ability)) {
-        return {
-            side: hostileSide,
-            index: pickHostileIndex({ hostile, actorData: actor }),
-        };
-    }
-
-    const movementAction = ability.actions.find((action) => action.movement);
-    if (movementAction) {
-        const index = friendly.findIndex((e: Combatant) => e && e.id === actor.combatant?.id);
-        const possibleMoves = getPossibleMoveIndices({
-            currentLocationIndex: index,
-            friendly,
-            action: movementAction,
-        });
-
-        return {
-            side: friendlySide,
-            index: shuffle(possibleMoves)[0],
-        };
-    }
-
-    const friendlySupportAction = actions.find(({ target }) => target === TARGET_TYPES.FRIENDLY);
-    if (friendlySupportAction) {
-        // If it's a healing spell, it should prioritize injured units (TODO: the most injured unit)
-        let targetIndices = getValidTargetIndices(friendly);
-        if (friendlySupportAction.healing) {
-            const healingIndices = getHealableIndices(friendly);
-            if (healingIndices.length > 0) {
-                targetIndices = healingIndices;
-            }
-        }
-
-        return {
-            side: friendlySide,
-            index: getRandomItem(targetIndices),
-        };
-    }
-
-    // Else it is assumed to be a self-targeting ability
-    return {
-        side: friendlySide,
-        index: index,
-    };
-};
 
 const handleCastTick = (combatantId: string) => {
     return (dispatch, getState) => {
@@ -140,7 +59,7 @@ const handleCastTick = (combatantId: string) => {
         const index =
             battle[selectedIndex]?.HP > 0
                 ? selectedIndex
-                : autoPickTarget({ ability, actor: findCombatantData(getState, combatantId) }).index;
+                : autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatantId, getState }).index;
 
         if (typeof index !== "number") {
             return;
@@ -261,7 +180,7 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
     const postUpdateActorInfo = findCombatantData(getState, combatantId);
     const ability = getNextTelegraphedAbility(postUpdateActorInfo);
     if (ability) {
-        const targeting = autoPickTarget({ ability, actor: postUpdateActorInfo });
+        const targeting = autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatantId, getState });
         dispatch(
             updateCombatant({
                 combatantId,
@@ -297,7 +216,7 @@ const enemyUseAbility = (combatantId: string) => {
                 }
 
                 return {
-                    ...autoPickTarget({ ability: backup, actor: actorData }),
+                    ...autoSelectActionTarget({ action: backup.actions?.[0], actorId: combatantId, getState }),
                     ability: backup,
                 };
             })() || {};

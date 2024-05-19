@@ -68,7 +68,6 @@ import { getUpgradeCard } from "../../Menu/utils";
 import { tributeSummonBuff } from "../../ability/Effects";
 import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
-import { autoPickTarget } from "./enemyTurn";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
@@ -395,7 +394,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                             combatantId: enemy.id,
                             newProperties: {
                                 targeting: {
-                                    ...autoPickTarget({ ability, actor: enemyInfo }),
+                                    ...autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState }),
                                     ability,
                                 },
                             },
@@ -1182,7 +1181,7 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
             const ability = getNextTelegraphedAbility(enemyInfo);
 
             if (ability) {
-                const targeting = autoPickTarget({ ability, actor: enemyInfo });
+                const targeting = autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState });
                 // If targeting picked the new taunting unit, then switch targets.
                 if (targeting.side === friendlySide && targeting.index === index) {
                     dispatch(
@@ -1575,7 +1574,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
             const ability = getNextTelegraphedAbility(enemyInfo);
 
             if (ability) {
-                const targeting = autoPickTarget({ ability, actor: enemyInfo });
+                const targeting = autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState });
                 const { index, side } = targeting;
 
                 // If the summoned minions are on the player side, only switch if it rolled one of them
@@ -2450,7 +2449,7 @@ export const pickHostileIndex = ({
  * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
  * This orients the target to the right place (if applicable) as actions are parsed.
  */
-const autoSelectActionTarget = ({
+export const autoSelectActionTarget = ({
     initialSelectedIndex,
     initialSelectedSide,
     action,
@@ -2465,7 +2464,7 @@ const autoSelectActionTarget = ({
 }) => {
     const actorData = findCombatantData(getState, actorId);
     const { friendly, hostile, friendlySide, hostileSide } = actorData;
-    const { targetArea: area = 0, target, targetName } = action;
+    const { targetArea: area = 0, target, targetName } = action || {};
 
     let isPlayerHostile;
     if (target === TARGET_TYPES.PLAYER) {

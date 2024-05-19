@@ -191,7 +191,7 @@ export const ghostlyPuppeteerL: Minion = {
     abilities: [
         {
             name: "Ghostly Mending",
-            resourceCost: 0,
+            description: "Heals Faust for 10 HP.",
             image: HeartIcon,
             actions: [
                 {
@@ -204,6 +204,7 @@ export const ghostlyPuppeteerL: Minion = {
         },
         {
             name: "Ghostly Bolstering",
+            description: "Grants +1 ATT to Faust.",
             image: WeaponMasteryImage,
             actions: [
                 {
@@ -276,6 +277,7 @@ export const ghostlyPuppeteerR: Minion = {
         {
             name: "Ghostly Bolstering",
             image: WeaponMasteryImage,
+            description: "Grants +1 ATT to Faust.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -287,8 +289,8 @@ export const ghostlyPuppeteerR: Minion = {
         },
         {
             name: "Ghostly Mending",
-            resourceCost: 0,
             image: HeartIcon,
+            description: "Heals Faust for 10 HP.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,

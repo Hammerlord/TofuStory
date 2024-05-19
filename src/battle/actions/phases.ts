@@ -1,6 +1,7 @@
 import uuid from "uuid";
-import { elite, eruptive, raging, warding, thorns } from "../../ability/Effects";
+import { elite, eruptive, raging, thorns, warding } from "../../ability/Effects";
 import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
@@ -13,11 +14,8 @@ import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
 import { calculateMesoGain } from "../utils";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
-import { checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
+import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions";
-import { prepareForDiscard } from "./playerTurn";
-import { autoPickTarget } from "./enemyTurn";
-import { getNextTelegraphedAbility } from "../../character/Telegraph";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -231,7 +229,7 @@ export const onWaveStart = () => {
                             combatantId: combatant.id,
                             newProperties: {
                                 targeting: {
-                                    ...autoPickTarget({ ability, actor: findCombatantData(getState, combatant.id) }),
+                                    ...autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatant.id, getState }),
                                     ability,
                                 },
                             },
