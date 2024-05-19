@@ -177,7 +177,8 @@ export const getMorphMap = ({
             if (minionToSummon) {
                 const { storeTarget, turnLimit } = minionConfig;
 
-                const summon = createCombatant(minionToSummon);
+                // Retain id: it is the "same" combatant, now transformed. Used for allowing the transformed character to make a move on the same turn as the mutation
+                const summon = { ...createCombatant(minionToSummon), id: combatant.id };
                 if (storeTarget) {
                     summon.effects.push(getStoredTargetEffect({ combatant, duration: turnLimit }));
                 }
