@@ -105,7 +105,8 @@ const getAbilityPreviews = ({
             ...ability,
             resourceCost,
         };
-        const source: TriggerSource = { source: actionParent, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
+
+        const source: TriggerSource = { source: actionParent, actorId: actor.id, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
 
         if (
             !passesConditions({
@@ -121,6 +122,7 @@ const getAbilityPreviews = ({
             actionFn: performAction({
                 action,
                 parent: actionParent,
+                parentSource: source,
                 selectedIndex: target.index,
                 side: target.side,
                 actorId: actor.id,
