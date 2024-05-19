@@ -11,21 +11,21 @@ import { Combatant } from "./types";
 
 const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
-    const dispatch = (payload) => {
-        if (typeof payload === "function") {
-            return payload(dispatch, getState);
+    const dispatch = (arg) => {
+        if (typeof arg === "function") {
+            return arg(dispatch, getState);
         }
 
-        if (payload?.payload) {
-            battle = { ...battle, ...payload.payload };
+        if (arg?.payload) {
+            battle = { ...battle, ...arg.payload };
 
-            if (payload?.payload?.statUpdates) {
-                Object.entries(payload?.payload?.statUpdates).forEach(([key, value]) => {
+            if (arg?.payload?.statUpdates) {
+                Object.entries(arg.payload.statUpdates).forEach(([key, value]: [string, object]) => {
                     if (!statUpdates[key]) {
                         statUpdates[key] = [];
                     }
 
-                    statUpdates[key].push(value);
+                    statUpdates[key].push({ ...value, action: arg.payload.action });
                 });
             }
         }
@@ -136,6 +136,8 @@ const getAbilityPreviews = ({
 
         Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
             statUpdates.forEach((statUpdate) => {
+                // @ts-ignore .action property appended by previewAction
+                const currentAction = statUpdate.action || action;
                 const combatantId = statUpdate.combatantId;
                 if (!result[combatantId]) {
                     result[combatantId] = [];
@@ -147,12 +149,12 @@ const getAbilityPreviews = ({
                 }
 
                 const { index } = combatantInfo;
-                const hasRandomSecondaryTargets = action.numTargets && target.index !== index;
+                const hasRandomSecondaryTargets = currentAction.numTargets && target.index !== index;
 
                 result[combatantId].push({
                     statUpdate,
                     nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
-                    action,
+                    action: currentAction,
                 });
             });
         });
