@@ -1644,13 +1644,13 @@ export const brandish: Ability = {
 
 export const comboFury: Ability = {
     name: "Combo Fury",
-    resourceCost: 0,
+    resourceCost: 1,
     image: ComboFuryImage,
     overrideBodyText: true,
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     actions: [
         {
-            damage: 1,
+            damage: 3,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             bonus: {
@@ -1667,7 +1667,7 @@ export const comboFury: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
