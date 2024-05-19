@@ -875,12 +875,12 @@ const BattlefieldContainer = () => {
         }).result;
     })();
 
-    const targetedByEnemyAbilities = (() => {
+    const targetedByEnemyAbilities = useMemo(() => {
         const targetMap = {};
 
         let previousCombatantStates;
         getEnemyMoveOrder(enemySide, round).forEach((enemyId) => {
-            const enemyInfo = findCombatantData(() => state, enemyId);
+            const enemyInfo = findCombatantData(() => ({ ...state, ...previousCombatantStates }), enemyId);
             const enemy = enemyInfo?.combatant;
             const { targeting, HP } = enemy || {};
 
@@ -956,7 +956,7 @@ const BattlefieldContainer = () => {
         });
 
         return targetMap;
-    })();
+    }, [enemySide]);
 
     const animationCanvas = useMemo(
         () => (
