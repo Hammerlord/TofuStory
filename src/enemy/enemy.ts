@@ -156,7 +156,7 @@ import {
 
 export const snail: Minion = {
     name: "Snail",
-    maxHP: 15,
+    maxHP: 14,
     abilities: [loaf, attack, attack],
     image: SnailImage,
     mesos: 2,
@@ -164,7 +164,7 @@ export const snail: Minion = {
 
 export const blueSnail: Minion = {
     name: "Blue Snail",
-    maxHP: 22,
+    maxHP: 21,
     image: BlueSnailImage,
     abilities: [
         {
