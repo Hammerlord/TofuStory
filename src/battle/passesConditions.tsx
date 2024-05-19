@@ -1,6 +1,16 @@
 import _ from "lodash";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, Comparator, Condition, Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    Ability,
+    Action,
+    CONDITION_TARGETS,
+    CombatAbility,
+    CombatEffect,
+    Comparator,
+    Condition,
+    Effect,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
@@ -53,7 +63,7 @@ export const passesConditions = ({
 }: {
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | undefined;
+    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | CombatEffect | undefined;
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
     source?: TriggerSource;
 }): boolean => {
@@ -110,6 +120,11 @@ export const passesConditions = ({
 
                 if (isOffense !== undefined) {
                     return isOffense === isOffensiveAbility(sourcePayload as Ability);
+                }
+
+                if (property !== undefined) {
+                    const propertyVal = _.get(sourcePayload, property);
+                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
                 }
 
                 return true;
