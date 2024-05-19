@@ -28,6 +28,7 @@ import { blueSnail, redSnail, snail } from "./enemy";
 
 export const minionSnail: Minion = {
     ...snail,
+    abilities: [attack],
     effects: [
         {
             name: "Green Shell",
