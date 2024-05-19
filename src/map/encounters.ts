@@ -122,7 +122,7 @@ export const generateEliteSquad = ({
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 10));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 10));
 
     const enemy = {
         ...baseEnemy,
@@ -171,7 +171,7 @@ const generateEliteTriad = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.2 + 15));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 15));
 
     const enemy = {
         ...baseEnemy,
@@ -213,7 +213,7 @@ const generateEliteDuo = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 20));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6 + 20));
 
     const enemy = {
         ...baseEnemy,
@@ -282,7 +282,7 @@ const generateElite = ({
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.single, previousEncounters });
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 25));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8 + 30));
 
     const enemy = {
         ...baseEnemy,
