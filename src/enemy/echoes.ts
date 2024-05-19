@@ -26,7 +26,7 @@ export const lostEcho: Minion = {
                         width: 100,
                         height: 100,
                     },
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -94,7 +94,7 @@ export const lostNobleEcho: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: AvengersArrowImage,
-                    damage: 3,
+                    damage: 4,
                     animationOptions: {
                         rotate: -45,
                     },

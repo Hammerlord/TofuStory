@@ -8,9 +8,10 @@ import {
     PoisonImage,
     RespawnTokenImage,
     ShackledHandImage,
+    WeaponMasteryImage,
 } from "../images";
 import { CloudyIcon, HeartIcon, SmilingImpIcon } from "../images/icons";
-import { hardy, poison, preventArmorDecay, stun } from "./../ability/Effects";
+import { attackPower, hardy, poison, preventArmorDecay, stun } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -133,13 +134,6 @@ const puppeteerRevive: EffectEventTrigger = {
     usableWhileStunned: true,
     affectsDeadCharacters: true,
     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-    conditions: [
-        {
-            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-            comparator: "eq",
-            numFriendly: 1, // This is assuming Faust is the only one alive
-        },
-    ],
     effects: [
         {
             name: "Reviving...",
@@ -148,8 +142,9 @@ const puppeteerRevive: EffectEventTrigger = {
             icon: RespawnTokenImage,
             canBeSilenced: false,
             persistsWhenDead: true,
-            description: "When this effect ends, Ghostly Puppeteers will revive.",
+            description: "Revives when this effect ends.",
             duration: 3,
+            maxApplications: 1,
             onEnd: {
                 usableWhileStunned: true,
                 usableWhileDead: true,
@@ -168,12 +163,18 @@ const puppeteerRevive: EffectEventTrigger = {
                                 value: 1,
                             },
                             secondaryAction: {
-                                armor: 50,
+                                armor: 60,
                             },
                             resurrect: true,
                         },
                     ],
                 },
+            },
+            onFriendlyDeath: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                resetDuration: true,
+                usableWhileStunned: true,
+                usableWhileDead: true,
             },
         },
     ],
@@ -197,7 +198,19 @@ export const ghostlyPuppeteerL: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.FRIENDLY_CHARACTER,
                     targetName: faust.name,
-                    healing: 5,
+                    healing: 10,
+                },
+            ],
+        },
+        {
+            name: "Ghostly Bolstering",
+            image: WeaponMasteryImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.FRIENDLY_CHARACTER,
+                    targetName: faust.name,
+                    effects: [attackPower],
                 },
             ],
         },
@@ -251,10 +264,6 @@ export const ghostlyPuppeteerL: Minion = {
             onDeath: {
                 ...puppeteerRevive,
             },
-            onFriendlyDeath: {
-                ...puppeteerRevive,
-                usableWhileDead: true,
-            },
         },
         preventArmorDecay,
     ],
@@ -263,4 +272,31 @@ export const ghostlyPuppeteerL: Minion = {
 export const ghostlyPuppeteerR: Minion = {
     ...ghostlyPuppeteerL,
     image: HomecomingVictoryGlovesRImage,
+    abilities: [
+        {
+            name: "Ghostly Bolstering",
+            image: WeaponMasteryImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.FRIENDLY_CHARACTER,
+                    targetName: faust.name,
+                    effects: [attackPower],
+                },
+            ],
+        },
+        {
+            name: "Ghostly Mending",
+            resourceCost: 0,
+            image: HeartIcon,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.FRIENDLY_CHARACTER,
+                    targetName: faust.name,
+                    healing: 10,
+                },
+            ],
+        },
+    ],
 };

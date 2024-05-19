@@ -1611,7 +1611,7 @@ export const bananaPeelCard = {
         {
             type: ACTION_TYPES.HINDER,
             target: TARGET_TYPES.SELF,
-            damage: 1,
+            damage: 3,
             animation: ANIMATION_TYPES.SPIN,
         },
     ],
@@ -1654,7 +1654,7 @@ export const lupin: Minion = {
 
 export const zombieLupin: Minion = {
     name: "Zombie Lupin",
-    maxHP: 125,
+    maxHP: 150,
     mesos: 20,
     image: ZombieLupinJumpImage,
     abilities: [
@@ -1678,7 +1678,7 @@ export const zombieLupin: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: MonkeyBananaImage,
-                    damage: 3,
+                    damage: 5,
                     animation: ANIMATION_TYPES.ONE_WAY_SPIN,
                     addCardsToDiscard: [bananaPeelCard],
                 },
