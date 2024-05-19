@@ -48,6 +48,7 @@ export const loaf: Ability = {
     actions: [
         {
             type: ACTION_TYPES.NONE,
+            target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.SNOOZE,
         },
     ],
