@@ -75,18 +75,20 @@ const useStyles = createUseStyles({
     indicator: {
         position: "absolute",
         left: "50%",
-        top: "-50",
+        top: "-40",
         transform: "translateX(-50%)",
         animationName: "$indicatorAnimation",
         animationDuration: `${ARROW_ANIMATION_TIME}ms`,
         animationIterationCount: "infinite",
         opacity: 0,
+        width: 90,
     },
     indicatorBase: {
         position: "absolute",
         left: "50%",
-        top: "-50",
+        top: "-40",
         transform: "translateX(-50%) translateY(30px)",
+        width: 90,
     },
     statUpdate: {
         display: "inline-block",
