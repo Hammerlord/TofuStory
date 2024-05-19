@@ -57,6 +57,7 @@ const useStyles = createUseStyles({
         top: -5,
         "&.nondeterministic": {
             background: "rgba(100, 70, 70, 0.8)",
+            filter: "saturate(0.5)",
         },
         "&.enemyPreview": {
             background: "rgba(100, 40, 40, 0.9)",
@@ -82,6 +83,10 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         opacity: 0,
         width: 90,
+    },
+    nondeterministicIndicator: {
+        filter: "saturate(0.3) brightness(1.5)",
+        opacity: 0.9,
     },
     indicatorBase: {
         position: "absolute",
@@ -179,7 +184,11 @@ const AbilityPreview = ({
             : { arrow: IncomingSupportArrow2Image, arrowBase: IncomingSupportArrowImage };
 
         return (
-            <>
+            <span
+                className={classNames({
+                    [classes.nondeterministicIndicator]: isNondeterministic,
+                })}
+            >
                 <img src={arrowBase} className={classes.indicatorBase} />
                 {Array.from({ length: 3 }).map((_, i) => (
                     <img
@@ -189,7 +198,7 @@ const AbilityPreview = ({
                         key={i}
                     />
                 ))}
-            </>
+            </span>
         );
     };
 
@@ -198,7 +207,7 @@ const AbilityPreview = ({
             {getIndicator()}
             <div
                 className={classNames(classes.statUpdatePreview, {
-                    nondeterministic: previewStatUpdate.some((p) => p.nondeterministic),
+                    nondeterministic: isNondeterministic,
                     enemyPreview: isEnemy,
                 })}
             >
