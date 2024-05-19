@@ -2066,7 +2066,6 @@ export const calculateTargetIndices = ({
     actorData,
     targetData,
     battle,
-    disableRollExtraTargets,
     source,
 }: {
     action: Action;
@@ -2075,7 +2074,6 @@ export const calculateTargetIndices = ({
     actorData: CombatantInfo;
     targetData: CombatantInfo;
     battle: BattleState;
-    disableRollExtraTargets?: boolean; // Determinism for consumers that require it, eg. damage preview
     source: TriggerSource;
 }): number[] => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
@@ -2086,7 +2084,7 @@ export const calculateTargetIndices = ({
         excludeIndex: selectedIndex,
     }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
 
-    if (!disableRollExtraTargets) {
+    if (!source?.disableRollExtraTargets) {
         extraTargetIndices = shuffle(extraTargetIndices).slice(0, extraTargets);
     }
 
@@ -2192,7 +2190,6 @@ export const performAction = ({
     parent,
     parentSource,
     isAutoCast,
-    disableRollExtraTargets,
 }: {
     action: Action;
     selectedIndex: number;
@@ -2201,7 +2198,6 @@ export const performAction = ({
     parent?: Ability | Item | CombatAbility;
     parentSource?: TriggerSource;
     isAutoCast?: boolean;
-    disableRollExtraTargets?: boolean; // Target indices determinism for consumers that require it, eg. damage preview
 }) => {
     return (dispatch, getState) => {
         const actorData: CombatantInfo | undefined = findCombatantData(getState, actorId);
@@ -2222,7 +2218,6 @@ export const performAction = ({
             targetData: target,
             battle: getState().battle,
             source: parentSource,
-            disableRollExtraTargets,
         });
 
         const targetIds = targetIndices.map((i: number) => combatants[i]?.id).filter((v) => v !== undefined);

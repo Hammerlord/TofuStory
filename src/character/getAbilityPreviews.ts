@@ -106,7 +106,13 @@ const getAbilityPreviews = ({
             resourceCost,
         };
 
-        const source: TriggerSource = { source: actionParent, actorId: actor.id, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] };
+        const source: TriggerSource = {
+            source: actionParent,
+            actorId: actor.id,
+            type: TRIGGER_SOURCE_TYPES.ABILITY,
+            triggerHistory: [],
+            disableRollExtraTargets: true,
+        };
 
         if (
             !passesConditions({
@@ -126,7 +132,6 @@ const getAbilityPreviews = ({
                 selectedIndex: target.index,
                 side: target.side,
                 actorId: actor.id,
-                disableRollExtraTargets: true,
             }),
             battle: { ...battle, ...previousCombatantStates },
         });

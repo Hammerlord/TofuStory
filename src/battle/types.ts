@@ -71,6 +71,8 @@ export interface TriggerSource {
     isProc?: boolean;
     // Number of eg. resources to add to EffectEventTrigger.triggerSum
     trackSumAmount?: number;
+    // Used for ability previews. Target indices determinism for consumers that require it.
+    disableRollExtraTargets?: boolean;
 }
 
 export interface Wave {
