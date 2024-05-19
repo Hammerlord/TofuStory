@@ -390,12 +390,14 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                 const ability = getNextTelegraphedAbility(enemyInfo);
 
                 if (ability) {
-                    const targeting = autoPickTarget({ ability, actor: enemyInfo });
                     dispatch(
                         updateCombatant({
                             combatantId: enemy.id,
                             newProperties: {
-                                targeting,
+                                targeting: {
+                                    ...autoPickTarget({ ability, actor: enemyInfo }),
+                                    ability,
+                                },
                             },
                         })
                     );
@@ -1187,7 +1189,10 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
                         updateCombatant({
                             combatantId: enemy.id,
                             newProperties: {
-                                targeting,
+                                targeting: {
+                                    ...targeting,
+                                    ability,
+                                },
                             },
                         })
                     );
@@ -1583,7 +1588,10 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
                         updateCombatant({
                             combatantId: enemy.id,
                             newProperties: {
-                                targeting,
+                                targeting: {
+                                    ...targeting,
+                                    ability,
+                                },
                             },
                         })
                     );

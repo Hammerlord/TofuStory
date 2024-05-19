@@ -886,7 +886,7 @@ const BattlefieldContainer = () => {
                 return;
             }
 
-            const ability = getNextTelegraphedAbility(findCombatantData(() => state, id));
+            const ability = enemy.targeting?.ability || getNextTelegraphedAbility(findCombatantData(() => state, id));
 
             const { index, side } = enemy.targeting;
             const targetId = state.battle[side]?.[index]?.id;

@@ -229,7 +229,12 @@ export const onWaveStart = () => {
                     dispatch(
                         updateCombatant({
                             combatantId: combatant.id,
-                            newProperties: { targeting: autoPickTarget({ ability, actor: findCombatantData(getState, combatant.id) }) },
+                            newProperties: {
+                                targeting: {
+                                    ...autoPickTarget({ ability, actor: findCombatantData(getState, combatant.id) }),
+                                    ability,
+                                },
+                            },
                         })
                     );
                 }

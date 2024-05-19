@@ -266,7 +266,10 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
             updateCombatant({
                 combatantId,
                 newProperties: {
-                    targeting,
+                    targeting: {
+                        ...targeting,
+                        ability,
+                    },
                 },
             })
         );
@@ -280,15 +283,25 @@ const enemyUseAbility = (combatantId: string) => {
             return;
         }
 
-        const abilityIndex = getUseAbilityIndex(actorData);
-
         const { combatant: actor } = actorData;
-        const ability = actor.abilities[abilityIndex];
-        if (!ability) {
-            return;
-        }
 
-        const { side, index } = actor?.targeting || autoPickTarget({ ability, actor: actorData });
+        const { side, index, ability } =
+            (() => {
+                if (actor?.targeting?.ability) {
+                    return actor.targeting;
+                }
+
+                const backup = getNextTelegraphedAbility(actorData);
+                if (!backup) {
+                    return;
+                }
+
+                return {
+                    ...autoPickTarget({ ability: backup, actor: actorData }),
+                    ability: backup,
+                };
+            })() || {};
+
         const { castTime, channelDuration } = ability;
 
         if (typeof index === "undefined") {

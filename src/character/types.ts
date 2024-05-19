@@ -37,6 +37,7 @@ export interface Combatant extends Minion {
     targeting?: {
         side: BATTLEFIELD_SIDES;
         index?: number;
+        ability: Ability;
     };
 }
 
