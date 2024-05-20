@@ -357,7 +357,8 @@ export const enemyMoves = () => {
         };
 
         const { enemySide, round } = getState().battle;
-        getEnemyMoveOrder(enemySide, round).forEach(makeEnemyMove);
+        const moveOrderIds = getEnemyMoveOrder(enemySide, round);
+        moveOrderIds.forEach(makeEnemyMove);
 
         const { state } = getState().battle;
         if (state === BATTLE_STATES.DEFEAT || state === BATTLE_STATES.VICTORY) {
@@ -367,7 +368,8 @@ export const enemyMoves = () => {
         dispatch(checkTurnResourceGain(getEnemySideInfo()));
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        getEnemySideInfo().forEach((combatantInfo) => {
+        moveOrderIds.forEach((id) => {
+            const combatantInfo = findCombatantData(getState, id);
             if (!combatantInfo) {
                 return;
             }
