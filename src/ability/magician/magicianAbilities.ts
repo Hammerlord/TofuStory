@@ -2008,7 +2008,7 @@ export const icyDraft: Ability = {
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
     description:
-        "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <br/> When drawn, {{{ _freeze_ }}} a random enemy.",
+        "Apply {{{ _freeze_ }}}<br/> <br/> When drawn, {{{ _chill_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} a random enemy.",
     onDraw: {
         ability: {
             name: "Chilling Draft",
