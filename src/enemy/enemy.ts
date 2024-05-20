@@ -614,7 +614,10 @@ export const noobAWarrior = {
             ...cleave,
             resourceCost: 0,
         },
-        slam,
+        {
+            ...slam,
+            resourceCost: 0,
+        },
         {
             ...block,
             resourceCost: 0,
@@ -628,7 +631,10 @@ export const noobBWarrior = {
     image: NoobWarriorBImage,
     mesos: 30,
     abilities: [
-        slam,
+        {
+            ...slam,
+            resourceCost: 0,
+        },
         {
             ...cleave,
             resourceCost: 0,
