@@ -154,7 +154,7 @@ const getAbilityPreviews = ({
         Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
             statUpdates.forEach((statUpdate) => {
                 // @ts-ignore .action property appended by previewAction
-                const currentAction = statUpdate.action || action;
+                const currentAction = statUpdate.action;
                 const combatantId = statUpdate.combatantId;
                 if (!result[combatantId]) {
                     result[combatantId] = [];
@@ -166,7 +166,7 @@ const getAbilityPreviews = ({
                 }
 
                 const { index } = combatantInfo;
-                const totalTargets = currentAction.numTargets + 1;
+                const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = affectedTargetCount > totalTargets && target.index !== index;
 
                 result[combatantId].push({

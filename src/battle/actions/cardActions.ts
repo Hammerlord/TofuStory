@@ -262,7 +262,6 @@ const handleMoveCards = ({
 
         dispatch(
             pushEventQueue({
-                ...getState().battle,
                 id: uuid.v4(),
                 playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 newCards: cardsToMove,
@@ -453,7 +452,6 @@ export const checkCardActions = ({
 
             dispatch(
                 pushEventQueue({
-                    ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                     newCards: addCardsToDeck,
@@ -471,7 +469,6 @@ export const checkCardActions = ({
         if (addCardsToDiscard) {
             dispatch(
                 pushEventQueue({
-                    ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                     newCards: addCardsToDiscard,

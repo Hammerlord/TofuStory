@@ -146,7 +146,7 @@ const useStyles = createUseStyles({
 export interface PreviewStatUpdate {
     nondeterministic: boolean;
     statUpdate: UpdatedCombatantStats;
-    action: Action;
+    action?: Action;
 }
 
 /**
@@ -223,8 +223,8 @@ const AbilityPreview = ({
                     effectiveHP -= rawDamage;
                     const isLethal = rawDamage > 0 && effectiveHP <= 0;
 
-                    const showDamage = action.damage > 0 || rawDamage > 0;
-                    const showArmor = action.armor > 0;
+                    const showDamage = action?.damage > 0 || rawDamage > 0;
+                    const showArmor = action?.armor > 0;
                     const nothingToShow = !showDamage && !showArmor && !effects.length && !failedToApplyEffects.length && !resources;
                     if (nothingToShow) {
                         return null;
