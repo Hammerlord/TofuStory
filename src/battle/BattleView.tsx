@@ -909,7 +909,7 @@ const BattlefieldContainer = () => {
 
             Object.entries(result).forEach(([combatantId, previews]) => {
                 const traverseAndAggregate = (obj: any, otherObj: any) => {
-                    if (!obj || !otherObj) {
+                    if (!obj || typeof otherObj !== "object") {
                         return;
                     }
 
