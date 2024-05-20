@@ -361,7 +361,7 @@ export const pig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -373,7 +373,7 @@ export const pig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 6,
                 },
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -417,7 +417,7 @@ export const ribbonPig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 7,
                 },
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -968,7 +968,7 @@ export const fireBoar: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 5,
                 },
             ],
         },
@@ -980,7 +980,7 @@ export const fireBoar: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
+                    damage: 9,
                     effects: [{ ...burn, stacks: 1 }],
                 },
                 {
@@ -1023,7 +1023,7 @@ export const ligator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
@@ -1035,7 +1035,7 @@ export const ligator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 3,
                     effects: [
                         {
                             ...bleed,
@@ -1074,7 +1074,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
@@ -1086,7 +1086,7 @@ export const eliteLigator: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
+                    damage: 3,
                     effects: [
                         {
                             ...bleed,
