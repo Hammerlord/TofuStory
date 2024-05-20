@@ -758,7 +758,6 @@ export const chainLightning: Ability = {
             actions: [
                 {
                     damage: 3,
-                    secondaryDamage: 3,
                 },
             ],
         },
