@@ -133,6 +133,18 @@ const getAbilityPreviews = ({
             return;
         }
 
+        if (action.autoCastAbilities) {
+            // Random auto-cast abilities cannot be simulated in a preview because it will only ever give a random snapshot of what could happen
+            result[actor.id] = [
+                {
+                    statUpdate: {},
+                    nondeterministic: false,
+                    action,
+                },
+            ];
+            return;
+        }
+
         const previews = previewAction({
             actionFn: performAction({
                 action,
