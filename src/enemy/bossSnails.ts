@@ -355,12 +355,12 @@ export const manoEnemy: Minion = {
         {
             name: "Call Snail",
             image: RedSnailImage,
-            minion: redMinionSnail,
             actions: [
                 {
                     // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
+                    summon: [{ minion: [redMinionSnail] }],
                 },
             ],
         },
