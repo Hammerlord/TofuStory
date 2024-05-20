@@ -861,10 +861,13 @@ const BattlefieldContainer = () => {
         );
     };
 
-    const abilityUsePreviews = ((): { [combatantId: string]: PreviewStatUpdate[] } => {
+    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = ((): {
+        result: { [combatantId: string]: PreviewStatUpdate[] };
+        combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
+    } => {
         const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
         if (!hoveredCombatant || !selectedAbility || !shouldShowReticle(hoveredCombatant.side, hoveredCombatant.index)) {
-            return {};
+            return { result: {}, combatantStates: undefined } as any;
         }
 
         return getAbilityPreviews({
@@ -872,15 +875,15 @@ const BattlefieldContainer = () => {
             actor: selectedMinion || player,
             target: hoveredCombatant,
             battle: state.battle,
-        }).result;
+        });
     })();
 
-    const targetedByEnemyAbilities = useMemo(() => {
+    const targetedByEnemyAbilities = (() => {
         const targetMap = {};
 
-        let previousCombatantStates;
+        let previousCombatantStates = previewAbilityCombatants;
         getEnemyMoveOrder(enemySide, round).forEach((enemyId) => {
-            const enemyInfo = findCombatantData(() => ({ ...state, ...previousCombatantStates }), enemyId);
+            const enemyInfo = findCombatantData(() => ({ battle: { ...state.battle, ...previousCombatantStates } }), enemyId);
             const enemy = enemyInfo?.combatant;
             const { targeting, HP } = enemy || {};
 
@@ -956,7 +959,7 @@ const BattlefieldContainer = () => {
         });
 
         return targetMap;
-    }, [enemySide]);
+    })();
 
     const animationCanvas = useMemo(
         () => (
