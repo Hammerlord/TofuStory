@@ -59,8 +59,9 @@ export const isOffensiveAbility = (ability: Ability): boolean => {
 };
 
 export const isSupportAction = (action: Action): boolean => {
-    return [TARGET_TYPES.SELF, TARGET_TYPES.FRIENDLY, TARGET_TYPES.RANDOM_FRIENDLY, TARGET_TYPES.FRIENDLY_CHARACTER].includes(
-        action.target
+    return (
+        [TARGET_TYPES.SELF, TARGET_TYPES.FRIENDLY, TARGET_TYPES.RANDOM_FRIENDLY, TARGET_TYPES.FRIENDLY_CHARACTER].includes(action.target) &&
+        action.type !== ACTION_TYPES.NONE
     );
 };
 

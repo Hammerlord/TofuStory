@@ -400,7 +400,7 @@ const checkUseItem = (combatant: Combatant): number | undefined => {
 };
 
 /**
- * Support abilities always go first. Then enemies make their move from middle out.
+ * Get the order in which enemies move on their turn.
  */
 export const getEnemyMoveOrder = (enemies: (Combatant | null)[], round: number): string[] => {
     const isEvenRound = round % 2 === 0;
@@ -413,7 +413,7 @@ export const getEnemyMoveOrder = (enemies: (Combatant | null)[], round: number):
         .sort((a, b) => {
             const aVal = isSupportAbility(a.targeting?.ability) ? 1 : -1;
             const bVal = isSupportAbility(b.targeting?.ability) ? 1 : -1;
-            const compareSupport = bVal - aVal;
+            const compareSupport = aVal - bVal;
             if (compareSupport !== 0) {
                 return compareSupport;
             }
