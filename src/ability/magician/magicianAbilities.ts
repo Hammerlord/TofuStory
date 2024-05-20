@@ -1572,6 +1572,7 @@ export const polymorph: Ability = {
                     override: {
                         portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
                     },
+                    persistsWhenDead: true,
                     type: EFFECT_TYPES.SILENCE,
                     class: EFFECT_CLASSES.DEBUFF,
                 },
