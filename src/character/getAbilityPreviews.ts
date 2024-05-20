@@ -36,6 +36,7 @@ const previewAction = ({ actionFn, battle }) => {
     });
 
     actionFn(dispatch, getState);
+
     return {
         battle,
         statUpdates,
@@ -167,7 +168,7 @@ const getAbilityPreviews = ({
 
                 const { index } = combatantInfo;
                 const totalTargets = currentAction?.numTargets + 1 || 0;
-                const hasRandomSecondaryTargets = affectedTargetCount > totalTargets && target.index !== index;
+                const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && target.index !== index;
 
                 result[combatantId].push({
                     statUpdate,
