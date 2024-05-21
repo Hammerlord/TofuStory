@@ -2493,7 +2493,7 @@ export const autoSelectActionTarget = ({
 
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
-    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && noValidSelection) {
+    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
         return {
             index: pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area }),
             side: hostileSide,
@@ -2511,7 +2511,10 @@ export const autoSelectActionTarget = ({
         };
     }
 
-    if (target === TARGET_TYPES.RANDOM_FRIENDLY || (target === TARGET_TYPES.FRIENDLY && noValidSelection)) {
+    if (
+        target === TARGET_TYPES.RANDOM_FRIENDLY ||
+        (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
+    ) {
         const targetIndices = getValidTargetIndices(friendly).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
