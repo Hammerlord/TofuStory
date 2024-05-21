@@ -175,9 +175,6 @@ const AbilityPreview = ({
         previewStatUpdate = previewStatUpdate.slice(0, 1);
     }
 
-    const { HP, armor } = combatant;
-    let effectiveHP = HP + armor;
-
     const getIndicator = () => {
         const { arrow, arrowBase } = isEnemy
             ? { arrow: IncomingDamageArrow2Image, arrowBase: IncomingDamageArrowImage }
@@ -213,16 +210,7 @@ const AbilityPreview = ({
             >
                 {previewStatUpdate.map((preview, i) => {
                     const { action, nondeterministic, statUpdate } = preview || {};
-                    const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor, resources = 0 } = statUpdate;
-                    const isAlreadyDead = effectiveHP <= 0 && !rawDamage;
-                    if (isAlreadyDead) {
-                        // Prospected killed by a previous hit
-                        return null;
-                    }
-
-                    effectiveHP -= rawDamage;
-                    const isLethal = rawDamage > 0 && effectiveHP <= 0;
-
+                    const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor, resources = 0, isDeathBlow } = statUpdate;
                     const showDamage = action?.damage > 0 || rawDamage > 0;
                     const showArmor = action?.armor > 0;
                     const nothingToShow = !showDamage && !showArmor && !effects.length && !failedToApplyEffects.length && !resources;
@@ -255,13 +243,13 @@ const AbilityPreview = ({
                                     </span>
                                     <span
                                         className={classNames(classes.statUpdate, {
-                                            [classes.negative]: !isLethal && rawDamage < action?.damage,
+                                            [classes.negative]: !isDeathBlow && rawDamage < action?.damage,
                                         })}
                                         key={["damage-update", i].join("-")}
                                     >
                                         {rawDamage || 0}
                                         {nondeterministic && "?"}{" "}
-                                        {isLethal && (
+                                        {isDeathBlow && (
                                             <span className={classes.lethalIcon}>
                                                 <Icon icon={CrossbonesIcon} size={"xs"} />
                                             </span>
