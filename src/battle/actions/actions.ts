@@ -733,12 +733,17 @@ const onEffectEventTrigger = ({
         }
 
         const initialTargetIds = getCalculationTargetIds(targetType).filter((id) => {
-            const secondaryGetCalculationTarget = (targetType) => {
-                if ([TRIGGER_TARGET_TYPES.TARGET, TRIGGER_TARGET_TYPES.ALL_TARGETS].includes(targetType)) {
+            const secondaryGetCalculationTarget = (secondaryTargetType) => {
+                // Check that the individual target passes conditions for the effect event if applicable. Prior to this, only the primary
+                // target was checked and then it would pass/fail for all targets.
+                if (
+                    secondaryTargetType === targetType &&
+                    [TRIGGER_TARGET_TYPES.TARGET, TRIGGER_TARGET_TYPES.ALL_TARGETS].includes(secondaryTargetType)
+                ) {
                     return findCombatantData(getState, id);
                 }
 
-                return getCalculationTarget(targetType);
+                return getCalculationTarget(secondaryTargetType);
             };
             return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, source });
         });

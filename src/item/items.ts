@@ -1270,7 +1270,7 @@ export const taurospearHorn: Item = {
     image: TaurospearHornImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When you kill an enemy, gain 1 {{ resources }}.",
+    description: "When you kill a threatening enemy, gain 1 {{ resources }}.",
     effects: [
         {
             type: EFFECT_TYPES.NONE,
@@ -1279,6 +1279,14 @@ export const taurospearHorn: Item = {
             onFriendlyKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
+                conditions: [
+                    {
+                        property: "abilities.0",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        value: undefined,
+                        comparator: "not",
+                    },
+                ],
             },
         },
     ],

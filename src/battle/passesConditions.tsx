@@ -387,7 +387,8 @@ export const passesConditions = ({
             }
 
             if (property !== undefined) {
-                if (!passesValueComparison({ val: combatant[property], otherVal: value, comparator })) {
+                const propertyVal = _.get(combatant, property);
+                if (!passesValueComparison({ val: propertyVal, otherVal: value, comparator })) {
                     return false;
                 }
             }
