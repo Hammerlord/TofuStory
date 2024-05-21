@@ -153,7 +153,7 @@ export const magicFang: Ability = {
     actions: [
         {
             area: 1,
-            damage: 3,
+            damage: 4,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -169,7 +169,7 @@ export const magicFang: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 2,
+                damage: 3,
             },
         },
     ],
@@ -225,7 +225,7 @@ export const energyBolt: Ability = {
     description: "<b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}",
     actions: [
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -241,7 +241,7 @@ export const energyBolt: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 3,
+                damage: 4,
             },
         },
     ],
@@ -277,7 +277,7 @@ const magicClawAction: Action = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 3,
+        damage: 4,
     },
 };
 
@@ -3193,7 +3193,7 @@ export const picoPicoHammerAbility: Ability = {
     description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer at the main target.",
     actions: [
         {
-            damage: 4,
+            damage: 5,
             area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -3201,7 +3201,7 @@ export const picoPicoHammerAbility: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
         },
         {
-            damage: 5,
+            damage: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: PicoPicoHammerImage,
