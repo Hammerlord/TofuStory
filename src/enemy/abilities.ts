@@ -135,7 +135,7 @@ export const whomp: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 5,
+            damage: 6,
             area: 1,
             secondaryDamage: 3,
             addCardsToDiscard: [dazedCurse],

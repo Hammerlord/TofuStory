@@ -106,8 +106,8 @@ export const routeKerningToPerion: Route = {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask, jrBoogie],
         duo: [wildBoar, axeStump, wraith],
-        trio: [orangeMushroom, octopus, bubbling],
-        squad: [redSnail, stump, stirge],
+        trio: [orangeMushroom, octopus, bubbling, stump],
+        squad: [redSnail, stirge],
         special: [
             [null, egg, null, egg, null],
             [
@@ -494,9 +494,9 @@ export const routeHenesysEllinia: Route = {
     elites: {
         minions: [redSnail, elliniaGreenMushroom, stump],
         single: [lupin, curseEye],
-        duo: [axeStump, orangeMushroom, slime, elliniaHornyMushroom],
+        duo: [axeStump, orangeMushroom, elliniaHornyMushroom],
         trio: [elliniaGreenMushroom, pig, blueMushroom],
-        squad: [stump, elliniaGreenMushroom],
+        squad: [redSnail, slime],
         special: [
             [null, null, darkStoneGolem, null, null],
             [null, null, golem, null, null],
