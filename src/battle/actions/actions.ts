@@ -117,47 +117,52 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
             return;
         }
 
-        const { actorId } = triggerSource;
+        const { actorId, targetId } = triggerSource;
         const killedByInfo = findCombatantData(getState, actorId);
         const { combatant: killedBy, index, friendly } = killedByInfo || {};
         if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
-        const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+        const killedInfo = findCombatantData(getState, targetId);
+        const isKilledTargetThreatening = Boolean(killedInfo?.combatant?.abilities?.[0]);
 
-        if (lifeOnKill > 0) {
-            const updated = getUpdatedStats({
-                ...getState().battle,
-                actorId: killedBy.id,
-                targetIds: [killedBy.id],
-                selectedIndex: index,
-                action: {
-                    type: ACTION_TYPES.EFFECT,
-                    healing: lifeOnKill,
-                },
-                source: {
-                    ...triggerSource,
-                },
-                getCombatantById: (id) => findCombatantData(getState, id),
-            });
+        if (isKilledTargetThreatening) {
+            const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
 
-            dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
-            dispatch(
-                triggerStatChangeEvents(
-                    updated.map(({ statUpdate, action }) => ({
-                        statUpdate,
-                        source: {
-                            source: action,
-                            type: TRIGGER_SOURCE_TYPES.EFFECT,
-                            actorId: killedBy.id,
-                            targetId: killedBy.id,
+            if (lifeOnKill > 0) {
+                const updated = getUpdatedStats({
+                    ...getState().battle,
+                    actorId: killedBy.id,
+                    targetIds: [killedBy.id],
+                    selectedIndex: index,
+                    action: {
+                        type: ACTION_TYPES.EFFECT,
+                        healing: lifeOnKill,
+                    },
+                    source: {
+                        ...triggerSource,
+                    },
+                    getCombatantById: (id) => findCombatantData(getState, id),
+                });
+
+                dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+                dispatch(
+                    triggerStatChangeEvents(
+                        updated.map(({ statUpdate, action }) => ({
                             statUpdate,
-                            triggerHistory: [],
-                        },
-                    }))
-                )
-            );
+                            source: {
+                                source: action,
+                                type: TRIGGER_SOURCE_TYPES.EFFECT,
+                                actorId: killedBy.id,
+                                targetId: killedBy.id,
+                                statUpdate,
+                                triggerHistory: [],
+                            },
+                        }))
+                    )
+                );
+            }
         }
 
         dispatch(
