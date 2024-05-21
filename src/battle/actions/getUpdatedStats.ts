@@ -30,6 +30,7 @@ import { getHalveArmorAmount } from "./checkHalveArmor";
 
 export interface UpdatedCombatantStats {
     combatantId: string;
+    // Raw damage, including overkill figure
     rawDamage?: number;
     healthDamage?: number;
     overhealing?: number;
@@ -43,6 +44,7 @@ export interface UpdatedCombatantStats {
     removedEffects?: CombatEffect[];
     isArmorDecay?: boolean;
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
+    overkill?: number;
 }
 
 export const getUpdatedStats = ({
@@ -131,7 +133,7 @@ export const getUpdatedStats = ({
         const armorGained = updatedTargetArmor - targetCombatant.armor;
         const targetApplicableHP = targetCombatant.HP - targetMinHP;
         const healthDamage = Math.min(targetApplicableHP, Math.max(0, damage - totalArmor));
-        const rawDamage = Math.min(targetApplicableHP + targetCombatant.armor, damage);
+        const rawDamage = damage;
 
         let rawHealing = 0;
         if (targetCombatant.HP - healthDamage > 0 || resurrect) {
@@ -256,6 +258,8 @@ export const getUpdatedStats = ({
             }
         });
 
+        const isDeathBlow = targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
+
         const statUpdate: UpdatedCombatantStats = {
             combatantId: targetCombatant.id,
             rawDamage,
@@ -266,7 +270,8 @@ export const getUpdatedStats = ({
             resources: resourcesGained,
             rawResources: resources,
             effects,
-            isDeathBlow: targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0,
+            isDeathBlow,
+            overkill: isDeathBlow ? targetCombatant.HP - healthDamage + healing : 0,
             mesos: mesos - stealMesos,
             removedEffects,
             isArmorDecay: decayArmor,
