@@ -1,12 +1,13 @@
 import { isSupportAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
+import getAbilityPreviews from "../../character/getAbilityPreviews";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, shuffle } from "../../utils";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented, updateCharacters } from "../utils";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
@@ -147,9 +148,10 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
 };
 
 // FIX ME: The recently used ability log also contains proc abilities, when we want just the ability the enemy used for its main turn
-const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState) => {
+const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) => (dispatch) => {
+    const getState = () => ({ battle });
     const actorInfo = findCombatantData(getState, combatantId);
-    if (!actorInfo) {
+    if (!actorInfo?.combatant?.HP || actorInfo.combatant.casting?.channelDuration) {
         return;
     }
 
@@ -193,6 +195,13 @@ const requeueRecentlyUsedAbility = (combatantId: string) => (dispatch, getState)
                 },
             })
         );
+
+        return getAbilityPreviews({
+            ability,
+            actor: postUpdateActorInfo.combatant,
+            target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
+            battle,
+        });
     }
 };
 
@@ -366,18 +375,16 @@ export const enemyMoves = () => {
         }
 
         dispatch(checkTurnResourceGain(getEnemySideInfo()));
+
+        let prevBattleState = getState().battle;
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
         moveOrderIds.forEach((id) => {
-            const combatantInfo = findCombatantData(getState, id);
-            if (!combatantInfo) {
-                return;
-            }
-
-            const combatant = combatantInfo.combatant;
-            if (combatant.HP > 0 && !combatant.casting?.channelDuration) {
-                dispatch(requeueRecentlyUsedAbility(combatant.id));
-            }
+            const { combatantStates } = dispatch(requeueRecentlyUsedAbility(id, prevBattleState)) || {};
+            prevBattleState = {
+                ...prevBattleState,
+                ...combatantStates,
+            };
         });
         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
     };
