@@ -2192,7 +2192,6 @@ export const blackCrystal: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     image: BlackCrystalImage,
     description: "The first time a target is hit by you, it is afflicted with 1 Bleed and 1 ATT Down.",
-    applyEffectsToSummons: true,
     effects: [
         {
             name: "Black Crystal Effect",
