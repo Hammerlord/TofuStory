@@ -20,7 +20,7 @@ import {
 import { PreviewStatUpdate } from "../character/AbilityPreview";
 import CombatantView from "../character/CombatantView";
 import { getNextTelegraphedAbility } from "../character/Telegraph";
-import getAbilityPreviews from "../character/getAbilityPreviews";
+import getAbilityPreviews, { getEmptyTileKey } from "../character/getAbilityPreviews";
 import { Combatant, Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import EffectGroupIcon from "../icon/EffectGroupIcon";
@@ -1029,7 +1029,10 @@ const BattlefieldContainer = () => {
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         previewStatUpdate={abilityUsePreviews[enemy?.id]}
-                                        previewTargetedBy={targetedByEnemyAbilities[enemy?.id]}
+                                        previewTargetedBy={
+                                            targetedByEnemyAbilities[enemy?.id] ||
+                                            targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.ENEMY_SIDE)]
+                                        }
                                         selectedAbility={abilityToUse}
                                         ref={enemyRefs[i]}
                                     />
@@ -1084,7 +1087,10 @@ const BattlefieldContainer = () => {
                                                 selectedAbility={abilityToUse}
                                                 ref={allyRefs[i]}
                                                 previewStatUpdate={abilityUsePreviews[ally?.id]}
-                                                previewTargetedBy={targetedByEnemyAbilities[ally?.id]}
+                                                previewTargetedBy={
+                                                    targetedByEnemyAbilities[ally?.id] ||
+                                                    targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.PLAYER_SIDE)]
+                                                }
                                             />
                                         );
                                     })}

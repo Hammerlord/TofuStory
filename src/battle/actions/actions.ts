@@ -2088,19 +2088,22 @@ export const calculateTargetIndices = ({
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
+    const isPreviewMode = source?.isPreviewMode;
+
     let extraTargetIndices = getValidTargetIndices(battle[side], {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
     }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
 
-    if (!source?.disableRollExtraTargets) {
+    if (!isPreviewMode) {
         extraTargetIndices = shuffle(extraTargetIndices).slice(0, extraTargets);
     }
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
-        const livingOrResurrecting = combatant && (combatant.HP > 0 || resurrect || affectsDeadCharacters);
+        const livingOrResurrecting = combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
 
-        const inArea = livingOrResurrecting && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+        const inArea =
+            (livingOrResurrecting || isPreviewMode) && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
         if (excludePrimaryTarget) {
             return inArea && i !== selectedIndex;
         }

@@ -29,7 +29,7 @@ import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
 
 export interface UpdatedCombatantStats {
-    combatantId: string;
+    combatantId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
     healthDamage?: number;

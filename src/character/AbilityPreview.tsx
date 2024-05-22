@@ -159,13 +159,13 @@ const AbilityPreview = ({
     className,
 }: {
     previewStatUpdate: PreviewStatUpdate[];
-    combatant: Combatant;
+    combatant?: Combatant;
     isEnemy: boolean;
     className?: string;
 }) => {
     const classes = useStyles();
 
-    if (!previewStatUpdate || !combatant) {
+    if (!previewStatUpdate) {
         return null;
     }
 
@@ -265,7 +265,7 @@ const AbilityPreview = ({
                             </span>
                         </>
                     )}
-                    {resources > 0 && combatant.isPlayer && (
+                    {resources > 0 && combatant?.isPlayer && (
                         <>
                             <span className={classNames(classes.resourceUpdate)}>+{resources}</span>
                             <span className={classes.previewIconContainer}>

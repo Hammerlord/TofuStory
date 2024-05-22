@@ -71,8 +71,8 @@ export interface TriggerSource {
     isProc?: boolean;
     // Number of eg. resources to add to EffectEventTrigger.triggerSum
     trackSumAmount?: number;
-    // Used for ability previews. Target indices determinism for consumers that require it.
-    disableRollExtraTargets?: boolean;
+    // For ability previews, target indices should become determinate. (And not change every time the preview snapshot changes.)
+    isPreviewMode?: boolean;
 }
 
 export interface Wave {

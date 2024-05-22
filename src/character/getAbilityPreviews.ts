@@ -9,6 +9,8 @@ import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
 import { Combatant } from "./types";
 
+export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
+
 const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
     const dispatch = (arg) => {
@@ -16,16 +18,40 @@ const previewAction = ({ actionFn, battle }) => {
             return arg(dispatch, getState);
         }
 
-        if (arg?.payload) {
-            battle = { ...battle, ...arg.payload };
+        const payload = arg?.payload || {};
+        if (payload) {
+            battle = { ...battle, ...payload };
 
-            if (arg?.payload?.statUpdates) {
-                Object.entries(arg.payload.statUpdates).forEach(([key, value]: [string, object]) => {
+            if (payload.statUpdates) {
+                Object.entries(payload.statUpdates).forEach(([key, value]: [string, object]) => {
                     if (!statUpdates[key]) {
                         statUpdates[key] = [];
                     }
 
-                    statUpdates[key].push({ ...value, action: arg.payload.action });
+                    statUpdates[key].push({ ...value, action: payload.action });
+                });
+            }
+
+            // Projected stat updates for empty spaces during AoE effects:
+            if (payload.allTargetIndices && payload.targetSide && payload.action) {
+                payload.allTargetIndices.forEach((index: number) => {
+                    const key = getEmptyTileKey(index, payload.targetSide);
+                    if (!statUpdates[key]) {
+                        statUpdates[key] = [];
+                    }
+
+                    const { damage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = payload.action;
+                    const projectedStatUpdate: UpdatedCombatantStats = {
+                        combatantId: key,
+                        rawDamage: damage,
+                        healthDamage: damage,
+                        armor,
+                        resources,
+                        effects,
+                        healing,
+                        overkill: 0,
+                    };
+                    statUpdates[key].push({ ...projectedStatUpdate, action: payload.action });
                 });
             }
         }
@@ -36,7 +62,6 @@ const previewAction = ({ actionFn, battle }) => {
     });
 
     actionFn(dispatch, getState);
-
     return {
         battle,
         statUpdates,
@@ -120,7 +145,7 @@ const getAbilityPreviews = ({
             actorId: actor.id,
             type: TRIGGER_SOURCE_TYPES.ABILITY,
             triggerHistory: [],
-            disableRollExtraTargets: true,
+            isPreviewMode: true,
         };
 
         if (
@@ -168,13 +193,21 @@ const getAbilityPreviews = ({
             statUpdates.forEach((statUpdate) => {
                 // @ts-ignore .action property appended by previewAction
                 const currentAction = statUpdate.action;
-                const combatantId = statUpdate.combatantId;
-                if (!result[combatantId]) {
-                    result[combatantId] = [];
+                const id = statUpdate.combatantId;
+
+                if (!result[id]) {
+                    result[id] = [];
                 }
 
-                const combatantInfo = lookupCombatantDataHelper(combatantId);
+                const combatantInfo = lookupCombatantDataHelper(id);
                 if (!combatantInfo?.combatant) {
+                    // It's an empty tile preview.
+                    result[id].push({
+                        statUpdate,
+                        nondeterministic: targetsRandomly,
+                        action: currentAction,
+                    });
+
                     return;
                 }
 
@@ -182,7 +215,7 @@ const getAbilityPreviews = ({
                 const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && target.index !== index;
 
-                result[combatantId].push({
+                result[id].push({
                     statUpdate,
                     nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
                     action: currentAction,
