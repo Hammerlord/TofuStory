@@ -16,6 +16,7 @@ import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/util
 import { BATTLE_STATES } from "./../reducer";
 import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions";
+import { isOffensiveAction } from "../../ability/AbilityView/utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -223,13 +224,15 @@ export const onWaveStart = () => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
                 const ability = getNextTelegraphedAbility(actor);
-                if (ability) {
+                if (ability?.actions) {
+                    const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+
                     dispatch(
                         updateCombatant({
                             combatantId: combatant.id,
                             newProperties: {
                                 targeting: {
-                                    ...autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatant.id, getState }),
+                                    ...autoSelectActionTarget({ action, actorId: combatant.id, getState }),
                                     ability,
                                 },
                             },

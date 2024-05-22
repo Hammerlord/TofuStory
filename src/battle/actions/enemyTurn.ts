@@ -1,4 +1,4 @@
-import { isSupportAbility } from "../../ability/AbilityView/utils";
+import { isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews from "../../character/getAbilityPreviews";
@@ -182,8 +182,9 @@ const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) =>
 
     const postUpdateActorInfo = findCombatantData(getState, combatantId);
     const ability = getNextTelegraphedAbility(postUpdateActorInfo);
-    if (ability) {
-        const targeting = autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatantId, getState });
+    if (ability?.actions) {
+        const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
         dispatch(
             updateCombatant({
                 combatantId,

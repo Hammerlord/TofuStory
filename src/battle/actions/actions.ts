@@ -392,14 +392,14 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                 const enemyInfo = findCombatantData(getState, enemy.id);
 
                 const ability = getNextTelegraphedAbility(enemyInfo);
-
                 if (ability) {
+                    const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
                     dispatch(
                         updateCombatant({
                             combatantId: enemy.id,
                             newProperties: {
                                 targeting: {
-                                    ...autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState }),
+                                    ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
                                     ability,
                                 },
                             },
@@ -1190,8 +1190,9 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
             const enemyInfo = findCombatantData(getState, enemy.id);
             const ability = getNextTelegraphedAbility(enemyInfo);
 
-            if (ability) {
-                const targeting = autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState });
+            if (ability?.actions) {
+                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, getState });
                 // If targeting picked the new taunting unit, then switch targets.
                 if (targeting.side === friendlySide && targeting.index === index) {
                     dispatch(
@@ -1584,7 +1585,8 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
             const ability = getNextTelegraphedAbility(enemyInfo);
 
             if (ability) {
-                const targeting = autoSelectActionTarget({ action: ability.actions?.[0], actorId: enemy.id, getState });
+                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+                const targeting = autoSelectActionTarget({ action: action, actorId: enemy.id, getState });
                 const { index, side } = targeting;
 
                 // If the summoned minions are on the player side, only switch if it rolled one of them
