@@ -23,6 +23,8 @@ const useStyles = createUseStyles({
         display: "flex",
         whiteSpace: "nowrap",
         top: 25,
+    },
+    inner: {
         animationName: "$fadeIn",
         animationDuration: "0.25s",
         animationFillMode: "forwards",
@@ -33,7 +35,7 @@ const useStyles = createUseStyles({
         },
         "100%": {
             opacity: 1,
-            transform: "translateX(-50%) translateY(10px)",
+            transform: "translateY(10px)",
         },
     },
     previewIconContainer: {
@@ -140,6 +142,10 @@ const useStyles = createUseStyles({
             .map(() => "0px 0px 1px black")
             .join(", "),
         fontSize: "12px",
+    },
+    faded: {
+        filter: "saturate(0.25)",
+        opacity: 0.85,
     },
 });
 
@@ -294,9 +300,15 @@ const AbilityPreview = ({
     };
 
     return (
-        <div className={classNames(classes.previewRoot, className)}>
-            {getIndicator()}
-            {getPreviewElement()}
+        <div
+            className={classNames(classes.previewRoot, className, {
+                [classes.faded]: !combatant,
+            })}
+        >
+            <div className={classes.inner}>
+                {getIndicator()}
+                {getPreviewElement()}
+            </div>
         </div>
     );
 };
