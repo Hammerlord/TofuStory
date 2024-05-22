@@ -415,7 +415,7 @@ export const pong: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            addCards: [ping, ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
