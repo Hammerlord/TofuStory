@@ -1,14 +1,13 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Action, Effect, TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, Action, Effect } from "../ability/types";
+import { ATTACK_POWER_COEFF } from "../battle/constants";
+import { CombatantInfo } from "../battle/types";
 import { calculateAttackPowerDamage, getEnabledEffects, getSkillBonusDamage, isTurnActionPrevented } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
-import { Combatant } from "./types";
-import { ATTACK_POWER_COEFF } from "../battle/constants";
-import { CombatantInfo } from "../battle/types";
-import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
+import { getNextTelegraphedAbility } from "./Telegraph";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -41,14 +40,14 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
-    const { abilities = [], HP, effects = [], casting } = combatant || {};
+    const { abilities = [], HP, effects = [], casting, targeting } = combatant || {};
 
     if (!HP) {
         return null;
     }
 
     const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
-    const abilityToUse = casting?.ability || abilities[getUseAbilityIndex(combatantInfo)];
+    const abilityToUse = casting?.ability || targeting?.ability || getNextTelegraphedAbility(combatantInfo);
 
     const defaultActionStats = { damage: 0, timesToAttack: 0 };
     const { damage, timesToAttack } =
