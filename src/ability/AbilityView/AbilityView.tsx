@@ -35,7 +35,7 @@ import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import SelectCards from "./SelectCards";
-import { getAbilityColor, getAllEffects, interpolateAbilityDescription } from "./utils";
+import { getAbilityColor, getAllEffects, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -288,7 +288,7 @@ const AbilityView = forwardRef(
             disableConditionGlow,
             effects = [],
         } = ability;
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets } = actions[0] || {};
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets, addLastPlayedCards } = actions[0] || {};
         const cardImage = minion?.image || image;
         let imageNode = null;
 
@@ -401,6 +401,7 @@ const AbilityView = forwardRef(
         const armorStatistics = getArmorStatistics({ ability, playerInfo, deck, hand, discard });
         const { base: armorTotal, hasConditionFulfilled: hasArmorConditionFulfilled } = armorStatistics;
         const interpolatedDescription = interpolateAbilityDescription({ ability, playerInfo, deck, hand, discard });
+        const showDescription = getLastPlayedCards({ player, amount: addLastPlayedCards?.amount }).length === 0;
 
         let hasMultiplier = false;
         let armorCornerIcon = false;
@@ -599,7 +600,7 @@ const AbilityView = forwardRef(
                                     </div>
                                 )}
                                 {!overrideBodyText && <Buffs ability={ability} player={player} />}
-                                {!overrideBodyText && <CardsToAdd ability={ability} />}
+                                {!overrideBodyText && <CardsToAdd ability={ability} player={player} />}
                                 {!overrideBodyText && (
                                     <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
                                 )}
@@ -607,7 +608,9 @@ const AbilityView = forwardRef(
                                     <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
                                 )}
                                 {!overrideBodyText && destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
-                                {interpolatedDescription && <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />}
+                                {interpolatedDescription && showDescription && (
+                                    <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
+                                )}
                             </div>
                             <div className={classes.footer}>
                                 {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}

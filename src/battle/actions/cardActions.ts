@@ -26,6 +26,7 @@ import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
 import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import _ from "lodash";
+import { getLastPlayedCards } from "../../ability/AbilityView/utils";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -529,13 +530,7 @@ export const checkCardActions = ({
             const { hand, playerSide } = getState().battle;
             const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
-            // Procced abilities do not have instanceIds, only actual cards do. Do not copy procs or unique abilities.
-            const historyPile = player.abilityHistory
-                .slice()
-                .reverse()
-                .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique);
-
-            const cardsToHand = historyPile.slice(0, amount).map((card) =>
+            const cardsToHand = getLastPlayedCards({ player, amount }).map((card) =>
                 applyAbilityEventEffects({
                     event: { abilityEffects },
                     ability: {

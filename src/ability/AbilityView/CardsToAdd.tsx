@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss";
-import { Ability } from "../types";
+import { Ability, Action, CombatAbility } from "../types";
+import { Player } from "../../character/types";
+import { getLastPlayedCards } from "./utils";
 
 const useStyles = createUseStyles({
     cardIcon: {
@@ -18,21 +20,31 @@ const CardToAddCount = ({ count, card }) => {
     );
 };
 
-const CardsToAdd = ({ ability, isInline }: { ability: any; isInline?: boolean }) => {
+const CardsToAdd = ({ ability, isInline, player }: { ability: { actions: Action[] }; isInline?: boolean; player?: Player }) => {
     const {
         addCards = {},
         addCardsToDeck = {},
         addCardsToDiscard = {},
-    } = ability.actions.reduce((acc, { addCards = [], addCardsToDeck = [], addCardsToDiscard = [] }) => {
+    } = ability.actions.reduce((acc, { addCards = [], addCardsToDeck = [], addCardsToDiscard = [], addLastPlayedCards }) => {
         if (!acc.addCards) {
             acc.addCards = {};
         }
+
         addCards.forEach((card) => {
             acc.addCards[card.name] = {
                 count: (acc.addCards[card.name]?.count || 0) + 1,
                 card,
             };
         });
+
+        if (addLastPlayedCards && player) {
+            getLastPlayedCards({ player, amount: addLastPlayedCards.amount }).forEach((card) => {
+                acc.addCards[card.name] = {
+                    count: (acc.addCards[card.name]?.count || 0) + 1,
+                    card,
+                };
+            });
+        }
 
         if (!acc.addCardsToDeck) {
             acc.addCardsToDeck = {};
@@ -57,7 +69,7 @@ const CardsToAdd = ({ ability, isInline }: { ability: any; isInline?: boolean })
         });
 
         return acc;
-    }, {});
+    }, {} as any);
 
     const add = isInline ? "add" : "Add";
 

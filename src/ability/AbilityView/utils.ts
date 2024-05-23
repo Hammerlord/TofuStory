@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import Handlebars from "handlebars";
 import { getUpgradeCard } from "../../Menu/utils";
-import { Combatant } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 import DamageIcon from "./DamageIcon";
@@ -221,4 +221,16 @@ export const interpolateAbilityDescription = ({
         ...elementMapping,
         nestedAbility: traverseForNestedPercentages(nestedAbility),
     });
+};
+
+// For Astral Rewind copies: Procced abilities do not have instanceIds, only actual cards do. Do not copy procs or unique abilities.
+export const getLastPlayedCards = ({ player, amount = 0 }: { player: Player; amount?: number }) => {
+    if (!amount) {
+        return [];
+    }
+    return (player.abilityHistory || [])
+        .slice()
+        .reverse()
+        .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique)
+        .slice(0, amount);
 };
