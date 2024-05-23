@@ -2478,8 +2478,15 @@ export const autoSelectActionTarget = ({
     getState: Function;
 }): { index: number; side: BATTLEFIELD_SIDES } => {
     const actorData = findCombatantData(getState, actorId);
-    const { friendly, hostile, friendlySide, hostileSide } = actorData;
-    const { targetArea: area = 0, target, targetName } = action || {};
+    const { friendly, hostile, friendlySide, hostileSide, index } = actorData;
+    const { targetArea: area = 0, target, targetName, radiate } = action || {};
+
+    if (radiate) {
+        return {
+            index,
+            side: friendlySide,
+        };
+    }
 
     let isPlayerHostile;
     if (target === TARGET_TYPES.PLAYER) {
