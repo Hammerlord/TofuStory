@@ -142,7 +142,7 @@ const useStyles = createUseStyles({
 export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo): Ability | null => {
     const { combatant } = combatantInfo || {};
     const { ability: castingAbility } = combatant?.casting || {};
-    return castingAbility || combatant?.abilities[getUseAbilityIndex(combatantInfo)];
+    return castingAbility || combatant?.abilities?.[getUseAbilityIndex(combatantInfo)];
 };
 
 /**
