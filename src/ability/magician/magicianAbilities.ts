@@ -1505,6 +1505,18 @@ export const metronome: Ability = {
             autoCastAbilities: {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 2,
+                filters: [
+                    {
+                        property: "name",
+                        value: "Lucid Dream",
+                        comparator: "not",
+                    },
+                    {
+                        property: "name",
+                        value: "Hyper Metronome",
+                        comparator: "not",
+                    },
+                ],
             },
         },
     ],
@@ -2076,6 +2088,18 @@ export const hyperMetronome: Ability = {
             autoCastAbilities: {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 3,
+                filters: [
+                    {
+                        property: "name",
+                        value: "Lucid Dream",
+                        comparator: "not",
+                    },
+                    {
+                        property: "name",
+                        value: "Hyper Metronome",
+                        comparator: "not",
+                    },
+                ],
             },
         },
     ],
@@ -3162,6 +3186,11 @@ export const lucidDream: Ability = {
                     {
                         property: "name",
                         value: "Lucid Dream",
+                        comparator: "not",
+                    },
+                    {
+                        property: "name",
+                        value: "Hyper Metronome",
                         comparator: "not",
                     },
                 ],
