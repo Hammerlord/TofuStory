@@ -299,7 +299,7 @@ export const routeElliniaSleepywood: Route = {
         single: [lupin, curseEye, ironHog],
         duo: [axeStump, wildBoar],
         trio: [elliniaHornyMushroom, orangeMushroom],
-        squad: [stump, elliniaGreenMushroom],
+        squad: [elliniaGreenMushroom],
         special: [
             [null, mossyMushroom, null, mossySnail, null],
             [null, malady, null, malady, null],

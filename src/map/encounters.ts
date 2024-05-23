@@ -123,6 +123,7 @@ export const generateEliteSquad = ({
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 10));
+    const finalDamageMod = Math.max(0, damageModifier - 1);
 
     const enemy = {
         ...baseEnemy,
@@ -130,7 +131,7 @@ export const generateEliteSquad = ({
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities],
-        effects: [...effects, { ...eliteSquad, attackPower: eliteSquad.attackPower + damageModifier }, ...affixes],
+        effects: [...effects, { ...eliteSquad, attackPower: eliteSquad.attackPower + finalDamageMod }, ...affixes],
     };
 
     const alternate = {
