@@ -50,10 +50,12 @@ export const getCharacterStatChanges = ({
     newCharacter: Combatant;
 }): StatChange => {
     const updatedStatChanges = {} as StatChange;
-    if (!oldCharacter || !newCharacter || oldCharacter?.id !== newCharacter?.id) {
+    if (!oldCharacter || !newCharacter || oldCharacter.id !== newCharacter.id) {
         return updatedStatChanges;
     }
-    if (newCharacter.HP < oldCharacter.HP) {
+
+    // Max HP check: do not show mutations that change character health as damage taken
+    if (newCharacter.HP < oldCharacter.HP && oldCharacter.maxHP === newCharacter.maxHP) {
         updatedStatChanges.damage = oldCharacter.HP - newCharacter.HP;
     }
 
