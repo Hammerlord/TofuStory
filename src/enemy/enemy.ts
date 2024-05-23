@@ -1342,6 +1342,7 @@ export const elliniaGreenMushroom: Minion = {
                 },
             ],
         },
+        loaf,
         {
             name: "Attack",
             image: CrossedSwordsIcon,
