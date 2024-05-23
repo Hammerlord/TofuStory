@@ -440,6 +440,7 @@ export { default as OldWoodenStaffImage } from "./OldWoodenStaff.png";
 export { default as OmokPigImage } from "./OmokPig.png";
 export { default as OpalImage } from "./Opal.png";
 export { default as OrangeMushroomImage } from "./OrangeMushroom.png";
+export { default as OrangeMushroomCapImage } from "./OrangeMushroomCap.png";
 export { default as OrangeMushroomDefendImage } from "./OrangeMushroomDefend.png";
 export { default as OrangeMushroomIdleImage } from "./OrangeMushroomIdle.gif";
 export { default as OwlTowerImage } from "./OwlTower.png";

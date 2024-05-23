@@ -454,7 +454,7 @@ const burrow: Ability = {
 
 export const orangeMushroom: Minion = {
     name: "Orange Mushroom",
-    maxHP: 85,
+    maxHP: 90,
     image: OrangeMushroomIdleImage,
     mesos: 15,
     effects: [hardy],
