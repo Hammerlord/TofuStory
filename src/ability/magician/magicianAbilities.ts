@@ -3158,6 +3158,13 @@ export const lucidDream: Ability = {
             autoCastAbilities: {
                 type: AUTO_CAST_ABILITY_TYPES.FROM_CLASS,
                 amount: 1,
+                filters: [
+                    {
+                        property: "name",
+                        value: "Lucid Dream",
+                        comparator: "not",
+                    },
+                ],
             },
             multiplier: {
                 type: MULTIPLIER_TYPES.ABILITIES_USED,
