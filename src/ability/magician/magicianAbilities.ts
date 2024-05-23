@@ -1336,7 +1336,7 @@ export const thunderBolt: Ability = {
     description: "<b>Charged:</b> Cast again for {{ actions.1.damage }} {{{ _damage_ }}}.",
     actions: [
         {
-            damage: 3,
+            damage: 4,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1348,7 +1348,7 @@ export const thunderBolt: Ability = {
             },
         },
         {
-            damage: 2,
+            damage: 3,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1656,31 +1656,29 @@ export const temporalBag: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: EmptySackImage,
-    description: "You may place {{ actions.0.effects.0.stacks }} cards from your hand onto your deck.",
+    description: "Every turn, you may place a card from your hand on top of your deck.",
     depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [
+                stashCardEffect,
                 {
-                    ...stashCardEffect,
-                    stacks: 2,
+                    name: "Temporal Bag Effect",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.NONE,
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [stashCardEffect],
+                    },
                 },
             ],
         },
     ],
     upgrades: [
         {
-            actions: [
-                {
-                    effects: [
-                        {
-                            stacks: 1,
-                        },
-                    ],
-                },
-            ],
+            resourceCost: -1,
         },
     ],
 };

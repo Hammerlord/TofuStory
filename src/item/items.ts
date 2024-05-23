@@ -1773,13 +1773,6 @@ export const theBackpack: Item = {
             class: EFFECT_CLASSES.NONE,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                conditions: [
-                    {
-                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        hasEffect: stashCardEffect.name,
-                        comparator: "not",
-                    },
-                ],
                 effects: [stashCardEffect],
             },
         },
