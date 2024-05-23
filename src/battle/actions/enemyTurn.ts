@@ -180,7 +180,13 @@ const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) =>
         })
     );
 
-    const postUpdateActorInfo = findCombatantData(getState, combatantId);
+    const postUpdateActorInfo = {
+        ...actorInfo,
+        combatant: {
+            ...actorInfo.combatant,
+            abilities: updatedAbilities,
+        },
+    };
     const ability = getNextTelegraphedAbility(postUpdateActorInfo);
     if (ability?.actions) {
         const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
@@ -199,7 +205,13 @@ const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) =>
 
         return getAbilityPreviews({
             ability,
-            actor: postUpdateActorInfo.combatant,
+            actor: {
+                ...postUpdateActorInfo.combatant,
+                targeting: {
+                    ...targeting,
+                    ability,
+                },
+            },
             target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
             battle,
         });
