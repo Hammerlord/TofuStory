@@ -153,11 +153,15 @@ const Camp = ({
         setNumActivitiesRemaining((prev) => prev - 1);
     };
 
-    const doneTransmute = (closeTransmutationWindow?: boolean) => {
-        completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
-        setNumActivitiesRemaining((prev) => prev - 1);
-        if (closeTransmutationWindow) {
+    const finishTransmute = () => {
+        const newTransmutations = numTransmutations - 1;
+        setNumTransmutations(newTransmutations);
+
+        if (newTransmutations === 0) {
             setIsTransmutingAbility(false);
+            completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
+        } else {
+            setNumActivitiesRemaining((prev) => prev - 1);
         }
     };
 
@@ -168,9 +172,7 @@ const Camp = ({
             const newDeck = deck.slice();
             newDeck[cardIndex] = forCard;
             updateDeck(newDeck);
-            const newTransmutations = numTransmutations - 1;
-            setNumTransmutations(newTransmutations);
-            doneTransmute(newTransmutations === 0);
+            finishTransmute();
         }
     };
 
@@ -179,14 +181,17 @@ const Camp = ({
     }
 
     const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
+    const transmutationInProgress = numTransmutations === 1;
     const canTransmuteAbility =
-        !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] && numActivitiesRemaining > 0 && hasTransmutationItem && numTransmutations > 0;
+        !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] &&
+        (transmutationInProgress || numActivitiesRemaining > 0) &&
+        hasTransmutationItem;
 
     if (isTransmutingAbility) {
         return (
             <TransmutationView
                 onTransmute={handleTransmute}
-                onCancel={doneTransmute}
+                onCancelTransmute={finishTransmute}
                 deck={deck}
                 player={player}
                 onExit={() => setIsTransmutingAbility(false)}

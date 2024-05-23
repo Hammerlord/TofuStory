@@ -197,7 +197,7 @@ const { updateTownShop, updateDeck } = playerStateSlice.actions;
 export const TransmutationView = ({
     deck,
     onTransmute,
-    onCancel,
+    onCancelTransmute,
     player,
     onExit,
     numTransmutations,
@@ -206,7 +206,7 @@ export const TransmutationView = ({
 }: {
     deck: CombatAbility[];
     onTransmute: (options: { card: string; for: CombatAbility }) => void;
-    onCancel: () => void;
+    onCancelTransmute: () => void;
     player: Player;
     onExit?;
     numTransmutations: number; // How many transmutations the player can perform for this session
@@ -317,7 +317,7 @@ export const TransmutationView = ({
     };
 
     const handleCancelClick = () => {
-        onCancel();
+        onCancelTransmute();
         setSelectedCard(null);
         setTransmutationOptions(null);
         setSelectedOptionIndex(null);
@@ -501,7 +501,7 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
             deck={deck}
             player={player}
             onTransmute={handleTransmute}
-            onCancel={decrementNumTransmutes}
+            onCancelTransmute={decrementNumTransmutes}
             numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
             backdrop={backdrop}
         />
