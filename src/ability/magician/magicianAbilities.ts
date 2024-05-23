@@ -3172,7 +3172,7 @@ export const lucidDream: Ability = {
     image: LucidDreamImage,
     rarity: RARITIES.RARE,
     removeAfterTurn: true,
-    description: "Cast a random spell for every unique {{{ _offense_ }}} card played this battle.",
+    description: "Cast a random spell for every unique {{{ _offense_ }}} card played this battle. <b>(Spells: {{ _multiplier_ }})</b>",
     actions: [
         {
             target: TARGET_TYPES.SELF,

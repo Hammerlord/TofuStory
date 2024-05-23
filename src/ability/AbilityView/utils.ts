@@ -19,6 +19,8 @@ import {
     SnowflakeEmojiImage,
     StunImage,
 } from "../../images";
+import { CombatantInfo } from "../../battle/types";
+import { getMultiplier } from "../../battle/utils";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -86,7 +88,19 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
     return card;
 };
 
-export const interpolateAbilityDescription = ({ ability }) => {
+export const interpolateAbilityDescription = ({
+    ability,
+    playerInfo,
+    deck,
+    hand,
+    discard,
+}: {
+    ability: CombatAbility;
+    playerInfo: CombatantInfo;
+    deck;
+    hand;
+    discard;
+}) => {
     ability = cloneDeep(ability);
     // Some abilities apply an effect, where the "main" point of the ability is a proc from that effect, eg. Dust Devils.
     // Do a lookup to find the statistics that allow us to interpolate the description, in those cases.
@@ -177,6 +191,11 @@ export const interpolateAbilityDescription = ({ ability }) => {
 
     const manaStyleStr = styleObjectToString({ ...iconStyles, width: 12 });
 
+    const multiplierAction = ability.actions?.find((action) => action.multiplier);
+    const multiplier = multiplierAction
+        ? getMultiplier({ actor: playerInfo, multiplier: multiplierAction.multiplier, deck, hand, discard })
+        : 0;
+
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
@@ -192,6 +211,7 @@ export const interpolateAbilityDescription = ({ ability }) => {
         _stun_: `<img src="${StunImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
         _silence_: `<img src="${SealImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
         _freeze_: `<img src="${NimbleJewelCImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
+        _multiplier_: multiplier,
     };
 
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));

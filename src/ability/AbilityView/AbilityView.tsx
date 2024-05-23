@@ -400,7 +400,7 @@ const AbilityView = forwardRef(
 
         const armorStatistics = getArmorStatistics({ ability, playerInfo, deck, hand, discard });
         const { base: armorTotal, hasConditionFulfilled: hasArmorConditionFulfilled } = armorStatistics;
-        const interpolatedDescription = interpolateAbilityDescription({ ability });
+        const interpolatedDescription = interpolateAbilityDescription({ ability, playerInfo, deck, hand, discard });
 
         let hasMultiplier = false;
         let armorCornerIcon = false;
