@@ -40,7 +40,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
-    const { abilities = [], HP, effects = [], casting, targeting } = combatant || {};
+    const { HP, effects = [], casting, targeting } = combatant || {};
 
     if (!HP) {
         return null;
@@ -92,7 +92,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const tooltip = (
         <div>
             {!combatant.isPlayer && "Estimated attack damage."}
-            {combatant.isPlayer && `Each +ATT increases attack damage by ${ATTACK_POWER_COEFF}% + 1.`}
+            {combatant.isPlayer && `Each +ATT increases attack damage by ${ATTACK_POWER_COEFF}%.`}
             {attackPowerEffects.length > 0 && (
                 <>
                     <hr />
