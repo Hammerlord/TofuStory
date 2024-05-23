@@ -3228,7 +3228,7 @@ export const picoPicoHammerAbility: Ability = {
     description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer at the main target.",
     actions: [
         {
-            damage: 5,
+            damage: 6,
             area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -3236,7 +3236,7 @@ export const picoPicoHammerAbility: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
         },
         {
-            damage: 4,
+            damage: 5,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: PicoPicoHammerImage,
