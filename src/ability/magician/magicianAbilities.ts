@@ -449,7 +449,7 @@ export const magicArmor: Ability = {
         {
             actions: [
                 {
-                    armor: 3,
+                    armor: 4,
                 },
             ],
         },
@@ -521,7 +521,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction: Action = {
-    damage: 3,
+    damage: 4,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -910,7 +910,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 2,
+                    stacks: 1,
                 },
             ],
             bonus: [
@@ -1283,7 +1283,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 7,
+            damage: 8,
             addCards: [
                 {
                     name: "Rebounding Shard",
@@ -1298,7 +1298,7 @@ export const reboundingShard: Ability = {
                             target: TARGET_TYPES.HOSTILE,
                             icon: NimbleJewelImage,
                             animation: ANIMATION_TYPES.YOYO,
-                            damage: 7,
+                            damage: 8,
                         },
                     ],
                     upgrades: [
@@ -1761,7 +1761,7 @@ export const moltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 5,
+                    stacks: 3,
                 },
             ],
         },
@@ -1823,6 +1823,7 @@ export const leechingFlame: Ability = {
             effects: [
                 {
                     ...burn,
+                    stacks: 2,
                 },
                 {
                     name: "Leeching Flame",
@@ -1831,7 +1832,7 @@ export const leechingFlame: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
                     maxApplications: 1,
-                    duration: 3,
+                    duration: 2,
                     onTurnStart: {
                         targetType: TRIGGER_TARGET_TYPES.EFFECT_APPLIER,
                         effects: [
@@ -2039,7 +2040,7 @@ export const icyDraft: Ability = {
                 rotateToFaceTarget: true,
                 rotate: 135,
             },
-            damage: 3,
+            damage: 5,
             effects: [
                 {
                     ...freeze,
@@ -2276,7 +2277,7 @@ export const starBolt: Ability = {
             },
             bonus: {
                 drawCards: {
-                    amount: 1, // This doesn't work because card actions don't take bonuses into account yet
+                    amount: 1,
                 },
                 conditions: [
                     {
@@ -2363,7 +2364,7 @@ export const zap: Ability = {
                 rotate: 135,
                 flash: 200,
             },
-            damage: 3,
+            damage: 5,
             bonus: {
                 damage: 3,
                 conditions: [
@@ -2399,7 +2400,7 @@ export const frostfireBlast: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 3,
+            damage: 5,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
@@ -2414,7 +2415,7 @@ export const frostfireBlast: Ability = {
                 },
                 {
                     ...chill,
-                    duration: 1,
+                    duration: 2,
                 },
             ],
         },
