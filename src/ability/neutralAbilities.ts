@@ -473,6 +473,5 @@ export const NEUTRAL_ABILITIES = [
     fourthExiledArm,
     provoke,
     stomp,
-    berserkingRelic,
     combatOrders,
 ];
