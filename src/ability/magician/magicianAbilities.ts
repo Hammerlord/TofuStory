@@ -1496,6 +1496,7 @@ export const metronome: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: InfinityImage,
     description: "Cast 2 random spells.",
+    depletedOnUse: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1513,7 +1514,7 @@ export const metronome: Ability = {
                     },
                     {
                         property: "name",
-                        value: "Hyper Metronome",
+                        value: "Metronome",
                         comparator: "not",
                     },
                 ],
@@ -1688,7 +1689,7 @@ export const greatestBolt: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
-    description: "+2 {{{ _damage_ }}} for every other 'bolt' card you own.",
+    description: "<b>+2</b> {{{ _damage_ }}} for every other 'bolt' card you own.",
     disableConditionGlow: true,
     overrideBodyText: true,
     actions: [
@@ -3188,7 +3189,7 @@ export const lucidDream: Ability = {
                     },
                     {
                         property: "name",
-                        value: "Hyper Metronome",
+                        value: "Metronome",
                         comparator: "not",
                     },
                 ],
