@@ -25,6 +25,7 @@ import {
     EnergyBoltImage,
     EnergyBoltProjectileImage,
     EpicAdventureImage,
+    ExplosionImage,
     FireArrowImage,
     FireArrowProjectileImage,
     FireMarbleImage,
@@ -3383,6 +3384,45 @@ export const chargedBlast: Ability = {
                     bonus: {
                         damage: 4,
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const flameWall: Ability = {
+    name: "Flame Wall",
+    description: "Attackers are afflicted with {{{ _burn_ }}}. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    image: ExplosionImage,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
+            armor: 5,
+            effects: [
+                {
+                    name: "Flame Wall",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: ExplosionImage,
+                    duration: 2,
+                    maxApplications: 1,
+                    onReceiveAttack: {
+                        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        effects: [{ ...burn, stacks: 1 }],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 3,
                 },
             ],
         },

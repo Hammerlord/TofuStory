@@ -70,6 +70,7 @@ import {
     zap,
     wrath,
     chargedBlast,
+    flameWall,
 } from "./magician/magicianAbilities";
 
 import {
@@ -219,6 +220,7 @@ export const JOB_CARD_MAP = {
             waningBlast,
             wrath,
             chargedBlast,
+            flameWall,
         ],
         starters: [empower, energyBolt, energyBolt, energyBolt, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
