@@ -30,6 +30,12 @@ const boulder: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
+                    targetArea: 2,
+                    numTargets: 2,
+                    animation: ANIMATION_TYPES.YOYO,
+                    animationOptions: {
+                        ricochet: true,
+                    },
                 },
             ],
         },
@@ -82,20 +88,7 @@ const throwRocks: Action[] = [
         target: TARGET_TYPES.SELF,
         excludePrimaryTarget: true,
         area: 5,
-        induceCombatant: {
-            mode: "random",
-            action: {
-                type: ACTION_TYPES.ATTACK,
-                target: TARGET_TYPES.HOSTILE,
-                damage: 3,
-                targetArea: 2,
-                numTargets: 2,
-                animation: ANIMATION_TYPES.YOYO,
-                animationOptions: {
-                    ricochet: true,
-                },
-            },
-        },
+        induceCombatantAttack: true,
     },
 ];
 
