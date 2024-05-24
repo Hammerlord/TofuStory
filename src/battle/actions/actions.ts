@@ -2479,7 +2479,7 @@ export const autoSelectActionTarget = ({
 }): { index: number; side: BATTLEFIELD_SIDES } => {
     const actorData = findCombatantData(getState, actorId);
     const { friendly, hostile, friendlySide, hostileSide, index } = actorData;
-    const { targetArea: area = 0, target, targetName, radiate } = action || {};
+    const { targetArea: area = 0, target, targetName, radiate, excludeActor } = action || {};
 
     if (radiate) {
         return {
@@ -2538,6 +2538,10 @@ export const autoSelectActionTarget = ({
         (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
     ) {
         const targetIndices = getValidTargetIndices(friendly).filter((i) => {
+            if (excludeActor && actorId && friendly[i]?.id === actorId) {
+                return false;
+            }
+
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
 

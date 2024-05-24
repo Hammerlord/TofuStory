@@ -9,6 +9,7 @@ import {
     BlazingExtinctionImage,
     BlueRushImage,
     CakeTemptationImage,
+    ChainLightningSpreadImage,
     ChargedBlastImage,
     ChocolateCupcakeImage,
     ChocolateMuffinImage,
@@ -3423,6 +3424,42 @@ export const flameWall: Ability = {
             actions: [
                 {
                     armor: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const boltTag: Ability = {
+    name: "Bolt Tag",
+    description: "Command a random summoned minion to attack.",
+    image: ChainLightningSpreadImage,
+    rarity: RARITIES.COMMON,
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 5,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.RANDOM_FRIENDLY,
+            excludeActor: true,
+            induceCombatantAttack: true,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },

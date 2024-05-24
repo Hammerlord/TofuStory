@@ -536,6 +536,7 @@ export type Action = {
     // If TARGET_TYPES is FRIENDLY_CHARACTER, provide the character's name.
     // Meant for enemies selecting a specific ally to support.
     targetName?: string;
+    excludeActor?: boolean; // For RANDOM_FRIENDLY TARGET_TYPES, pick a combatant who is not the actor
     area?: number;
     /** Only applicable to target type RANDOM or numTargets configured. If not supplied, it's 0. */
     targetArea?: number;
