@@ -190,7 +190,7 @@ export const JOB_CARD_MAP = {
             arcaneWard,
             leechingFlame,
             icyDraft,
-            hyperMetronome,
+            //hyperMetronome,
             snowball,
             moonBolt,
             starBolt,
