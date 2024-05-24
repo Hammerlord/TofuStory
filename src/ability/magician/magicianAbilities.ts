@@ -478,7 +478,7 @@ export const barrier: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 3,
+                armor: 4,
             },
         },
     ],
@@ -2494,7 +2494,7 @@ export const wardBooster: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            armor: 3,
+            armor: 7,
             effects: [armorUp],
         },
     ],
