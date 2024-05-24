@@ -244,7 +244,7 @@ const enemyUseAbility = (combatantId: string) => {
                 };
             })() || {};
 
-        const { castTime, channelDuration } = ability;
+        const { castTime, channelDuration } = ability || {};
 
         if (typeof index === "undefined") {
             return;
@@ -272,7 +272,7 @@ const enemyUseAbility = (combatantId: string) => {
             })
         );
 
-        if (!ability.castTime) {
+        if (!castTime) {
             dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
 
             const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
