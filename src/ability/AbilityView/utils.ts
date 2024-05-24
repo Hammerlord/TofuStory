@@ -228,7 +228,7 @@ export const getLastPlayedCards = ({ player, amount = 0 }: { player: Player; amo
     if (!amount) {
         return [];
     }
-    return (player.abilityHistory || [])
+    return (player?.abilityHistory || [])
         .slice()
         .reverse()
         .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique)

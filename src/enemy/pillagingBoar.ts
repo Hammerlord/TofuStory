@@ -117,6 +117,7 @@ export const pillagingWildBoar: Minion = {
         },
         {
             name: "Seismic Toss",
+            description: "Throws Boulders at enemies.",
             image: MountainIcon,
             actions: throwRocks,
         },

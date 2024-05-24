@@ -892,6 +892,7 @@ export const starfallMagicSquare: Item = {
                                 damage: 3,
                                 icon: StarfallMagicSquareImage,
                                 animation: ANIMATION_TYPES.BEAM,
+                                playbackTime: 500,
                             },
                         },
                     ],
