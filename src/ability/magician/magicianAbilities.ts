@@ -92,6 +92,7 @@ import {
     ThunderSparkImage,
     TriboltImage,
     WizMushImage,
+    WrathImage,
 } from "../../images";
 import { SnowflakeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
@@ -101,6 +102,7 @@ import {
     AUTO_CAST_ABILITY_TYPES,
     Ability,
     Action,
+    CARD_PILE_TYPES,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -3294,6 +3296,50 @@ export const waningBlast: Ability = {
             actions: [
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const wrath: Ability = {
+    name: "Wrath",
+    rarity: RARITIES.UNCOMMON,
+    image: WrathImage,
+    resourceCost: 1,
+    description: "Reduces the cost of a random card in your hand by <b>1</b> until it is discarded.",
+    actions: [
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: WrathImage,
+            animationOptions: {
+                width: 100,
+                height: 100,
+            },
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: WrathImage,
+            applyAbilityEffects: {
+                pile: CARD_PILE_TYPES.HAND,
+                amount: 1,
+                abilityEffects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },

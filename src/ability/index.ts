@@ -68,6 +68,7 @@ import {
     whelp,
     wishUponAStar,
     zap,
+    wrath,
 } from "./magician/magicianAbilities";
 
 import {
@@ -215,6 +216,7 @@ export const JOB_CARD_MAP = {
             lucidDream,
             picoPicoHammerAbility,
             waningBlast,
+            wrath,
         ],
         starters: [empower, energyBolt, energyBolt, energyBolt, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },

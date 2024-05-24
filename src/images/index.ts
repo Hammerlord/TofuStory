@@ -707,6 +707,7 @@ export { default as WorkGlovesImage } from "./WorkGloves.png";
 export { default as WorldReaverImage } from "./WorldReaver.png";
 export { default as WraithImage } from "./Wraith.gif";
 export { default as WraithCardImage } from "./WraithCard.png";
+export { default as WrathImage } from "./Wrath.png";
 export { default as YellowHatImage } from "./YellowHat.png";
 export { default as YellowStarryBandanaImage } from "./YellowStarryBandana.png";
 export { default as YellowThunderBoltProjectileImage } from "./YellowThunderBoltProjectile.png";
