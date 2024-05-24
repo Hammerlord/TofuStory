@@ -14,7 +14,6 @@ export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [inde
 const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
     // id: statUpdates so that we don't get duplicates
-    // Eg. Issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
     const statUpdateMemo = {};
 
     const dispatch = (arg) => {
@@ -25,7 +24,8 @@ const previewAction = ({ actionFn, battle }) => {
         const payload = arg?.payload || {};
         battle = { ...battle, ...payload };
 
-        if (!payload?.statUpdates) {
+        // RIP issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
+        if (!payload?.statUpdates || payload.newCards) {
             return;
         }
 
