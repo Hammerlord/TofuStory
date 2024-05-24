@@ -21,6 +21,10 @@ const previewAction = ({ actionFn, battle }) => {
         const payload = arg?.payload || {};
         if (payload) {
             battle = { ...battle, ...payload };
+            // Issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
+            if (payload.newCards) {
+                return;
+            }
 
             if (payload.statUpdates) {
                 Object.entries(payload.statUpdates).forEach(([key, value]: [string, object]) => {
