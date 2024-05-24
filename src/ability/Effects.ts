@@ -556,7 +556,7 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "On turn start, take 2 damage per stack, and reduce stacks by 1. Healing received reduced by 1 per stack.",
+    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Healing received reduced by 1 per stack.",
     icon: PoisonImage,
     duration: Infinity,
     maxApplications: 1,

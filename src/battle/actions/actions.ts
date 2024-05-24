@@ -495,7 +495,7 @@ export const handleDoTs =
     (dispatch, getState) => {
         const dotDamageMap = {
             [EFFECT_TYPES.BLEED]: 1,
-            [EFFECT_TYPES.POISON]: 2,
+            [EFFECT_TYPES.POISON]: 1,
             [EFFECT_TYPES.BURN]: 3,
         };
 
