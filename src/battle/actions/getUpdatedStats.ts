@@ -29,6 +29,7 @@ import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
 
 export interface UpdatedCombatantStats {
+    id?: string; // Unique identifier for this set of updates
     combatantId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
@@ -261,6 +262,7 @@ export const getUpdatedStats = ({
         const isDeathBlow = targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
 
         const statUpdate: UpdatedCombatantStats = {
+            id: uuid.v4(),
             combatantId: targetCombatant.id,
             rawDamage,
             healthDamage,

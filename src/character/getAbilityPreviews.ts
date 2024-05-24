@@ -13,51 +13,60 @@ export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [inde
 
 const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
+    // id: statUpdates so that we don't get duplicates
+    // Eg. Issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
+    const statUpdateMemo = {};
+
     const dispatch = (arg) => {
         if (typeof arg === "function") {
             return arg(dispatch, getState);
         }
 
         const payload = arg?.payload || {};
-        if (payload) {
-            battle = { ...battle, ...payload };
-            // Issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
-            if (payload.newCards) {
-                return;
-            }
+        battle = { ...battle, ...payload };
 
-            if (payload.statUpdates) {
-                Object.entries(payload.statUpdates).forEach(([key, value]: [string, object]) => {
-                    if (!statUpdates[key]) {
-                        statUpdates[key] = [];
-                    }
+        if (!payload?.statUpdates) {
+            return;
+        }
 
-                    statUpdates[key].push({ ...value, action: payload.action });
-                });
-            }
+        const { statUpdates: currentStatUpdates, allTargetIndices, targetSide, action } = payload;
+        if (currentStatUpdates.id && statUpdateMemo[currentStatUpdates.id]) {
+            return;
+        }
 
-            // Projected stat updates for empty spaces during AoE effects:
-            if (payload.allTargetIndices && payload.targetSide && payload.action) {
-                payload.allTargetIndices.forEach((index: number) => {
-                    const key = getEmptyTileKey(index, payload.targetSide);
-                    if (!statUpdates[key]) {
-                        statUpdates[key] = [];
-                    }
+        statUpdateMemo[currentStatUpdates.id] = true;
 
-                    const { damage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = payload.action;
-                    const projectedStatUpdate: UpdatedCombatantStats = {
-                        combatantId: key,
-                        rawDamage: damage,
-                        healthDamage: damage,
-                        armor,
-                        resources,
-                        effects,
-                        healing,
-                        overkill: 0,
-                    };
-                    statUpdates[key].push({ ...projectedStatUpdate, action: payload.action });
-                });
-            }
+        if (currentStatUpdates) {
+            Object.entries(currentStatUpdates).forEach(([key, value]: [string, object]) => {
+                if (!statUpdates[key]) {
+                    statUpdates[key] = [];
+                }
+
+                statUpdates[key].push({ ...value, action: payload.action });
+            });
+        }
+
+        // Projected stat updates for empty spaces during AoE effects:
+        if (allTargetIndices && targetSide && action) {
+            allTargetIndices.forEach((index: number) => {
+                const key = getEmptyTileKey(index, targetSide);
+                if (!statUpdates[key]) {
+                    statUpdates[key] = [];
+                }
+
+                const { damage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = action;
+                const projectedStatUpdate: UpdatedCombatantStats = {
+                    combatantId: key,
+                    rawDamage: damage,
+                    healthDamage: damage,
+                    armor,
+                    resources,
+                    effects,
+                    healing,
+                    overkill: 0,
+                };
+                statUpdates[key].push({ ...projectedStatUpdate, action });
+            });
         }
     };
 
