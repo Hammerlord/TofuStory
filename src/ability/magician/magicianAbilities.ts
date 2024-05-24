@@ -9,6 +9,7 @@ import {
     BlazingExtinctionImage,
     BlueRushImage,
     CakeTemptationImage,
+    ChargedBlastImage,
     ChocolateCupcakeImage,
     ChocolateMuffinImage,
     ColdBeamImage,
@@ -1285,7 +1286,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 8,
+            damage: 9,
             addCards: [
                 {
                     name: "Rebounding Shard",
@@ -1300,7 +1301,7 @@ export const reboundingShard: Ability = {
                             target: TARGET_TYPES.HOSTILE,
                             icon: NimbleJewelImage,
                             animation: ANIMATION_TYPES.YOYO,
-                            damage: 8,
+                            damage: 9,
                         },
                     ],
                     upgrades: [
@@ -3340,6 +3341,48 @@ export const wrath: Ability = {
             actions: [
                 {
                     damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const chargedBlast: Ability = {
+    name: "Charged Blast",
+    description: "<b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}",
+    image: ChargedBlastImage,
+    resourceCost: 1,
+    rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    actions: [
+        {
+            damage: 1,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: ChargedBlastImage,
+            animationOptions: {
+                width: 100,
+                height: 100,
+            },
+            bonus: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+                damage: 14,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: {
+                        damage: 4,
+                    },
                 },
             ],
         },
