@@ -2849,16 +2849,17 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "<b>Charged:</b> Draw a card. <br/> <b>On death:</b> Draw a card.",
+    description: "<b>Active:</b> Every turn, draw an extra card. <br/> <br/> <b>Auto:</b> Attack",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "Star Whelp",
         image: BabyDragonImage,
-        maxHP: 3,
+        uncontrollable: true,
+        maxHP: 4,
         abilities: [
             {
-                name: "Star Shot",
+                name: "Shoot",
                 image: StarImage,
                 actions: [
                     {
@@ -2876,30 +2877,32 @@ export const whelp: Ability = {
                 name: "",
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
-                onDeath: {
+                onSummoned: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    drawCards: {
-                        amount: 1,
-                    },
+                    induceCombatantAttack: true,
+                },
+                onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
+                },
+                onTurnEnd: {
+                    targetType: TRIGGER_TARGET_TYPES.PLAYER,
+                    effects: [
+                        {
+                            name: "Extra card draw",
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.NONE,
+                            drawCardsPerTurn: 1,
+                            onTurnInProgress: {
+                                removeEffect: true,
+                            },
+                        },
+                    ],
                 },
             },
         ],
     },
-    actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 1,
-            },
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    hasEffect: "Charged",
-                },
-            ],
-        },
-    ],
+    actions: [],
     upgrades: [
         {
             minion: {
