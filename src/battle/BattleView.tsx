@@ -885,9 +885,9 @@ const BattlefieldContainer = () => {
         getEnemyMoveOrder(enemySide, round).forEach((enemyId) => {
             const enemyInfo = findCombatantData(() => ({ battle: { ...state.battle, ...previousCombatantStates } }), enemyId);
             const enemy = enemyInfo?.combatant;
-            const { targeting, HP } = enemy || {};
+            const { targeting, HP, uncontrollable } = enemy || {};
 
-            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo)) {
+            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo) || uncontrollable) {
                 return;
             }
 
