@@ -379,7 +379,7 @@ export const enemyMoves = () => {
         };
 
         const { enemySide, round } = getState().battle;
-        const moveOrderIds = getEnemyMoveOrder(enemySide, round);
+        const moveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round });
         moveOrderIds.forEach(makeEnemyMove);
 
         const { state } = getState().battle;
@@ -424,7 +424,15 @@ const checkUseItem = (combatant: Combatant): number | undefined => {
 /**
  * Get the order in which enemies move on their turn.
  */
-export const getEnemyMoveOrder = (enemies: (Combatant | null)[], round: number): string[] => {
+export const getEnemyMoveOrder = ({
+    enemies,
+    round,
+    ignoreSupport,
+}: {
+    enemies: (Combatant | null)[];
+    round: number;
+    ignoreSupport?: boolean;
+}): string[] => {
     const isEvenRound = round % 2 === 0;
     if (isEvenRound) {
         enemies = enemies.slice().reverse();
@@ -436,7 +444,7 @@ export const getEnemyMoveOrder = (enemies: (Combatant | null)[], round: number):
             const aVal = isSupportAbility(a.targeting?.ability) ? 1 : -1;
             const bVal = isSupportAbility(b.targeting?.ability) ? 1 : -1;
             const compareSupport = aVal - bVal;
-            if (compareSupport !== 0) {
+            if (!ignoreSupport && compareSupport !== 0) {
                 return compareSupport;
             }
 

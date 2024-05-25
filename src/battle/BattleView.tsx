@@ -882,7 +882,7 @@ const BattlefieldContainer = () => {
         const targetMap = {};
 
         let previousCombatantStates = previewAbilityCombatants;
-        getEnemyMoveOrder(enemySide, round).forEach((enemyId) => {
+        getEnemyMoveOrder({ enemies: enemySide, round }).forEach((enemyId) => {
             const enemyInfo = findCombatantData(() => ({ battle: { ...state.battle, ...previousCombatantStates } }), enemyId);
             const enemy = enemyInfo?.combatant;
             const { targeting, HP, uncontrollable } = enemy || {};

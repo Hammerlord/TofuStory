@@ -70,6 +70,7 @@ import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews from "../../character/getAbilityPreviews";
+import { getEnemyMoveOrder } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -391,7 +392,8 @@ const checkRedirectEnemyTargetingAfterAllyDeath = (friendlySide: BATTLEFIELD_SID
 
         let battle = getState().battle;
 
-        battle.enemySide.forEach((enemy) => {
+        getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
+            const enemy = findCombatantData(() => ({ battle }), id)?.combatant;
             if (!enemy?.HP) {
                 return;
             }
@@ -1605,7 +1607,8 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
     return (dispatch, getState) => {
         let battle = getState().battle;
 
-        battle.enemySide.forEach((enemy) => {
+        getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
+            const enemy = findCombatantData(() => ({ battle }), id)?.combatant;
             if (!enemy?.HP) {
                 return;
             }
