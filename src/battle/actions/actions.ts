@@ -379,55 +379,63 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         }
 
         // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
-        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
-            let battle = getState().battle;
+        dispatch(checkRedirectEnemyTargetingAfterAllyDeath(friendlySide, index));
+    };
+};
 
-            battle.enemySide.forEach((enemy) => {
-                if (!enemy?.HP) {
-                    return;
-                }
+const checkRedirectEnemyTargetingAfterAllyDeath = (friendlySide: BATTLEFIELD_SIDES, index: number) => {
+    return (dispatch, getState) => {
+        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            return;
+        }
 
-                const { index: targetingIndex, side } = enemy.targeting || {};
-                if (index !== targetingIndex || side !== friendlySide) {
-                    return;
-                }
+        let battle = getState().battle;
 
-                const enemyInfo = findCombatantData(getState, enemy.id);
+        battle.enemySide.forEach((enemy) => {
+            if (!enemy?.HP) {
+                return;
+            }
 
-                const ability = getNextTelegraphedAbility(enemyInfo);
-                if (ability) {
-                    const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-                    const targeting = {
-                        ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
-                        ability,
-                    };
-                    dispatch(
-                        updateCombatant({
-                            combatantId: enemy.id,
-                            newProperties: {
-                                targeting,
-                            },
-                        })
-                    );
+            const { index: targetingIndex, side } = enemy.targeting || {};
+            if (index !== targetingIndex || side !== friendlySide) {
+                return;
+            }
 
-                    // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
-                    const previews = getAbilityPreviews({
-                        ability,
-                        actor: {
-                            ...enemy,
+            const enemyInfo = findCombatantData(getState, enemy.id);
+
+            const ability = getNextTelegraphedAbility(enemyInfo);
+            if (ability) {
+                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+                const targeting = {
+                    ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
+                    ability,
+                };
+                dispatch(
+                    updateCombatant({
+                        combatantId: enemy.id,
+                        newProperties: {
                             targeting,
                         },
-                        target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
-                        battle,
-                    });
+                    })
+                );
 
-                    battle = {
-                        ...battle,
-                        ...previews.combatantStates,
-                    };
-                }
-            });
-        }
+                // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                const previews = getAbilityPreviews({
+                    ability,
+                    actor: {
+                        ...enemy,
+                        targeting,
+                    },
+                    target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
+                    battle,
+                });
+
+                battle = {
+                    ...battle,
+                    ...previews.combatantStates,
+                };
+            }
+        });
     };
 };
 
