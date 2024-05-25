@@ -1,5 +1,5 @@
 import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
-import { findCombatantData, performAction } from "../battle/actions/actions";
+import { checkSummonMinion, findCombatantData, performAction } from "../battle/actions/actions";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
@@ -14,8 +14,6 @@ export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [inde
 
 const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
-    // id: statUpdates so that we don't get duplicates
-    const statUpdateMemo = {};
 
     const dispatch = (arg) => {
         if (typeof arg === "function") {
@@ -31,11 +29,9 @@ const previewAction = ({ actionFn, battle }) => {
         }
 
         const { statUpdates: currentStatUpdates, allTargetIndices, targetSide, action } = payload;
-        if (currentStatUpdates.id && statUpdateMemo[currentStatUpdates.id]) {
+        if (currentStatUpdates.id) {
             return;
         }
-
-        statUpdateMemo[currentStatUpdates.id] = true;
 
         if (currentStatUpdates) {
             Object.entries(currentStatUpdates).forEach(([key, value]: [string, object]) => {
@@ -113,6 +109,91 @@ const getAbilityPreviews = ({
         };
     }
 
+    const resourceCost = getAbilityResourceCost({
+        combatant: actor,
+        resourceCost: ability.resourceCost,
+        // @ts-ignore
+        effects: ability.effects || [],
+    });
+    const actionParent = {
+        ...ability,
+        resourceCost,
+    };
+
+    const source: TriggerSource = {
+        source: actionParent,
+        actorId: actor.id,
+        type: TRIGGER_SOURCE_TYPES.ABILITY,
+        triggerHistory: [],
+        isPreviewMode: true,
+    };
+
+    const lookupCombatantDataHelper = (id: string): CombatantInfo => {
+        return findCombatantData(() => ({ battle: previousCombatantStates }), id);
+    };
+
+    const handleStatUpdatePreviews = ({
+        targetsRandomly,
+        previews,
+        targetIndex,
+    }: {
+        targetsRandomly?: boolean;
+        previews;
+        targetIndex?: number;
+    }) => {
+        previousCombatantStates.playerSide = previews.battle.playerSide;
+        previousCombatantStates.enemySide = previews.battle.enemySide;
+        const affectedTargetCount = Object.keys(previews.statUpdates).filter((id) => uuidValidate(id)).length;
+
+        Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
+            statUpdates.forEach((statUpdate) => {
+                // @ts-ignore .action property appended by previewAction
+                const currentAction = statUpdate.action;
+                const id = statUpdate.combatantId;
+
+                if (!result[id]) {
+                    result[id] = [];
+                }
+
+                const combatantInfo = lookupCombatantDataHelper(id);
+                if (!combatantInfo?.combatant) {
+                    // It's an empty tile preview.
+                    result[id].push({
+                        statUpdate,
+                        nondeterministic: targetsRandomly,
+                        action: currentAction,
+                    });
+
+                    return;
+                }
+
+                const { index } = combatantInfo;
+                const totalTargets = currentAction?.numTargets + 1 || 0;
+                const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
+
+                result[id].push({
+                    statUpdate,
+                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
+                    action: currentAction,
+                });
+            });
+        });
+    };
+
+    const summonPreviews = previewAction({
+        actionFn: checkSummonMinion({
+            ability,
+            selectedIndex: initTarget?.index,
+            side: initTarget?.side,
+            actorId: actor.id,
+            parentSource: source,
+            isAutoCast: false,
+        }),
+        battle: { ...battle, ...previousCombatantStates },
+    });
+
+    handleStatUpdatePreviews({ previews: summonPreviews, targetIndex: initTarget?.index });
+
     const actions: Action[] =
         ability.resourceCost === "x"
             ? (Array.from({ length: actor.resources }).reduce((acc: Action[]) => {
@@ -149,10 +230,6 @@ const getAbilityPreviews = ({
             return;
         }
 
-        const lookupCombatantDataHelper = (id: string) => {
-            return findCombatantData(() => ({ battle: previousCombatantStates }), id);
-        };
-
         const actorData = lookupCombatantDataHelper(actor.id);
         const targetData = lookupCombatantDataHelper(target.id);
 
@@ -164,25 +241,6 @@ const getAbilityPreviews = ({
             if (calculationTarget === TRIGGER_TARGET_TYPES.TARGET) {
                 return targetData;
             }
-        };
-
-        const resourceCost = getAbilityResourceCost({
-            combatant: actor,
-            resourceCost: ability.resourceCost,
-            // @ts-ignore
-            effects: ability.effects || [],
-        });
-        const actionParent = {
-            ...ability,
-            resourceCost,
-        };
-
-        const source: TriggerSource = {
-            source: actionParent,
-            actorId: actor.id,
-            type: TRIGGER_SOURCE_TYPES.ABILITY,
-            triggerHistory: [],
-            isPreviewMode: true,
         };
 
         if (
@@ -225,41 +283,7 @@ const getAbilityPreviews = ({
             !actorCurrentTarget &&
             (action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
 
-        const affectedTargetCount = Object.keys(previews.statUpdates).filter((id) => uuidValidate(id)).length;
-
-        Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
-            statUpdates.forEach((statUpdate) => {
-                // @ts-ignore .action property appended by previewAction
-                const currentAction = statUpdate.action;
-                const id = statUpdate.combatantId;
-
-                if (!result[id]) {
-                    result[id] = [];
-                }
-
-                const combatantInfo = lookupCombatantDataHelper(id);
-                if (!combatantInfo?.combatant) {
-                    // It's an empty tile preview.
-                    result[id].push({
-                        statUpdate,
-                        nondeterministic: targetsRandomly,
-                        action: currentAction,
-                    });
-
-                    return;
-                }
-
-                const { index } = combatantInfo;
-                const totalTargets = currentAction?.numTargets + 1 || 0;
-                const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && target.index !== index;
-
-                result[id].push({
-                    statUpdate,
-                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
-                    action: currentAction,
-                });
-            });
-        });
+        handleStatUpdatePreviews({ targetsRandomly, previews: previews, targetIndex: target.index });
     });
 
     return {

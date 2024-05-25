@@ -1,6 +1,6 @@
 import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
-import * as uuid from 'uuid';
+import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../../ability";
 import { getAbilityUpgradedFromEffects, isOffensiveAbility, isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
 import {
@@ -2731,7 +2731,7 @@ const tributeKill = ({
 /**
  * This is for player ability.minion handling only. Randomized summons from actions are handled at checkHandleActionSummon.
  */
-const checkSummonMinion = ({
+export const checkSummonMinion = ({
     ability,
     selectedIndex,
     side,
