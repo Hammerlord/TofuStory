@@ -227,6 +227,9 @@ export const onWaveStart = () => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
                 const ability = getNextTelegraphedAbility(actor);
+                if (!ability.actions) {
+                    return;
+                }
                 let mutableUpdatedActionTargets = [];
                 ability.actions.forEach((action, i) => {
                     const targeting = autoSelectActionTarget({ action, actorId: combatant.id, getState });
