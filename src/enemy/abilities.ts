@@ -73,7 +73,6 @@ export const tantrum: Ability = {
     description: "Randomly hits a target 2 times.",
     image: JapaneseOgreIcon,
     resourceCost: 3,
-    channelDuration: 1,
     castTime: 1,
     actions: [
         {
