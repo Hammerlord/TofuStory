@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { GeneratedRouteNode, NODE_TYPES, Route } from "../types";
 import { getRandomItem } from "./../../utils";
 

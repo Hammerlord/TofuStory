@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Ability } from "../ability/types";

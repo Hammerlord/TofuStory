@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import CardGrid from "../Menu/CardGrid";
 import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { PLAYER_CLASSES } from "../Menu/types";

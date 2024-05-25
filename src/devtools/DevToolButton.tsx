@@ -30,7 +30,7 @@ import { FortuneBox } from "../scene/FortuneBox";
 import Transmutation, { TransmutationView } from "../shops/Transmutation";
 import { JOB_CARD_MAP } from "../ability";
 import { PLAYER_CLASSES } from "../Menu/types";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { getUpgradeCard } from "../Menu/utils";
 
 const useStyles = createUseStyles({

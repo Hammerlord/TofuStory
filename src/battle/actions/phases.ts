@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { elite, eruptive, raging, thorns, warding } from "../../ability/Effects";
 import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";

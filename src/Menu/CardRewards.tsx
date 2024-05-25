@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";

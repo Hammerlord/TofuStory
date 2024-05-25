@@ -8,6 +8,7 @@ import { getAbilityResourceCost } from "../battle/utils";
 import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
 import { Combatant } from "./types";
+import { validate as uuidValidate } from "uuid";
 
 export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
 
@@ -224,7 +225,7 @@ const getAbilityPreviews = ({
             !actorCurrentTarget &&
             (action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
 
-        const affectedTargetCount = Object.keys(previews.statUpdates).length;
+        const affectedTargetCount = Object.keys(previews.statUpdates).filter((id) => uuidValidate(id)).length;
 
         Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
             statUpdates.forEach((statUpdate) => {

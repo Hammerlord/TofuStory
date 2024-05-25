@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
 import { Item } from "../item/types";

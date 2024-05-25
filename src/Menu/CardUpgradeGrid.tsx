@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, AbilityUpgrade, CombatAbility } from "../ability/types";
 import Button from "../view/Button";

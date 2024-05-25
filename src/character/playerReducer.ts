@@ -1,7 +1,7 @@
 import { getRandomItem } from "./../utils";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { clamp } from "ramda";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";

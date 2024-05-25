@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
 import {
     ACTION_TYPES,

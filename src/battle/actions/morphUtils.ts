@@ -1,4 +1,4 @@
-import uuid from "uuid";
+import * as uuid from "uuid";
 import {
     Ability,
     ACTION_TYPES,

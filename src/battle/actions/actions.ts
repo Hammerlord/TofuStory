@@ -1,6 +1,6 @@
 import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
-import uuid from "uuid";
+import * as uuid from 'uuid';
 import { JOB_CARD_MAP } from "../../ability";
 import { getAbilityUpgradedFromEffects, isOffensiveAbility, isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
 import {

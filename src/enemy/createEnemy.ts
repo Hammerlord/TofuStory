@@ -1,6 +1,6 @@
 import { getMaxHP } from "./../battle/utils";
 import { cloneDeep } from "lodash";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { aggregateItemEffects } from "../Menu/utils";
 import { Ability, CombatEffect, Effect } from "../ability/types";
 import { Combatant } from "../character/types";

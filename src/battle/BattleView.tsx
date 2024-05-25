@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";

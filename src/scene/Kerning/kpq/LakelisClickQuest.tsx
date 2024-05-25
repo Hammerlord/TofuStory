@@ -2,7 +2,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { BystanderImage, ClickIndicatorImage, KerningCityBGImage, KerningSewerFullImage, LakelisImage } from "../../../images";
 import { getRandomArbitrary, getRandomInt } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";

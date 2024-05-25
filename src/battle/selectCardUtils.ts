@@ -1,5 +1,5 @@
 import { Action } from "@reduxjs/toolkit";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/types";
 import { shuffle } from "../utils";

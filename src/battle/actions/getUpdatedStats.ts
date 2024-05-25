@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import {
     Ability,
     Action,

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import DeckViewer from "../Menu/DeckViewer";
 import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "../Menu/utils";
 import { JOB_CARD_MAP } from "../ability";
