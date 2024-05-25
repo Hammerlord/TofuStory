@@ -380,7 +380,9 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
 
         // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
         if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
-            getState().battle.enemySide.forEach((enemy) => {
+            let battle = getState().battle;
+
+            battle.enemySide.forEach((enemy) => {
                 if (!enemy?.HP) {
                     return;
                 }
@@ -395,17 +397,34 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                 const ability = getNextTelegraphedAbility(enemyInfo);
                 if (ability) {
                     const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+                    const targeting = {
+                        ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
+                        ability,
+                    };
                     dispatch(
                         updateCombatant({
                             combatantId: enemy.id,
                             newProperties: {
-                                targeting: {
-                                    ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
-                                    ability,
-                                },
+                                targeting,
                             },
                         })
                     );
+
+                    // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                    const previews = getAbilityPreviews({
+                        ability,
+                        actor: {
+                            ...enemy,
+                            targeting,
+                        },
+                        target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
+                        battle,
+                    });
+
+                    battle = {
+                        ...battle,
+                        ...previews.combatantStates,
+                    };
                 }
             });
         }
