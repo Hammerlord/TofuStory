@@ -878,7 +878,7 @@ const BattlefieldContainer = () => {
         });
     })();
 
-    const targetedByEnemyAbilities = (() => {
+    const targetedByEnemyAbilities = useMemo(() => {
         const targetMap = {};
 
         let previousCombatantStates = previewAbilityCombatants;
@@ -955,7 +955,7 @@ const BattlefieldContainer = () => {
         });
 
         return targetMap;
-    })();
+    }, [enemySide, JSON.stringify(abilityUsePreviews)]);
 
     const animationCanvas = useMemo(
         () => (
