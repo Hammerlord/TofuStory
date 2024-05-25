@@ -152,9 +152,8 @@ export const kingSlimeEnemy: Minion = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 10,
-                    secondaryDamage: 5,
-                    area: 2,
+                    damage: 5,
+                    area: 5,
                     animation: ANIMATION_TYPES.STOMP,
                 },
             ],
