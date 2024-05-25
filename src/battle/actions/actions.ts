@@ -69,6 +69,7 @@ import { tributeSummonBuff } from "../../ability/Effects";
 import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
+import getAbilityPreviews from "../../character/getAbilityPreviews";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -1575,7 +1576,8 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
  */
 const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummoned: BATTLEFIELD_SIDES) => {
     return (dispatch, getState) => {
-        const battle = getState().battle;
+        let battle = getState().battle;
+
         battle.enemySide.forEach((enemy) => {
             if (!enemy?.HP) {
                 return;
@@ -1586,7 +1588,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
 
             if (ability) {
                 const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-                const targeting = autoSelectActionTarget({ action: action, actorId: enemy.id, getState });
+                const targeting = autoSelectActionTarget({ action: action, actorId: enemy.id, getState: () => ({ battle }) });
                 const { index, side } = targeting;
 
                 // If the summoned minions are on the player side, only switch if it rolled one of them
@@ -1606,6 +1608,25 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
                             },
                         })
                     );
+
+                    // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                    const previews = getAbilityPreviews({
+                        ability,
+                        actor: {
+                            ...enemy,
+                            targeting: {
+                                ...targeting,
+                                ability,
+                            },
+                        },
+                        target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
+                        battle,
+                    });
+
+                    battle = {
+                        ...battle,
+                        ...previews.combatantStates,
+                    };
                 }
             }
         });
