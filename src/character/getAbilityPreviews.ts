@@ -125,6 +125,10 @@ const getAbilityPreviews = ({
             return;
         }
 
+        if (action.target === TARGET_TYPES.RANDOM_FRIENDLY) {
+            return;
+        }
+
         const lookupCombatantDataHelper = (id: string) => {
             return findCombatantData(() => ({ battle: previousCombatantStates }), id);
         };
