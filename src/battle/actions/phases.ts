@@ -17,6 +17,7 @@ import { BATTLE_STATES } from "./../reducer";
 import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions";
 import { isOffensiveAction } from "../../ability/AbilityView/utils";
+import getAbilityPreviews from "../../character/getAbilityPreviews";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -220,25 +221,46 @@ export const onWaveStart = () => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
         });
 
+        let battle = getState().battle;
+
         enemySide.forEach((combatant: Combatant | null) => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
                 const ability = getNextTelegraphedAbility(actor);
-                if (ability?.actions) {
-                    const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
+                let mutableUpdatedActionTargets = [];
+                ability.actions.forEach((action, i) => {
+                    const targeting = autoSelectActionTarget({ action, actorId: combatant.id, getState });
+                    mutableUpdatedActionTargets[i] = targeting;
 
-                    dispatch(
-                        updateCombatant({
-                            combatantId: combatant.id,
-                            newProperties: {
-                                targeting: {
-                                    ...autoSelectActionTarget({ action, actorId: combatant.id, getState }),
-                                    ability,
-                                },
+                    const previews = getAbilityPreviews({
+                        ability,
+                        actor: {
+                            ...combatant,
+                            targeting: {
+                                ability,
+                                actionTargets: mutableUpdatedActionTargets,
                             },
-                        })
-                    );
-                }
+                        },
+                        battle,
+                    });
+
+                    battle = {
+                        ...battle,
+                        ...previews.combatantStates,
+                    };
+                });
+
+                dispatch(
+                    updateCombatant({
+                        combatantId: combatant.id,
+                        newProperties: {
+                            targeting: {
+                                actionTargets: mutableUpdatedActionTargets,
+                                ability,
+                            },
+                        },
+                    })
+                );
             }
         });
     };

@@ -398,37 +398,34 @@ const checkRedirectEnemyTargetingAfterAllyDeath = (friendlySide: BATTLEFIELD_SID
                 return;
             }
 
-            const { index: targetingIndex, side } = enemy.targeting || {};
-            if (index !== targetingIndex || side !== friendlySide) {
+            const { actionTargets = [], ability } = enemy.targeting || {};
+
+            if (!ability) {
                 return;
             }
 
-            const enemyInfo = findCombatantData(getState, enemy.id);
+            const mutableUpdatedActionTargets = [...actionTargets];
 
-            const ability = getNextTelegraphedAbility(enemyInfo);
-            if (ability) {
-                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-                const targeting = {
-                    ...autoSelectActionTarget({ action, actorId: enemy.id, getState }),
-                    ability,
-                };
-                dispatch(
-                    updateCombatant({
-                        combatantId: enemy.id,
-                        newProperties: {
-                            targeting,
-                        },
-                    })
-                );
+            actionTargets.forEach((targeting, i) => {
+                const { index: targetingIndex, side } = targeting || {};
 
+                const isOtherTarget = index !== targetingIndex || side !== friendlySide;
+                if (isOtherTarget) {
+                    return;
+                }
+
+                const updatedTargeting = autoSelectActionTarget({ action: ability?.actions[i], actorId: enemy.id, getState });
                 // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                mutableUpdatedActionTargets[i] = updatedTargeting;
                 const previews = getAbilityPreviews({
                     ability,
                     actor: {
                         ...enemy,
-                        targeting,
+                        targeting: {
+                            ...enemy.targeting,
+                            actionTargets: mutableUpdatedActionTargets,
+                        },
                     },
-                    target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
                     battle,
                 });
 
@@ -436,7 +433,19 @@ const checkRedirectEnemyTargetingAfterAllyDeath = (friendlySide: BATTLEFIELD_SID
                     ...battle,
                     ...previews.combatantStates,
                 };
-            }
+            });
+
+            dispatch(
+                updateCombatant({
+                    combatantId: enemy.id,
+                    newProperties: {
+                        targeting: {
+                            actionTargets: mutableUpdatedActionTargets,
+                            ability,
+                        },
+                    },
+                })
+            );
         });
     };
 };
@@ -1613,52 +1622,62 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
                 return;
             }
 
-            const enemyInfo = findCombatantData(getState, enemy.id);
-            const ability = getNextTelegraphedAbility(enemyInfo);
+            const { actionTargets = [], ability } = enemy.targeting || {};
 
-            if (ability) {
-                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-                const targeting = autoSelectActionTarget({ action: action, actorId: enemy.id, getState: () => ({ battle }) });
-                const { index, side } = targeting;
+            if (!ability) {
+                return;
+            }
+            const mutableUpdatedActionTargets = [...actionTargets];
+
+            actionTargets.forEach((targeting, i) => {
+                const updatedTargeting = autoSelectActionTarget({
+                    action: ability?.actions[i],
+                    actorId: enemy.id,
+                    getState: () => ({ battle }),
+                });
+
+                const { index, side } = updatedTargeting || {};
 
                 // If the summoned minions are on the player side, only switch if it rolled one of them
                 const isTargetingNewPlayerSideMinion =
                     sideSummoned === BATTLEFIELD_SIDES.PLAYER_SIDE &&
                     minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id);
 
-                if (!enemy.targeting || isTargetingNewPlayerSideMinion) {
-                    dispatch(
-                        updateCombatant({
-                            combatantId: enemy.id,
-                            newProperties: {
-                                targeting: {
-                                    ...targeting,
-                                    ability,
-                                },
-                            },
-                        })
-                    );
-
-                    // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
-                    const previews = getAbilityPreviews({
-                        ability,
-                        actor: {
-                            ...enemy,
-                            targeting: {
-                                ...targeting,
-                                ability,
-                            },
-                        },
-                        target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
-                        battle,
-                    });
-
-                    battle = {
-                        ...battle,
-                        ...previews.combatantStates,
-                    };
+                if (!isTargetingNewPlayerSideMinion) {
+                    return;
                 }
-            }
+
+                // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                mutableUpdatedActionTargets[i] = updatedTargeting;
+                const previews = getAbilityPreviews({
+                    ability,
+                    actor: {
+                        ...enemy,
+                        targeting: {
+                            ability,
+                            actionTargets: mutableUpdatedActionTargets,
+                        },
+                    },
+                    battle,
+                });
+
+                battle = {
+                    ...battle,
+                    ...previews.combatantStates,
+                };
+            });
+
+            dispatch(
+                updateCombatant({
+                    combatantId: enemy.id,
+                    newProperties: {
+                        targeting: {
+                            actionTargets: mutableUpdatedActionTargets,
+                            ability,
+                        },
+                    },
+                })
+            );
         });
     };
 };
@@ -2849,7 +2868,7 @@ export const useAbility = ({
 
         let prevSelection;
 
-        const handleAction = (action: Action) => {
+        const handleAction = (action: Action, i: number) => {
             const actorInfo = findCombatantData(getState, actorId);
             const actor = actorInfo?.combatant;
             // Something could've happened between actions that killed the actor
@@ -2860,7 +2879,10 @@ export const useAbility = ({
 
             let selection;
 
-            if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
+            const selectedActionTargets = actor.targeting?.actionTargets?.[i];
+            if (typeof selectedActionTargets?.index === "number") {
+                selection = selectedActionTargets;
+            } else if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
                 selection = autoSelectActionTarget({
                     initialSelectedIndex: selectedIndex,
                     initialSelectedSide: initialSide,

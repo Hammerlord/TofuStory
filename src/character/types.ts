@@ -20,12 +20,11 @@ export interface Combatant extends Minion {
     resources: number;
     isPlayer: boolean;
     damage?: number;
+    // For storing an ability with a cast time/channel time. Merge this with Combatant targeting?
     casting?: {
         ability: Ability;
         channelDuration?: number;
         castTime?: number;
-        selectedIndex?: number;
-        selectedSide?: BATTLEFIELD_SIDES;
     };
     turnHistory: TurnHistoryAction[];
     abilityHistory: (Ability | CombatAbility)[];
@@ -35,8 +34,11 @@ export interface Combatant extends Minion {
     mesos?: number;
     weapon?: string; // Weapon image
     targeting?: {
-        side: BATTLEFIELD_SIDES;
-        index?: number;
+        // A targeting object for each ability.action
+        actionTargets: {
+            side: BATTLEFIELD_SIDES;
+            index?: number;
+        }[];
         ability: Ability;
     };
 }

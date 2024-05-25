@@ -29,7 +29,7 @@ const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const handleCastTick = (combatantId: string) => {
     return (dispatch, getState) => {
         const { combatant } = findCombatantData(getState, combatantId);
-        const { ability, castTime = 0, channelDuration, selectedIndex, selectedSide } = combatant.casting;
+        const { ability, castTime = 0, channelDuration } = combatant.casting;
 
         const updatedCasting = { ...combatant.casting };
         if (castTime > 0) {
@@ -55,19 +55,7 @@ const handleCastTick = (combatantId: string) => {
             return;
         }
 
-        const battle = getState().battle;
-
-        // If the original selected target is no longer valid, switch to a random new target. TODO area abilities could still be valid in the same spot
-        const index =
-            battle[selectedIndex]?.HP > 0
-                ? selectedIndex
-                : autoSelectActionTarget({ action: ability?.actions?.[0], actorId: combatantId, getState }).index;
-
-        if (typeof index !== "number") {
-            return;
-        }
-
-        dispatch(useAbility({ actorId: combatantId, ability, side: selectedSide, selectedIndex: index }));
+        dispatch(useAbility({ actorId: combatantId, ability }));
         const { combatant: postAbilityActor } = findCombatantData(getState, combatantId) || {};
         if (!postAbilityActor) {
             return;
@@ -188,70 +176,66 @@ const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) =>
         },
     };
     const ability = getNextTelegraphedAbility(postUpdateActorInfo);
-    if (ability?.actions) {
-        const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
-        dispatch(
-            updateCombatant({
-                combatantId,
-                newProperties: {
-                    targeting: {
-                        ...targeting,
-                        ability,
-                    },
-                },
-            })
-        );
+    if (!ability?.actions) {
+        return;
+    }
 
-        return getAbilityPreviews({
+    let mutableUpdatedActionTargets = [];
+    ability.actions.forEach((action, i) => {
+        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState: () => ({ battle }) });
+        mutableUpdatedActionTargets[i] = targeting;
+
+        const previews = getAbilityPreviews({
             ability,
             actor: {
                 ...postUpdateActorInfo.combatant,
                 targeting: {
-                    ...targeting,
+                    ability,
+                    actionTargets: mutableUpdatedActionTargets,
+                },
+            },
+            battle,
+        });
+
+        battle = {
+            ...battle,
+            ...previews.combatantStates,
+        };
+    });
+
+    dispatch(
+        updateCombatant({
+            combatantId,
+            newProperties: {
+                targeting: {
+                    actionTargets: mutableUpdatedActionTargets,
                     ability,
                 },
             },
-            target: { ...targeting, id: battle[targeting.side]?.[targeting.index]?.id },
-            battle,
-        });
-    }
+        })
+    );
+
+    return battle;
 };
 
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
         const actorData = findCombatantData(getState, combatantId);
-        if (!actorData) {
+        if (!actorData?.combatant) {
             return;
         }
 
         const { combatant: actor } = actorData;
+        let ability = actor.targeting?.ability;
 
-        const { side, index, ability } =
-            (() => {
-                if (actor?.targeting?.ability) {
-                    return actor.targeting;
-                }
-
-                const backup = getNextTelegraphedAbility(actorData);
-                if (!backup) {
-                    return;
-                }
-
-                return {
-                    ...autoSelectActionTarget({ action: backup.actions?.[0], actorId: combatantId, getState }),
-                    ability: backup,
-                };
-            })() || {};
-
-        const { castTime, channelDuration } = ability || {};
-
-        if (typeof index === "undefined") {
+        if (!ability) {
+            // Should there be a backup ability usage here?
             return;
         }
 
+        const { castTime, channelDuration } = ability || {};
         if (!castTime && !channelDuration) {
-            dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
+            dispatch(useAbility({ ability, actorId: combatantId }));
             return;
         }
 
@@ -259,8 +243,6 @@ const enemyUseAbility = (combatantId: string) => {
             ability,
             castTime,
             channelDuration: !castTime ? (channelDuration || 1) - 1 : channelDuration,
-            selectedIndex: index,
-            selectedSide: side,
         };
 
         dispatch(
@@ -273,7 +255,7 @@ const enemyUseAbility = (combatantId: string) => {
         );
 
         if (!castTime) {
-            dispatch(useAbility({ ability, actorId: combatantId, side, selectedIndex: index }));
+            dispatch(useAbility({ ability, actorId: combatantId }));
 
             const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
             const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;

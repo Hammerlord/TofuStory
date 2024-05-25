@@ -893,13 +893,9 @@ const BattlefieldContainer = () => {
 
             const ability = enemy.targeting?.ability || getNextTelegraphedAbility(enemyInfo);
 
-            const { index, side } = enemy.targeting;
-            const targetId = state.battle[side]?.[index]?.id;
-
             const abilityPreviews = getAbilityPreviews({
                 ability,
                 actor: enemy,
-                target: { index, side, id: targetId },
                 battle: state.battle,
                 combatantStates: previousCombatantStates,
             });

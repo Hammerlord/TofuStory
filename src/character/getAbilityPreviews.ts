@@ -84,13 +84,13 @@ const previewAction = ({ actionFn, battle }) => {
 const getAbilityPreviews = ({
     ability,
     actor,
-    target,
+    target: initTarget, // Provide this for previewing a player ability. If previewing an enemy ability, actor.targeting.actionTargets is used instead.
     battle,
     combatantStates,
 }: {
     ability: CombatAbility | Ability;
     actor: Combatant;
-    target: { side: BATTLEFIELD_SIDES; index: number; id: string };
+    target?: { side: BATTLEFIELD_SIDES; index: number; id: string };
     battle: BattleState;
     combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
 }): {
@@ -120,7 +120,25 @@ const getAbilityPreviews = ({
               }, []) as Action[])
             : ability.actions;
 
-    actions.forEach((action: Action) => {
+    actions.forEach((action: Action, i) => {
+        const target = (() => {
+            if (initTarget) {
+                return initTarget;
+            }
+
+            const actorCurrentTarget = actor.targeting?.actionTargets?.[i];
+            if (actorCurrentTarget) {
+                return {
+                    ...actorCurrentTarget,
+                    id: battle[actorCurrentTarget.side]?.[actorCurrentTarget.index]?.id,
+                };
+            }
+        })();
+
+        if (!target) {
+            return;
+        }
+
         if (action.target === TARGET_TYPES.SELF && actor.id !== target.id) {
             return;
         }
