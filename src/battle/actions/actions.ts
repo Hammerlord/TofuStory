@@ -2711,7 +2711,7 @@ const tributeKill = ({
         dispatch(
             performAction({
                 action: {
-                    flatDamage: 1000,
+                    flatDamage: Infinity,
                     type: ACTION_TYPES.NONE,
                     playbackTime: 750,
                     secondaryAction: tributeSummon

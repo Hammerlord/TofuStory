@@ -217,6 +217,7 @@ const AbilityPreview = ({
             }
 
             const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
+            const isDefiniteKill = rawDamage === Infinity;
 
             return (
                 <span key={i}>
@@ -236,16 +237,18 @@ const AbilityPreview = ({
                     {showDivider && <span className={classes.divider} />}
                     {showDamage && (
                         <>
-                            <span className={classes.previewIconContainer}>
-                                <Icon icon={CrossedSwordsIcon} size="sm" />
-                            </span>
+                            {!isDefiniteKill && (
+                                <span className={classes.previewIconContainer}>
+                                    <Icon icon={CrossedSwordsIcon} size="sm" />
+                                </span>
+                            )}
                             <span
                                 className={classNames(classes.statUpdate, {
                                     [classes.negative]: !isDeathBlow && rawDamage < action?.damage,
                                 })}
                                 key={["damage-update", i].join("-")}
                             >
-                                {rawDamage || 0}
+                                {!isDefiniteKill && (rawDamage || 0)}
                                 {nondeterministic && "?"}{" "}
                                 {isDeathBlow && (
                                     <span className={classes.lethalIcon}>
