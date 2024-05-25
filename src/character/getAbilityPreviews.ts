@@ -121,12 +121,13 @@ const getAbilityPreviews = ({
             : ability.actions;
 
     actions.forEach((action: Action, i) => {
+        const actorCurrentTarget = actor.targeting?.actionTargets?.[i];
+
         const target = (() => {
             if (initTarget) {
                 return initTarget;
             }
 
-            const actorCurrentTarget = actor.targeting?.actionTargets?.[i];
             if (actorCurrentTarget) {
                 return {
                     ...actorCurrentTarget,
@@ -220,7 +221,8 @@ const getAbilityPreviews = ({
         previousCombatantStates.playerSide = previews.battle.playerSide;
         previousCombatantStates.enemySide = previews.battle.enemySide;
         const targetsRandomly =
-            action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget);
+            !actorCurrentTarget &&
+            (action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
 
         const affectedTargetCount = Object.keys(previews.statUpdates).length;
 
