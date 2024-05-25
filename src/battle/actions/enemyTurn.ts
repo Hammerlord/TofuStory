@@ -182,7 +182,7 @@ const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) =>
 
     let mutableUpdatedActionTargets = [];
     ability.actions.forEach((action, i) => {
-        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState: () => ({ battle }) });
+        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
         mutableUpdatedActionTargets[i] = targeting;
 
         const previews = getAbilityPreviews({
@@ -375,10 +375,10 @@ export const enemyMoves = () => {
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
         moveOrderIds.forEach((id) => {
-            const { combatantStates } = dispatch(requeueRecentlyUsedAbility(id, prevBattleState)) || {};
+            const battleStateSnapshot = dispatch(requeueRecentlyUsedAbility(id, prevBattleState)) || {};
             prevBattleState = {
                 ...prevBattleState,
-                ...combatantStates,
+                ...battleStateSnapshot,
             };
         });
         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
