@@ -227,7 +227,7 @@ export const onWaveStart = () => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
                 const ability = getNextTelegraphedAbility(actor);
-                if (!ability.actions) {
+                if (!ability?.actions) {
                     return;
                 }
                 let mutableUpdatedActionTargets = [];
