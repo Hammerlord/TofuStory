@@ -2174,7 +2174,8 @@ export const calculateTargetIndices = ({
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         const livingOrResurrecting = combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
 
-        const isProcPreview = isPreviewMode && source?.isProc && isOffensiveAction(action);
+        // When summoning a minion, it can auto attack an enemy target. Display that proc as an indeterminate ability.
+        const isProcPreview = isPreviewMode && source?.isProc && isOffensiveAction(action) && side === BATTLEFIELD_SIDES.ENEMY_SIDE;
         if (isProcPreview) {
             return true;
         }
