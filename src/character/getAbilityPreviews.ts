@@ -1,3 +1,4 @@
+import { isOffensiveAction } from "../ability/AbilityView/utils";
 import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { checkSummonMinion, findCombatantData, performAction } from "../battle/actions/actions";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
@@ -29,9 +30,6 @@ const previewAction = ({ actionFn, battle }) => {
         }
 
         const { statUpdates: currentStatUpdates, allTargetIndices, targetSide, action } = payload;
-        if (currentStatUpdates.id) {
-            return;
-        }
 
         if (currentStatUpdates) {
             Object.entries(currentStatUpdates).forEach(([key, value]: [string, object]) => {
@@ -170,10 +168,11 @@ const getAbilityPreviews = ({
                 const { index } = combatantInfo;
                 const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
+                const isProcHostileAction = previews.battle.source?.isProc && isOffensiveAction(currentAction);
 
                 result[id].push({
                     statUpdate,
-                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly,
+                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction,
                     action: currentAction,
                 });
             });
@@ -192,7 +191,7 @@ const getAbilityPreviews = ({
         battle: { ...battle, ...previousCombatantStates },
     });
 
-    handleStatUpdatePreviews({ previews: summonPreviews, targetIndex: initTarget?.index });
+    handleStatUpdatePreviews({ previews: summonPreviews });
 
     const actions: Action[] =
         ability.resourceCost === "x"

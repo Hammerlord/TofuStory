@@ -2174,8 +2174,14 @@ export const calculateTargetIndices = ({
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         const livingOrResurrecting = combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
 
+        const isProcPreview = isPreviewMode && source?.isProc && isOffensiveAction(action);
+        if (isProcPreview) {
+            return true;
+        }
+
         const inArea =
             (livingOrResurrecting || isPreviewMode) && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+
         if (excludePrimaryTarget) {
             return inArea && i !== selectedIndex;
         }
@@ -2822,7 +2828,9 @@ export const checkSummonMinion = ({
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
-        dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
+        if (!parentSource?.isPreviewMode) {
+            dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
+        }
     };
 };
 
