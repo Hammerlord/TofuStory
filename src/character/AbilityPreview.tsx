@@ -206,6 +206,8 @@ const AbilityPreview = ({
     };
 
     const getPreviewElement = () => {
+        // FIX ME: bandaiding an issue where tribute kill has a double preview object.
+        let isDeathBlowShown = false;
         const inner = previewStatUpdate.map((preview, i) => {
             const { action, nondeterministic, statUpdate } = preview || {};
             const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor, resources = 0, isDeathBlow } = statUpdate;
@@ -218,6 +220,21 @@ const AbilityPreview = ({
 
             const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
             const isDefiniteKill = rawDamage === Infinity;
+            const showDeathBlow = isDeathBlow && !isDeathBlowShown;
+            if (showDeathBlow) {
+                isDeathBlowShown = true;
+            }
+
+            if (isDefiniteKill) {
+                if (showDeathBlow) {
+                    return (
+                        <span key={i} className={classes.statUpdate}>
+                            <Icon icon={CrossbonesIcon} size={"xs"} />
+                        </span>
+                    );
+                }
+                return null;
+            }
 
             return (
                 <span key={i}>
