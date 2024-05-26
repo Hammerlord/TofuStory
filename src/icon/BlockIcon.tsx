@@ -46,8 +46,8 @@ const BlockIcon = ({ statChanges }: { statChanges: StatChange }) => {
     const animationRefs: MutableRefObject<any> = useRef([]);
 
     useEffect(() => {
-        const { rawDamage = 0, healthDamage = 0 } = statChanges || {};
-        const blockedDamage = rawDamage - healthDamage;
+        const { armor = 0 } = statChanges || {};
+        const blockedDamage = Math.min(0, armor);
         if (!blockedDamage) {
             return;
         }
@@ -68,7 +68,7 @@ const BlockIcon = ({ statChanges }: { statChanges: StatChange }) => {
             );
 
             animationRefs.current.push(rootAnimation);
-            setOldBlockedDamage(blockedDamage);
+            setOldBlockedDamage(Math.abs(blockedDamage));
         }
     }, [statChanges]);
 
