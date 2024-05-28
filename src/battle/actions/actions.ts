@@ -2614,7 +2614,7 @@ export const autoSelectActionTarget = ({
         target === TARGET_TYPES.RANDOM_FRIENDLY ||
         (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
     ) {
-        const targetIndices = getValidTargetIndices(friendly).filter((i) => {
+        const targetIndices = getValidTargetIndices(friendly, { excludeUntargetable: false }).filter((i) => {
             if (excludeActor && actorId && friendly[i]?.id === actorId) {
                 return false;
             }

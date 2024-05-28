@@ -783,10 +783,10 @@ export const calculateHealing = ({ target, action }: { target?: CombatantInfo; a
  */
 export const getValidTargetIndices = (
     characters: (Combatant | null)[],
-    options: { excludeStealth?: boolean; excludeIndex?: number; onlyTaunt?: boolean } = {}
+    options: { excludeStealth?: boolean; excludeIndex?: number; onlyTaunt?: boolean; excludeUntargetable?: boolean } = {}
 ): number[] => {
     const indices = [];
-    const { excludeStealth, excludeIndex, onlyTaunt } = options;
+    const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true } = options;
     if (onlyTaunt) {
         // Check for taunting characters first.
         characters.forEach((character: Combatant | null, i: number) => {
@@ -805,7 +805,7 @@ export const getValidTargetIndices = (
         if (character?.HP > 0) {
             const notStealth = !excludeStealth || !isStealthed(character);
             const notExcluded = excludeIndex !== i;
-            const untargetable = isUntargetable(character);
+            const untargetable = excludeUntargetable && isUntargetable(character);
             if (notStealth && notExcluded && !untargetable) {
                 indices.push(i);
             }
