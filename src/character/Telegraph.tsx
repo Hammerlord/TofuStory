@@ -240,8 +240,8 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             const isIndexDisplayed = combatantCountMap[targetCombatant.name]?.length > 1;
             const displayIndex = targetIndex + 1; // 1-based indices when displaying to player
             return (
-                <span className={classes.targetPortrait}>
-                    <Icon icon={targetCombatant.image} key={[targetCombatant.image, i].join("-")} />
+                <span className={classes.targetPortrait} key={[targetCombatant.image, i].join("-")}>
+                    <Icon icon={targetCombatant.image} />
                     {isIndexDisplayed && <span className={classes.targetCombatantIndex}>{displayIndex}</span>}
                 </span>
             );
