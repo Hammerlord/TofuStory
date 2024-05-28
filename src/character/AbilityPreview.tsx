@@ -322,7 +322,7 @@ const AbilityPreview = ({
     return (
         <div
             className={classNames(classes.previewRoot, className, {
-                [classes.faded]: !combatant,
+                [classes.faded]: !combatant?.HP,
             })}
         >
             <div className={classes.inner}>

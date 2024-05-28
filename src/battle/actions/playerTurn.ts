@@ -1,5 +1,5 @@
 import * as uuid from "uuid";
-import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -198,12 +198,15 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
-        const playerSide = getState().battle.playerSide; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
+
+        const { playerSide, enemySide } = getState().battle; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
+        const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+
         dispatch(
             updateBattle({
                 playerSide: playerSide.map((combatant) => {
-                    if (!combatant) {
-                        return combatant;
+                    if (!combatant?.HP && !isLifeLinked(combatant)) {
+                        return null;
                     }
 
                     const { resources = 0 } = combatant;
@@ -214,6 +217,13 @@ export const playerEndTurn = () => {
                             resources: maxResources,
                         };
                     }
+                    return combatant;
+                }),
+                enemySide: enemySide.map((combatant) => {
+                    if (!combatant?.HP && !isLifeLinked(combatant)) {
+                        return null;
+                    }
+
                     return combatant;
                 }),
             })

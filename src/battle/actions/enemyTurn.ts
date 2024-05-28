@@ -1,5 +1,5 @@
 import { isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews from "../../character/getAbilityPreviews";
 import { Combatant } from "../../character/types";
@@ -275,14 +275,34 @@ const enemyUseAbility = (combatantId: string) => {
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
-        const enemySide = getState().battle.enemySide; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
+
+        const { playerSide, enemySide } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
+        const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
+
         dispatch(
             updateBattle({
-                enemySide: enemySide.map((combatant: Combatant) => {
+                playerSide: playerSide.map((combatant: Combatant | null) => {
+                    if (!combatant?.HP && !isLifeLinked(combatant)) {
+                        return null;
+                    }
+
+                    return combatant;
+                }),
+                enemySide: enemySide.map((combatant: Combatant | null) => {
+                    if (!combatant?.HP && !isLifeLinked) {
+                        return null;
+                    }
                     if (combatant?.resources > combatant?.maxResources) {
                         return {
                             ...combatant,
                             resources: combatant.maxResources,
+                        };
+                    }
+
+                    if (combatant?.resources < 0) {
+                        return {
+                            ...combatant,
+                            resources: 0,
                         };
                     }
                     return combatant;
