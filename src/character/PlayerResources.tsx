@@ -62,7 +62,7 @@ const useStyles = createUseStyles({
 });
 
 const PlayerResources = ({ player }: { player: Player }) => {
-    const [oldResources, setOldResources] = useState(player.resources);
+    const [oldResources, setOldResources] = useState(player?.resources);
     const classes = useStyles();
 
     useEffect(() => {
@@ -74,7 +74,11 @@ const PlayerResources = ({ player }: { player: Player }) => {
             clearTimeout(timeout);
             setOldResources(player.resources);
         };
-    }, [player.resources]);
+    }, [player?.resources]);
+
+    if (!player) {
+        return null;
+    }
 
     const maxResources = getMaxResources(player);
 
