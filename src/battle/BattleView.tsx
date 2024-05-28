@@ -955,7 +955,7 @@ const BattlefieldContainer = () => {
         });
 
         return targetMap;
-    }, [enemySide, JSON.stringify(abilityUsePreviews)]);
+    }, [enemySide, playerSide, JSON.stringify(abilityUsePreviews)]);
 
     const animationCanvas = useMemo(
         () => (
