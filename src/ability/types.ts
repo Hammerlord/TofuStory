@@ -651,6 +651,7 @@ export type Action = {
     /** Causes armor decay (halves armor) */
     decayArmor?: boolean;
     affectsDeadCharacters?: boolean;
+    bypassPreventTurnAction?: boolean;
 };
 
 export type ActionOptionalProperties = { [key in keyof Action]?: Action[key] };

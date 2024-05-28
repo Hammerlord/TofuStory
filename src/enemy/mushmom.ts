@@ -54,6 +54,7 @@ const callMushrooms: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
+            bypassPreventTurnAction: true,
             summon: [
                 { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },
                 { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },

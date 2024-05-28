@@ -889,7 +889,12 @@ const onEffectEventTrigger = ({
             const actorInfo = findCombatantData(getState, ownerId);
             const actor = actorInfo?.combatant;
             const isPassAliveConditions = actor?.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath;
-            const canAct = isPassAliveConditions && !isTurnActionPrevented(actorInfo, { bypassStun: usableWhileStunned });
+            const canAct =
+                isPassAliveConditions &&
+                !isTurnActionPrevented(actorInfo, {
+                    bypassStun: usableWhileStunned,
+                    bypassPreventTurnAction: action.bypassPreventTurnAction,
+                });
 
             // Something could've happened between actions that killed the actor
             if (!canAct) {
@@ -2898,7 +2903,7 @@ export const useAbility = ({
             const actorInfo = findCombatantData(getState, actorId);
             const actor = actorInfo?.combatant;
             // Something could've happened between actions that killed the actor
-            const canAct = actor?.HP > 0 && !isTurnActionPrevented(actorInfo);
+            const canAct = actor?.HP > 0 && !isTurnActionPrevented(actorInfo, { bypassPreventTurnAction: action.bypassPreventTurnAction });
             if (!canAct) {
                 return;
             }
