@@ -137,6 +137,21 @@ const useStyles = createUseStyles({
         alignItems: "center",
         marginLeft: 8,
     },
+    targetPortrait: {
+        position: "relative",
+        display: "inline-block",
+    },
+    targetCombatantIndex: {
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2.5px black")
+            .join(", "),
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        bottom: -5,
+        fontWeight: "bold",
+        color: "white",
+    },
 });
 
 export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo): Ability | null => {
@@ -192,19 +207,45 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     })();
 
     const getTargetElement = () => {
-        // TODO: multi hits could be targeting random enemies
-        const { index: targetIndex, side: targetSide } = combatant.targeting?.actionTargets?.[0] || {};
-        const targetCombatant = battle[targetSide]?.[targetIndex];
-        const isExclusionarySelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF && action.excludePrimaryTarget);
-        if (!targetCombatant || abilityHasYetToCast || isExclusionarySelfCast) {
-            return null;
-        }
+        const actionTargets = combatant.targeting?.actionTargets || [];
+        const combatantCountMap: { [combatantName: string]: string[] } = {};
+        actionTargets.forEach((targeting) => {
+            const { side: targetSide } = targeting || {};
+            (battle[targetSide] || []).forEach((targetCombatant) => {
+                if (!targetCombatant) {
+                    return;
+                }
 
-        return (
-            <span>
-                <Icon icon={targetCombatant.image} />
-            </span>
-        );
+                const { name, id } = targetCombatant;
+                if (!combatantCountMap[name]) {
+                    combatantCountMap[name] = [];
+                }
+
+                combatantCountMap[name].push(id);
+            });
+        });
+
+        return actionTargets.map((targeting, i) => {
+            // TODO: multi hits could be targeting random enemies
+            const { index: targetIndex, side: targetSide } = targeting || {};
+            const targetCombatant = battle[targetSide]?.[targetIndex];
+            const isExclusionarySelfCast = ability.actions.some(
+                (action) => action.target === TARGET_TYPES.SELF && action.excludePrimaryTarget
+            );
+            if (!targetCombatant || abilityHasYetToCast || isExclusionarySelfCast) {
+                return null;
+            }
+
+            // If there are more than one of the same summon type on the board (eg. 2+ Fire Spirits), display the index of that summon
+            const isIndexDisplayed = combatantCountMap[targetCombatant.name]?.length > 1;
+            const displayIndex = targetIndex + 1; // 1-based indices when displaying to player
+            return (
+                <span className={classes.targetPortrait}>
+                    <Icon icon={targetCombatant.image} key={[targetCombatant.image, i].join("-")} />
+                    {isIndexDisplayed && <span className={classes.targetCombatantIndex}>{displayIndex}</span>}
+                </span>
+            );
+        });
     };
 
     const area = ability.actions.reduce((acc, action) => {
