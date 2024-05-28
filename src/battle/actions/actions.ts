@@ -2502,7 +2502,7 @@ export const pickHostileIndex = ({
     actorData: CombatantInfo;
     initialIndex?: number;
     area?: number;
-}) => {
+}): number | undefined => {
     const targetIndices = getValidTargetIndices(hostile, {
         // TODO area attacks are still applicable to stealthed units
         excludeStealth: !hasTruesight(actorData.combatant),
@@ -2593,8 +2593,10 @@ export const autoSelectActionTarget = ({
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
+        const index = pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area });
+        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
         return {
-            index: pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area }),
+            index: typeof index === "number" ? index : hostilePlayerIndex,
             side: hostileSide,
         };
     }
@@ -2604,8 +2606,10 @@ export const autoSelectActionTarget = ({
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
 
+        const index = getRandomItem(targetIndices);
+        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
         return {
-            index: getRandomItem(targetIndices),
+            index: typeof index === "number" ? index : hostilePlayerIndex,
             side: hostileSide,
         };
     }
