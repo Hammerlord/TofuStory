@@ -380,13 +380,22 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         }
 
         // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
-        dispatch(checkRedirectEnemyTargetingAfterAllyDeath(friendlySide, index));
+        dispatch(checkRedirectEnemyTargetingAfterAllyDeath({ friendlySide, index, source: triggerSource }));
     };
 };
 
-const checkRedirectEnemyTargetingAfterAllyDeath = (friendlySide: BATTLEFIELD_SIDES, index: number) => {
+const checkRedirectEnemyTargetingAfterAllyDeath = ({
+    friendlySide,
+    index,
+    source,
+}: {
+    friendlySide: BATTLEFIELD_SIDES;
+    index: number;
+    source?: TriggerSource;
+}) => {
     return (dispatch, getState) => {
-        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE) {
+        // If the death was caused by a tribute kill, the targeting stays the same (on the newly-summoned minion that took the place of the tributed one)
+        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE || source?.isTribute) {
             return;
         }
 
@@ -2732,6 +2741,10 @@ const tributeKill = ({
                         : undefined,
                 },
                 side,
+                parentSource: {
+                    isTribute: true,
+                    type: TRIGGER_SOURCE_TYPES.ACTION,
+                },
                 selectedIndex: index,
                 actorId: actor?.id, // The actor is considered to have killed it
             })

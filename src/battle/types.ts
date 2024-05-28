@@ -69,6 +69,7 @@ export interface TriggerSource {
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
     triggerHistory?: string[];
     isProc?: boolean;
+    isTribute?: boolean;
     // Number of eg. resources to add to EffectEventTrigger.triggerSum
     trackSumAmount?: number;
     // For ability previews, target indices should become determinate. (And not change every time the preview snapshot changes.)
