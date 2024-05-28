@@ -3408,8 +3408,10 @@ export const flameWall: Ability = {
                     name: "Flame Wall",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
+                    description: "Attackers are Burned.",
                     icon: ExplosionImage,
-                    duration: 2,
+                    portraitImage: ExplosionImage,
+                    duration: 3,
                     maxApplications: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
@@ -3438,7 +3440,7 @@ export const boltTag: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 5,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
