@@ -31,7 +31,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./types";
-import { stealth, taunt } from "./Effects";
+import { attackPower, stealth, taunt } from "./Effects";
 import { incorporeal } from "../enemy/effect";
 
 export const shellThrowRed: Ability = {
@@ -287,10 +287,46 @@ const exiledOneArmEffect: Effect = {
             },
         },
         {
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    comparator: "eq",
+                    numFriendly: 4, // Including itself
+                    filters: [
+                        {
+                            property: "name",
+                            comparator: "includes",
+                            value: "of the Exiled One",
+                        },
+                    ],
+                },
+            ],
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            effects: [attackPower],
+        },
+        {
             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             induceCombatantAttack: true,
         },
     ],
+    onFriendlySummon: {
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                comparator: "eq",
+                numFriendly: 4, // Including itself
+                filters: [
+                    {
+                        property: "name",
+                        comparator: "includes",
+                        value: "of the Exiled One",
+                    },
+                ],
+            },
+        ],
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [attackPower],
+    },
     onTurnStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         induceCombatantAttack: true,
@@ -331,7 +367,7 @@ export const firstExiledArm: Ability = {
                             width: 150,
                             height: 150,
                         },
-                        damage: 3,
+                        damage: 2,
                     },
                 ],
             },
