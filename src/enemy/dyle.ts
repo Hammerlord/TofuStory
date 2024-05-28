@@ -364,13 +364,6 @@ export const dyle: Minion = {
             name: "Surf",
             image: SurfingImage,
             description: "Hits up to 2 extra targets for 3 damage. Dredges up flotsam.",
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    hasEffect: "Underwater",
-                    comparator: "eq",
-                },
-            ],
             actions: [
                 flotsamWaveAttackAction,
                 {
@@ -411,41 +404,6 @@ export const dyle: Minion = {
                             ...bleed,
                         },
                     ],
-                },
-            ],
-        },
-        {
-            name: "Tidal Wave",
-            image: SurfingImage,
-            resourceCost: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    icon: SurfingImage,
-                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
-                },
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                    secondaryDamage: 3,
-                    animationOptions: {
-                        ricochet: true,
-                    },
-                    numTargets: 2,
-                    targetArea: 2,
-                },
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    summon: dyleDredgeSummons,
-                },
-                flotsamWaveAttackAction,
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    summon: dyleDredgeSummons,
                 },
             ],
         },
