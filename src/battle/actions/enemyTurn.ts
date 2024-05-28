@@ -136,87 +136,90 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
 };
 
 // FIX ME: The recently used ability log also contains proc abilities, when we want just the ability the enemy used for its main turn
-const requeueRecentlyUsedAbility = (combatantId: string, battle: BattleState) => (dispatch) => {
-    const getState = () => ({ battle });
-    const actorInfo = findCombatantData(getState, combatantId);
-    if (!actorInfo?.combatant?.HP || actorInfo.combatant.casting?.channelDuration) {
-        return;
-    }
+const requeueRecentlyUsedAbility =
+    ({ combatantId, battle, isRecentlySummoned }: { combatantId: string; battle: BattleState; isRecentlySummoned: boolean }) =>
+    (dispatch) => {
+        const getState = () => ({ battle });
+        const actorInfo = findCombatantData(getState, combatantId);
+        if (!actorInfo?.combatant?.HP || actorInfo.combatant.casting?.channelDuration) {
+            return;
+        }
 
-    const actor = actorInfo.combatant;
-    const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
-    let abilityIndex;
-    if (abilityUsed) {
-        abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
-    } else {
-        abilityIndex = getUseAbilityIndex(actorInfo);
-    }
+        const actor = actorInfo.combatant;
+        const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
+        let abilityIndex = -1;
+        if (abilityUsed) {
+            abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
+        } else if (!isRecentlySummoned) {
+            abilityIndex = getUseAbilityIndex(actorInfo);
+        }
 
-    if (abilityIndex === -1) {
-        return;
-    }
-    const updatedAbilities = [...actor.abilities];
-    const [used] = updatedAbilities.splice(abilityIndex, 1);
-    updatedAbilities.push(used);
+        const postUpdateActorInfo = {
+            ...actorInfo,
+        };
 
-    dispatch(
-        updateCombatant({
-            combatantId,
-            newProperties: {
+        if (abilityIndex !== -1) {
+            const updatedAbilities = [...actor.abilities];
+            const [used] = updatedAbilities.splice(abilityIndex, 1);
+            updatedAbilities.push(used);
+
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        abilities: updatedAbilities,
+                    },
+                })
+            );
+
+            postUpdateActorInfo.combatant = {
+                ...actorInfo.combatant,
                 abilities: updatedAbilities,
-            },
-        })
-    );
+            };
+        }
 
-    const postUpdateActorInfo = {
-        ...actorInfo,
-        combatant: {
-            ...actorInfo.combatant,
-            abilities: updatedAbilities,
-        },
-    };
-    const ability = getNextTelegraphedAbility(postUpdateActorInfo);
-    if (!ability?.actions) {
-        return;
-    }
+        const ability = getNextTelegraphedAbility(postUpdateActorInfo);
+        if (!ability?.actions) {
+            return;
+        }
 
-    let mutableUpdatedActionTargets = [];
-    ability.actions.forEach((action, i) => {
-        const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
-        mutableUpdatedActionTargets[i] = targeting;
+        let mutableUpdatedActionTargets = [];
+        ability.actions.forEach((action, i) => {
+            const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
+            mutableUpdatedActionTargets[i] = targeting;
 
-        const previews = getAbilityPreviews({
-            ability,
-            actor: {
-                ...postUpdateActorInfo.combatant,
-                targeting: {
-                    ability,
-                    actionTargets: mutableUpdatedActionTargets,
+            const previews = getAbilityPreviews({
+                ability,
+                actor: {
+                    ...postUpdateActorInfo.combatant,
+                    targeting: {
+                        ability,
+                        actionTargets: mutableUpdatedActionTargets,
+                    },
                 },
-            },
-            battle,
+                battle,
+            });
+
+            battle = {
+                ...battle,
+                ...previews.combatantStates,
+            };
         });
 
-        battle = {
-            ...battle,
-            ...previews.combatantStates,
-        };
-    });
-
-    dispatch(
-        updateCombatant({
-            combatantId,
-            newProperties: {
-                targeting: {
-                    actionTargets: mutableUpdatedActionTargets,
-                    ability,
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    targeting: {
+                        actionTargets: mutableUpdatedActionTargets,
+                        ability,
+                    },
                 },
-            },
-        })
-    );
+            })
+        );
 
-    return battle;
-};
+        return battle;
+    };
 
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
@@ -394,8 +397,14 @@ export const enemyMoves = () => {
         let prevBattleState = getState().battle;
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        moveOrderIds.forEach((id) => {
-            const battleStateSnapshot = dispatch(requeueRecentlyUsedAbility(id, prevBattleState)) || {};
+        getState().battle.enemySide.forEach((combatant) => {
+            if (!combatant?.HP) {
+                return;
+            }
+
+            const isRecentlySummoned = !moveOrderIds.includes(combatant.id);
+            const battleStateSnapshot =
+                dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id, battle: prevBattleState, isRecentlySummoned })) || {};
             prevBattleState = {
                 ...prevBattleState,
                 ...battleStateSnapshot,
