@@ -63,6 +63,32 @@ const chargedAbilityNames = JOB_CARD_MAP.Magician.all
     })
     .map(({ name }) => name);
 
+export const chargedEffect: Effect = {
+    name: "Charged",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: AlchemistStoneImage,
+    description: "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
+    weaponAnimation: "glow",
+    onAbility: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                comparator: "eq",
+                name: chargedAbilityNames,
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+            },
+        ],
+        removeEffect: true,
+    },
+    onTurnEnd: {
+        ability: {
+            ...lesserBolt,
+        },
+        removeEffect: true,
+    },
+};
+
 const chargingStoneEffect: Effect = {
     name: "Charging Stone",
     type: EFFECT_TYPES.NONE,
@@ -77,33 +103,7 @@ const chargingStoneEffect: Effect = {
                 hasEffect: "Charged",
             },
         ],
-        effects: [
-            {
-                name: "Charged",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                icon: AlchemistStoneImage,
-                description: "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
-                weaponAnimation: "glow",
-                onAbility: {
-                    conditions: [
-                        {
-                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                            comparator: "eq",
-                            name: chargedAbilityNames,
-                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                        },
-                    ],
-                    removeEffect: true,
-                },
-                onTurnEnd: {
-                    ability: {
-                        ...lesserBolt,
-                    },
-                    removeEffect: true,
-                },
-            },
-        ],
+        effects: [chargedEffect],
     },
 };
 

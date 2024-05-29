@@ -50,6 +50,7 @@ import {
     FairyWingImage,
     FishSpearImage,
     FlamingFeatherImage,
+    FruitKnifeImage,
     GarnetImage,
     GoldenHammerImage,
     GoldenPrideImage,
@@ -132,6 +133,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { counterEffect } from "./../enemy/effect";
+import { chargedEffect } from "./starterItems";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
@@ -2212,15 +2214,15 @@ export const blackCrystal: Item = {
     ],
 };
 
-export const hardwoodWand: Item = {
-    name: "Hardwood Wand",
+export const fruitKnife: Item = {
+    name: "Fruit Knife",
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
-    image: HardwoodWandImage,
+    image: FruitKnifeImage,
     description: "Your 0-cost attacks deal +3 damage.",
     effects: [
         {
-            name: "Hardwood Wand Effect",
+            name: "Fruit Knife Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             attackPower: 3,
@@ -2236,6 +2238,24 @@ export const hardwoodWand: Item = {
                     notProc: true,
                 },
             ],
+        },
+    ],
+};
+
+export const hardwoodWand: Item = {
+    name: "Hardwood Wand",
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: HardwoodWandImage,
+    description: "On wave start, gain Charged.",
+    effects: [
+        {
+            name: "Hardwood Wand Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onWaveStart: {
+                effects: [chargedEffect],
+            },
         },
     ],
 };

@@ -102,6 +102,7 @@ import {
     medicineWithWeirdVibes,
     polearm,
     starRock,
+    fruitKnife,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -203,7 +204,6 @@ export const ITEMS = [
     blackCrystal,
     yellowHat,
     arcStaff,
-    hardwoodWand,
     starryBandana,
     garnet,
     emerald,
@@ -212,9 +212,10 @@ export const ITEMS = [
     zakumHelmet,
     medicineWithWeirdVibes,
     starRock,
+    fruitKnife,
 ];
 
 export const CLASS_ITEMS = {
     [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride, polearm],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand],
 };
