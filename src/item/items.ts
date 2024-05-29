@@ -55,6 +55,7 @@ import {
     GoldenHammerImage,
     GoldenPrideImage,
     GreenBambooHatImage,
+    GreenJesterImage,
     GuidebookImage,
     HardwoodWandImage,
     HerbsImage,
@@ -2461,6 +2462,28 @@ export const starRock: Item = {
                 triggerFrequencyFromSum: 12,
                 disableTriggerFromProcs: true,
             },
+        },
+    ],
+};
+
+export const greenJester: Item = {
+    name: "Green Jester",
+    description: "Increases the damage of 'bolt' abilities by 1.",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: GreenJesterImage,
+    effects: [
+        {
+            name: "Green Jester",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            skillBonus: [
+                {
+                    comparator: "includes",
+                    skill: "bolt",
+                    damage: 1,
+                },
+            ],
         },
     ],
 };

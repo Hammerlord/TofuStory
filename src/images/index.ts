@@ -247,6 +247,7 @@ export { default as GoldRichieImage } from "./GoldRichie.png";
 export { default as GreenBambooHatImage } from "./GreenBambooHat.png";
 export { default as GreenCheeseImage } from "./GreenCheese.png";
 export { default as GreenFairiesImage } from "./GreenFairies.gif";
+export { default as GreenJesterImage } from "./GreenJester.png";
 export { default as GreenMushroomImage } from "./GreenMushroom.gif";
 export { default as GrendelIdleImage } from "./GrendelIdle.gif";
 export { default as GreyShieldImage } from "./GreyShield.png";
