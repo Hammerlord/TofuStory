@@ -1875,16 +1875,16 @@ export const toyHammer: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PicoPicoHammerImage,
-    description: "Every turn, a random card in your hand is Upgraded until discarded.",
+    description: "On battle start, 3 cards in your hand are Upgraded.",
     effects: [
         {
             name: "Toy Hammer",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onTurnInProgress: {
+            onBattleStart: {
                 applyAbilityEffects: {
                     pile: CARD_PILE_TYPES.HAND,
-                    amount: 1,
+                    amount: 3,
                     abilityEffects: [
                         {
                             upgradedByLevels: 1,
