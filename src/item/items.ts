@@ -81,6 +81,7 @@ import {
     PigIllustratedImage,
     PigsRibbonImage,
     PlungerImage,
+    PolearmImage,
     RabbitFootImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
@@ -2377,6 +2378,45 @@ export const medicineWithWeirdVibes: Item = {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const polearm: Item = {
+    name: "Polearm",
+    image: PolearmImage,
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When your Armor breaks, fling 3 damage axes at up to 3 enemies.",
+    effects: [
+        {
+            name: "Polearm Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onArmorLoss: {
+                ability: {
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            armor: 0,
+                            comparator: "eq",
+                        },
+                    ],
+                    name: "Sidearm",
+                    image: PolearmImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+                            damage: 3,
+                            icon: PolearmImage,
+                            numTargets: 2,
+                            targetArea: 5,
+                        },
+                    ],
+                },
             },
         },
     ],
