@@ -140,6 +140,7 @@ export enum EFFECT_EVENT_KEYS {
     onHostileSummon = "onHostileSummon", // When a minion hostile to the effect owner is summoned
     onFriendlySummon = "onFriendlySummon", // When a minion friendly to the effect owner is summoned
     onArmorLoss = "onArmorLoss", // Whenever character loses armor -- this includes armor decay
+    onArmorBreak = "onArmorBreak", // When the character loses armor such that the resulting amount of armor is 0
     onDrawCard = "onDrawCard", // Player drew a card
     onAddCardToHand = "onAddCardToHand", // Player added cards from the card selection overlay
     onDeckCycle = "onDeckCycle", // Player's deck reset

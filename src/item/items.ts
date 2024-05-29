@@ -2395,15 +2395,8 @@ export const polearm: Item = {
             name: "Polearm Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onArmorLoss: {
+            onArmorBreak: {
                 ability: {
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                            armor: 0,
-                            comparator: "eq",
-                        },
-                    ],
                     name: "Sidearm",
                     image: PolearmImage,
                     actions: [

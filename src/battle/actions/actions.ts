@@ -1281,6 +1281,7 @@ export const triggerStatChangeEvents =
                 rawResources = 0,
                 removedEffects = [],
                 isArmorDecay = false,
+                isArmorBroken = false,
                 failedToApplyEffects = [],
             } = statUpdate;
             const dispatchEvent = (effectEventKey: EFFECT_EVENT_KEYS, sourcePayload?: { [key in keyof TriggerSource]? }) => {
@@ -1318,6 +1319,10 @@ export const triggerStatChangeEvents =
 
             if (isArmorDecay) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onArmorDecay);
+            }
+
+            if (isArmorBroken) {
+                dispatchEvent(EFFECT_EVENT_KEYS.onArmorBreak);
             }
 
             if (rawDamage > 0) {

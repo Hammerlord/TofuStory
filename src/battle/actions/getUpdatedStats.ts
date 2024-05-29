@@ -44,6 +44,7 @@ export interface UpdatedCombatantStats {
     mesos?: number;
     removedEffects?: CombatEffect[];
     isArmorDecay?: boolean;
+    isArmorBroken?: boolean;
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
     overkill?: number;
 }
@@ -277,6 +278,7 @@ export const getUpdatedStats = ({
             mesos: mesos - stealMesos,
             removedEffects,
             isArmorDecay: decayArmor,
+            isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
             failedToApplyEffects,
         };
 
