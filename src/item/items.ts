@@ -139,7 +139,7 @@ import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "On battle start, gain {{ effects.0.onWaveStart.armor }} Armor.",
+    description: "On battle start, gain {{ effects.0.onBattleStart.armor }} Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: StolenFenceImage,
@@ -160,7 +160,7 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "On battle start, gain {{ effects.0.onWaveStart.armor }} Armor and 1 Pristine Armor.",
+    description: "On battle start, gain {{ effects.0.onBattleStart.armor }} Armor and 1 Pristine Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
@@ -1601,7 +1601,7 @@ export const tofuSpecial: Item = {
 export const sword: Item = {
     name: "Sword",
     description:
-        "+{{ effects.0.onWaveStart.effects.0.attackPower }} ATT for the first {{ effects.0.onWaveStart.effects.0.duration }} turns of a wave.",
+        "On battle start, gain +{{ effects.0.onBattleStart.effects.0.attackPower }} ATT for {{ effects.0.onBattleStart.effects.0.duration }} turns.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SwordImage,
@@ -1610,7 +1610,7 @@ export const sword: Item = {
             name: "Sword Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -1620,7 +1620,7 @@ export const sword: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,
-                        duration: 3,
+                        duration: 2,
                     },
                 ],
             },
@@ -1933,14 +1933,14 @@ export const ironBall: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: IronBallImage,
-    description: "+{{effects.0.attackPower}} ATT against Armored targets.",
+    description: "+{{ effects.0.attackPower }} ATT against Armored targets.",
     applyEffectsToSummons: true,
     effects: [
         {
             name: "Iron Ball",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackPower: 2,
+            attackPower: 1,
             conditions: [
                 {
                     armor: 0,
