@@ -2337,7 +2337,7 @@ export const goldenPride: Item = {
                             comparator: "eq",
                         },
                     ],
-                    effects: [{ ...thorns, duration: 2 }],
+                    effects: [thorns],
                 },
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
