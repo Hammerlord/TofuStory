@@ -317,6 +317,7 @@ const CombatantView = forwardRef(
             previewStatUpdate,
             previewTargetedBy,
             selectedAbility,
+            index,
             ...other
         }: {
             combatant?: Combatant | Player;
@@ -332,6 +333,7 @@ const CombatantView = forwardRef(
             previewStatUpdate?: PreviewStatUpdate[];
             previewTargetedBy?: PreviewStatUpdate;
             selectedAbility?: Ability | CombatAbility;
+            index: number;
             onMouseEnter?: (event: any) => void;
             onMouseLeave?: (event: any) => void;
         },
@@ -555,7 +557,7 @@ const CombatantView = forwardRef(
                         </div>
                         {oldState?.HP > 0 && (
                             <>
-                                {!isTargeted && !event?.id && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} />}
+                                {!isTargeted && !event?.id && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />}
                                 <div className={classes.leftContainer}>
                                     {getExtraContainerIcons("left")}
                                     <Armor amount={oldState.armor} combatantInfo={combatantInfo} />

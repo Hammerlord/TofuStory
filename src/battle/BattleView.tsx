@@ -1031,6 +1031,7 @@ const BattlefieldContainer = () => {
                                         }
                                         selectedAbility={abilityToUse}
                                         ref={enemyRefs[i]}
+                                        index={i}
                                     />
                                 ))}
                             </div>
@@ -1087,6 +1088,7 @@ const BattlefieldContainer = () => {
                                                     targetedByEnemyAbilities[ally?.id] ||
                                                     targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.PLAYER_SIDE)]
                                                 }
+                                                index={i}
                                             />
                                         );
                                     })}

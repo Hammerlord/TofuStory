@@ -1,10 +1,11 @@
+import { Tooltip } from "@material-ui/core";
+import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { JapaneseOgreIcon, MilitaryMedalIcon } from "../images/icons";
-import { getEffectGroups } from "./effects/EffectIcons";
 import { TooltipSection } from "../view/KeywordsTooltip";
-import { Tooltip } from "@material-ui/core";
-import Handlebars from "handlebars";
+import { getEffectGroups } from "./effects/EffectIcons";
+import { Combatant } from "./types";
 
 const useStyles = createUseStyles({
     tooltip: {
@@ -34,10 +35,24 @@ const useStyles = createUseStyles({
     },
     name: {
         fontSize: "1.1rem",
+        marginRight: "24px",
+    },
+    header: {
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+    },
+    positionIcon: {
+        background: "rgba(255, 255, 255, 0.5)",
+        width: "100%",
+        height: "100%",
+        borderRadius: "4px",
+        display: "inline-block",
+        position: "absolute",
     },
 });
 
-const CombatantTooltip = ({ combatant, isEnemy }) => {
+const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant; isEnemy: boolean; index: number }) => {
     const { isBoss, isElite, isPlayer, name, effects = [] } = combatant || {};
     const classes = useStyles();
 
@@ -78,13 +93,20 @@ const CombatantTooltip = ({ combatant, isEnemy }) => {
         };
     };
 
+    const header = (
+        <div className={classes.header}>
+            <span className={classes.name}>{name}</span>
+            <Icon text={index + 1} icon={<span className={classes.positionIcon} />} size="sm" />
+        </div>
+    );
+
     const combatantTooltip = (
-        <div>
-            <TooltipSection title={name} description={getDifficultyLabel()} />
+        <>
+            <TooltipSection title={header} description={getDifficultyLabel()} />
             {getEffectGroups(effects).map((effects, i) => (
                 <TooltipSection {...getEffectSectionProps(effects, i)} />
             ))}
-        </div>
+        </>
     );
 
     return (
