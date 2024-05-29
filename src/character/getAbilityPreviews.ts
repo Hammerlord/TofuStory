@@ -29,7 +29,7 @@ const previewAction = ({ actionFn, battle }) => {
             return;
         }
 
-        const { statUpdates: currentStatUpdates, allTargetIndices, targetSide, action } = payload;
+        const { statUpdates: currentStatUpdates, selectedIndex, allTargetIndices, targetSide, action } = payload;
 
         if (currentStatUpdates) {
             Object.entries(currentStatUpdates).forEach(([key, value]: [string, object]) => {
@@ -49,11 +49,12 @@ const previewAction = ({ actionFn, battle }) => {
                     statUpdates[key] = [];
                 }
 
-                const { damage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = action;
+                const { damage = 0, secondaryDamage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = action;
+                const finalDamage = index === selectedIndex ? damage : secondaryDamage || damage;
                 const projectedStatUpdate: UpdatedCombatantStats = {
                     combatantId: key,
-                    rawDamage: damage,
-                    healthDamage: damage,
+                    rawDamage: finalDamage,
+                    healthDamage: finalDamage,
                     armor,
                     resources,
                     effects,
