@@ -136,7 +136,7 @@ import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const stolenFence: Item = {
     name: "Stolen Fence",
-    description: "Wave start: gain {{ effects.0.onWaveStart.armor }} Armor.",
+    description: "On battle start, gain {{ effects.0.onWaveStart.armor }} Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: StolenFenceImage,
@@ -147,7 +147,7 @@ export const stolenFence: Item = {
             class: EFFECT_CLASSES.BUFF,
             icon: StolenFenceImage,
             disableDisplayIcon: true,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 7,
             },
@@ -157,7 +157,7 @@ export const stolenFence: Item = {
 
 export const battleShield: Item = {
     name: "Battle Shield",
-    description: "Wave start: gain {{ effects.0.onWaveStart.armor }} Armor and 1 Pristine Armor.",
+    description: "On battle start, gain {{ effects.0.onWaveStart.armor }} Armor and 1 Pristine Armor.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: BattleShieldImage,
@@ -166,7 +166,7 @@ export const battleShield: Item = {
             name: "Battle Shield",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 armor: 5,
                 effects: [{ ...preventArmorDecayPlayer }],
@@ -177,7 +177,7 @@ export const battleShield: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "Heal {{ effects.0.onWaveClear.healing }} HP on wave clear.",
+    description: "On wave clear, heal {{ effects.0.onWaveClear.healing }} HP.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SafetyCharmImage,
@@ -235,7 +235,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Overhealing grants Armor for that amount. Not affected by Armor Up.",
+    description: "Healing grants Armor for that amount. Not affected by Armor Up.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
@@ -245,11 +245,11 @@ export const amethyst: Item = {
             name: "Amethyst Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onReceiveOverhealing: {
+            onReceiveHealing: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 flatArmor: 1,
                 multiplier: {
-                    type: MULTIPLIER_TYPES.OVERHEALING,
+                    type: MULTIPLIER_TYPES.HEALING,
                     value: 1,
                 },
             },
@@ -297,7 +297,7 @@ export const topaz: Item = {
 
 export const leatherSandals: Item = {
     name: "Leather Sandals",
-    description: "Draw {{ effects.0.onWaveStart.effects.0.drawCardsPerTurn }} extra cards at the start of a wave.",
+    description: "On battle start, draw {{ effects.0.onWaveStart.effects.0.drawCardsPerTurn }} extra cards.",
     flavourText: "The quintessential footwear of aspiring adventurers.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -307,7 +307,7 @@ export const leatherSandals: Item = {
             name: "Leather Sandals",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -936,7 +936,7 @@ export const cursedDoll: Item = {
 export const redHeadband: Item = {
     name: "Red Headband",
     image: RedHeadbandImage,
-    description: "Gain an extra {{ resources }} at the start of a wave.",
+    description: "On battle start, gain an extra {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -944,7 +944,7 @@ export const redHeadband: Item = {
             name: "Red Headband Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -1420,7 +1420,7 @@ export const wildKargoEye: Item = {
 
 export const pigIllustrated: Item = {
     name: "Pig Illustrated",
-    description: "When you use a 2+ cost card, it has a 50% chance to refund 1 {{ resources }}.",
+    description: "When you use a 2+ cost card, it has a 33% chance to refund 1 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PigIllustratedImage,
@@ -1439,7 +1439,7 @@ export const pigIllustrated: Item = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                chance: 0.5,
+                chance: 0.3334,
                 resources: 1,
             },
         },
@@ -1495,7 +1495,7 @@ export const flamingFeather: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: FlamingFeatherImage,
-    description: "When you use an offense card, you have a 50% chance for each {{ resources }} to cast 1 Burn.",
+    description: "When you use an offense card, you have a 33% chance for each {{ resources }} to cast 1 Burn.",
     effects: [
         {
             name: "Flaming Feather",
@@ -1512,7 +1512,7 @@ export const flamingFeather: Item = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                chance: 0.5,
+                chance: 0.3334,
                 multiplier: {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                     type: MULTIPLIER_TYPES.RESOURCES_SPENT,
@@ -1930,14 +1930,14 @@ export const ironBall: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: IronBallImage,
-    description: "+1 ATT against Armored targets.",
+    description: "+{{effects.0.attackPower}} ATT against Armored targets.",
     applyEffectsToSummons: true,
     effects: [
         {
             name: "Iron Ball",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackPower: 1,
+            attackPower: 2,
             conditions: [
                 {
                     armor: 0,
@@ -2261,7 +2261,7 @@ export const broom: Item = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                chance: 0.334,
+                chance: 0.3334,
                 multiplier: {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                     type: MULTIPLIER_TYPES.RESOURCES_SPENT,
@@ -2388,7 +2388,7 @@ export const polearm: Item = {
     image: PolearmImage,
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "When your Armor breaks, fling 3 damage axes at up to 3 enemies.",
+    description: "When your Armor breaks, fling axes at up to 3 enemies for 3 damage.",
     effects: [
         {
             name: "Polearm Effect",

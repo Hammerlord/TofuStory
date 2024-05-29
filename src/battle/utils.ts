@@ -365,6 +365,10 @@ export const getMultiplier = ({
         return (source?.statUpdate?.overhealing || 1) * numValue;
     }
 
+    if (type === MULTIPLIER_TYPES.HEALING) {
+        return (source?.statUpdate?.healing || 1) * numValue;
+    }
+
     if (type === MULTIPLIER_TYPES.ALL_CARDS) {
         const allCards = [...deck, ...hand, ...discard];
         const multValue = typeof value === "number" ? value : 1;
