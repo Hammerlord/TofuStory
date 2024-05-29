@@ -101,6 +101,7 @@ import {
     goldenPride,
     medicineWithWeirdVibes,
     polearm,
+    starRock,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -210,6 +211,7 @@ export const ITEMS = [
     personalAnvil,
     zakumHelmet,
     medicineWithWeirdVibes,
+    starRock,
 ];
 
 export const CLASS_ITEMS = {

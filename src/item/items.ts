@@ -96,6 +96,7 @@ import {
     SpectrumGogglesImage,
     StarEarringsImage,
     StarfallMagicSquareImage,
+    StarRockImage,
     SteelyImage,
     StolenFenceImage,
     SunflowerImage,
@@ -2417,6 +2418,35 @@ export const polearm: Item = {
                         },
                     ],
                 },
+            },
+        },
+    ],
+};
+
+export const starRock: Item = {
+    name: "Star Rock",
+    description:
+        "After playing {{ effects.0.onPlayCard.triggerFrequencyFromSum }} cards, draw a card. It costs 1 {{ resources }} less until discarded.",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: StarRockImage,
+    effects: [
+        {
+            name: "Star Rock Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onPlayCard: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                drawCards: {
+                    amount: 1,
+                    effects: [
+                        {
+                            resourceCost: -1,
+                        },
+                    ],
+                },
+                triggerFrequencyFromSum: 12,
+                disableTriggerFromProcs: true,
             },
         },
     ],

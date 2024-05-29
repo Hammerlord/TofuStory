@@ -611,6 +611,7 @@ export { default as StarfallMagicSquareImage } from "./StarfallMagicSquare.png";
 export { default as StarfishImage } from "./Starfish.png";
 export { default as StarfishIdleImage } from "./StarfishIdle.gif";
 export { default as StarHairPinImage } from "./StarHairPin.png";
+export { default as StarRockImage } from "./StarRock.png";
 export { default as StealImage } from "./Steal.png";
 export { default as SteelOreImage } from "./SteelOre.png";
 export { default as SteelyImage } from "./Steely.png";
