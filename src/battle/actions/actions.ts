@@ -1492,6 +1492,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
         const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
         const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
         const mutableHostile = hostile.slice();
+        let didTributeKill = false;
 
         for (const summon of action.summon) {
             const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false, side } = summon;
@@ -1546,6 +1547,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 if (typeof pos === "number") {
                     dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos }));
                     isTributeKill = true;
+                    didTributeKill = true;
                 }
             }
 
@@ -1619,7 +1621,9 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             );
         });
 
-        dispatch(updateEnemyTargetingAfterSummon(minionsSummoned, friendlySide));
+        if (!didTributeKill) {
+            dispatch(updateEnemyTargetingAfterSummon(minionsSummoned, friendlySide));
+        }
     };
 };
 
