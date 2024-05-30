@@ -301,7 +301,7 @@ export const topaz: Item = {
 
 export const leatherSandals: Item = {
     name: "Leather Sandals",
-    description: "On battle start, draw {{ effects.0.onWaveStart.effects.0.drawCardsPerTurn }} extra cards.",
+    description: "On battle start, draw {{ effects.0.onBattleStart.effects.0.drawCardsPerTurn }} extra cards.",
     flavourText: "The quintessential footwear of aspiring adventurers.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -2220,13 +2220,13 @@ export const fruitKnife: Item = {
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: FruitKnifeImage,
-    description: "Your 0-cost attacks deal +3 damage.",
+    description: "Your 0-cost attacks gain +{{ effects.0.attackPower }} ATT.",
     effects: [
         {
             name: "Fruit Knife Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            attackPower: 3,
+            attackPower: 2,
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
