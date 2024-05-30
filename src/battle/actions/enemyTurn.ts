@@ -141,41 +141,44 @@ const requeueRecentlyUsedAbility =
     (dispatch) => {
         const getState = () => ({ battle });
         const actorInfo = findCombatantData(getState, combatantId);
-        if (!actorInfo?.combatant?.HP || actorInfo.combatant.casting?.channelDuration) {
+        if (!actorInfo?.combatant?.HP) {
             return;
         }
 
         const actor = actorInfo.combatant;
-        const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
-        let abilityIndex = -1;
-        if (abilityUsed) {
-            abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
-        } else if (!isRecentlySummoned) {
-            abilityIndex = getUseAbilityIndex(actorInfo);
-        }
 
         const postUpdateActorInfo = {
             ...actorInfo,
         };
 
-        if (abilityIndex !== -1) {
-            const updatedAbilities = [...actor.abilities];
-            const [used] = updatedAbilities.splice(abilityIndex, 1);
-            updatedAbilities.push(used);
+        if (!actorInfo.combatant.casting?.channelDuration) {
+            const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
+            let abilityIndex = -1;
+            if (abilityUsed) {
+                abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
+            } else if (!isRecentlySummoned) {
+                abilityIndex = getUseAbilityIndex(actorInfo);
+            }
 
-            dispatch(
-                updateCombatant({
-                    combatantId,
-                    newProperties: {
-                        abilities: updatedAbilities,
-                    },
-                })
-            );
+            if (abilityIndex !== -1) {
+                const updatedAbilities = [...actor.abilities];
+                const [used] = updatedAbilities.splice(abilityIndex, 1);
+                updatedAbilities.push(used);
 
-            postUpdateActorInfo.combatant = {
-                ...actorInfo.combatant,
-                abilities: updatedAbilities,
-            };
+                dispatch(
+                    updateCombatant({
+                        combatantId,
+                        newProperties: {
+                            abilities: updatedAbilities,
+                        },
+                    })
+                );
+
+                postUpdateActorInfo.combatant = {
+                    ...actorInfo.combatant,
+                    abilities: updatedAbilities,
+                };
+            }
         }
 
         const ability = getNextTelegraphedAbility(postUpdateActorInfo);

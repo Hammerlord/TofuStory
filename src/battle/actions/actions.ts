@@ -1235,6 +1235,8 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
             return;
         }
 
+        let battle = getState().battle;
+
         getState().battle.enemySide.forEach((enemy) => {
             if (!enemy?.HP) {
                 return;
@@ -1243,9 +1245,32 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
             const enemyInfo = findCombatantData(getState, enemy.id);
             const ability = getNextTelegraphedAbility(enemyInfo);
 
-            if (ability?.actions) {
-                const action = ability.actions.find(isOffensiveAction) || ability.actions[0];
-                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, getState });
+            if (!ability?.actions) {
+                return;
+            }
+
+            let mutableUpdatedActionTargets = [];
+            ability.actions.forEach((action, i) => {
+                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, getState: () => ({ battle }) });
+                mutableUpdatedActionTargets[i] = targeting;
+
+                const previews = getAbilityPreviews({
+                    ability,
+                    actor: {
+                        ...enemyInfo.combatant,
+                        targeting: {
+                            ability,
+                            actionTargets: mutableUpdatedActionTargets,
+                        },
+                    },
+                    battle,
+                });
+
+                battle = {
+                    ...battle,
+                    ...previews.combatantStates,
+                };
+
                 // If targeting picked the new taunting unit, then switch targets.
                 if (targeting.side === friendlySide && targeting.index === index) {
                     dispatch(
@@ -1253,14 +1278,14 @@ const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }
                             combatantId: enemy.id,
                             newProperties: {
                                 targeting: {
-                                    ...targeting,
+                                    actionTargets: mutableUpdatedActionTargets,
                                     ability,
                                 },
                             },
                         })
                     );
                 }
-            }
+            });
         });
     };
 };
