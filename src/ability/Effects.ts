@@ -362,23 +362,51 @@ export const warding: Effect = {
     },
 };
 
+export const attackPower: Effect = {
+    name: "ATT Up",
+    description: "Increases attack damage by 10% (rounded up).",
+    icon: CrossedSwordsIcon,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    attackPower: 1,
+    canBeSilenced: true,
+};
+
 export const stoneSkin: Effect = {
     name: "Stoneskin",
     canBeSilenced: true,
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Gaining Armor every turn.",
+    description: "Gaining Armor every turn. While the character has armor, it gains +1 ATT.",
     icon: StoneShieldImage,
-    onBattleStart: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        armor: 1,
-        multiplier: {
-            calculationTarget: CONDITION_TARGETS.ACTOR,
-            type: MULTIPLIER_TYPES.MAX_HP,
-            value: 0.05,
+    onBattleStart: [
+        {
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            armor: 1,
+            multiplier: {
+                calculationTarget: CONDITION_TARGETS.ACTOR,
+                type: MULTIPLIER_TYPES.MAX_HP,
+                value: 0.05,
+            },
         },
-    },
+        {
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            effects: [
+                {
+                    ...attackPower,
+                    onlyVisibleWhenProcced: true,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            armor: 0,
+                            comparator: "gt",
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         armor: 1,
@@ -565,16 +593,6 @@ export const poison: Effect = {
     onTurnStart: {
         decrementStacks: 1,
     },
-};
-
-export const attackPower: Effect = {
-    name: "ATT Up",
-    description: "Increases attack damage by 10% (rounded up).",
-    icon: CrossedSwordsIcon,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    attackPower: 1,
-    canBeSilenced: true,
 };
 
 export const armorUp: Effect = {

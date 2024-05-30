@@ -117,9 +117,14 @@ export const generateEliteSquad = ({
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
-    const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, stoneSkin]).slice(0, numAffixes);
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
+    const affixPool = [eliteThorns, raging, warding, explosive, lifeLink, sneaky];
+    if (!baseEnemy.armor) {
+        affixPool.push(stoneSkin);
+    }
+    const affixes = shuffle(affixPool).slice(0, numAffixes);
+
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.3 + 10));
@@ -164,10 +169,11 @@ const generateEliteTriad = ({
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
-    const affixes = shuffle([eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, explosive, lifeLink, sneaky, stoneSkin]).slice(
-        0,
-        numAffixes
-    );
+    const affixPool = [eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, explosive, lifeLink, sneaky];
+    if (!baseEnemy.armor) {
+        affixPool.push(stoneSkin);
+    }
+    const affixes = shuffle(affixPool).slice(0, numAffixes);
 
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -208,8 +214,13 @@ const generateEliteDuo = ({
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
-    const affixes = shuffle([eliteThorns, raging, warding, explosive, lifeLink, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
+    const affixPool = [eliteThorns, raging, warding, explosive, lifeLink, sneaky, poisonous];
+    if (!baseEnemy.armor) {
+        affixPool.push(stoneSkin);
+    }
+
+    const affixes = shuffle(affixPool).slice(0, numAffixes);
 
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
 
@@ -279,8 +290,14 @@ const generateElite = ({
             },
         },
     };
-    const affixes = shuffle([eliteThorns, raging, warding, eruptive, swarming, sneaky, poisonous, stoneSkin]).slice(0, numAffixes);
+
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.single, previousEncounters });
+    const affixPool = [eliteThorns, raging, warding, eruptive, swarming, sneaky, poisonous];
+    if (!baseEnemy.armor) {
+        affixPool.push(stoneSkin);
+    }
+
+    const affixes = shuffle(affixPool).slice(0, numAffixes);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8 + 30));
