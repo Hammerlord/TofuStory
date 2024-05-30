@@ -1,6 +1,6 @@
 import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
-import { sneaky, lifeLink, poisonous } from "../enemy/effect";
+import { sneaky, lifeLink, poisonous, taunting } from "../enemy/effect";
 import {
     avenger,
     elite,
@@ -169,7 +169,7 @@ const generateEliteTriad = ({
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
-    const affixPool = [eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, lifeLink, sneaky];
+    const affixPool = [eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, lifeLink, sneaky, taunting];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -194,6 +194,14 @@ const generateEliteTriad = ({
         resources: 2,
         // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
         abilities: moveHeadToTail(enemy.abilities),
+        // Same with effects: the enemies eg. don't all stealth at once
+        effects: enemy.effects.map((e) => {
+            return {
+                ...e,
+                uptime: 2,
+                onWaveStart: undefined,
+            };
+        }),
     };
 
     return getRandomItem([
@@ -215,7 +223,7 @@ const generateEliteDuo = ({
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
-    const affixPool = [eliteThorns, raging, warding, lifeLink, sneaky, poisonous];
+    const affixPool: Effect[] = [eliteThorns, raging, warding, lifeLink, sneaky, poisonous, { ...taunting, turnsTriggerFrequency: 2 }];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -239,6 +247,15 @@ const generateEliteDuo = ({
     const alternateResource = {
         ...enemy,
         resources: 2,
+        // It feels a bit more varied if the enemy aren't 100% coordinated in when they attack or not (for enemies with more than one ability)
+        abilities: moveHeadToTail(enemy.abilities),
+        effects: enemy.effects.map((e) => {
+            return {
+                ...e,
+                uptime: 2,
+                onWaveStart: undefined,
+            };
+        }),
     };
 
     return getRandomItem([

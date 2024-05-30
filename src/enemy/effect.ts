@@ -1,4 +1,4 @@
-import { hardy, lupinCurse, poison } from "../ability/Effects";
+import { hardy, lupinCurse, poison, taunt } from "../ability/Effects";
 import {
     ACTION_TYPES,
     CONDITION_TARGETS,
@@ -291,6 +291,18 @@ export const lifeLink: Effect = {
                 },
             },
         ],
+    },
+};
+
+export const taunting: Effect = {
+    name: "Taunting",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    description: "Periodically gaining Taunt. Attackers must target Taunting characters.",
+    turnsTriggerFrequency: 3,
+    onTurnEnd: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        effects: [{ ...taunt, duration: 2 }],
     },
 };
 
