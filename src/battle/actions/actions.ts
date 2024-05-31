@@ -1651,9 +1651,11 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             );
         });
 
+        /*
         if (!didTributeKill) {
             dispatch(updateEnemyTargetingAfterSummon(minionsSummoned, friendlySide));
         }
+        */
     };
 };
 
@@ -1812,7 +1814,7 @@ const checkHandleMorph = ({
             );
         });
 
-        dispatch(updateEnemyTargetingAfterSummon([summons], side));
+        //dispatch(updateEnemyTargetingAfterSummon([summons], side));
     };
 };
 
@@ -2892,9 +2894,11 @@ export const checkSummonMinion = ({
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
+        /*
         if (!parentSource?.isPreviewMode) {
             dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
         }
+        */
     };
 };
 
