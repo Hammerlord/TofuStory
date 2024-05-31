@@ -1678,8 +1678,15 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
             const mutableUpdatedActionTargets = [...actionTargets];
 
             actionTargets.forEach((targeting, i) => {
+                const action = ability?.actions[i];
+                // It is confusing, HUD-wise, for an area attack to switch targets randomly.
+                // May consider canceling target switching on summon in general.
+                if (!action || action.area >= 1) {
+                    return;
+                }
+
                 const updatedTargeting = autoSelectActionTarget({
-                    action: ability?.actions[i],
+                    action,
                     actorId: enemy.id,
                     getState: () => ({ battle }),
                 });
