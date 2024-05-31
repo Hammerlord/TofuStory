@@ -229,10 +229,8 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             // TODO: multi hits could be targeting random enemies
             const { index: targetIndex, side: targetSide } = targeting || {};
             const targetCombatant = battle[targetSide]?.[targetIndex];
-            const isExclusionarySelfCast = ability.actions.some(
-                (action) => action.target === TARGET_TYPES.SELF && action.excludePrimaryTarget
-            );
-            if (!targetCombatant || abilityHasYetToCast || isExclusionarySelfCast) {
+            const isSelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF);
+            if (!targetCombatant || abilityHasYetToCast || isSelfCast) {
                 return null;
             }
 
