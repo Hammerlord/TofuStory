@@ -128,7 +128,7 @@ export const enemyHaste: Ability = {
 export const whomp: Ability = {
     name: "Whomp",
     image: MushroomOmokImage,
-    description: "Deals {{ actions.0.damage }} split among targets hit.",
+    description: "Damage split among targets hit.",
     resourceCost: 3,
     castTime: 1,
     actions: [

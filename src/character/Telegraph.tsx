@@ -152,6 +152,9 @@ const useStyles = createUseStyles({
         fontWeight: "bold",
         color: "white",
     },
+    targetElementContainer: {
+        display: "flex",
+    },
 });
 
 export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo): Ability | null => {
@@ -225,25 +228,29 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             });
         });
 
-        return actionTargets.map((targeting, i) => {
-            // TODO: multi hits could be targeting random enemies
-            const { index: targetIndex, side: targetSide } = targeting || {};
-            const targetCombatant = battle[targetSide]?.[targetIndex];
-            const isSelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF);
-            if (!targetCombatant || abilityHasYetToCast || isSelfCast) {
-                return null;
-            }
+        return (
+            <span className={classes.targetElementContainer}>
+                {actionTargets.map((targeting, i) => {
+                    // TODO: multi hits could be targeting random enemies
+                    const { index: targetIndex, side: targetSide } = targeting || {};
+                    const targetCombatant = battle[targetSide]?.[targetIndex];
+                    const isSelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF);
+                    if (!targetCombatant || abilityHasYetToCast || isSelfCast) {
+                        return null;
+                    }
 
-            // If there are more than one of the same summon type on the board (eg. 2+ Fire Spirits), display the index of that summon
-            const isIndexDisplayed = combatantCountMap[targetCombatant.name]?.length > 1;
-            const displayIndex = targetIndex + 1; // 1-based indices when displaying to player
-            return (
-                <span className={classes.targetPortrait} key={[targetCombatant.image, i].join("-")}>
-                    <Icon icon={targetCombatant.image} />
-                    {isIndexDisplayed && <span className={classes.targetCombatantIndex}>{displayIndex}</span>}
-                </span>
-            );
-        });
+                    // If there are more than one of the same summon type on the board (eg. 2+ Fire Spirits), display the index of that summon
+                    const isIndexDisplayed = combatantCountMap[targetCombatant.name]?.length > 1;
+                    const displayIndex = targetIndex + 1; // 1-based indices when displaying to player
+                    return (
+                        <span className={classes.targetPortrait} key={[targetCombatant.image, i].join("-")}>
+                            <Icon icon={targetCombatant.image} />
+                            {isIndexDisplayed && <span className={classes.targetCombatantIndex}>{displayIndex}</span>}
+                        </span>
+                    );
+                })}
+            </span>
+        );
     };
 
     const area = ability.actions.reduce((acc, action) => {
