@@ -49,8 +49,25 @@ const previewAction = ({ actionFn, battle }) => {
                     statUpdates[key] = [];
                 }
 
-                const { damage = 0, secondaryDamage = 0, armor = 0, healing = 0, resources = 0, effects = [] } = action;
-                const finalDamage = index === selectedIndex ? damage : secondaryDamage || damage;
+                const {
+                    damage = 0,
+                    secondaryDamage = 0,
+                    armor = 0,
+                    healing = 0,
+                    resources = 0,
+                    effects = [],
+                    damageDividedByTargets,
+                    resurrect,
+                } = action;
+
+                let finalDamage = index === selectedIndex ? damage : secondaryDamage || damage;
+                if (damageDividedByTargets) {
+                    const allTargets = battle[targetSide]?.filter((combatant: Combatant | null, i: number) => {
+                        return (combatant?.HP || resurrect) && allTargetIndices.includes(i);
+                    });
+                    finalDamage = Math.ceil(finalDamage / allTargets.length);
+                }
+
                 const projectedStatUpdate: UpdatedCombatantStats = {
                     combatantId: key,
                     rawDamage: finalDamage,
