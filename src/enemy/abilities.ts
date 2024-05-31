@@ -128,6 +128,7 @@ export const enemyHaste: Ability = {
 export const whomp: Ability = {
     name: "Whomp",
     image: MushroomOmokImage,
+    description: "Deals {{ actions.0.damage }} split among targets hit.",
     resourceCost: 3,
     castTime: 1,
     actions: [
@@ -135,8 +136,8 @@ export const whomp: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             damage: 6,
+            damageDividedByTargets: true,
             area: 1,
-            secondaryDamage: 3,
             addCardsToDiscard: [dazedCurse],
         },
     ],

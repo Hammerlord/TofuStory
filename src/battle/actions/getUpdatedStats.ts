@@ -77,7 +77,6 @@ export const getUpdatedStats = ({
     const actor = getCombatantById(actorId);
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
-    //const sourceTargets = (source.allTargetIds || []).map(getCalculationTarget); // TODO used to be used in calculating multipliers
 
     return (recipients || targets).map((target: CombatantInfo) => {
         const { combatant: targetCombatant, index: targetIndex } = target;
@@ -105,6 +104,7 @@ export const getUpdatedStats = ({
             flatDamage = 0,
             targetMinHP = 0,
             decayArmor = false,
+            damageDividedByTargets = false,
         } = action;
 
         const enabledEffects = getEnabledEffects({ combatantInfo: target });
@@ -120,10 +120,14 @@ export const getUpdatedStats = ({
             discard,
         });
 
-        const damage =
+        let damage =
             calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier, source }) +
             Math.floor(targetCombatant.armor * destroyArmor) +
             flatDamage * multiplier;
+
+        if (damageDividedByTargets) {
+            damage = Math.ceil(damage / (targets.length || 1));
+        }
 
         let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
         if (decayArmor) {
