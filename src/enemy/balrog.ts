@@ -311,26 +311,22 @@ export const balrog: Minion = {
         balrogAttack,
         {
             name: "Dark Lightning",
+            description: "Damage dealt is split among targets.",
             image: ThunderBoltImage,
             actions: [
                 {
-                    damage: 10,
+                    damage: 12,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     icon: DarkThunderBoltProjectileImage,
+                    damageDividedByTargets: true,
                     animationOptions: {
                         height: 250,
                         width: 60,
                         flash: 200,
                         brightness: 0,
                     },
-                    area: 3,
-                    effects: [
-                        {
-                            ...poison,
-                            stacks: 2,
-                        },
-                    ],
+                    area: 5,
                 },
             ],
         },

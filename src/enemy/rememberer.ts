@@ -231,6 +231,7 @@ const summonCoalescingMists4: Ability = {
 const pulsingNightmare: Ability = {
     name: "Pulsing Night Terror",
     image: EncroachingDarknessImage,
+    description: "Damage dealt is split among targets.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -241,6 +242,7 @@ const pulsingNightmare: Ability = {
                 height: 100,
             },
             damage: 5,
+            damageDividedByTargets: true,
             area: 1,
         },
     ],

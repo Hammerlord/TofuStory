@@ -219,6 +219,7 @@ const throwFood: Ability = {
 
 const picoDrop: Ability = {
     name: "Pico Drop",
+    description: "Damage dealt is split among targets.",
     image: ToyHammerImage,
     actions: [
         {
@@ -228,6 +229,7 @@ const picoDrop: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
             damage: 3,
+            damageDividedByTargets: true,
         },
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -236,6 +238,7 @@ const picoDrop: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
             area: 1,
             damage: 3,
+            damageDividedByTargets: true,
         },
     ],
 };

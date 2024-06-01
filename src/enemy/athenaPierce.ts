@@ -107,13 +107,15 @@ export const athena: Minion = {
     abilities: [
         shoot,
         {
-            name: "Covering Fire",
+            name: "Multishot",
+            description: "Damage dealt is split among targets.",
             image: CoveringFireImage,
             resourceCost: 0,
             actions: [
                 {
-                    damage: 3,
-                    area: 1,
+                    damage: 5,
+                    damageDividedByTargets: true,
+                    area: 2,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.ONE_WAY,
@@ -122,11 +124,6 @@ export const athena: Minion = {
                         rotate: -45,
                         rotateToFaceTarget: true,
                     },
-                },
-                {
-                    armor: 5,
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
                 },
             ],
         },

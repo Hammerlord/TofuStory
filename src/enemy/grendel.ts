@@ -61,12 +61,14 @@ export const grendelIfrit: Minion = {
             name: "Fiery Slam",
             image: IfritImage,
             resourceCost: 3,
+            description: "Damage dealt is split among targets.",
             castTime: 1,
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 5,
+                    damage: 7,
+                    damageDividedByTargets: true,
                     area: 1,
                     animationOptions: {
                         flash: 200,
@@ -118,7 +120,7 @@ const iceAge: Ability = {
         {
             damage: 30,
             area: 2,
-            target: TARGET_TYPES.HOSTILE,
+            target: TARGET_TYPES.PLAYER,
             type: ACTION_TYPES.RANGE_ATTACK,
             icon: NimbleJewelCImage,
             animationOptions: {
@@ -214,6 +216,7 @@ const volcanicBurst: Ability = {
 const stormPulse: Ability = {
     name: "Storm Pulse",
     image: MagicArmorImage,
+    description: "Damage dealt is split among targets.",
     conditions: [
         {
             hasEffect: "Storm Barrier",
@@ -225,6 +228,7 @@ const stormPulse: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             damage: 7,
+            damageDividedByTargets: true,
             area: 5,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             icon: EncroachingDarknessImage,

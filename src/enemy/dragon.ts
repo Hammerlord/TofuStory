@@ -86,10 +86,12 @@ export const lostDragon: Minion = {
         {
             name: "Blazing Flame",
             image: FireMarbleImage,
+            description: "Damage dealt is split among targets.",
             actions: [
                 {
                     area: 2,
                     damage: 7,
+                    damageDividedByTargets: true,
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: FireMarbleImage,
@@ -113,11 +115,13 @@ export const lostDragon: Minion = {
         },
         {
             name: "Toxic Claws",
+            description: "Damage dealt is split among targets. Inflicts 2 Poison and 2 Bleed.",
             image: RedMagicClawImage,
             actions: [
                 {
                     area: 2,
                     damage: 7,
+                    damageDividedByTargets: true,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     effects: [{ ...poison, stacks: 2 }],
@@ -125,6 +129,7 @@ export const lostDragon: Minion = {
                 {
                     area: 2,
                     damage: 7,
+                    damageDividedByTargets: true,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     effects: [{ ...bleed, stacks: 2 }],
@@ -207,22 +212,17 @@ export const lostDragon: Minion = {
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 6,
+                    damage: 8,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 6,
+                    damage: 8,
                 },
                 {
                     target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    damage: 6,
-                },
-                {
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                    damage: 6,
+                    damage: 8,
                 },
             ],
         },
