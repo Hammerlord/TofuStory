@@ -154,6 +154,9 @@ const useStyles = createUseStyles({
     },
     targetElementContainer: {
         display: "flex",
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
     },
 });
 
@@ -224,14 +227,15 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                     combatantCountMap[name] = [];
                 }
 
-                combatantCountMap[name].push(id);
+                if (!combatantCountMap[name].includes(id)) {
+                    combatantCountMap[name].push(id);
+                }
             });
         });
 
         return (
             <span className={classes.targetElementContainer}>
                 {actionTargets.map((targeting, i) => {
-                    // TODO: multi hits could be targeting random enemies
                     const { index: targetIndex, side: targetSide } = targeting || {};
                     const targetCombatant = battle[targetSide]?.[targetIndex];
                     const isSelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF);
@@ -335,7 +339,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         {!abilityHasYetToCast && resourceCost === combatant?.maxResources && (
                             <Icon icon={<WarningIcon />} size={"sm"} className={classes.warningIcon} />
                         )}
-                        {channelDuration && <span className={classes.channelDuration}>{channelDuration}</span>}
+                        {channelDuration > 0 && <span className={classes.channelDuration}>{channelDuration}</span>}
                         {abilityHasYetToCast && (
                             <span>
                                 <Icon icon={<HourglassIcon />} size="sm" />
