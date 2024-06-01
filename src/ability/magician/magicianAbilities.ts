@@ -3125,18 +3125,18 @@ export const fireworks: Ability = {
                 width: 25,
                 height: 50,
             },
-            damage: 3,
+            damage: 5,
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
-            effects: [{ ...burn, stacks: 2 }],
+            effects: [{ ...burn, stacks: 1 }],
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -3374,7 +3374,7 @@ export const chargedBlast: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 14,
+                damage: 12,
             },
         },
     ],
@@ -3383,7 +3383,7 @@ export const chargedBlast: Ability = {
             actions: [
                 {
                     bonus: {
-                        damage: 4,
+                        damage: 3,
                     },
                 },
             ],
