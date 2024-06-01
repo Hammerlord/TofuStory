@@ -1224,7 +1224,13 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
 /**
  * If a player or an ally taunts, the enemy targeting should reorient to it.
  */
-const updateEnemyTargetingAfterEffectsApplied = ({ combatantId, effectsApplied }) => {
+const updateEnemyTargetingAfterEffectsApplied = ({
+    combatantId,
+    effectsApplied = [],
+}: {
+    combatantId: string;
+    effectsApplied: CombatEffect[];
+}) => {
     return (dispatch, getState) => {
         if (effectsApplied.every((effect) => effect.type !== EFFECT_TYPES.TAUNT)) {
             return;
@@ -1649,6 +1655,10 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                     parentSource,
                 })
             );
+        });
+
+        minionsSummoned.forEach((minion) => {
+            dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: minion.id, effectsApplied: minion.effects }));
         });
 
         /*
@@ -2894,6 +2904,7 @@ export const checkSummonMinion = ({
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
+        dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: summonedMinion.id, effectsApplied: summonedMinion.effects }));
         /*
         if (!parentSource?.isPreviewMode) {
             dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
