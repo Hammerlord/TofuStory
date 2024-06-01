@@ -482,7 +482,7 @@ const CombatantView = forwardRef(
 
         const { isPlayerTurn, state: battleState } = state.battle || {};
         const showIncomingDamagePreview =
-            previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !action;
+            previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !events?.length;
 
         return (
             <div
