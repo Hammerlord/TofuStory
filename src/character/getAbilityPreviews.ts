@@ -186,7 +186,7 @@ const getAbilityPreviews = ({
                 const { index } = combatantInfo;
                 const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
-                const isProcHostileAction = previews.battle.source?.isProc && isOffensiveAction(currentAction);
+                const isProcHostileAction = previews.battle.source?.isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
 
                 result[id].push({
                     statUpdate,
