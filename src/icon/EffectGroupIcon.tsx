@@ -314,6 +314,27 @@ const EffectGroupIcon = ({
         proc: effects[0],
     });
 
+    const extraOptionsIconText = (() => {
+        const { property, modulo } = extraDisplayOptions || {};
+        if (!property) {
+            return;
+        }
+
+        const propertyVal = _.get(effects[0], property) || 0;
+        const moduloVal = _.get(effects[0], modulo);
+        if (moduloVal !== undefined) {
+            return moduloVal - (propertyVal % moduloVal) || undefined;
+        }
+
+        return propertyVal || undefined;
+    })();
+
+    useEffect(() => {
+        if (extraOptionsIconRef.current) {
+            playExpandContractAnimation({ object: extraOptionsIconRef.current });
+        }
+    }, [extraOptionsIconText]);
+
     if (!isConditionsPassed && onlyVisibleWhenProcced) {
         return null;
     }
@@ -338,27 +359,6 @@ const EffectGroupIcon = ({
         },
         { stackCount: 0, displayStacks: false }
     );
-
-    const extraOptionsIconText = (() => {
-        const { property, modulo } = extraDisplayOptions || {};
-        if (!property) {
-            return;
-        }
-
-        const propertyVal = _.get(effects[0], property) || 0;
-        const moduloVal = _.get(effects[0], modulo);
-        if (moduloVal !== undefined) {
-            return moduloVal - (propertyVal % moduloVal) || undefined;
-        }
-
-        return propertyVal || undefined;
-    })();
-
-    useEffect(() => {
-        if (extraOptionsIconRef.current) {
-            playExpandContractAnimation({ object: extraOptionsIconRef.current });
-        }
-    }, [extraOptionsIconText]);
 
     if (!icon) {
         return null;
