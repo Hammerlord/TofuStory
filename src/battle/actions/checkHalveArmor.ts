@@ -6,12 +6,14 @@ import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 export const checkHalveArmor = (side: (CombatantInfo | null)[]) => (dispatch) => {
     const statChanges = side
         .map((combatantInfo: CombatantInfo) => {
-            if (!combatantInfo) {
+            if (!combatantInfo?.combatant) {
                 return;
             }
 
             const armor = getHalveArmorAmount(combatantInfo);
-            return { combatantId: combatantInfo?.combatant?.id, armor, isArmorDecay: true };
+            const prevArmor = combatantInfo.combatant.armor || 0;
+            const isArmorBroken = prevArmor > 0 && prevArmor + armor === 0;
+            return { combatantId: combatantInfo.combatant.id, armor, isArmorDecay: true, isArmorBroken };
         })
         .filter((v) => v);
 
