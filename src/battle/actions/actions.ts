@@ -2276,7 +2276,7 @@ export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, so
         return;
     }
 
-    const { index: actorIndex, friendly, friendlySide } = actorData;
+    const { index: actorIndex, friendly = [], friendlySide } = actorData;
     const recipientIndices = calculateTargetIndices({
         action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
         selectedIndex: actorIndex,
@@ -2286,7 +2286,7 @@ export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, so
         battle,
         source,
     });
-    const recipientIds = recipientIndices.map((i: number) => friendly[i].id);
+    const recipientIds = recipientIndices.map((i: number) => friendly[i]?.id).filter((v) => v);
 
     return getUpdatedStats({
         ...statsProps,
