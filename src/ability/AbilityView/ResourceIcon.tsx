@@ -4,6 +4,8 @@ import { Fury, Mana } from "../../resource/ResourcesView";
 import { Ability, AbilityEffect, CombatAbility } from "../types";
 import { PLAYER_CLASSES } from "../../Menu/types";
 import { Player } from "../../character/types";
+import { useEffect, useRef, useState } from "react";
+import { playExpandContractAnimation } from "../../character/animations";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -39,19 +41,40 @@ const AbilityResourceIcon = ({
     disableBattleIndicators?: boolean;
 }) => {
     const classes = useStyles();
+    const ref = useRef();
+    const [isInitialized, setIsInitialized] = useState(false);
+
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case
     const { resourceCost = 0, effects = [], hideResourceCostIcon } = ability;
-
-    if (hideResourceCostIcon) {
-        // Retain the dimensions
-        return <div className={classes.placeholder} />;
-    }
 
     const resourceCostFromEffects = effects.reduce((acc, e: AbilityEffect) => {
         return acc + (e.resourceCost || 0);
     }, 0);
     const playerResources = typeof player?.resources === "number" ? player?.resources : Infinity;
     const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffects);
+
+    useEffect(() => {
+        if (!isInitialized) {
+            setIsInitialized(true);
+            return;
+        }
+
+        if (!ref.current) {
+            return;
+        }
+
+        const animation = playExpandContractAnimation({ object: ref.current });
+        return () => {
+            if (animation?.cancel) {
+                animation.cancel();
+            }
+        };
+    }, [totalResourceCost]);
+
+    if (hideResourceCostIcon) {
+        // Retain the dimensions
+        return <div className={classes.placeholder} />;
+    }
 
     const Icon =
         {
@@ -67,7 +90,7 @@ const AbilityResourceIcon = ({
             [classes.cannotUse]: totalResourceCost !== "X" && totalResourceCost > playerResources,
         };
     }
-    return <Icon text={totalResourceCost} className={classNames(className)} />;
+    return <Icon text={totalResourceCost} className={classNames(className)} ref={ref} />;
 };
 
 export const ResourceIcon = ({

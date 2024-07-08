@@ -547,14 +547,14 @@ export const playFadeInAnimation = ({
     });
 };
 
-export const playExpandContractAnimation = ({ object, playbackTime = 300 }) => {
+export const playExpandContractAnimation = ({ object, playbackTime = 300, max = 2 }) => {
     const animationFrames: any[] = [
         {
             scale: 1,
             easing: "ease-out",
         },
         {
-            scale: 2,
+            scale: max,
         },
         {
             scale: 1,
