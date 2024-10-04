@@ -2820,14 +2820,10 @@ export const ballista: Ability = {
 
 const pummelAction = {
     damage: 7,
-    targetArea: 5,
     type: ACTION_TYPES.ATTACK,
-    target: TARGET_TYPES.RANDOM_HOSTILE,
+    target: TARGET_TYPES.HOSTILE,
     secondaryAction: {
         damage: 2,
-    },
-    drawCards: {
-        amount: 1,
     },
 };
 
@@ -2837,8 +2833,7 @@ export const pummel: Ability = {
     image: RedBoxingGloveImage,
     resourceCost: 1,
     overrideBodyText: true,
-    description:
-        "Hit a random enemy, x3. Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}} and draw a card each time.",
+    description: "Hit x3. Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}} each time.",
     actions: [{ ...pummelAction }, { ...pummelAction }, { ...pummelAction }],
     upgrades: [
         {
@@ -2860,42 +2855,26 @@ export const pummel: Ability = {
 export const outrage: Ability = {
     name: "Outrage",
     resourceCost: 2,
-    description: "Hits x3. Cards in your hand cost <b>+1</b> or <b>-1 Fury</b>, randomly chosen.",
+    description: "Cards in your hand cost <b>+1</b> or <b>-1 Fury</b>, randomly chosen.",
     image: MushmomAngryImage,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            damage: 5,
+            damage: 15,
             applyAbilityEffects: {
                 pile: CARD_PILE_TYPES.HAND,
                 abilityEffects: [{ resourceCost: 1 }, { resourceCost: -1 }],
                 mode: "random-pick",
             },
         },
-        {
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            damage: 5,
-        },
-        {
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.ATTACK,
-            damage: 5,
-        },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 2,
-                },
-                {
-                    damage: 2,
-                },
-                {
-                    damage: 2,
+                    damage: 7,
                 },
             ],
         },
@@ -2934,7 +2913,7 @@ export const wallOfSpikes: Ability = {
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
-            effects: [{ ...thorns, stacks: 1 }],
+            effects: [{ ...thorns, stacks: 2 }],
             type: ACTION_TYPES.EFFECT,
         },
         {
