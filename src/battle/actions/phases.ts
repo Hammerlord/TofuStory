@@ -233,6 +233,7 @@ export const onWaveStart = () => {
                 let mutableUpdatedActionTargets = [];
                 ability.actions.forEach((action, i) => {
                     const targeting = autoSelectActionTarget({ action, actorId: combatant.id, getState });
+                    mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                     mutableUpdatedActionTargets[i] = targeting;
 
                     const previews = getAbilityPreviews({

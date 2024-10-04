@@ -413,7 +413,7 @@ const checkRedirectEnemyTargetingAfterAllyDeath = ({
                 return;
             }
 
-            const mutableUpdatedActionTargets = [...actionTargets];
+            let mutableUpdatedActionTargets = [...actionTargets];
 
             actionTargets.forEach((targeting, i) => {
                 const { index: targetingIndex, side } = targeting || {};
@@ -425,6 +425,7 @@ const checkRedirectEnemyTargetingAfterAllyDeath = ({
 
                 const updatedTargeting = autoSelectActionTarget({ action: ability?.actions[i], actorId: enemy.id, getState });
                 // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                 mutableUpdatedActionTargets[i] = updatedTargeting;
                 const previews = getAbilityPreviews({
                     ability,
@@ -1258,6 +1259,7 @@ const updateEnemyTargetingAfterEffectsApplied = ({
             let mutableUpdatedActionTargets = [];
             ability.actions.forEach((action, i) => {
                 const targeting = autoSelectActionTarget({ action, actorId: enemy.id, getState: () => ({ battle }) });
+                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                 mutableUpdatedActionTargets[i] = targeting;
 
                 const previews = getAbilityPreviews({
@@ -1687,7 +1689,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
             if (!ability) {
                 return;
             }
-            const mutableUpdatedActionTargets = [...actionTargets];
+            let mutableUpdatedActionTargets = [...actionTargets];
 
             actionTargets.forEach((targeting, i) => {
                 const action = ability?.actions[i];
@@ -1715,6 +1717,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
                 }
 
                 // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
+                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                 mutableUpdatedActionTargets[i] = updatedTargeting;
                 const previews = getAbilityPreviews({
                     ability,

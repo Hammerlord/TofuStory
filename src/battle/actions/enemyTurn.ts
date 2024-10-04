@@ -189,6 +189,7 @@ const requeueRecentlyUsedAbility =
         let mutableUpdatedActionTargets = [];
         ability.actions.forEach((action, i) => {
             const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
+            mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
             mutableUpdatedActionTargets[i] = targeting;
 
             const previews = getAbilityPreviews({
