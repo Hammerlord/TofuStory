@@ -212,11 +212,13 @@ const CultistBackdrop = ({ player, showZakum }) => {
     );
 };
 
+const tributeAmount = 35;
+
 const bloodTributeResponse: ScriptResponse = {
-    text: "Pay the blood tribute. [Lose 15 HP]",
+    text: `Pay the blood tribute. [Lose ${tributeAmount} HP]`,
     infamy: 3,
     next: [
-        { dialog: ["[You lost 15 HP.]"], loseHP: 15 },
+        { dialog: [`[You lost ${tributeAmount} HP.]`], loseHP: tributeAmount },
         { dialog: ["..."] },
         {
             scene: (other) => <CultistBackdrop {...other} showZakum={true} />,
