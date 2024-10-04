@@ -87,7 +87,7 @@ const AbilityResourceIcon = ({
         className = {
             [classes.bonus]: resourceCostFromEffects < 0,
             [classes.penalty]: resourceCostFromEffects > 0,
-            [classes.cannotUse]: totalResourceCost === "X" ? playerResources > 0 : totalResourceCost > playerResources,
+            [classes.cannotUse]: totalResourceCost === "X" ? playerResources === 0 : totalResourceCost > playerResources,
         };
     }
     return <Icon text={totalResourceCost} className={classNames(className)} ref={ref} />;
