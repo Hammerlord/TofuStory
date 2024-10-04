@@ -260,18 +260,16 @@ const ShopView = ({
                 return;
             }
 
-            if (isConsumable) {
-                // Else an incense or golden hammer was bought. These are not removed from the shop when bought, but they do become more expensive.
-                onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-                dispatch(onPurchaseConsumable(item.name));
-                setSelectedItemIndex(null);
-                return;
-            }
-
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
             const updatedItems = items.slice();
             updatedItems[selectedItemIndex] = null;
             onUpdateShopState({ items: updatedItems });
+
+            if (isConsumable) {
+                // An incense or golden hammer was bought. They become more expensive with each purchase.
+                dispatch(onPurchaseConsumable(item.name));
+            }
+
             setSelectedItemIndex(null);
         }
     };
