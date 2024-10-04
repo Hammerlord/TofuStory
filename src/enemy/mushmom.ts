@@ -3,7 +3,7 @@ import { hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { MushmomBurrowImage, MushmomImage, MushmomJumpImage, OrangeMushroomCapImage, OrangeMushroomImage } from "../images";
 import { MountainIcon, ShieldIcon } from "../images/icons";
-import { moveTailToHead } from "../utils";
+import { moveTailToHead, shuffle } from "../utils";
 import { attack, doOtherWave, doWave, loaf, whomp } from "./abilities";
 import { orangeMushroom } from "./enemy";
 
@@ -26,7 +26,6 @@ const mushroomMinion: Minion = {
                         name: "Springy Mushroom Cap",
                         image: OrangeMushroomCapImage,
                         resourceCost: 0,
-                        removeAfterTurn: true,
                         actions: [
                             {
                                 target: TARGET_TYPES.SELF,
@@ -38,6 +37,7 @@ const mushroomMinion: Minion = {
                                 drawCards: {
                                     amount: 1,
                                 },
+                                resources: 1,
                             },
                         ],
                     },
@@ -62,6 +62,54 @@ const callMushrooms: Ability = {
         },
     ],
 };
+
+const mushmomSpecials = [
+    {
+        name: "Burrow",
+        image: ShieldIcon,
+        resourceCost: 3,
+        description: "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
+        actions: [
+            {
+                type: ACTION_TYPES.EFFECT,
+                target: TARGET_TYPES.SELF,
+                armor: 100,
+                removeDebuffs: true,
+                effects: [
+                    {
+                        ...burrowing,
+                        override: {
+                            portrait: MushmomBurrowImage,
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        name: "Do the Wave!",
+        image: MushmomJumpImage,
+        resourceCost: 3,
+        castTime: 1,
+        actions: [doWave.actions[0], doOtherWave.actions[0]],
+    },
+    {
+        name: "Earthquake",
+        resourceCost: 3,
+        castTime: 1,
+        image: MountainIcon,
+        actions: [
+            {
+                type: ACTION_TYPES.RANGE_ATTACK,
+                target: TARGET_TYPES.HOSTILE,
+                damage: 7,
+                secondaryDamage: 3,
+                area: 2,
+                animation: ANIMATION_TYPES.STOMP,
+            },
+        ],
+    },
+];
 
 export const mushmom: Minion = {
     name: "Mushmom",
@@ -91,51 +139,7 @@ export const mushmom: Minion = {
                 },
             ],
         },
-        {
-            name: "Burrow",
-            image: ShieldIcon,
-            resourceCost: 3,
-            description: "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.SELF,
-                    armor: 100,
-                    removeDebuffs: true,
-                    effects: [
-                        {
-                            ...burrowing,
-                            override: {
-                                portrait: MushmomBurrowImage,
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            name: "Do the Wave!",
-            image: MushmomJumpImage,
-            resourceCost: 3,
-            castTime: 1,
-            actions: [doWave.actions[0], doOtherWave.actions[0]],
-        },
-        {
-            name: "Earthquake",
-            resourceCost: 3,
-            castTime: 1,
-            image: MountainIcon,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                    secondaryDamage: 3,
-                    area: 2,
-                    animation: ANIMATION_TYPES.STOMP,
-                },
-            ],
-        },
+        ...shuffle(mushmomSpecials),
     ],
     effects: [
         hardy,
