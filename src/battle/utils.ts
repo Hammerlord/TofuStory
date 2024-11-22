@@ -899,11 +899,13 @@ export const applyVacuum = ({
                 if (isValidSlot(existingCharacter)) {
                     characters[index + j] = characters[index + i];
                     characters[index + i] = null;
-
-                    displacements[characters[index + j].id] = {
-                        from: index + i,
-                        to: index + j,
-                    };
+                    const id = characters[index + j]?.id;
+                    if (id) {
+                        displacements[id] = {
+                            from: index + i,
+                            to: index + j,
+                        };
+                    }
                 }
             }
         }
@@ -914,10 +916,13 @@ export const applyVacuum = ({
                     characters[index - j] = characters[index - i];
                     characters[index - i] = null;
 
-                    displacements[characters[index - j].id] = {
-                        from: index - i,
-                        to: index - j,
-                    };
+                    const id = characters[index - j].id;
+                    if (id) {
+                        displacements[id] = {
+                            from: index - i,
+                            to: index - j,
+                        };
+                    }
                 }
             }
         }
