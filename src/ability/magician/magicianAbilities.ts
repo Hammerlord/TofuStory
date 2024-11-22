@@ -203,7 +203,7 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, attackPower: 2, duration: 1 }],
+            effects: [{ ...attackPower, attackPower: 3, duration: 1 }],
         },
     ],
     upgrades: [
@@ -980,17 +980,21 @@ const chocolateCupcake: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
+            target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: ChocolateCupcakeImage,
-            healing: 3,
+            drawCards: {
+                amount: 2,
+            },
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    healing: 2,
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             ],
         },
@@ -1141,7 +1145,7 @@ export const greaterBolt: Ability = {
     ],
     actions: [
         {
-            damage: 5,
+            damage: 6,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1218,19 +1222,7 @@ export const quickspell: Ability = {
     ],
     upgrades: [
         {
-            description:
-                "Draw {{ actions.0.drawCards.amount }} {{{ _offense_ }}} cards. Their cost is reduced by {{ actions.0.drawCards.effects.0.resourceCost }} until discarded.",
-            actions: [
-                {
-                    drawCards: {
-                        effects: [
-                            {
-                                resourceCost: -1,
-                            },
-                        ],
-                    },
-                },
-            ],
+            resourceCost: 0,
         },
     ],
 };
@@ -1650,7 +1642,12 @@ export const goutOfFlame: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    effects: [
+                        {
+                            ...burn,
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -2979,6 +2976,15 @@ export const fireSpirit: Ability = {
         {
             minion: {
                 maxHP: 2,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
             },
         },
     ],
