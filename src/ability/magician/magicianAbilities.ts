@@ -553,7 +553,7 @@ export const mpEater: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
-    rarity: RARITIES.RARE,
+    rarity: RARITIES.UNCOMMON,
     description: "Destroy 1 energy on the target.",
     actions: [
         {
@@ -907,7 +907,7 @@ export const fireArrow: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireArrowProjectileImage,
-            damage: 10,
+            damage: 12,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -1239,7 +1239,7 @@ export const glacier: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: ColdBeamProjectileImage,
-            damage: 6,
+            damage: 8,
             animationOptions: {
                 height: 100,
                 rotateToFaceTarget: true,
@@ -1280,7 +1280,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 9,
+            damage: 10,
             addCards: [
                 {
                     name: "Rebounding Shard",
@@ -1295,7 +1295,7 @@ export const reboundingShard: Ability = {
                             target: TARGET_TYPES.HOSTILE,
                             icon: NimbleJewelImage,
                             animation: ANIMATION_TYPES.YOYO,
-                            damage: 9,
+                            damage: 10,
                         },
                     ],
                     upgrades: [
@@ -2460,7 +2460,7 @@ export const manaGem: Ability = {
     name: "Mana Gem",
     resourceCost: 0,
     image: ManaImage,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.RARE,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2499,7 +2499,11 @@ export const wardBooster: Ability = {
     ],
     upgrades: [
         {
-            depletedOnUse: false,
+            actions: [
+                {
+                    armor: 5,
+                },
+            ],
         },
     ],
 };
@@ -3446,7 +3450,7 @@ export const boltTag: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 7,
+            damage: 10,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
