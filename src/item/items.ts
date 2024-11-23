@@ -1341,6 +1341,7 @@ export const starEarrings: Item = {
                             conditions: [
                                 {
                                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                    sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
                                     hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
                                     comparator: "includes",
                                 },
