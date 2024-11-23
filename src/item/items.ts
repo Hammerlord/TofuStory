@@ -257,6 +257,14 @@ export const amethyst: Item = {
                     value: 1,
                 },
             },
+            onReceiveOverhealing: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                flatArmor: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.HEALING,
+                    value: 1,
+                },
+            },
         },
     ],
 };
@@ -2201,7 +2209,7 @@ export const blackCrystal: Item = {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                 effects: [
                     { ...bleed, stacks: 1 },
-                    { ...attackDown, duration: 1 },
+                    { ...attackDown, duration: 3 },
                     { name: "Black Crystal Triggered", type: EFFECT_TYPES.NONE, class: EFFECT_CLASSES.NONE },
                 ],
                 conditions: [
@@ -2249,13 +2257,13 @@ export const hardwoodWand: Item = {
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: HardwoodWandImage,
-    description: "On wave start, gain Charged.",
+    description: "On turn start, gain Charged.",
     effects: [
         {
             name: "Hardwood Wand Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onWaveStart: {
+            onTurnStart: {
                 effects: [chargedEffect],
             },
         },

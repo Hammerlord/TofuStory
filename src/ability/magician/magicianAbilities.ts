@@ -2855,7 +2855,7 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "<b>Active:</b> Every turn, draw an extra card. <br/> <br/> <b>Auto:</b> Attack",
+    description: "<b>On attack:</b> Draw a card.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -2891,19 +2891,11 @@ export const whelp: Ability = {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     induceCombatantAttack: true,
                 },
-                onTurnEnd: {
+                onAttack: {
                     targetType: TRIGGER_TARGET_TYPES.PLAYER,
-                    effects: [
-                        {
-                            name: "Extra card draw",
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.NONE,
-                            drawCardsPerTurn: 1,
-                            onTurnInProgress: {
-                                removeEffect: true,
-                            },
-                        },
-                    ],
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             },
         ],
