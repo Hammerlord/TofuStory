@@ -373,7 +373,8 @@ export const checkCardActions = ({
             );
 
             cardsToPlay.forEach((ability) => {
-                dispatch(usePlayerAbility({ ability }));
+                // Cards played from an action are considered procs, atm for the sole purpose of not allowing Charged to proc from Yellow Hat.
+                dispatch(usePlayerAbility({ ability, isProc: true }));
                 dispatch(handleDiscard(ability));
             });
         }

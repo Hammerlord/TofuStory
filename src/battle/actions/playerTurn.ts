@@ -61,10 +61,12 @@ export const usePlayerAbility = ({
     selectedTargetIndex,
     selectedTargetSide,
     ability,
+    isProc,
 }: {
     selectedTargetIndex?: number;
     selectedTargetSide?: BATTLEFIELD_SIDES;
     ability: CombatAbility;
+    isProc?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { playerSide } = getState().battle;
@@ -76,6 +78,7 @@ export const usePlayerAbility = ({
                 selectedIndex: selectedTargetIndex,
                 side: selectedTargetSide,
                 actorId: actor?.id,
+                isProc,
             })
         );
 
@@ -91,7 +94,7 @@ export const usePlayerAbility = ({
                             source: ability,
                             actorId: actor.id,
                             triggerHistory: [],
-                            isProc: false,
+                            isProc,
                         },
                     })
                 );
