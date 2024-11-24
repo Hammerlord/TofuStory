@@ -26,6 +26,7 @@ const mushroomMinion: Minion = {
                         name: "Springy Mushroom Cap",
                         image: OrangeMushroomCapImage,
                         resourceCost: 0,
+                        removeAfterTurn: true,
                         actions: [
                             {
                                 target: TARGET_TYPES.SELF,
