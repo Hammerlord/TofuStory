@@ -2874,6 +2874,9 @@ export const whelp: Ability = {
                         animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                         icon: StarImage,
                         damage: 2,
+                        drawCards: {
+                            amount: 1,
+                        },
                     },
                 ],
             },
@@ -2890,12 +2893,6 @@ export const whelp: Ability = {
                 onTurnStart: {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     induceCombatantAttack: true,
-                },
-                onAttack: {
-                    targetType: TRIGGER_TARGET_TYPES.PLAYER,
-                    drawCards: {
-                        amount: 1,
-                    },
                 },
             },
         ],
