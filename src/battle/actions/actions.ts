@@ -667,6 +667,9 @@ const checkUpdateEffectLifecycle =
             duration: resetDuration ? effect.originalDuration : effect.duration,
         };
         const { combatant } = findCombatantData(getState, ownerId) || {};
+        if (!combatant) {
+            return;
+        }
 
         if (removeEffect || updatedEffect.stacks === 0) {
             const removedEffects = [];
