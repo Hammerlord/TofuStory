@@ -1280,7 +1280,7 @@ export const reboundingShard: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: NimbleJewelImage,
             animation: ANIMATION_TYPES.YOYO,
-            damage: 10,
+            damage: 9,
             addCards: [
                 {
                     name: "Rebounding Shard",
@@ -1295,7 +1295,7 @@ export const reboundingShard: Ability = {
                             target: TARGET_TYPES.HOSTILE,
                             icon: NimbleJewelImage,
                             animation: ANIMATION_TYPES.YOYO,
-                            damage: 10,
+                            damage: 9,
                         },
                     ],
                     upgrades: [
@@ -3244,7 +3244,7 @@ export const picoPicoHammerAbility: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
         },
         {
-            damage: 5,
+            damage: 6,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: PicoPicoHammerImage,
@@ -3439,7 +3439,7 @@ export const boltTag: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 10,
+            damage: 9,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
