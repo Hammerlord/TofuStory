@@ -15,6 +15,7 @@ import {
     ChocolateMuffinImage,
     ColdBeamImage,
     ColdBeamProjectileImage,
+    CrystalIlbiImage,
     DarkShockImage,
     DoTPunisherImage,
     ElementalAdaptationFPImage,
@@ -3166,6 +3167,69 @@ export const blizzard: Ability = {
             actions: [
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const shatter: Ability = {
+    name: "Shatter",
+    resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
+    image: CrystalIlbiImage,
+    description: "Deal <b>{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each debuff on the target, x2 if target is Stunned.",
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            icon: CrystalIlbiImage,
+            damage: 1,
+            bonus: [
+                {
+                    damage: 5,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.DEBUFFS,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                        },
+                    ],
+                },
+                {
+                    damage: 5,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.DEBUFFS,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
+                            comparator: "eq",
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: [
+                        {
+                            damage: 2,
+                        },
+                        {
+                            damage: 4,
+                        },
+                    ],
                 },
             ],
         },
