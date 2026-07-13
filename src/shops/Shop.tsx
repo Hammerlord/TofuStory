@@ -405,19 +405,9 @@ const ShopView = ({
 
                 <div className={classes.container}>
                     <div className={classNames(classes.column, classes.abilityColumn)}>
-                        <div className={classes.sectionHeader}>
-                            <hr />
-                            <span className={classes.headerText}>Abilities</span>
-                            <hr />
-                        </div>
                         <div className={classes.abilitiesSection}>{abilities.map(getShopAbility)}</div>
                     </div>
                     <div className={classes.column}>
-                        <div className={classes.sectionHeader}>
-                            <hr />
-                            <span className={classes.headerText}>Items</span>
-                            <hr />
-                        </div>
                         {items.map(getShopItem)}
                     </div>
                 </div>
