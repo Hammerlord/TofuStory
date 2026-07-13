@@ -361,22 +361,13 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
-        const { playerSide, playerSummonsInPlay, discard } = getState().battle;
+        const { playerSide } = getState().battle;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         if (player.HP <= 0) {
             dispatch(updateBattleState(BATTLE_STATES.DEFEAT));
             dispatch(updatePlayer(player));
             return;
-        }
-
-        if (playerSummonsInPlay[combatantId]) {
-            dispatch(
-                updateBattle({
-                    playerSummonsInPlay: { ...playerSummonsInPlay, [combatantId]: undefined },
-                    discard: [...discard, playerSummonsInPlay[combatantId]],
-                })
-            );
         }
 
         // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
@@ -2878,19 +2869,12 @@ export const checkSummonMinion = ({
         const newBattleProps: {
             playerSide?: (Combatant | null)[];
             enemySide?: (Combatant | null)[];
-            playerSummonsInPlay?: { [id: string]: Ability };
         } = {
             [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
                 return i === index ? summonedMinion : combatant;
             }),
         };
 
-        // If the actor is the player, then move the ability to the "active summons" bucket, so that it is later sent to discard if the minion is removed from play
-        // Checking for ability.instanceId: only cards owned by the player have this, whereas abilities triggered from eg. Metronome do not.
-        // Minion summons from Metronome should not go into discard when they die.
-        if (actor?.isPlayer && !removeAfterTurn && !depletedOnUse && ability.instanceId) {
-            newBattleProps.playerSummonsInPlay = { ...getState().battle?.playerSummonsInPlay, [summonedMinion.id]: ability };
-        }
         dispatch(updateBattle(newBattleProps));
 
         // Give minions time to appear before triggering any minion-related effect events.

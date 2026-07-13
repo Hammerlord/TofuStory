@@ -162,7 +162,6 @@ export const startBattle = ({
             isPlayerTurn: true,
             eventQueue: [],
             playerActionQueue: [],
-            playerSummonsInPlay: {},
             currentWaveIndex: 0,
             waves,
             round: 0,

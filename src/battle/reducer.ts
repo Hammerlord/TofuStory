@@ -23,7 +23,6 @@ export interface BattleState {
     isPlayerTurn: boolean | null;
     eventQueue: Event[];
     playerActionQueue: object[];
-    playerSummonsInPlay: object; // { [summonId: string]: Ability }
     charactersAttackedThisTurn: string[];
     /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
     round: number;

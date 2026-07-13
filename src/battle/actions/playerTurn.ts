@@ -142,7 +142,6 @@ export const handleDiscard = (ability: CombatAbility) => {
         if (depletedOnUse) {
             newDepleted.push(ability);
         } else if (!minion && !removeAfterTurn) {
-            // Minions go into a special bucket rather than immediately to discard; see useAbility
             const discarded = prepareForDiscard([ability]).map((card) => {
                 return applyAbilityEventEffects({
                     event: card.onUse,
