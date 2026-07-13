@@ -1,6 +1,5 @@
-import { createRef, useRef, useState } from "react";
+import { useRef } from "react";
 import { createUseStyles } from "react-jss";
-import { ZOOM_AMOUNT_MED, ZOOM_AMOUNT_SM, ZOOM_HEIGHT_MED, ZOOM_HEIGHT_SM } from "../constants";
 
 const useStyles = createUseStyles({
     canvas: {
@@ -39,13 +38,6 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
             onMouseMove={(e) => {
                 if (origination && targetLineRef.current) {
                     let { clientX, clientY } = e;
-                    if (window.innerHeight <= ZOOM_HEIGHT_SM) {
-                        clientX /= ZOOM_AMOUNT_SM;
-                        clientY /= ZOOM_AMOUNT_SM;
-                    } else if (window.innerHeight <= ZOOM_HEIGHT_MED) {
-                        clientX /= ZOOM_AMOUNT_MED;
-                        clientY /= ZOOM_AMOUNT_MED;
-                    }
 
                     const x = origination.left + origination.width / 2;
                     const x2 = clientX;
