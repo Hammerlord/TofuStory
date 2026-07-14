@@ -41,7 +41,7 @@ import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
-import { applyAbilityEventEffects } from "./actions/cardActions";
+import { applyAbilityEventEffects, checkCardActions } from "./actions/cardActions";
 import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "./actions/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
 import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "./actions/playerTurn";
@@ -396,8 +396,18 @@ const BattlefieldContainer = () => {
 
     const handleSelectCardFromPrompt = () => {
         handleCancelSelectCard();
-        if (selectCardsPrompt.abilityQueued) {
+        if (selectCardsPrompt?.abilityQueued) {
             dispatch(useHandAbility(selectCardsPrompt.abilityQueued));
+        }
+
+        if (selectCardsPrompt?.selectCards?.then) {
+            dispatch(
+                checkCardActions({
+                    action: selectCardsPrompt?.selectCards?.then,
+                    source: selectCardsPrompt.source,
+                    isAutoCast: selectCardsPrompt.isAutoCast,
+                })
+            );
         }
     };
 

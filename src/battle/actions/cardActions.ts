@@ -12,6 +12,7 @@ import {
     EFFECT_EVENT_KEYS,
     MoveCards,
     SELECT_CARD_TYPES,
+    SelectCards,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItem, getRandomItems, shuffle } from "../../utils";
@@ -19,7 +20,6 @@ import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE,
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
-import { ping } from "./../../ability/magician/magicianAbilities";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
@@ -158,12 +158,24 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
     );
 };
 
-const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent }) => {
+const handleSelectCards = ({
+    selectCards,
+    isAutoCast,
+    source,
+    triggerAddCardsToHandEvent,
+}: {
+    selectCards: SelectCards;
+    isAutoCast?: boolean;
+    source?: TriggerSource;
+    triggerAddCardsToHandEvent: (numCards: number) => void;
+}) => {
     return (dispatch, getState) => {
         if (!isAutoCast) {
             dispatch(
                 promptPlayerSelectCards({
                     selectCards,
+                    isAutoCast,
+                    source,
                 })
             );
             return;
@@ -179,7 +191,7 @@ const handleSelectCards = ({ selectCards, isAutoCast, triggerAddCardsToHandEvent
                 deck,
                 discard,
                 selectCards: selectCards,
-                selectedAbilityId: null,
+                selectedAbilityId: undefined,
                 player,
             }),
             maxAmount
@@ -522,7 +534,7 @@ export const checkCardActions = ({
         }
 
         if (selectCards) {
-            dispatch(handleSelectCards({ isAutoCast, selectCards, triggerAddCardsToHandEvent }));
+            dispatch(handleSelectCards({ isAutoCast, source, selectCards, triggerAddCardsToHandEvent }));
         }
 
         if (moveCards) {

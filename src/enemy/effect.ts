@@ -539,7 +539,7 @@ export const burrowing: Effect = {
     name: "Burrow",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Heals 3 HP per turn while armor holds. After the full effect duration, this character gains +1 ATT.",
+    description: "Heals 3 HP per turn while armor holds. After the full effect duration, this character gains +2 ATT.",
     icon: PristineShieldIcon,
     preventTurnAction: true,
     canBeSilenced: false,
@@ -573,6 +573,9 @@ export const burrowing: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     effects: [
+                        {
+                            ...attackPower,
+                        },
                         {
                             ...attackPower,
                         },

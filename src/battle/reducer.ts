@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Ability, CombatAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, Wave } from "./types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, TriggerSource, Wave } from "./types";
 import { getMaxHP } from "./utils";
 
 // Text banner notification to display some info during battle
@@ -51,6 +51,8 @@ export interface BattleState {
 // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
 export interface PlayerSelectCardsPrompt {
     selectCards: SelectCards;
+    source?: TriggerSource;
+    isAutoCast?: boolean;
     abilityQueued?: {
         selectedAbilityId: string;
         selectedTargetIndex: number;

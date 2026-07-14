@@ -459,6 +459,8 @@ export interface SelectCards {
     filters?: CardFilterCondition[];
     effects?: AbilityEffect[];
     maxAmount?: number;
+    // An action to trigger after the card(s) have been selected, eg. grant specific cards to the player hand
+    then?: { [key in keyof Action]?: Action[key] };
 }
 
 export enum MORPH_MINION_MODIFIERS {

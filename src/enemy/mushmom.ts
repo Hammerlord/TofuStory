@@ -9,6 +9,8 @@ import { orangeMushroom } from "./enemy";
 
 const mushroomMinion: Minion = {
     ...orangeMushroom,
+    maxHP: 70,
+    mesos: 0,
     abilities: moveTailToHead(orangeMushroom.abilities),
     effects: [
         ...orangeMushroom.effects,
@@ -36,7 +38,7 @@ const mushroomMinion: Minion = {
                                     disableScreenShake: true,
                                 },
                                 drawCards: {
-                                    amount: 1,
+                                    amount: 2,
                                 },
                                 resources: 1,
                             },
@@ -56,10 +58,7 @@ const callMushrooms: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             bypassPreventTurnAction: true,
-            summon: [
-                { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },
-                { minion: [mushroomMinion], placement: "adjacent", tributePossible: true },
-            ],
+            summon: [{ minion: [mushroomMinion], placement: "adjacent", tributePossible: true }],
         },
     ],
 };
@@ -117,6 +116,7 @@ export const mushmom: Minion = {
     image: MushmomImage,
     isBoss: true,
     maxHP: 300,
+    mesos: 100,
     abilities: [
         { ...whomp, resourceCost: 0, castTime: undefined },
         loaf,
@@ -145,8 +145,8 @@ export const mushmom: Minion = {
     effects: [
         hardy,
         {
-            name: "Call Mushrooms",
-            description: "After the countdown, summons 2 mushrooms.",
+            name: "Call Mushroom",
+            description: "After the countdown, summons a mushroom.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             disableDisplayIcon: true,
@@ -161,7 +161,7 @@ export const mushmom: Minion = {
             },
             onTurnEnd: {
                 usableWhileStunned: true,
-                eventTriggerFrequency: 5,
+                eventTriggerFrequency: 3,
                 ability: callMushrooms,
             },
         },

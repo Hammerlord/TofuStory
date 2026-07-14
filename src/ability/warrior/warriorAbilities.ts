@@ -1274,7 +1274,6 @@ export const sledge: Ability = {
     name: "Sledge",
     resourceCost: 2,
     image: GiganticSledgeImage,
-    depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
