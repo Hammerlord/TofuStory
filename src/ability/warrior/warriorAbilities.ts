@@ -2198,59 +2198,79 @@ export const gungnir: Ability = {
 
 export const ironMaiden: Ability = {
     name: "Iron Maiden",
-    resourceCost: 2,
+    resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
-    description: "(Damage increased by Thorns.)",
+    description: "{{{ actions.0.effects.1.onReceiveDamage.chance }}} chance on taking damage to Radiate your Thorns to all enemies.",
+    depletedOnUse: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
-            effects: [{ ...thorns }],
-            type: ACTION_TYPES.EFFECT,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: SpikeBallImage,
-            animationOptions: {
-                width: 100,
-                height: 100,
-            },
-            radiate: {
-                area: 2,
-                damage: 4,
-                bonus: {
-                    damage: 1,
-                    multiplier: {
-                        type: MULTIPLIER_TYPES.BUFFS,
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        filters: [
-                            {
-                                property: "name",
-                                comparator: "eq",
-                                value: thorns.name,
-                            },
-                        ],
-                    },
-                    conditions: [
-                        {
-                            hasEffect: "Thorns",
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                        },
-                    ],
+            effects: [
+                {
+                    ...thorns,
                 },
-            },
+                {
+                    name: "Iron Maiden",
+                    description: "Chance to Radiate Thorns damage to attackers.",
+                    canBeSilenced: true,
+                    icon: NightShadeExplosionImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onReceiveDamage: {
+                        chance: 0.2,
+                        disableTriggerFromProcs: false,
+                        ability: {
+                            name: "Thorns Explosion",
+                            image: NightShadeExplosionImage,
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.EFFECT,
+                                    target: TARGET_TYPES.SELF,
+                                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                                    icon: SpikeBallImage,
+                                    animationOptions: {
+                                        width: 100,
+                                        height: 100,
+                                    },
+                                    playbackTime: 500,
+                                    radiate: {
+                                        area: 2,
+                                        bonus: {
+                                            damage: 1,
+                                            multiplier: {
+                                                type: MULTIPLIER_TYPES.EFFECT_STACKS,
+                                                calculationTarget: CONDITION_TARGETS.ACTOR,
+                                                filters: [
+                                                    {
+                                                        property: "thorns",
+                                                        comparator: "gt",
+                                                        value: 0,
+                                                    },
+                                                ],
+                                            },
+                                            conditions: [
+                                                {
+                                                    hasEffect: "Thorns",
+                                                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+            type: ACTION_TYPES.EFFECT,
         },
     ],
     upgrades: [
         {
             actions: [
-                {},
                 {
-                    radiate: {
-                        damage: 3,
-                    },
+                    effects: [{}, { onReceiveDamage: { chance: 0.05 } }],
                 },
             ],
         },
