@@ -2943,13 +2943,13 @@ export const wallOfSpikes: Ability = {
             bonus: {
                 effects: [{ ...thorns, stacks: 1, duration: 2, onTurnStart: { removeEffect: true } }],
                 multiplier: {
-                    type: MULTIPLIER_TYPES.BUFFS,
+                    type: MULTIPLIER_TYPES.EFFECT_STACKS,
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     filters: [
                         {
-                            property: "name",
-                            comparator: "eq",
-                            value: thorns.name,
+                            property: "thorns",
+                            comparator: "gt",
+                            value: 0,
                         },
                     ],
                 },
