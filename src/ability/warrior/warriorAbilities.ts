@@ -62,6 +62,7 @@ import {
     ShieldRedImage,
     ShoutImage,
     SilverAquilaImage,
+    SkullBalloonImage,
     SlashBlastImage,
     SmackdownFistImage,
     SpearSweepImage,
@@ -85,6 +86,7 @@ import {
     attackDown,
     attackPower,
     bleed,
+    defDown,
     directDamageTaken,
     immunity,
     infuriateEffect,
@@ -3012,6 +3014,68 @@ export const incite: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+export const suddenDeath: Ability = {
+    name: "Sudden Death",
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    image: SkullBalloonImage,
+    description:
+        "When drawn, you gain +{{ onDraw.ability.actions.0.effects.0.attackPower }} ATT but {{ onDraw.ability.actions.0.effects.0.attackDamageReceived }} DEF down. Playing this removes the effect.",
+    onDraw: {
+        ability: {
+            name: "Sudden Death!",
+            image: SkullBalloonImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    icon: SkullBalloonImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    effects: [
+                        {
+                            ...attackPower,
+                            icon: SkullBalloonImage,
+                            name: "Sudden Death!",
+                            attackPower: 3,
+                            duration: 1,
+                            attackDamageReceived: 1,
+                            maxApplications: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 8,
+            secondaryAction: {
+                removeEffects: ["Sudden Death!"],
+            },
+        },
+    ],
+
+    upgrades: [
+        {
+            onDraw: {
+                ability: {
+                    actions: [
+                        {
+                            effects: [
+                                {
+                                    attackPower: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
         },
     ],
 };

@@ -148,6 +148,7 @@ import {
     smack,
     wallOfSpikes,
     incite,
+    suddenDeath,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -303,6 +304,7 @@ export const JOB_CARD_MAP = {
             smack,
             wallOfSpikes,
             incite,
+            suddenDeath,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },

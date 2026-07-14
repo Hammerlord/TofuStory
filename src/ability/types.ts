@@ -676,6 +676,7 @@ export interface AbilityUpgrade {
     depletedOnUse?: boolean;
     minion?;
     selectCards?;
+    onDraw?;
     addActions?: {
         // If true, instead of .pushing to actions, the action will be prepended
         prepend?: boolean;

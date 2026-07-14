@@ -576,6 +576,7 @@ export { default as SkeletonOfHorrorImage } from "./SkeletonOfHorror.png";
 export { default as SkeletonSoldierImage } from "./SkeletonSoldier.gif";
 export { default as SkelosaurusImage } from "./Skelosaurus.gif";
 export { default as SkipLithBackdropImage } from "./SkipLithBackdrop.png";
+export { default as SkullBalloonImage } from "./SkullBalloon.png";
 export { default as SkullPatchImage } from "./SkullPatch.png";
 export { default as SkullStaffImage } from "./SkullStaff.png";
 export { default as SkullStrikerImage } from "./SkullStriker.png";
