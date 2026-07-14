@@ -107,7 +107,7 @@ const dummiesFight = {
     ],
     disableCardRewards: true,
     type: BATTLE_TYPES.ENCOUNTER,
-    backgroundMusic: "https://vgmtreasurechest.com/soundtracks/maplestory-music/iajhmyhndt/52.%20Time%20Attack.mp3",
+    backgroundMusic: "https://maplestory.io/api/GMS/93T/music/Bgm09/TimeAttack",
 };
 
 const useStyles = createUseStyles({

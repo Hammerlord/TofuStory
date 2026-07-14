@@ -15,7 +15,7 @@ const wanderingBlacksmithFight: SceneEncounter = {
         },
     ],
     type: BATTLE_TYPES.ELITE_ENCOUNTER,
-    backgroundMusic: "https://vgmtreasurechest.com/soundtracks/maplestory-music/wtklubxzfw/136.%20Mu%20Lung%20Dojo%202.mp3",
+    backgroundMusic: "https://maplestory.io/api/GMS/210.1.1/music/BgmCN/DragonTigerDungeon",
 };
 
 const useStyles = createUseStyles({

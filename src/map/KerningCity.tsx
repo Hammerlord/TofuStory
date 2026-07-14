@@ -87,7 +87,7 @@ const dyleFight: SceneEncounter = {
         },
     ],
     type: BATTLE_TYPES.BOSS,
-    backgroundMusic: "https://vgmtreasurechest.com/soundtracks/maplestory-music/meohodsibk/64.%20Aqua%20Cave.mp3",
+    backgroundMusic: "https://maplestory.io/api/GMS/93T/music/Bgm12/AquaCave",
 };
 
 export const dyleScene: EventScene = {
