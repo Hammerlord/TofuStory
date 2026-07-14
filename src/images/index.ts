@@ -712,6 +712,7 @@ export { default as WizMushImage } from "./WizMush.gif";
 export { default as WolfImage } from "./Wolf.gif";
 export { default as WoodImage } from "./Wood.png";
 export { default as WoodenClubImage } from "./WoodenClub.png";
+export { default as WoodenMalletImage } from "./WoodenMallet.png";
 export { default as WoodenStaffImage } from "./WoodenStaff.png";
 export { default as WorkGlovesImage } from "./WorkGloves.png";
 export { default as WorldReaverImage } from "./WorldReaver.png";

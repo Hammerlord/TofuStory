@@ -1368,7 +1368,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 10,
+            damage: 11,
             secondaryAction: {
                 returnParentCardToHand: true,
                 resources: 1,

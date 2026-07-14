@@ -1,16 +1,88 @@
-import { burrowing } from "./effect";
 import { hardy } from "../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, Ability, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
-import { MushmomBurrowImage, MushmomImage, MushmomJumpImage, OrangeMushroomCapImage, OrangeMushroomImage } from "../images";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    Ability,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    SELECT_CARD_TYPES,
+    TARGET_TYPES,
+} from "../ability/types";
+import {
+    MushmomBurrowImage,
+    MushmomImage,
+    MushmomJumpImage,
+    NimbleFeetImage,
+    OrangeMushroomCapImage,
+    OrangeMushroomImage,
+    WoodenMalletImage,
+} from "../images";
 import { MountainIcon, ShieldIcon } from "../images/icons";
 import { moveTailToHead, shuffle } from "../utils";
-import { attack, doOtherWave, doWave, loaf, whomp } from "./abilities";
+import { attack, doOtherWave, doWave, whomp } from "./abilities";
+import { burrowing } from "./effect";
 import { orangeMushroom } from "./enemy";
+
+const wallopCard: Ability = {
+    name: "Wallop",
+    resourceCost: 0,
+    removeAfterTurn: true,
+    image: WoodenMalletImage,
+    actions: [
+        {
+            damage: 25,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            area: 1,
+            animationOptions: {
+                hideWeapon: true,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 7,
+                },
+            ],
+        },
+    ],
+};
+
+export const mushcapCard: Ability = {
+    name: "Springy Mushcap",
+    image: OrangeMushroomCapImage,
+    resourceCost: 1,
+    description: "Draw a card. Then, Deplete a card to add Wallop to your hand.",
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+            playbackTime: 400,
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            selectCards: {
+                type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+                then: {
+                    addCards: [wallopCard],
+                },
+            },
+        },
+    ],
+};
 
 const mushroomMinion: Minion = {
     ...orangeMushroom,
-    maxHP: 70,
-    mesos: 0,
+    maxHP: 50,
+    mesos: 1,
     abilities: moveTailToHead(orangeMushroom.abilities),
     effects: [
         ...orangeMushroom.effects,
@@ -18,33 +90,12 @@ const mushroomMinion: Minion = {
             name: "Orange Mushroom Cap",
             icon: OrangeMushroomCapImage,
             portraitImage: OrangeMushroomCapImage,
-            description: "Drops a usable Mushroom Cap when it dies.",
+            description: "Drops a usable Mushcap when it dies.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onDeath: {
                 usableWhileStunned: true,
-                addCards: [
-                    {
-                        name: "Springy Mushroom Cap",
-                        image: OrangeMushroomCapImage,
-                        resourceCost: 0,
-                        removeAfterTurn: true,
-                        actions: [
-                            {
-                                target: TARGET_TYPES.SELF,
-                                type: ACTION_TYPES.EFFECT,
-                                animation: ANIMATION_TYPES.STOMP,
-                                animationOptions: {
-                                    disableScreenShake: true,
-                                },
-                                drawCards: {
-                                    amount: 2,
-                                },
-                                resources: 1,
-                            },
-                        ],
-                    },
-                ],
+                addCards: [mushcapCard],
             },
         },
     ],
@@ -63,7 +114,7 @@ const callMushrooms: Ability = {
     ],
 };
 
-const mushmomSpecials = [
+const mushmomSpecials: Ability[] = [
     {
         name: "Burrow",
         image: ShieldIcon,
@@ -119,7 +170,22 @@ export const mushmom: Minion = {
     mesos: 100,
     abilities: [
         { ...whomp, resourceCost: 0, castTime: undefined },
-        loaf,
+        {
+            name: "Hop",
+            image: NimbleFeetImage,
+            description: "Moves around.",
+            actions: [
+                {
+                    movement: 2,
+                    movementOptions: {
+                        canSwapCharacterPlaces: true,
+                    },
+                    description: "{{caster}} has moved.",
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+            ],
+        },
         {
             ...attack,
             actions: [

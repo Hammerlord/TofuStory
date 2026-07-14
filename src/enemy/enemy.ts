@@ -47,6 +47,7 @@ import {
     MonkeyBananaImage,
     MushroomOmokImage,
     MushroomSporeImage,
+    NimbleFeetImage,
     NoobClubAImage,
     NoobClubBImage,
     NoobWarriorAImage,
@@ -482,7 +483,22 @@ export const orangeMushroom: Minion = {
         whomp,
         burrow,
         whomp,
-        loaf,
+        {
+            name: "Hop",
+            image: NimbleFeetImage,
+            description: "Moves around.",
+            actions: [
+                {
+                    movement: 2,
+                    movementOptions: {
+                        canSwapCharacterPlaces: true,
+                    },
+                    description: "{{caster}} has moved.",
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+            ],
+        },
     ],
 };
 
