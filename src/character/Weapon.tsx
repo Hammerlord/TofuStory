@@ -162,7 +162,7 @@ const Weapon = ({
     target,
     event,
 }: {
-    image?: string;
+    image?: string | null;
     options?: { transform?: string };
     wielder?: Combatant;
     wielderRef: HTMLElement;

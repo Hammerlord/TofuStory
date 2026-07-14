@@ -207,6 +207,9 @@ const useStyles = createUseStyles({
         transition: "1s filter linear, 1s -webkit-filter linear",
         animationIterationCount: "unset", // Animation will loop and clip if the character is also casting
     },
+    hidden: {
+        display: "none",
+    },
     highlightText: {
         "& .text": {
             color: "#42f57b",
@@ -391,9 +394,12 @@ const CombatantView = forwardRef(
 
             const playbackTime = event?.playbackTime;
 
-            const timeout = setTimeout(() => {
-                callback();
-            }, (playbackTime && playbackTime / 2) || 500);
+            const timeout = setTimeout(
+                () => {
+                    callback();
+                },
+                (playbackTime && playbackTime / 2) || 500
+            );
             return () => clearTimeout(timeout);
         }, [combatant, event?.id]);
 
@@ -533,6 +539,7 @@ const CombatantView = forwardRef(
                                         <div
                                             className={classNames(classes.weaponContainer, {
                                                 [classes.applyingEffect]: isApplyingEffect,
+                                                [classes.hidden]: action?.animationOptions?.hideWeapon,
                                             })}
                                         >
                                             <Weapon
