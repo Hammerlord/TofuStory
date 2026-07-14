@@ -17,6 +17,7 @@ import {
     BurningSoulBladeMinionImage,
     ChanceAttackImage,
     CloseCombatImage,
+    CombatMasteryImage,
     CombatOrdersImage,
     ComboFuryImage,
     DarkImpaleImage,
@@ -1418,6 +1419,7 @@ export const counterattack: Ability = {
                     duration: 2,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                        disableTriggerFromProcs: false,
                         ability: {
                             name: "Counter",
                             image: NamelessSwordImage,
@@ -1747,7 +1749,7 @@ export const worldReaver: Ability = {
     actions: [
         {
             area: 1,
-            damage: 12,
+            damage: 25,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1769,7 +1771,7 @@ export const worldReaver: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 7,
                 },
             ],
         },
@@ -2950,6 +2952,45 @@ export const wallOfSpikes: Ability = {
                             stacks: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const incite: Ability = {
+    name: "Incite",
+    image: CombatMasteryImage,
+    rarity: RARITIES.UNCOMMON,
+    description:
+        "Gain <b>Taunt.</b> Then, gain <b>{{ actions.0.secondaryAction.armor }}</b> {{{ _armor_ }}} per enemy targeted, but those targets will attack.",
+    overrideBodyText: true,
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.SHOUT,
+            induceCombatantAttack: true,
+            area: 2,
+            secondaryAction: {
+                isPriority: true,
+                type: ACTION_TYPES.EFFECT,
+                effects: [taunt],
+                armor: 3,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    secondaryAction: {
+                        armor: 1,
+                    },
                 },
             ],
         },

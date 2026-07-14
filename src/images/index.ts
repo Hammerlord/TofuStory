@@ -120,6 +120,7 @@ export { default as CoffeePotImage } from "./CoffeePot.png";
 export { default as ColdBeamImage } from "./ColdBeam.png";
 export { default as ColdBeamProjectileImage } from "./ColdBeamProjectile.png";
 export { default as ColdEyeCardImage } from "./ColdEyeCard.png";
+export { default as CombatMasteryImage } from "./CombatMastery.png";
 export { default as CombatOrdersImage } from "./CombatOrders.png";
 export { default as ComboFuryImage } from "./ComboFury.png";
 export { default as ComboSynergyImage } from "./ComboSynergy.png";
