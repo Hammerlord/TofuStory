@@ -1,10 +1,10 @@
-import { emerald } from "./../item/items";
 import { AbilityEffect, ActionOptionalProperties } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
+import _ from "lodash";
+import { isAttackAbility, isOffensiveAbility } from "../ability/AbilityView/utils";
 import { Combatant, Player } from "../character/types";
-import { attack, shoot } from "../enemy/abilities";
 import { Item } from "../item/types";
 import {
     ACTION_TYPES,
@@ -25,12 +25,11 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { findCombatantData } from "./actions/actions";
+import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
+import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import _ from "lodash";
-import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
-import { getHandAuraEffects } from "./Hand";
 
 // TODO use UpdatedCombatantStats from the Event instead of diffing here.
 // However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
@@ -937,8 +936,7 @@ export const applyVacuum = ({
 export const getInducedAttack = (actor: Combatant): Action => {
     let basicAttackDamage = 0;
     const abilities = actor.abilities || [];
-    const attackAbility = abilities?.find((ability) => ability.name === attack.name || ability.name === shoot.name);
-    // If there is an ability called "Attack" or "Shoot", just grab it
+    const attackAbility = abilities.find(isAttackAbility) || abilities.find(isOffensiveAbility);
     if (attackAbility) {
         return { ...attackAbility.actions[0], playbackTime: INDUCED_ACTION_PLAYBACK_SPEED };
     }

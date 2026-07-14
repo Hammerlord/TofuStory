@@ -41,7 +41,7 @@ export const shellThrowRed: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 14,
+            damage: 15,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
@@ -66,7 +66,7 @@ const shellThrowBlue: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 11,
+            damage: 12,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
@@ -95,7 +95,7 @@ export const shellThrow: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 8,
+            damage: 9,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,

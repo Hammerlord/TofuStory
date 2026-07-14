@@ -1,4 +1,3 @@
-import { useAbility } from "./../../battle/actions/actions";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import {
     AdvancedChargeImage,
@@ -204,7 +203,7 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, attackPower: 3, duration: 1 }],
+            effects: [{ ...attackPower, attackPower: 4, duration: 1 }],
         },
     ],
     upgrades: [
@@ -2636,6 +2635,7 @@ export const ifrit: Ability = {
     minion: {
         name: "Ifrit",
         image: IfritImage,
+        uncontrollable: true,
         imageOptions: {
             animation: "float",
         },
@@ -2690,6 +2690,16 @@ export const ifrit: Ability = {
                     },
                 },
             },
+            {
+                name: "",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+
+                onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
+                },
+            },
         ],
     },
     actions: [],
@@ -2723,6 +2733,7 @@ export const elquines: Ability = {
         imageOptions: {
             animation: "float",
         },
+        uncontrollable: true,
         maxHP: 7,
         abilities: [
             {
@@ -2762,6 +2773,16 @@ export const elquines: Ability = {
                             },
                         ],
                     },
+                },
+            },
+            {
+                name: "",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+
+                onTurnStart: {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    induceCombatantAttack: true,
                 },
             },
         ],
@@ -2931,7 +2952,7 @@ export const fireSpirit: Ability = {
         maxHP: 6,
         abilities: [
             {
-                name: "Shoot", // Must be named "Shoot"/"Attack" to get picked up by induceCombatantAttack... great
+                name: "Shoot",
                 image: FireMarbleImage,
                 actions: [
                     {
@@ -2990,12 +3011,13 @@ export const flareBolt: Ability = {
     description: "Summon a Fire Spirit.",
     image: FireMarbleImage,
     rarity: RARITIES.UNCOMMON,
+    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireMarbleImage,
-            damage: 10,
+            damage: 14,
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -3297,7 +3319,7 @@ export const picoPicoHammerAbility: Ability = {
     resourceCost: 1,
     image: PicoPicoHammerImage,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer at the main target.",
+    description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} {{{ _stun_ }}} hammer at the main target.",
     actions: [
         {
             damage: 6,
@@ -3313,6 +3335,7 @@ export const picoPicoHammerAbility: Ability = {
             target: TARGET_TYPES.HOSTILE,
             icon: PicoPicoHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
+            effects: [stun],
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,

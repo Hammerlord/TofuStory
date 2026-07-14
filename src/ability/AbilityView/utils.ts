@@ -52,12 +52,20 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
     }
 };
 
+export const isAttackAction = (action: Action): boolean => {
+    return isOffensiveAction(action) && action.damage > 0;
+};
+
 export const isOffensiveAction = (action: Action): boolean => {
     return [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE, TARGET_TYPES.HOSTILE_CHARACTER].includes(action.target);
 };
 
 export const isOffensiveAbility = (ability: Ability): boolean => {
     return (ability?.actions || []).some(isOffensiveAction);
+};
+
+export const isAttackAbility = (ability: Ability): boolean => {
+    return (ability?.actions || []).some(isAttackAction);
 };
 
 export const isSupportAction = (action: Action): boolean => {

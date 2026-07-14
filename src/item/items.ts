@@ -615,7 +615,7 @@ export const incense: Item = {
 export const garnet: Item = {
     name: "Garnet",
     image: GarnetImage,
-    description: "+{{ effects.0.onResourcesGained.effects.0.attackPower }} ATT while you have at least 3 {{ resources }}.",
+    description: "+{{ effects.0.onResourcesGained.effects.0.attackPower }} ATT while you have at least 2 {{ resources }}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -631,7 +631,7 @@ export const garnet: Item = {
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         property: "resources",
-                        value: 2,
+                        value: 1,
                         comparator: "gt",
                     },
                 ],
@@ -1577,7 +1577,7 @@ export const diamondOre: Item = {
 
 export const plunger: Item = {
     name: "Plunger",
-    description: "When your deck cycles, gain 1 {{ resources }} and draw a card.",
+    description: "When your deck cycles, draw a card.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: PlungerImage,
@@ -1588,7 +1588,6 @@ export const plunger: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                resources: 1,
                 drawCards: {
                     amount: 1,
                 },
