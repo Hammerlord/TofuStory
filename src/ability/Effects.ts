@@ -158,10 +158,11 @@ export const bleed: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: Infinity,
     stacks: 3,
-    attackDamageReceived: 1,
+    // Hack: the 001 is for Math.ceil so that 10 will increase damage taken by 2 instead of 1
+    attackDamageReceived: 0.1001,
     maxApplications: 1,
     icon: BloodIcon,
-    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Each stack increases damage received from attacks by +1.",
+    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Increased damage received by +1 for every 10 stacks.",
     onTurnStart: {
         decrementStacks: 1,
     },

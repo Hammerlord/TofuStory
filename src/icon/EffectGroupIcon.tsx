@@ -221,11 +221,6 @@ const EffectGroupTooltipContent = ({
                             <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
                         </div>
                     )}
-                    {attackDamageReceived !== 0 && (
-                        <div>
-                            ◆ {attackDamageReceived < 0 ? `-${attackDamageReceived}` : `+${attackDamageReceived}`} damage taken from attacks
-                        </div>
-                    )}
                     {lifeOnHit > 0 && (
                         <div>
                             Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit

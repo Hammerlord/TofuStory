@@ -725,7 +725,7 @@ export const calculateDamage = ({
             { multiplier: 0, additionalDamageReceived: 0 }
         );
 
-        return (damage + additionalDamageReceived) * (multiplier || 1);
+        return (damage + Math.ceil(additionalDamageReceived)) * (multiplier || 1);
     };
 
     const damage = baseDamage * multiplier + totalSkillBonus;

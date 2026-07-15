@@ -38,6 +38,7 @@ export { default as BalrogIconImage } from "./BalrogIcon.png";
 export { default as BalrogTombImage } from "./BalrogTomb.png";
 export { default as BananaGrahamPieImage } from "./BananaGrahamPie.png";
 export { default as BananaPeelImage } from "./BananaPeel.png";
+export { default as BareBladeImage } from "./BareBlade.png";
 export { default as BarrelImage } from "./Barrel.png";
 export { default as BarrelsSceneImage } from "./BarrelsScene.png";
 export { default as BatsEffectImage } from "./BatsEffect.gif";

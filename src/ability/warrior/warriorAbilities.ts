@@ -3,6 +3,7 @@ import {
     AdvancedWeaponMasteryImage,
     AvengersArrowImage,
     BallistaImage,
+    BareBladeImage,
     BladestormImage,
     BladeworksImage,
     BlastExtraStrikeImage,
@@ -173,17 +174,17 @@ export const charge: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 0,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [{ ...bleed, stacks: 2 }],
+            effects: [{ ...bleed, stacks: 3 }],
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },
@@ -653,7 +654,7 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
     image: WeaponBoosterImage,
-    description: "Your next {{{ _offense_ }}} ability gains +1 Area",
+    description: "Your next {{ actions.0.effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
     overrideBodyText: true,
     actions: [
         {
@@ -677,7 +678,7 @@ export const sweepingReach: Ability = {
                         },
                     ],
                     attackAreaIncrease: 1,
-                    stacks: 1,
+                    stacks: 2,
                     maxApplications: 1,
                     onOffensiveAbility: {
                         decrementStacks: 1,
@@ -688,7 +689,6 @@ export const sweepingReach: Ability = {
     ],
     upgrades: [
         {
-            description: "Your next {{ actions.0.effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
             actions: [
                 {
                     effects: [
@@ -969,11 +969,11 @@ export const rend: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 0,
+            damage: 5,
             effects: [
                 {
                     ...bleed,
-                    stacks: 3,
+                    stacks: 5,
                 },
             ],
         },
@@ -1005,7 +1005,7 @@ export const whirlwind: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 1,
+                    stacks: 3,
                 },
             ],
         },
@@ -1370,7 +1370,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 11,
+            damage: 12,
             secondaryAction: {
                 returnParentCardToHand: true,
                 resources: 1,
@@ -1597,7 +1597,7 @@ export const puncture: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 1,
+                    stacks: 2,
                 },
             ],
             area: 1,
@@ -2628,7 +2628,7 @@ export const moratorium: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 12,
+            damage: 13,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             targetMinHP: 1,
@@ -3076,6 +3076,42 @@ export const suddenDeath: Ability = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const zan: Ability = {
+    name: "Zan",
+    image: BareBladeImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 1,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}",
+    overrideBodyText: true,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            effects: [
+                {
+                    ...bleed,
+                    stacks: 7,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            ...bleed,
+                            stacks: 3,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
