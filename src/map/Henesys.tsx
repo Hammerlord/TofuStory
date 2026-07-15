@@ -203,7 +203,7 @@ const Henesys = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             onClick={() => handleClickEvent(HENESYS_PLACES.GACHAPON, gachaponEvents)}
                         />
 
-                        {rolledBosses[miniBean.name] && (
+                        {rolledBosses[TOWNS.HENESYS] === miniBean.name ? (
                             <TownNode
                                 icon={JapaneseOgreIcon}
                                 isVisited={visited[HENESYS_PLACES.PANTRY]}
@@ -211,9 +211,7 @@ const Henesys = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                                 nodeImage={HenesysPantryImage}
                                 onClick={() => handleClickEvent(HENESYS_PLACES.PANTRY, pantry)}
                             />
-                        )}
-
-                        {rolledBosses[athena.name] && (
+                        ) : (
                             <TownNode
                                 icon={JapaneseOgreIcon}
                                 isVisited={visited[HENESYS_PLACES.CLASS_LEADER]}

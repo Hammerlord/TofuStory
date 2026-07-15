@@ -60,14 +60,15 @@ export type CharacterState = {
     purchasedConsumables: {
         [itemName: string]: number; // Number of purchases for a given item name
     };
-    rolledBosses: { [bossId: string]: true };
+    rolledBosses: { [townName: string]: string };
     numNormalEncountersSinceLoot: number;
 };
 
 const getRolledBosses = () => {
-    const bosses = {};
-    const henesysBoss = getRandomItem(RANDOM_BOSSES[TOWNS.HENESYS]);
-    bosses[henesysBoss] = true;
+    const bosses: { [townName: string]: string } = {};
+    Object.entries(RANDOM_BOSSES).forEach(([key, value]) => {
+        bosses[key] = getRandomItem(value);
+    });
 
     return bosses;
 };

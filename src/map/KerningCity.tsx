@@ -8,6 +8,7 @@ import { dyle } from "../enemy/dyle";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     CaseyImage,
+    KerningBarImage,
     KerningCaseyImage,
     KerningCenterImage,
     KerningCityBGImage,
@@ -108,13 +109,13 @@ export const dyleScene: EventScene = {
 
 const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
+    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const [isWorkshopOpen, setIsWorkshopOpen] = useState(false);
     const { workshop, tradingPost } = townShops[TOWNS.KERNING] || {};
-    const numTransmutesRemaining = workshop.numTransmutesRemaining;
+    const numTransmutesRemaining = workshop?.numTransmutesRemaining || 0;
 
     const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
         if (visited[val]) {
@@ -268,20 +269,23 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
                             nodeEl={caseyNodeEl}
                             onClick={() => handleClickEvent(KERNING_PLACES.MATCH_CARDS, kerningMatchingCards)}
                         />*/}
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[KERNING_PLACES.DYLE]}
-                            label={"[Test] Dyle"}
-                            onClick={() => handleClickEvent(KERNING_PLACES.DYLE, dyleScene)}
-                            nodeImage={KerningSwampImage}
-                        />
-                        {/*<TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[KERNING_PLACES.CLASS_LEADER]}
-                            label={"[Test] Dark Lord"}
-                            onClick={handleClickClassLeader}
-                            nodeImage={KerningBarImage}
-                        />*/}
+                        {rolledBosses[TOWNS.KERNING] === dyle.name ? (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[KERNING_PLACES.DYLE]}
+                                label={"[Test] Dyle"}
+                                onClick={() => handleClickEvent(KERNING_PLACES.DYLE, dyleScene)}
+                                nodeImage={KerningSwampImage}
+                            />
+                        ) : (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[KERNING_PLACES.CLASS_LEADER]}
+                                label={"[Test] Dark Lord"}
+                                onClick={handleClickClassLeader}
+                                nodeImage={KerningBarImage}
+                            />
+                        )}
                     </div>
                 </Pan>
                 <Legend />

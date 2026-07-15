@@ -29,6 +29,7 @@ import { TOWN_STYLES } from "./constants";
 import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
 import { crystalScene } from "../scene/crystals/Crystals";
+import { lostDragon } from "../enemy/dragon";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -62,7 +63,7 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
+    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state).character;
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
@@ -177,22 +178,25 @@ const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             nodeImage={ElliniaCampaignImage}
                             onClick={handleClickCampaign}
                         />
-                        {/**
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[ELLINIA_PLACES.CLASS_LEADER]}
-                            label={"[Test] Grendel"}
-                            nodeImage={ElliniaMagicianHallImage}
-                            onClick={handleClickClassLeader}
-                        /> */}
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}
-                            isLocked={!visited[ELLINIA_PLACES.CAMPAIGN]}
-                            label={"Secret Garden"}
-                            nodeImage={MarrsForestPreviewImage}
-                            onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
-                        />
+                        {rolledBosses[TOWNS.ELLINIA] === lostDragon.name ? (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[ELLINIA_PLACES.SECRET_GARDEN]}
+                                isLocked={!visited[ELLINIA_PLACES.CAMPAIGN]}
+                                label={"Secret Garden"}
+                                nodeImage={MarrsForestPreviewImage}
+                                onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
+                            />
+                        ) : (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[ELLINIA_PLACES.CLASS_LEADER]}
+                                label={"[Test] Grendel"}
+                                nodeImage={ElliniaMagicianHallImage}
+                                onClick={handleClickClassLeader}
+                            />
+                        )}
+
                         <TownNode
                             icon={QuestionMarkIcon}
                             isVisited={visited[ELLINIA_PLACES.CRYSTAL_CAVE]}

@@ -32,6 +32,7 @@ import TradingPost from "../shops/TradingPost";
 import { undeadMage } from "../enemy/undead";
 import { BATTLE_TYPES } from "../battle/types";
 import { CAMPAIGN_BOSS_MUSIC } from "../battle/constants";
+import { dancesWithBalrog } from "../enemy/dancesWithBalrog";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -109,7 +110,7 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops } = useAppSelector((state) => state).character;
+    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state).character;
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const { tradingPost } = townShops[TOWNS.PERION] || {};
@@ -234,20 +235,23 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             }
                         />
 
-                        {/** <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[PERION_PLACES.CLASS_LEADER]}
-                            label={"[Test] Dances With Balrog"}
-                            onClick={handleClickClassLeader}
-                            nodeImage={PerionWarriorHallImage}
-                        />**/}
-                        <TownNode
-                            icon={JapaneseOgreIcon}
-                            isVisited={visited[PERION_PLACES.RICHE]}
-                            label={"[Test] Riche, the Undead Mage"}
-                            onClick={() => handleClickEvent(PERION_PLACES.RICHE, undeadMageScene)}
-                            nodeImage={PerionWarriorHallImage}
-                        />
+                        {rolledBosses[TOWNS.PERION] === dancesWithBalrog.name ? (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[PERION_PLACES.CLASS_LEADER]}
+                                label={"[Test] Dances With Balrog"}
+                                onClick={handleClickClassLeader}
+                                nodeImage={PerionWarriorHallImage}
+                            />
+                        ) : (
+                            <TownNode
+                                icon={JapaneseOgreIcon}
+                                isVisited={visited[PERION_PLACES.RICHE]}
+                                label={"[Test] Riche, the Undead Mage"}
+                                onClick={() => handleClickEvent(PERION_PLACES.RICHE, undeadMageScene)}
+                                nodeImage={PerionWarriorHallImage}
+                            />
+                        )}
                     </div>
                 </Pan>
                 <Legend />

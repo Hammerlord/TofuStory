@@ -183,9 +183,7 @@ export const routeKerningToPerion: Route = {
             x: 0.3169347209082308,
             y: 0.2961431859820548,
             type: NODE_TYPES.BOSS,
-            // Testing Pillaging Boar. Re-enable this when we want to have a chance getting one boss or the other.
-            // encounter: Math.random() < 0.5 ? stumpyFight.id : pillagingBoarFight.id,
-            encounter: pillagingBoarFight.id,
+            encounter: Math.random() < 0.5 ? stumpyFight.id : pillagingBoarFight.id,
             region: REGIONS.PERION,
         },
         {
@@ -518,9 +516,7 @@ export const routeHenesysEllinia: Route = {
             x: 0.5734375,
             y: 0.6790011447789057,
             type: NODE_TYPES.BOSS,
-            // Testing Mushmom. Re-enable this when we want to have a chance getting one boss or the other.
-            //encounter: Math.random() < 0.5 ? strangePigFight.id : mushmomFight.id,
-            encounter: mushmomFight.id,
+            encounter: Math.random() < 0.5 ? strangePigFight.id : mushmomFight.id,
             region: REGIONS.HENESYS,
         },
         { x: 0.6104910714285714, y: 0.6504244232166863, region: REGIONS.ELLINIA },
