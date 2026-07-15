@@ -20,7 +20,7 @@ export const SUMMON_DELAY = 250;
 
 export const battleWarnings = {
     depleteMinCardInHand: "That ability requires at least one other card in your hand to deplete.",
-    moveToDeckMinCardInHand: "That ability requires at least one other card in your hand.",
+    minCardInHand: "That ability requires at least one other card in your hand.",
     promptFinishSelecting: "Finish selecting cards in the overlay prompt first.",
     minDepleted: "You haven't Depleted any other cards this battle.",
     targetStealth: "That character is stealthed and cannot be targeted directly.",

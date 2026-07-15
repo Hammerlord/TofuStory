@@ -204,7 +204,7 @@ export const stomp: Ability = {
     name: "Stomp",
     image: StompImage,
     resourceCost: 1,
-    description: "Move the top card of your discard to your hand.",
+    description: "Move the card on top of your discard to the top of your deck.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -213,7 +213,7 @@ export const stomp: Ability = {
             damage: 8,
             moveCards: {
                 from: CARD_PILE_TYPES.DISCARD,
-                to: CARD_PILE_TYPES.HAND,
+                to: CARD_PILE_TYPES.DECK,
                 amount: 1,
                 moveType: "append",
             },

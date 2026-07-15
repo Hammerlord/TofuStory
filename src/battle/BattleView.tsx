@@ -422,14 +422,15 @@ const BattlefieldContainer = () => {
     };
 
     const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            if (hand.length <= 1) {
+        const type = selectedAbilityFromHand?.selectCards?.type;
+
+        if (hand.length <= 1) {
+            console.log(type);
+            if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                 warn(battleWarnings.depleteMinCardInHand);
                 return;
-            }
-        } else if (selectedAbilityFromHand.selectCards.type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-            if (hand.length <= 1) {
-                warn(battleWarnings.moveToDeckMinCardInHand);
+            } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK || type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
+                warn(battleWarnings.minCardInHand);
                 return;
             }
         }

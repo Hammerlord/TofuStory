@@ -704,7 +704,7 @@ export const sweepingReach: Ability = {
 
 export const sharpen: Ability = {
     name: "Sharpen",
-    resourceCost: 0,
+    resourceCost: 1,
     image: WeaponMasteryLGImage,
     description: "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     overrideBodyText: true,
@@ -716,7 +716,7 @@ export const sharpen: Ability = {
             effects: [
                 {
                     ...attackPower,
-                    duration: 3,
+                    duration: 4,
                 },
             ],
         },
@@ -1137,7 +1137,7 @@ export const dustDevils: Ability = {
     resourceCost: 1,
     image: TornadoImage,
     description:
-        "On attack, cast <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} tornadoes at up to 3 enemies. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "{{ actions.0.effects.0.onAttack.chance }} chance on attack to cast <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} tornadoes at up to 3 enemies. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -1149,10 +1149,11 @@ export const dustDevils: Ability = {
                     name: "Dust Devils",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    duration: 5,
+                    duration: 4,
                     icon: TornadoImage,
                     description: "Casting tornadoes on attack.",
                     onAttack: {
+                        chance: 0.5,
                         disableTriggerFromProcs: true,
                         ability: dustDevilsActiveAbility,
                     },
@@ -1188,25 +1189,26 @@ export const doubleTime: Ability = {
     image: DoubleTimeImage,
     resourceCost: 1,
     description: "Copy a non-summon card in your hand. It is Ephemeral.",
+    depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    selectCards: {
+        type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+        filters: [
+            {
+                hasMinion: true,
+                comparator: "not",
+            },
+        ],
+        effects: [
+            {
+                removeParentCardAfterTurn: true,
+            },
+        ],
+    },
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            selectCards: {
-                type: SELECT_CARD_TYPES.COPY_FROM_HAND,
-                filters: [
-                    {
-                        hasMinion: true,
-                        comparator: "not",
-                    },
-                ],
-                effects: [
-                    {
-                        removeParentCardAfterTurn: true,
-                    },
-                ],
-            },
         },
     ],
     upgrades: [

@@ -149,6 +149,7 @@ const puppeteerRevive: EffectEventTrigger = {
                 usableWhileStunned: true,
                 usableWhileDead: true,
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                removeDebuffs: true,
                 ability: {
                     name: "Revive",
                     image: RespawnTokenImage,
