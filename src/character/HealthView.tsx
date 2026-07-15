@@ -36,22 +36,29 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             })
         );
     });
-    const damageModifierTotal = damageModifiers.reduce((acc, effect) => {
-        return (acc += effect.attackDamageReceived * (effect.stacks || 1));
+
+    let damageModifierTotal = damageModifiers.reduce((acc, effect) => {
+        return (acc += effect.attackDamageReceived || 0 * (effect.stacks || 1));
     }, 0);
-    const modifierMap = damageModifiers.reduce((acc, effect) => {
-        const { name, attackDamageReceived, stacks = 1 } = effect;
-        if (!acc[name]) {
-            acc[name] = {
-                count: 0,
-                effect,
-            };
-        }
 
-        acc[name].count += attackDamageReceived * stacks;
+    damageModifierTotal = Math.ceil(damageModifierTotal);
 
-        return acc;
-    }, {});
+    const modifierMap = damageModifiers.reduce(
+        (acc, effect) => {
+            const { name, attackDamageReceived, stacks = 1 } = effect;
+            if (!acc[name]) {
+                acc[name] = {
+                    count: 0,
+                    effect,
+                };
+            }
+
+            acc[name].count += attackDamageReceived || 0 * stacks;
+
+            return acc;
+        },
+        {} as { [effectName: string]: { count: number; effect: Effect } }
+    );
 
     const tooltipContents = (
         <div>
@@ -71,7 +78,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         {Object.values(modifierMap).map(({ count, effect }) => (
                             <div key={[effect.name].join("-")}>
                                 <Icon icon={effect.icon} size="sm" /> {effect.name} {count < 0 ? "-" : "+"}
-                                {count}
+                                {Math.ceil(count)}
                             </div>
                         ))}
                     </div>
