@@ -83,6 +83,8 @@ export const hardwood: Effect = {
                 description: "Effect is disabled by Burn.",
                 attackDamageReceived: -1,
                 duration: 1,
+                maxApplications: 3,
+                maxDuration: 1,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

@@ -1,5 +1,4 @@
-import { defDown, defUp } from "./../ability/Effects";
-import { attack } from "./abilities";
+import { hardy } from "../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -13,9 +12,10 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { BombImage, MasterDummyImage, PandaImage, PandaSpecialMoveImage, TeleportImage, UrsusPawDefaultImage } from "../images";
-import { hardy } from "../ability/Effects";
+import { BombImage, MasterDummyImage, PandaImage, PandaSpecialMoveImage, UrsusPawDefaultImage } from "../images";
 import { CloudIcon, MuscleIcon, ShieldIcon } from "../images/icons";
+import { defDown, defUp } from "./../ability/Effects";
+import { attack } from "./abilities";
 
 const explode: Ability = {
     name: "Explode",
@@ -317,13 +317,43 @@ export const martialArtist: Minion = {
                 },
             ],
         },
+        {
+            name: "Four-Sided Strike",
+            image: UrsusPawDefaultImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    playbackTime: 300,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    playbackTime: 300,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    playbackTime: 300,
+                },
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                    playbackTime: 300,
+                },
+            ],
+        },
     ],
     effects: [
         hardy,
         {
             name: "Battle Flow",
             icon: MuscleIcon,
-            description: "When attacked, character gains +1 damage reduction for the turn.",
+            description: "When attacked, character gains +1 DEF for the turn.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             canBeSilenced: true,
@@ -333,6 +363,8 @@ export const martialArtist: Minion = {
                     {
                         ...defUp,
                         duration: 1,
+                        maxApplications: 5,
+                        maxDuration: 1,
                     },
                 ],
             },
