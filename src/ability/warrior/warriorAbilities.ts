@@ -1213,18 +1213,14 @@ export const doubleTime: Ability = {
     ],
     upgrades: [
         {
-            description: "Copy a card in your hand. It is Ephemeral and costs {{ actions.0.selectCards.effects.0.resourceCost }} less.",
-            actions: [
-                {
-                    selectCards: {
-                        effects: [
-                            {
-                                resourceCost: -1,
-                            },
-                        ],
+            description: "Copy a card in your hand. It is Ephemeral and costs {{ selectCards.effects.0.resourceCost }} less.",
+            selectCards: {
+                effects: [
+                    {
+                        resourceCost: -1,
                     },
-                },
-            ],
+                ],
+            },
         },
     ],
 };
