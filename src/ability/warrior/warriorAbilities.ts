@@ -1889,7 +1889,8 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Gain {{{ _armor_ }}} each hit.",
+    description: "Gain {{{ _armor_ }}} for each target hit.",
+    overrideBodyText: true,
     actions: [
         {
             damage: 6,
@@ -1947,15 +1948,6 @@ export const shieldMastery: Ability = {
                             actions: [
                                 {
                                     armor: 3,
-                                    addCards: [
-                                        {
-                                            actions: [
-                                                {
-                                                    armor: 3,
-                                                },
-                                            ],
-                                        },
-                                    ],
                                 },
                             ],
                         },
