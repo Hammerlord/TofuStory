@@ -270,6 +270,7 @@ export const lifeLink: Effect = {
         usableWhileStunned: true,
         affectsDeadCharacters: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        removeDebuffs: true,
         effects: [
             {
                 name: "Reviving...",
@@ -278,7 +279,7 @@ export const lifeLink: Effect = {
                 icon: RespawnTokenImage,
                 persistsWhenDead: true,
                 canBeSilenced: false,
-                description: "When this effect ends, the character will revive with half HP.",
+                description: "When this effect ends, the character will revive and recover a portion of its HP.",
                 duration: 3,
                 onEnd: {
                     usableWhileStunned: true,

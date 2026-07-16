@@ -840,6 +840,7 @@ const onEffectEventTrigger = ({
                 actorId: ownerId,
                 action: {
                     ...other,
+                    multiplier: multiplierConfig,
                     type: ACTION_TYPES.EFFECT,
                 },
                 source: procSource,
@@ -953,7 +954,7 @@ export const checkEventTrigger = ({
             return;
         }
 
-        const triggerEffectEvent = ({ effect, effectEvent }) => {
+        const triggerEffectEvent = ({ effect, effectEvent }: { effect: CombatEffect; effectEvent: EffectEventTrigger }) => {
             const { uptime, turnsTriggerFrequency, id } = effect;
             // Dead characters generally cannot trigger effects except in case of killing blows
             const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
