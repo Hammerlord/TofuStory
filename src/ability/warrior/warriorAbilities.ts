@@ -19,7 +19,6 @@ import {
     ChanceAttackImage,
     CloseCombatImage,
     CombatMasteryImage,
-    CombatOrdersImage,
     ComboFuryImage,
     DarkImpaleImage,
     DarkThirstImage,
@@ -77,7 +76,6 @@ import {
     WarriorMasteryImage,
     WarriorThroneImage,
     WeaponBoosterImage,
-    WeaponMasteryImage,
     WeaponMasteryLGImage,
     WorldReaverImage,
 } from "../../images";
@@ -87,7 +85,6 @@ import {
     attackDown,
     attackPower,
     bleed,
-    defDown,
     directDamageTaken,
     immunity,
     infuriateEffect,
@@ -108,17 +105,15 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
-    Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { getUpgradeCard } from "./../../Menu/utils";
 import { preventArmorDecayPlayer } from "./../Effects";
 import { MULTIPLIER_TYPES } from "./../types";
 
-import { attack } from "../../enemy/abilities";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { attack } from "../../enemy/abilities";
 
 export const furiousStrikeCard: Ability = {
     name: "Furious Strike",
@@ -346,7 +341,7 @@ export const spikes: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 5,
+            armor: 6,
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
@@ -399,7 +394,6 @@ export const warBanner: Ability = {
         effects: [
             {
                 ...stealth,
-                duration: 3,
             },
             {
                 name: "War Banner - Drumbeat of War",
@@ -1057,7 +1051,7 @@ export const cross: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 5,
+            damage: 7,
         },
         {
             type: ACTION_TYPES.EFFECT,
@@ -1430,7 +1424,7 @@ export const counterattack: Ability = {
                                     effects: [
                                         {
                                             ...bleed,
-                                            stacks: 2,
+                                            stacks: 3,
                                         },
                                     ],
                                 },
@@ -1476,7 +1470,7 @@ export const poundOfNails: Ability = {
     actions: [
         {
             target: TARGET_TYPES.SELF,
-            effects: [{ ...thorns, stacks: 3 }],
+            effects: [{ ...thorns, stacks: 5 }],
             type: ACTION_TYPES.EFFECT,
         },
     ],
@@ -1486,7 +1480,7 @@ export const poundOfNails: Ability = {
                 {
                     effects: [
                         {
-                            stacks: 1,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -1833,7 +1827,12 @@ export const soulBlade: Ability = {
             },
         ],
         effects: [
-            { ...ward },
+            {
+                ...ward,
+                onReceiveAttack: {
+                    removeEffect: true,
+                },
+            },
             {
                 name: "Soul Blade Effect",
                 icon: BurningSoulBladeMinionImage,
@@ -1890,7 +1889,7 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Heal 1 {{{ _healing_ }}} each hit.",
+    description: "Gain {{{ _armor_ }}} each hit.",
     actions: [
         {
             damage: 6,
@@ -1898,7 +1897,7 @@ export const divineCharge: Ability = {
             target: TARGET_TYPES.HOSTILE,
             area: 1,
             secondaryAction: {
-                healing: 1,
+                armor: 1,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
                 },
@@ -3018,7 +3017,7 @@ export const incite: Ability = {
 
 export const suddenDeath: Ability = {
     name: "Sudden Death",
-    resourceCost: 1,
+    resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     image: SkullBalloonImage,
     description:
@@ -3039,9 +3038,11 @@ export const suddenDeath: Ability = {
                             icon: SkullBalloonImage,
                             name: "Sudden Death!",
                             attackPower: 3,
-                            duration: 1,
                             attackDamageReceived: 1,
                             maxApplications: 1,
+                            onTurnStart: {
+                                removeEffect: true,
+                            },
                         },
                     ],
                 },
