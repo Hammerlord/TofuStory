@@ -165,6 +165,12 @@ export interface AbilityDamageReceived {
     type: SCALING_VALUE_TYPES;
 }
 
+export interface SkillBonus {
+    comparator?: Comparator; // Default is exact match (eq). Not case sensitive
+    skill: string;
+    damage: number;
+}
+
 export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEventTrigger[] } & {
     name: string;
     uptime?: number;
@@ -223,11 +229,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     applyEffects?: Effect[]; // Additional effects that periodically trigger from this effect
     /** How many turns it should cool down before triggering again */
     turnsTriggerFrequency?: number;
-    skillBonus?: {
-        comparator?: Comparator; // Default is exact match (eq). Not case sensitive
-        skill: string;
-        damage: number;
-    }[];
+    skillBonus?: SkillBonus[];
     onlyVisibleWhenProcced?: boolean;
     mesosGained?: number; // Percentage; 1 = 100%
     maxHP?: number;

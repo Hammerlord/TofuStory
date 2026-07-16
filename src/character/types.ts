@@ -48,4 +48,5 @@ export interface Player extends Combatant {
     secondaryClass?: string | null;
     drawCardsPerTurn: number;
     weaponSkins: { name: string; image: string }[];
+    mesos: number;
 }

@@ -81,7 +81,7 @@ const { updatePlayer } = playerStateSlice?.actions || {};
  * @param combatantId - Combatant UUID
  * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
  */
-export const findCombatantData = (getState: Function, combatantId: string): CombatantInfo | undefined => {
+export const findCombatantData = (getState: Function, combatantId?: string): CombatantInfo | undefined => {
     const battle = getState()?.battle;
     if (!battle || !combatantId) {
         return;

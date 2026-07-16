@@ -1,4 +1,4 @@
-import { AbilityEffect, ActionOptionalProperties } from "./../ability/types";
+import { AbilityEffect, ActionOptionalProperties, SkillBonus } from "./../ability/types";
 /**
  * @file Helpers for various battle functions
  */
@@ -86,7 +86,11 @@ export const getCharacterStatChanges = ({
     return updatedStatChanges;
 };
 
-export const getMaxHP = (character: Combatant): number => {
+export const getMaxHP = (character?: Combatant | null): number => {
+    if (!character) {
+        return 0;
+    }
+
     const silenced = isSilenced(character);
     const enabledEffects = character.effects?.filter((effect) => {
         const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
@@ -126,7 +130,7 @@ export const canTargetIfStealthed = (actor: Combatant, target: Combatant): boole
     return !isStealthed(target) || hasTruesight(actor);
 };
 
-export const isStealthed = (character?: Combatant): boolean => {
+export const isStealthed = (character?: Combatant | null): boolean => {
     if (!character) {
         return false;
     }
@@ -134,7 +138,7 @@ export const isStealthed = (character?: Combatant): boolean => {
     return character.effects?.some(({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced));
 };
 
-export const isUntargetable = (character?: Combatant): boolean => {
+export const isUntargetable = (character?: Combatant | null): boolean => {
     if (!character) {
         return false;
     }
@@ -156,7 +160,11 @@ export const clearTurnHistory = (character: Combatant): Combatant => {
     };
 };
 
-export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
+export const hasEffectType = (target: CombatantInfo | undefined, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
+    if (!target) {
+        return false;
+    }
+
     return getEnabledEffects({ combatantInfo: target }).some(({ type }) =>
         Array.isArray(effectType) ? effectType.includes(type) : type === effectType
     );
@@ -165,8 +173,8 @@ export const hasEffectType = (target: CombatantInfo, effectType: EFFECT_TYPES | 
 /**
  * Player conditional helpers
  */
-export const canUseAbility = (character, ability: CombatAbility | undefined): boolean => {
-    if (!character || ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
+export const canUseAbility = (character: Combatant, ability: CombatAbility | undefined): boolean => {
+    if (!character || !ability || ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
         return false;
     }
 
@@ -204,10 +212,14 @@ export const isValidTarget = ({
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
     const actorData = findCombatantData(getState, actorId);
-    const { friendly: playerSide, hostile: enemySide } = actorData || {};
+    if (!actorData) {
+        return false;
+    }
+
+    const { friendly: playerSide, hostile: enemySide } = actorData;
 
     if (minion) {
-        const { isPlayer, disableTribute } = playerSide[index] || {};
+        const { isPlayer, disableTribute } = playerSide?.[index] || {};
         const isValidSpot = !isPlayer && (!disableTribute || minion.bypassDisableTribute);
         return side === BATTLEFIELD_SIDES.PLAYER_SIDE && Boolean(isValidSpot);
     }
@@ -219,15 +231,22 @@ export const isValidTarget = ({
         0;
 
     if (side === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+        // Is it just a typing technicality that playerSide can be undefined?
+        if (!playerSide) {
+            return false;
+        }
+
         if (target === TARGET_TYPES.SELF) {
-            return playerSide[index]?.isPlayer;
+            return playerSide[index]?.isPlayer || false;
         }
 
         if (target === TARGET_TYPES.FRIENDLY) {
-            if (isUntargetable(playerSide[index])) {
+            const targetedFriendly = playerSide[index];
+
+            if (isUntargetable(targetedFriendly)) {
                 return false;
             }
-            const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
+            const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
                 if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                     return actorData;
                 } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
@@ -241,11 +260,11 @@ export const isValidTarget = ({
 
             // No whiffing on empty slots
             if (area === 0) {
-                return playerSide[index]?.HP > 0;
+                return (targetedFriendly?.HP || 0) > 0;
             }
 
             for (let i = index - area; i <= index + area; ++i) {
-                if (playerSide[i]?.HP > 0) {
+                if ((playerSide[i]?.HP || 0) > 0) {
                     return true;
                 }
             }
@@ -256,6 +275,10 @@ export const isValidTarget = ({
             return true;
         }
     } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
+        if (!enemySide) {
+            return false;
+        }
+
         const targetedEnemy = enemySide[index];
         if (isStealthed(targetedEnemy) && !area) {
             return false;
@@ -266,19 +289,21 @@ export const isValidTarget = ({
 
         const tauntEnemies = enemySide
             .filter((combatant) => combatant?.HP)
-            .map((combatant) => findCombatantData(getState, combatant.id))
-            .filter((combatantInfo: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
-        if (tauntEnemies.length && tauntEnemies.every((enemy) => enemy.combatant?.id !== targetedEnemy?.id)) {
+            .map((combatant) => findCombatantData(getState, combatant?.id))
+            .filter((combatantInfo?: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
+
+        if (tauntEnemies.length && tauntEnemies.every((enemy) => enemy?.combatant?.id !== targetedEnemy?.id)) {
             return false;
         }
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo => {
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
             if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                 return actorData;
             } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
                 return findCombatantData(getState, targetedEnemy?.id);
             }
         };
+
         const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
         if (!conditionsPassed) {
             return false;
@@ -286,20 +311,24 @@ export const isValidTarget = ({
 
         // No whiffing on empty slots
         if (area === 0) {
-            return targetedEnemy?.HP > 0;
+            return (targetedEnemy?.HP || 0) > 0;
         }
 
         for (let i = index - area; i <= index + area; ++i) {
-            if (enemySide[i]?.HP > 0) {
+            if ((enemySide[i]?.HP || 0) > 0) {
                 return true;
             }
         }
+        return false;
     }
 
     return false;
 };
 
-export const updateCharacters = (characters: (Combatant | null)[], updateFn): (Combatant | null)[] => {
+export const updateCharacters = (
+    characters: (Combatant | null)[],
+    updateFn: (character: Combatant | null) => any
+): (Combatant | null)[] => {
     return characters.map((character) => {
         if (!character) {
             return character;
@@ -426,7 +455,7 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
         return combatant.turnHistory.filter(({ type, parent }) => {
-            if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(type)) {
+            if (!type || ![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(type)) {
                 return false;
             }
 
@@ -541,7 +570,7 @@ export const getEnabledEffects = ({
     getCalculationTarget,
     source,
 }: {
-    combatantInfo: CombatantInfo;
+    combatantInfo?: CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[] | Ability;
@@ -578,7 +607,7 @@ export const getEnabledEffects = ({
     });
 };
 
-export const getSkillBonusDamage = ({ ability, skillBonus }) => {
+export const getSkillBonusDamage = ({ ability, skillBonus }: { ability: Ability | Item; skillBonus: SkillBonus[] }) => {
     if (!skillBonus || !ability) {
         return 0;
     }
@@ -653,7 +682,7 @@ export const calculateDamage = ({
     const parentEffects = (actionParent as CombatAbility)?.effects;
     if (parentEffects?.length) {
         baseDamage += parentEffects.reduce((acc, effect: AbilityEffect) => {
-            return acc + effect.damage || 0;
+            return acc + (effect.damage || 0);
         }, 0);
 
         baseDamage = Math.max(0, baseDamage);
@@ -663,7 +692,7 @@ export const calculateDamage = ({
         return baseDamage;
     }
 
-    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
+    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
         if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
             return actor;
         }
@@ -680,7 +709,7 @@ export const calculateDamage = ({
 
     if (isAttack) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(
-            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage, stacks = 1 }) => {
+            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage = 0, stacks = 1 }) => {
                 if (excludeEffectOwner) {
                     return;
                 }
@@ -746,7 +775,7 @@ export const calculateArmor = ({
 }: {
     target?: CombatantInfo;
     action: { armor?: number; maxArmor?: number; flatArmor?: number };
-    multiplier;
+    multiplier: number;
 }): number => {
     const { armor: initArmor, maxArmor = Infinity, flatArmor } = action;
     if (!initArmor && !flatArmor) {
@@ -758,7 +787,7 @@ export const calculateArmor = ({
         return Math.max(0, armor);
     }
 
-    const armor = Math.min(maxArmor, initArmor * multiplier);
+    const armor = Math.min(maxArmor, initArmor || 0 * multiplier);
     const targetArmorReceived =
         getEnabledEffects({ combatantInfo: target }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
@@ -788,7 +817,7 @@ export const getValidTargetIndices = (
     characters: (Combatant | null)[],
     options: { excludeStealth?: boolean; excludeIndex?: number; onlyTaunt?: boolean; excludeUntargetable?: boolean } = {}
 ): number[] => {
-    const indices = [];
+    const indices: number[] = [];
     const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true } = options;
     if (onlyTaunt) {
         // Check for taunting characters first.
@@ -805,7 +834,8 @@ export const getValidTargetIndices = (
     }
 
     characters.forEach((character: Combatant | null, i: number) => {
-        if (character?.HP > 0) {
+        const hp = character?.HP || 0;
+        if (hp > 0) {
             const notStealth = !excludeStealth || !isStealthed(character);
             const notExcluded = excludeIndex !== i;
             const untargetable = excludeUntargetable && isUntargetable(character);
@@ -820,7 +850,7 @@ export const getValidTargetIndices = (
 export const getHealableIndices = (characters: (Combatant | null)[]): number[] => {
     const indices = getValidTargetIndices(characters);
     // Injured targets only
-    return indices.filter((i) => characters[i].HP < getMaxHP(characters[i]));
+    return indices.filter((i) => (characters[i]?.HP || 0) < getMaxHP(characters[i]));
 };
 
 export const calculateActionArea = ({
@@ -1003,7 +1033,11 @@ export const getPossibleMoveIndices = ({
     friendly: (Combatant | null)[];
     action: Action;
 }): number[] => {
-    const { movement, movementOptions = {} } = action;
+    const { movement = 0, movementOptions = {} } = action;
+    if (!movement) {
+        return [];
+    }
+
     const { canSwapCharacterPlaces: swapPlaces } = movementOptions;
     const min = Math.max(0, currentLocationIndex - movement);
     const max = Math.min(friendly.length - 1, currentLocationIndex + movement);
@@ -1018,7 +1052,7 @@ export const getPossibleMoveIndices = ({
 };
 
 export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number[] => {
-    const indices = [];
+    const indices: number[] = [];
     friendly.forEach((f, i) => {
         if (!f || f.HP <= 0) indices.push(i);
     });
@@ -1054,7 +1088,7 @@ export const calculateBonus = ({
     }
 
     const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
-    const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): CombatantInfo => {
+    const getCalculationTarget = (conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET): CombatantInfo | undefined => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {
             return target;
         } else if (conditionTarget === CONDITION_TARGETS.ACTOR) {
@@ -1106,7 +1140,17 @@ export const calculateBonus = ({
     );
 };
 
-export const isWithinAbilityArea = ({ ability, actor, selectedIndex, targetIndex }): boolean => {
+export const isWithinAbilityArea = ({
+    ability,
+    actor,
+    selectedIndex,
+    targetIndex,
+}: {
+    ability: Ability;
+    actor: CombatantInfo;
+    selectedIndex: number;
+    targetIndex: number;
+}): boolean => {
     if (!ability) {
         return false;
     }
@@ -1128,7 +1172,7 @@ export const calculateMesoGain = ({ player, mesos = 0 }: { player: Player; mesos
 };
 
 /** Returns a card with aura effects applied, if any. */
-export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): CombatAbility => {
+export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): CombatAbility | undefined => {
     if (!id) {
         return;
     }

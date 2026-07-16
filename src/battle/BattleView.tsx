@@ -320,7 +320,8 @@ const BattlefieldContainer = () => {
     const selectedAbilityFromHand = getCardByInstanceId(hand, selectedAbilityId);
     const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
-    const actorId: string | undefined = (selectedMinion || player)?.id;
+    const actor = selectedMinion || player;
+    const actorId: string | undefined = actor?.id;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable || !ally.abilities?.length) {
@@ -759,16 +760,25 @@ const BattlefieldContainer = () => {
         const isValidIndex = (index: any) => typeof index === "number";
         const noHover = !isValidIndex(hoveredCombatant?.index);
         const mismatchingSide = side !== hoveredCombatant?.side;
-        if (disableActions || noHover || mismatchingSide) {
+        if (disableActions || noHover || mismatchingSide || !actor) {
             return false;
         }
 
         const hoveredIndex = hoveredCombatant?.index;
 
-        return (
-            isValidTarget({ ability: abilityToUse, side, index: hoveredIndex, getState: () => state, actorId }) &&
-            isWithinAbilityArea({ ability: abilityToUse, actor: actorId, selectedIndex: hoveredIndex, targetIndex: i })
-        );
+        if (!isValidTarget({ ability: abilityToUse, side, index: hoveredIndex, getState: () => state, actorId })) {
+            return false;
+        }
+
+        if (typeof i !== "number") {
+            return false;
+        }
+
+        const actorInfo = findCombatantData(() => state, actorId);
+        if (!actorInfo) {
+            return false;
+        }
+        return isWithinAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i });
     };
 
     /**
@@ -785,7 +795,7 @@ const BattlefieldContainer = () => {
             return false;
         }
 
-        const checkValidTargetForAbility = (ability) => {
+        const checkValidTargetForAbility = (ability: Ability) => {
             if (
                 isValidTarget({
                     ability,
@@ -808,9 +818,14 @@ const BattlefieldContainer = () => {
                     return true;
                 }
 
+                const actorInfo = findCombatantData(() => state, actorId);
+                if (!actorInfo) {
+                    return false;
+                }
+
                 return isWithinAbilityArea({
                     ability,
-                    actor: actorId,
+                    actor: actorInfo,
                     selectedIndex: hoveredCombatant?.index,
                     targetIndex: combatantIndex,
                 });
