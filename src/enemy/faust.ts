@@ -109,7 +109,7 @@ export const faust: Minion = {
             canBeSilenced: false,
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 50,
+                damage: 30,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -122,7 +122,6 @@ export const faust: Minion = {
                         ...stun,
                         bypassImmunity: true,
                         duration: 3,
-                        attackDamageReceived: 3,
                     },
                 ],
             },

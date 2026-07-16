@@ -1,5 +1,3 @@
-import { attack } from "./abilities";
-import { Action, ANIMATION_TYPES, MORPH_TYPES } from "./../ability/types";
 import { hardy, stun } from "../ability/Effects";
 import {
     ACTION_TYPES,
@@ -11,9 +9,11 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsRibbonImage, StrangePigImage } from "../images";
+import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
-import { championsRibbon, pigHeaded, resist, counterEffect, armorDown } from "./effect";
+import { Action, ANIMATION_TYPES } from "./../ability/types";
+import { attack } from "./abilities";
+import { armorDown, championsRibbon, counterEffect, resist } from "./effect";
 
 export const strangePig: Minion = {
     name: "Strange Pig",
@@ -58,7 +58,6 @@ export const strangePig: Minion = {
     ],
     effects: [
         championsRibbon,
-        pigHeaded,
         {
             name: "Mutate",
             type: EFFECT_TYPES.NONE,
@@ -285,7 +284,6 @@ export const mutantRibbonPig: Minion = {
                 ],
             },
         },
-        pigHeaded,
         {
             name: "Roar",
             type: EFFECT_TYPES.NONE,

@@ -12,9 +12,9 @@ import {
 } from "../ability/types";
 import { IronHogHoofImage, OmokPigImage, PillagingWildBoarImage, RockImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
-import { defDown, hardy, preventArmorDecay, stun } from "./../ability/Effects";
+import { defDown, hardy, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
-import { championsRibbon, counterEffect, resist, pigHeaded } from "./effect";
+import { championsRibbon, counterEffect, resist } from "./effect";
 
 const boulder: Minion = {
     name: "Boulder",
@@ -237,6 +237,5 @@ export const pillagingWildBoar: Minion = {
                 ],
             },
         },
-        pigHeaded,
     ],
 };

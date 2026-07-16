@@ -148,7 +148,6 @@ import {
     resist,
     hardwood,
     incorporeal,
-    pigHeaded,
     poisonous,
     sneaky,
     temporaryResist,
@@ -391,7 +390,6 @@ export const pig: Minion = {
             ],
         },
     ],
-    effects: [pigHeaded],
 };
 
 export const ribbonPig: Minion = {
@@ -434,7 +432,7 @@ export const ribbonPig: Minion = {
             ],
         },
     ],
-    effects: [championsRibbon, pigHeaded],
+    effects: [championsRibbon],
 };
 
 const burrow: Ability = {
@@ -898,7 +896,6 @@ export const wildBoar: Minion = {
             ],
         },
     ],
-    effects: [pigHeaded],
 };
 
 export const stump: Minion = {
@@ -1013,7 +1010,7 @@ export const fireBoar: Minion = {
             ],
         },
     ],
-    effects: [hardy, pigHeaded],
+    effects: [hardy],
 };
 
 export const ligator: Minion = {

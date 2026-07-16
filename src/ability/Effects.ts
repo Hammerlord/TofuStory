@@ -148,7 +148,8 @@ export const stun: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
-    description: "Stunned targets are unable to act.",
+    description: "Stunned targets are unable to act and take increased damage.",
+    attackDamageReceived: 3,
     icon: DizzyIcon,
 };
 
@@ -201,7 +202,8 @@ export const freeze: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     maxApplications: 1,
     maxDuration: 1,
-    description: "Frozen targets are unable to act.",
+    description: "Frozen targets are unable to act and take increased damage.",
+    attackDamageReceived: 3,
     duration: 1,
     persistsWhenDead: true,
 };

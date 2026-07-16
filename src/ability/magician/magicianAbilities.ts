@@ -3200,7 +3200,7 @@ export const shatter: Ability = {
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     image: CrystalIlbiImage,
-    description: "Deal <b>{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each debuff on the target, x2 if target is Stunned.",
+    description: "Deal <b>{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each debuff on the target.",
     overrideBodyText: true,
     actions: [
         {
@@ -3223,20 +3223,6 @@ export const shatter: Ability = {
                         },
                     ],
                 },
-                {
-                    damage: 5,
-                    multiplier: {
-                        type: MULTIPLIER_TYPES.DEBUFFS,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                    },
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-                            comparator: "eq",
-                        },
-                    ],
-                },
             ],
         },
     ],
@@ -3247,9 +3233,6 @@ export const shatter: Ability = {
                     bonus: [
                         {
                             damage: 2,
-                        },
-                        {
-                            damage: 4,
                         },
                     ],
                 },

@@ -44,22 +44,6 @@ import {
 import { defUp, attackPower, preventArmorDecay } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
-export const pigHeaded: Effect = {
-    name: "Pig-Headed",
-    description: "While stunned or frozen:",
-    icon: PigsHeadImage,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.DEBUFF,
-    attackDamageReceived: 2,
-    dispellable: false,
-    conditions: [
-        {
-            hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE],
-            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        },
-    ],
-};
-
 export const hardwood: Effect = {
     name: "Hardwood",
     description: "When attacked, character gains +1 damage reduction for the turn. Disabled by Burn.",
