@@ -936,7 +936,10 @@ export const applyVacuum = ({
 export const getInducedAttack = (actor: Combatant): Action => {
     let basicAttackDamage = 0;
     const abilities = actor.abilities || [];
-    const attackAbility = abilities.find(isAttackAbility) || abilities.find(isOffensiveAbility);
+    const attackAbility =
+        abilities.find((ability) => !ability.resourceCost && isAttackAbility(ability)) ||
+        abilities.find((ability) => !ability.resourceCost && isOffensiveAbility);
+
     if (attackAbility) {
         return { ...attackAbility.actions[0], playbackTime: INDUCED_ACTION_PLAYBACK_SPEED };
     }
