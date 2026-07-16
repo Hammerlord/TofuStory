@@ -2618,8 +2618,12 @@ export const autoSelectActionTarget = ({
     action: Action;
     actorId: string;
     getState: Function;
-}): { index: number; side: BATTLEFIELD_SIDES } => {
+}): { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } => {
     const actorData = findCombatantData(getState, actorId);
+    if (!actorData) {
+        return { index: undefined, side: undefined };
+    }
+
     const { friendly, hostile, friendlySide, hostileSide, index } = actorData;
     const { targetArea: area = 0, target, targetName, radiate, excludeActor } = action || {};
 
