@@ -787,7 +787,7 @@ export const calculateArmor = ({
         return Math.max(0, armor);
     }
 
-    const armor = Math.min(maxArmor, initArmor || 0 * multiplier);
+    const armor = Math.min(maxArmor, (initArmor || 0) * multiplier);
     const targetArmorReceived =
         getEnabledEffects({ combatantInfo: target }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,

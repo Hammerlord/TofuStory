@@ -1889,7 +1889,7 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Gain {{{ _armor_ }}} for each target hit.",
+    description: "Gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b> for each target hit.",
     overrideBodyText: true,
     actions: [
         {
