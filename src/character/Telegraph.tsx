@@ -160,10 +160,10 @@ const useStyles = createUseStyles({
     },
 });
 
-export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo): Ability | null => {
+export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?: { ignoreDisabled: boolean }): Ability | null => {
     const { combatant } = combatantInfo || {};
     const { ability: castingAbility } = combatant?.casting || {};
-    return castingAbility || combatant?.abilities?.[getUseAbilityIndex(combatantInfo)];
+    return castingAbility || combatant?.abilities?.[getUseAbilityIndex(combatantInfo, options)];
 };
 
 /**

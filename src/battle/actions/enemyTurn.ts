@@ -91,7 +91,7 @@ const enemyAction = (combatantId: string) => {
     };
 };
 
-export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
+export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreDisabled: boolean }): number => {
     const { resources = 0, maxResources = BASE_MAX_RESOURCES, abilities = [] } = actorInfo?.combatant || {};
 
     const getCalculationTarget = (type: CONDITION_TARGETS) => {
@@ -107,6 +107,9 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo): number => {
     }
 
     const notDisabled = (ability: Ability): boolean => {
+        if (options?.ignoreDisabled) {
+            return true;
+        }
         const disabledActionTypes = {};
         getEnabledEffects({ combatantInfo: actorInfo }).forEach((e) => {
             e?.disableAbilities?.forEach((type: ACTION_TYPES) => (disabledActionTypes[type] = true));
@@ -186,36 +189,15 @@ const requeueRecentlyUsedAbility =
             return;
         }
 
-        let mutableUpdatedActionTargets = [];
-        ability.actions.forEach((action, i) => {
-            const targeting = autoSelectActionTarget({ action, actorId: combatantId, getState });
-            mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
-            mutableUpdatedActionTargets[i] = targeting;
-
-            const previews = getAbilityPreviews({
-                ability,
-                actor: {
-                    ...postUpdateActorInfo.combatant,
-                    targeting: {
-                        ability,
-                        actionTargets: mutableUpdatedActionTargets,
-                    },
-                },
-                battle,
-            });
-
-            battle = {
-                ...battle,
-                ...previews.combatantStates,
-            };
-        });
+        const updatedTargets = getUpdatedBattleActionTargets({ ability, battle, actorInfo });
+        battle = updatedTargets.battle;
 
         dispatch(
             updateCombatant({
                 combatantId,
                 newProperties: {
                     targeting: {
-                        actionTargets: mutableUpdatedActionTargets,
+                        actionTargets: updatedTargets.targets,
                         ability,
                     },
                 },
@@ -224,6 +206,44 @@ const requeueRecentlyUsedAbility =
 
         return battle;
     };
+
+export const getUpdatedBattleActionTargets = ({
+    ability,
+    battle,
+    actorInfo,
+}: {
+    ability: Ability;
+    battle: BattleState;
+    actorInfo: CombatantInfo;
+}) => {
+    const getState = () => ({ battle });
+
+    let targets: { index: number | undefined; side: BATTLEFIELD_SIDES }[] = [];
+    ability.actions.forEach((action, i) => {
+        const targeting = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, getState });
+        targets = targets.slice();
+        targets[i] = targeting;
+
+        const previews = getAbilityPreviews({
+            ability,
+            actor: {
+                ...actorInfo.combatant,
+                targeting: {
+                    ability,
+                    actionTargets: targets,
+                },
+            },
+            battle,
+        });
+
+        battle = {
+            ...battle,
+            ...previews.combatantStates,
+        };
+    });
+
+    return { battle, targets };
+};
 
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {

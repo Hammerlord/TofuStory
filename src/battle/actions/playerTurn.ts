@@ -5,7 +5,15 @@ import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
-import { checkEventTrigger, findCombatantData, handleDoTs, onEndTurnTriggers, tickDownStatusEffects, useAbility } from "./actions";
+import {
+    checkEventTrigger,
+    checkValidEnemyNextAbility,
+    findCombatantData,
+    handleDoTs,
+    onEndTurnTriggers,
+    tickDownStatusEffects,
+    useAbility,
+} from "./actions";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
@@ -103,6 +111,7 @@ export const usePlayerAbility = ({
 
         // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
+        dispatch(checkValidEnemyNextAbility());
     };
 };
 

@@ -70,7 +70,7 @@ import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews from "../../character/getAbilityPreviews";
-import { getEnemyMoveOrder } from "./enemyTurn";
+import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -3215,3 +3215,48 @@ const onUseAbility =
             }
         });
     };
+
+/**
+ * Switches the enemy's current telegraphed ability if it suddenly doesn't have the resources or requirements to use it,
+ * eg. Grendel should stop casting the Storm Barrier attack if he has no armor.
+ */
+export const checkValidEnemyNextAbility = () => {
+    return (dispatch, getState) => {
+        let battle = getState().battle;
+        battle.enemySide.forEach((enemy: Combatant | null) => {
+            if (!enemy) {
+                return;
+            }
+
+            const actorInfo = findCombatantData(getState, enemy.id);
+            if (!actorInfo) {
+                return;
+            }
+
+            // ignoreDisabled: abilities disabled due to eg. stun do not count here since the target
+            // would continue to use that ability after the stun fades.
+            const ability = getNextTelegraphedAbility(actorInfo, { ignoreDisabled: true });
+            const currentlyChosenAbility = enemy.targeting?.ability;
+            if (!ability || !currentlyChosenAbility) {
+                return;
+            }
+
+            if (currentlyChosenAbility.name !== ability.name) {
+                const { battle: updatedBattle, targets } = getUpdatedBattleActionTargets({ ability, battle, actorInfo });
+                battle = updatedBattle;
+
+                dispatch(
+                    updateCombatant({
+                        combatantId: enemy.id,
+                        newProperties: {
+                            targeting: {
+                                ...targets,
+                                ability,
+                            },
+                        },
+                    })
+                );
+            }
+        });
+    };
+};
