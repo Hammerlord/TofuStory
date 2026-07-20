@@ -3,8 +3,7 @@ import {
     attackPower,
     bleed,
     chill,
-    directDamageTakenTrigger,
-    infuriateEffect,
+    directDamageTaken,
     lupinCurse,
     poison,
     stashCardEffect,
@@ -110,7 +109,6 @@ import {
     TofuImage,
     TopazImage,
     TortieShellImage,
-    VikingHelmImage,
     WeaponMasteryImage,
     WhiteUndershirtImage,
     WildKargoEyeImage,
@@ -2403,7 +2401,7 @@ export const medicineWithWeirdVibes: Item = {
                 healing: 1,
                 conditions: [
                     {
-                        hasEffect: directDamageTakenTrigger.name,
+                        hasEffect: directDamageTaken.name,
                         comparator: "eq",
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     },
