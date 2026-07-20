@@ -408,7 +408,7 @@ const CombatantView = forwardRef(
         };
 
         const { action, actionParent, targetRef } = (event?.actorId === oldState?.id && event) || {};
-        const { animation, type: actionType } = action || {};
+        const { animation, type: actionType, animationOptions } = action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = oldState?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
         const isApplyingEffect =
@@ -433,7 +433,7 @@ const CombatantView = forwardRef(
             },
         };
 
-        const getImageNode = (props) => {
+        const getCharacterImageNode = (props) => {
             const portrait = oldState?.effects?.find(({ override }) => override?.portrait)?.override?.portrait || oldState?.image;
             const { filter } =
                 oldState?.imageOptions ||
@@ -462,7 +462,7 @@ const CombatantView = forwardRef(
             }
         };
 
-        const imageNode = getImageNode(imageProps);
+        const imageNode = getCharacterImageNode(imageProps);
         const dialog = (actionParent as unknown as Ability)?.dialog || "";
         let reticleColor;
         if (isTargeted) {
@@ -489,6 +489,16 @@ const CombatantView = forwardRef(
         const { isPlayerTurn, state: battleState } = state.battle || {};
         const showIncomingDamagePreview =
             previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !events?.length;
+
+        const getPortraitEffectNode = () => {
+            const image = animationOptions?.portraitEffectImage;
+            if (typeof image === "string") {
+                return <img src={image} className={classes.shouting} />;
+            } else if (typeof image === "function") {
+                const Icon: Function = image;
+                return <Icon className={classes.shouting} />;
+            }
+        };
 
         return (
             <div
@@ -529,7 +539,7 @@ const CombatantView = forwardRef(
 
                                     {animation === ANIMATION_TYPES.SHOUT &&
                                         Array.from({ length: 3 }).map((_, i) =>
-                                            getImageNode({
+                                            getCharacterImageNode({
                                                 key: i,
                                                 className: classes.shouting,
                                                 style: { animationDelay: `${0.1 * i}s` },
@@ -555,6 +565,7 @@ const CombatantView = forwardRef(
                                     {(oldState.HP > 0 || isLifeLinked) && (
                                         <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={statChanges} />
                                     )}
+                                    {animationOptions?.portraitEffectImage && getPortraitEffectNode()}
                                     <span className={classNames(classes.center, classes.statChangeContainer)}>
                                         <BlockIcon statChanges={statChanges} />
                                         <HitIcon statChanges={statChanges} />

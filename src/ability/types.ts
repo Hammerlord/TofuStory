@@ -648,6 +648,7 @@ export type Action = {
         // Bounces between numTargets within targetArea.
         ricochet?: boolean;
         disableScreenShake?: boolean; // Only applicable for stomp
+        portraitEffectImage?: string;
         weapon?: {
             hide?: boolean;
             glow?: boolean;

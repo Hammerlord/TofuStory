@@ -114,6 +114,7 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
+import { AngerIcon, ShieldIcon } from "../../images/icons";
 
 export const furiousStrikeCard: Ability = {
     name: "Furious Strike",
@@ -2875,6 +2876,10 @@ export const outrage: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             damage: 15,
+            animationOptions: {
+                portraitEffectImage: AngerIcon,
+                weapon: { hide: true },
+            },
             applyAbilityEffects: {
                 pile: CARD_PILE_TYPES.HAND,
                 abilityEffects: [{ resourceCost: 1 }, { resourceCost: -1 }],
