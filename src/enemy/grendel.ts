@@ -471,6 +471,13 @@ const grendelMoltenLaser: Ability = {
     name: "Molten Laser",
     image: FlameHazeImage,
     description: "Destroys player's Armor and inflicts Burn.",
+    conditions: [
+        {
+            hasEffect: stormBarrier.name,
+            comparator: "not",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+        },
+    ],
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -481,7 +488,7 @@ const grendelMoltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    duration: 3,
+                    stacks: 1,
                 },
             ],
         },
