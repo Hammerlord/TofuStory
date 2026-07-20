@@ -36,7 +36,9 @@ const wallopCard: Ability = {
             type: ACTION_TYPES.ATTACK,
             area: 1,
             animationOptions: {
-                hideWeapon: true,
+                weapon: {
+                    hide: true,
+                },
             },
         },
     ],

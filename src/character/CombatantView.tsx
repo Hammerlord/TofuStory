@@ -539,7 +539,7 @@ const CombatantView = forwardRef(
                                         <div
                                             className={classNames(classes.weaponContainer, {
                                                 [classes.applyingEffect]: isApplyingEffect,
-                                                [classes.hidden]: action?.animationOptions?.hideWeapon,
+                                                [classes.hidden]: action?.animationOptions?.weapon?.hide,
                                             })}
                                         >
                                             <Weapon

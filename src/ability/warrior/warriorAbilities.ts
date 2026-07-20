@@ -3083,6 +3083,11 @@ export const zan: Ability = {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
+            animationOptions: {
+                weapon: {
+                    glow: true,
+                },
+            },
             effects: [
                 {
                     ...bleed,

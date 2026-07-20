@@ -320,7 +320,9 @@ export const eat: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             animationOptions: {
-                hideWeapon: true,
+                weapon: {
+                    hide: true
+                }
             },
             damage: 100,
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(

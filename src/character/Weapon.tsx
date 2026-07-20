@@ -185,7 +185,7 @@ const Weapon = ({
         return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
     }, [event?.id, target]);
 
-    const isGlowing = useMemo(() => wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow"), [wielder?.effects]);
+    const isGlowing = wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow") || action?.animationOptions?.weapon?.glow;
 
     useEffect(() => {
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {

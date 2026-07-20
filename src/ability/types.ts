@@ -648,7 +648,10 @@ export type Action = {
         // Bounces between numTargets within targetArea.
         ricochet?: boolean;
         disableScreenShake?: boolean; // Only applicable for stomp
-        hideWeapon?: boolean;
+        weapon?: {
+            hide?: boolean;
+            glow?: boolean;
+        };
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     secondaryAction?: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
