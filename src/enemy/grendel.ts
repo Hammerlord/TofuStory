@@ -29,7 +29,8 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { VolcanoIcon } from "../images/icons";
-import { burn, hardy, raging, chill } from "./../ability/Effects";
+import { shuffle } from "../utils";
+import { burn, hardy, raging, chill, stun } from "./../ability/Effects";
 import { lifeLink } from "./effect";
 
 export const grendelIfrit: Minion = {
