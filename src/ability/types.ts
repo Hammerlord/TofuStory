@@ -451,7 +451,7 @@ export enum MULTIPLIER_TYPES {
 export type CardFilterCondition = {
     hasMinion?: boolean; // If Ability.summon is populated, this is true
     actionTypes?: ACTION_TYPES[];
-    primaryActionType?: ACTION_TYPES; // This checks the first action only
+    abilityType?: "support" | "offense";
     comparator?: Comparator; // Mostly meant to be used for "not" cases
 };
 

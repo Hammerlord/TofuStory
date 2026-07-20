@@ -940,7 +940,7 @@ export const checkEventTrigger = ({
     effectEventKey,
     source,
 }: {
-    combatantId: string;
+    combatantId: string | undefined | null;
     effectEventKey: EFFECT_EVENT_KEYS;
     source?: TriggerSource;
 }) => {

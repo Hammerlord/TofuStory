@@ -1,10 +1,11 @@
 import { Action } from "@reduxjs/toolkit";
 import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
+import { isOffensiveAction, isSupportAction } from "../ability/AbilityView/utils";
 import { AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/types";
+import { Player } from "../character/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
-import { Player } from "../character/types";
 
 const DEFAULT_NUM_OPTIONS = 3;
 
@@ -87,8 +88,13 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
     }
     // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
     return filters.some((filter) => {
-        const { actionTypes, hasMinion, primaryActionType, comparator } = filter;
-        if (primaryActionType && card.actions[0]?.type === primaryActionType) {
+        const { actionTypes, hasMinion, comparator, abilityType } = filter;
+        const primaryAction = card.actions?.[0];
+        if (abilityType === "support" && isSupportAction(primaryAction)) {
+            return comparator !== "not";
+        }
+
+        if (abilityType === "offense" && isOffensiveAction(primaryAction)) {
             return comparator !== "not";
         }
 

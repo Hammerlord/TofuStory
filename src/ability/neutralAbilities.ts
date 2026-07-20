@@ -169,7 +169,7 @@ export const reinforce: Ability = {
                 type: SELECT_CARD_TYPES.SEARCH_DECK,
                 filters: [
                     {
-                        primaryActionType: ACTION_TYPES.EFFECT,
+                        abilityType: "support",
                     },
                     {
                         hasMinion: true,

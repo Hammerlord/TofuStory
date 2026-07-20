@@ -225,10 +225,15 @@ export const onWaveStart = () => {
         enemySide.forEach((combatant: Combatant | null) => {
             if (combatant?.id) {
                 const actor = findCombatantData(getState, combatant.id);
+                if (!actor) {
+                    return;
+                }
+
                 const ability = getNextTelegraphedAbility(actor);
                 if (!ability?.actions) {
                     return;
                 }
+
                 let mutableUpdatedActionTargets = [];
                 ability.actions.forEach((action, i) => {
                     const targeting = autoSelectActionTarget({ action, actorId: combatant.id, getState });
