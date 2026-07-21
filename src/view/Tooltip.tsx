@@ -27,7 +27,7 @@ const useStyles = createUseStyles({
 const Tooltip = ({ children, title, classes = {}, ...other }: any) => {
     const selectors = useStyles();
     return (
-        <MuiTooltip arrow classes={{ popper: selectors.tooltip, ...classes }} title={title} {...other}>
+        <MuiTooltip arrow classes={{ popper: selectors.tooltip, ...classes }} title={title} {...other} disableInteractive={true}>
             {children}
         </MuiTooltip>
     );
