@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import {
     armorUp,
@@ -23,7 +23,6 @@ import {
 import { armorDown, incorporeal } from "../enemy/effect";
 import Icon from "../icon/Icon";
 import { NamelessSwordImage } from "../images";
-import { chargingStone } from "../item/starterItems";
 import Handlebars from "handlebars";
 
 const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
@@ -138,8 +137,8 @@ export const TooltipSection = ({
     description,
 }: {
     icon?: any;
-    title?: string | JSX.Element;
-    description?: string | JSX.Element | JSX.Element[];
+    title?: string | ReactElement;
+    description?: string | ReactElement | ReactElement[];
 }) => {
     const classes = useSectionStyles();
     return (

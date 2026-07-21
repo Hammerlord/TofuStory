@@ -287,7 +287,7 @@ const EffectGroupIcon = ({
     glow?: boolean;
     disableTooltip?: boolean;
 }) => {
-    const extraOptionsIconRef = useRef();
+    const extraOptionsIconRef = useRef(null);
 
     const classes = useStyles();
     const state = useAppSelector((state) => state);

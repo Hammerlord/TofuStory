@@ -45,8 +45,8 @@ const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
     const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
     const [pos, setPos] = useState({ x: 50, y: 50 });
     const classes = useStyles();
-    const rootRef: MutableRefObject<HTMLSpanElement> = useRef();
-    const iconRef: MutableRefObject<HTMLImageElement> = useRef();
+    const rootRef: MutableRefObject<HTMLSpanElement> = useRef(null);
+    const iconRef: MutableRefObject<HTMLImageElement> = useRef(null);
     const animationRefs: MutableRefObject<any> = useRef([]);
 
     useEffect(() => {

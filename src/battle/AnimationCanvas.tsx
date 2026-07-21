@@ -1,26 +1,24 @@
 import classNames from "classnames";
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
+import AbilityView from "../ability/AbilityView/AbilityView";
 import { ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CombatAbility } from "../ability/types";
 import {
-    playExplodeAnimation,
     getCenterCoords,
-    playStompAnimation,
-    sendToPile,
+    playExplodeAnimation,
     playShakeAnimation,
+    playStompAnimation,
     playTossUpAnimation,
     playTravelAnimation,
     refreshToPile,
+    sendToPile,
 } from "../character/animations";
-import { Combatant } from "../character/types";
-import { BATTLEFIELD_SIDES, Event } from "./types";
-import AbilityView from "../ability/AbilityView/AbilityView";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { battleStateSlice } from "./reducer";
-import { MapleLeavesImage } from "../images";
 import { DECK_CYCLE_TIME } from "../constants";
-import { Fireworks } from "../fireworks/fireworks";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { MapleLeavesImage } from "../images";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./constants";
+import { battleStateSlice } from "./reducer";
+import { BATTLEFIELD_SIDES, Event } from "./types";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -190,9 +188,9 @@ const AnimationCanvas = ({
     const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v !== undefined);
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
-    const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef() as any);
-    const addCardRefs = Array.from({ length: 5 }).map(() => useRef() as any);
-    const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef());
+    const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef(null) as any);
+    const addCardRefs = Array.from({ length: 5 }).map(() => useRef(null) as any);
+    const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef(null));
 
     const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {
@@ -429,7 +427,7 @@ const AnimationCanvas = ({
                 </span>
             );
         } else if (typeof icon === "function") {
-            const Icon: Function = icon;
+            const Icon: FC<{ className?: string }> = icon;
             return (
                 <span
                     className={classNames(classes.iconProjectile, {

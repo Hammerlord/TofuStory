@@ -1,11 +1,10 @@
-import IconButton from "@material-ui/core/IconButton";
-import Slider from "@material-ui/core/Slider";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { MusicIcon, XIcon } from "../images/icons";
 import { REGIONS } from "../map/regions";
+import { IconButton, Slider } from "@mui/material";
 
 const musicMap = {
     [REGIONS.LITH_HARBOR]: [

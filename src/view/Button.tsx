@@ -1,4 +1,4 @@
-import MuiButton from "@material-ui/core/Button";
+import { Button as MuiButton } from "@mui/material";
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 

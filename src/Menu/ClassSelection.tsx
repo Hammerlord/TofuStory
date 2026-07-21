@@ -171,11 +171,11 @@ const ClassSelection = ({
     const { player } = character || {};
     const classes = useStyles();
     const dispatch = useAppDispatch();
-    const characterRef: any = useRef();
-    const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef());
-    const projectileRef: any = useRef();
+    const characterRef: any = useRef(null);
+    const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef(null));
+    const projectileRef: any = useRef(null);
 
-    const cardsRefs = Array.from({ length: 15 }).map(() => useRef());
+    const cardsRefs = Array.from({ length: 15 }).map(() => useRef(null));
 
     const handleSelectClass = () => {
         onTransition(() => {

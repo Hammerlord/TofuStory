@@ -17,9 +17,9 @@ const useStyles = createUseStyles({
  */
 const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
     const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
-    const targetLineRef: React.RefObject<SVGPathElement> = useRef();
-    const circleRef: React.RefObject<SVGCircleElement> = useRef();
-    const bullseyeRef: React.RefObject<SVGCircleElement> = useRef();
+    const targetLineRef: React.RefObject<SVGPathElement> = useRef(null);
+    const circleRef: React.RefObject<SVGCircleElement> = useRef(null);
+    const bullseyeRef: React.RefObject<SVGCircleElement> = useRef(null);
 
     const classes = useStyles();
 

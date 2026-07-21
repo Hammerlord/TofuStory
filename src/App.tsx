@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import DevToolButton from "./devtools/DevToolButton";
 import { useMemo } from "react";
 import classNames from "classnames";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const useStyles = createUseStyles({
     app: {

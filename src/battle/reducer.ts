@@ -5,11 +5,12 @@ import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, TriggerSource, Wave } from "./types";
 import { getMaxHP } from "./utils";
+import { ReactElement } from "react";
 
 // Text banner notification to display some info during battle
 interface Notification {
     severity?: "warning";
-    text: string | JSX.Element;
+    text: string | ReactElement;
     id: string; // UUID
 }
 

@@ -12,6 +12,7 @@ import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
+import { FC } from "react";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -191,7 +192,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     if (typeof image === "string") {
         imageNode = <img src={image} className={classes.abilityIcon} />;
     } else if (typeof image === "function") {
-        const ImageNode = image as Function;
+        const ImageNode: FC<{ className?: string }> = image;
         imageNode = <ImageNode className={classes.abilityIcon} />;
     }
 

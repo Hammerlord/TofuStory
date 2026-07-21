@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { MouseEventHandler, useMemo } from "react";
+import { FC, MouseEventHandler, useMemo } from "react";
 import * as uuid from "uuid";
 import Notification from "./Notification";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
     abilityIcon: {
@@ -28,7 +28,7 @@ const AbilityNotification = ({
     if (typeof image === "string") {
         imageNode = <img src={image} className={classes.abilityIcon} />;
     } else if (typeof image === "function") {
-        const ImageNode = image as Function;
+        const ImageNode: FC<{ className?: string }> = image;
         imageNode = <ImageNode className={classes.abilityIcon} />;
     }
 

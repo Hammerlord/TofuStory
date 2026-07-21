@@ -2,6 +2,7 @@ import { Combatant, Player } from "./../character/types";
 import { Ability, Action, ActionOptionalProperties, CARD_PILE_TYPES, CombatEffect, Minion } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
+import { ReactElement } from "react";
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;
@@ -77,7 +78,7 @@ export interface TriggerSource {
 }
 
 export interface Wave {
-    description?: string | string[] | JSX.Element | JSX.Element[];
+    description?: string | string[] | ReactElement | ReactElement[];
     enemies: Minion[];
     presetDeck?: Ability[];
     generateEliteAffixes?: boolean;

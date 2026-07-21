@@ -100,9 +100,11 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
 
         if (actionTypes) {
             if (comparator === "not") {
+                // @ts-ignore
                 return card.actions.every((action: Action) => !actionTypes.includes(action.type));
             }
 
+            // @ts-ignore
             return card.actions.some((action: Action) => actionTypes.includes(action.type));
         }
 

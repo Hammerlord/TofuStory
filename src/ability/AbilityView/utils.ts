@@ -1,11 +1,8 @@
-import { cloneDeep } from "lodash";
 import Handlebars from "handlebars";
-import { getUpgradeCard } from "../../Menu/utils";
+import { cloneDeep } from "lodash";
+import { CombatantInfo } from "../../battle/types";
+import { getMultiplier } from "../../battle/utils";
 import { Combatant, Player } from "../../character/types";
-import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
-import { BLUE, GREEN, GREY, RED } from "./constants";
-import DamageIcon from "./DamageIcon";
-import { CrossedSwordsIcon, HeartIcon } from "../../images/icons";
 import {
     BloodEmojiImage,
     CrossedSwordsImage,
@@ -19,8 +16,9 @@ import {
     SnowflakeEmojiImage,
     StunImage,
 } from "../../images";
-import { CombatantInfo } from "../../battle/types";
-import { getMultiplier } from "../../battle/utils";
+import { getUpgradeCard } from "../../Menu/utils";
+import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
+import { BLUE, GREEN, GREY, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions

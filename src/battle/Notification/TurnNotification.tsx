@@ -68,7 +68,7 @@ const useStyles = createUseStyles({
  */
 const TurnAnnouncement = ({ isPlayerTurn, duration }: { isPlayerTurn: boolean; duration: number }) => {
     const classes = useStyles();
-    const bannerRef: React.RefObject<HTMLDivElement> = useRef();
+    const bannerRef: React.RefObject<HTMLDivElement> = useRef(null);
 
     useEffect(() => {
         if (!bannerRef.current) {

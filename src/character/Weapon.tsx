@@ -172,8 +172,8 @@ const Weapon = ({
     const classes = useStyles(options as any);
     const { action } = (event?.actorId === wielder?.id && event) || {};
     const { type, area } = action || {};
-    const weaponRef = useRef();
-    const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef());
+    const weaponRef = useRef(null);
+    const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef(null));
     const animationRefs = useRef([]);
 
     const rotation = useMemo(() => {

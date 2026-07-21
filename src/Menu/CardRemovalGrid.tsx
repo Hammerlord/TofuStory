@@ -5,7 +5,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability, CombatAbility } from "../ability/types";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
-import { Checkbox } from "@material-ui/core";
+import { Checkbox } from "@mui/material";
 
 const useStyles = createUseStyles({
     root: {

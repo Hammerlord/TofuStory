@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { Ability, Comparator } from "../ability/types";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { ActivityHistoryLog } from "../character/playerReducer";
@@ -85,7 +86,7 @@ export interface ScriptNode {
         name: string;
         image: string;
     };
-    scene?: ({ player }: { player: Player }) => JSX.Element;
+    scene?: ({ player }: { player: Player }) => ReactElement;
     disableBackground?: boolean;
     background?: string;
     puzzle?: ({
@@ -96,7 +97,7 @@ export interface ScriptNode {
         player: Player;
         onComplete: ({ success, infamy }?: ActivityHistoryLog) => void;
         onExit: () => void;
-    }) => JSX.Element;
+    }) => ReactElement;
     treasureBox?: ScriptNodeTreasure;
     dialog: string[];
     responses?: ScriptResponse[];

@@ -41,8 +41,8 @@ const useStyles = createUseStyles({
 const BlockIcon = ({ statChanges }: { statChanges: StatChange }) => {
     const [oldBlockedDamage, setOldBlockedDamage] = useState(0);
     const classes = useStyles();
-    const rootRef: MutableRefObject<HTMLSpanElement> = useRef();
-    const iconRef: MutableRefObject<HTMLImageElement> = useRef();
+    const rootRef: MutableRefObject<HTMLSpanElement> = useRef(null);
+    const iconRef: MutableRefObject<HTMLImageElement> = useRef(null);
     const animationRefs: MutableRefObject<any> = useRef([]);
 
     useEffect(() => {

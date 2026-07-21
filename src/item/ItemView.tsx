@@ -5,9 +5,8 @@ import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from ".
 import Handlebars from "handlebars";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
-import { MushroomOmokImage } from "../images";
-import Tooltip from "@material-ui/core/Tooltip";
 import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
+import { Tooltip } from "@mui/material";
 
 const useStyles = createUseStyles({
     item: {

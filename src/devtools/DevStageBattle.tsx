@@ -7,7 +7,7 @@ import { devDummy } from "../enemy/dummy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../enemy/faust";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { deathLaser } from "./deathLaser";
-import { block, hammerang } from "../ability/warrior/warriorAbilities";
+import { block, hammerang, outrage, shieldCharge } from "../ability/warrior/warriorAbilities";
 import { goutOfFlame, icyDraft, lesserBolt, whelp, zap } from "../ability/magician/magicianAbilities";
 import { manji } from "../enemy/Manji";
 
@@ -16,7 +16,7 @@ const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];
 const other = [null, null, manji, null, null];
 
 const DevStageBattle = () => {
-    const deck = useMemo(() => [whelp, whelp, whelp, hammerang], []);
+    const deck = useMemo(() => [whelp, whelp, shieldCharge, outrage, hammerang], []);
     const enemies = useMemo(() => dummies, []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);

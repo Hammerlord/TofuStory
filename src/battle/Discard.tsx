@@ -1,5 +1,5 @@
 import { compose } from "ramda";
-import { useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../ability/types";
 import Tooltip from "../view/Tooltip";
@@ -97,7 +97,7 @@ const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
         if (typeof image === "string") {
             imageNode = <img src={image} className={classes.abilityIcon} />;
         } else if (typeof image === "function") {
-            const ImageNode = image as Function;
+            const ImageNode: FC<{ className?: string }> = image;
             imageNode = <ImageNode className={classes.abilityIcon} />;
         }
 

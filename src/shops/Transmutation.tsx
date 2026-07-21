@@ -222,8 +222,8 @@ export const TransmutationView = ({
     const [showDeck, setShowingDeck] = useState(false);
 
     const classes = useStyles({ backdrop } as any);
-    const selectedCardRef = useRef();
-    const optionsRefs = Array.from({ length: 10 }).map(() => useRef());
+    const selectedCardRef = useRef(null);
+    const optionsRefs = Array.from({ length: 10 }).map(() => useRef(null));
 
     useEffect(() => {
         if (!isPlayingAnimation) {

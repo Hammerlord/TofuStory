@@ -1,5 +1,4 @@
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Popper from "@material-ui/core/Popper";
+import { ClickAwayListener, Popper } from "@mui/material";
 import classNames from "classnames";
 import { RefObject, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -71,7 +70,7 @@ const useStyles = createUseStyles({
 
 const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
     const [weaponSkinInventoryOpen, setWeaponSkinInventoryOpen] = useState(false);
-    const menuAnchor = useRef() as RefObject<HTMLDivElement>;
+    const menuAnchor = useRef(null) as RefObject<HTMLDivElement>;
     const classes = useStyles();
 
     const handleClose = () => {

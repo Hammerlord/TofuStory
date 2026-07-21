@@ -100,7 +100,7 @@ const EffectEventDisplay = ({ playerClass, ...effectEvents }) => {
         }
 
         if (multiplier) {
-            const value = multiplier.value < 1 ? `${(multiplier.value as number) * 100}%` : multiplier.value;
+            const value = typeof multiplier.value === "number" && multiplier.value < 1 ? `${multiplier.value * 100}%` : multiplier.value;
             const calculationTarget = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? "you" : "the target";
             components.push(<>{Handlebars.compile(multiplierTypeKeyLabelMap[multiplier.type] || "")({ value, calculationTarget })}</>);
         }
@@ -197,7 +197,8 @@ const Buffs = ({ ability, player }) => {
                 if (lifeOnHit > 0) {
                     effectComponents.push(
                         <span>
-                            {effectComponents.length > 0 ? ", " : "Gain"} <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit{" "}
+                            {effectComponents.length > 0 ? ", " : "Gain"} <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per
+                            hit{" "}
                         </span>
                     );
                 }

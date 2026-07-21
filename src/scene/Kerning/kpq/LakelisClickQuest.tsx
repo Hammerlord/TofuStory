@@ -1,4 +1,3 @@
-import LinearProgress from "@material-ui/core/LinearProgress";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -8,6 +7,7 @@ import { getRandomArbitrary, getRandomInt } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
 import getBystanderDialogue from "./getBystanderDialogue";
+import { LinearProgress } from "@mui/material";
 
 const lakelisX = 772;
 

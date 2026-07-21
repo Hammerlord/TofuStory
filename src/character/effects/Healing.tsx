@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { SparklesIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
@@ -55,8 +55,8 @@ const Healing = ({ statChanges }: { statChanges: { healing: number } }) => {
     const [particles, setParticles] = useState(getParticles());
     const particleRefs = useRef([]);
     const particleAnimationRefs = useRef([]);
-    const textRef: MutableRefObject<HTMLSpanElement> = useRef();
-    const textAnimationRef: MutableRefObject<Animation> = useRef();
+    const textRef: RefObject<HTMLSpanElement | null> = useRef(null);
+    const textAnimationRef: RefObject<Animation | null> = useRef(null);
 
     useEffect(() => {
         if (statChanges.healing > 0) {
@@ -103,6 +103,7 @@ const Healing = ({ statChanges }: { statChanges: { healing: number } }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
+                // @ts-ignore
                 <Icon key={i} icon={<SparklesIcon />} className={classes.icon} style={style} ref={(el) => (particleRefs.current[i] = el)} />
             ))}
             <span className={classes.text} ref={textRef}>

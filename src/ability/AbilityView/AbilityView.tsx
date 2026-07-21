@@ -1,27 +1,17 @@
 import classNames from "classnames";
-import { forwardRef, useMemo } from "react";
+import { FC, forwardRef, ReactElement, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { canUseAbility, getAbilityResourceCost, getMultiplier } from "../../battle/utils";
+import { canUseAbility, getMultiplier } from "../../battle/utils";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import {
-    ACTION_TYPES,
-    Ability,
-    AbilityEffect,
-    Action,
-    CONDITION_TARGETS,
-    CombatAbility,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    TARGET_TYPES,
-} from "../types";
+import { ACTION_TYPES, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area, { AreaIndicator } from "./AreaView";
@@ -295,7 +285,7 @@ const AbilityView = forwardRef(
         if (typeof cardImage === "string") {
             imageNode = <img src={cardImage} className={classes.portrait} draggable="false" />;
         } else if (typeof image === "function") {
-            const ImageNode = image as Function;
+            const ImageNode = image as FC<{ className?: string }>;
             imageNode = (
                 <div>
                     <ImageNode className={classes.portrait} />

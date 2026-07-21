@@ -10,6 +10,7 @@ import { getEnabledEffects } from "../../battle/utils";
 import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons";
 import { NimbleJewelCImage } from "../../images";
 import classNames from "classnames";
+import { FC, ReactElement } from "react";
 
 const useStyles = createUseStyles({
     effectsRoot: {
@@ -229,11 +230,11 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
         return acc;
     }, 0);
 
-    const getEffectImage = (image: string | JSX.Element) => {
+    const getEffectImage = (image: string | ReactElement) => {
         if (typeof image === "string") {
             return <img src={image} draggable="false" />;
         } else if (typeof image === "function") {
-            const ImageNode = image as Function;
+            const ImageNode: FC<{ className?: string }> = image;
             return <ImageNode />;
         }
     };

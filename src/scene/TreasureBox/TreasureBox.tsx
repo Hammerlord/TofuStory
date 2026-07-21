@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { playerStateSlice } from "../../character/playerReducer";
 import { useAppDispatch } from "../../hooks";
@@ -231,7 +231,7 @@ const TreasureBox = ({
     initMesos?: number | number[]; // [min, max]
     title?: string;
     onLoot: ({ mesos, items }: { mesos: number; items: Item[] }) => void;
-    Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => JSX.Element;
+    Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => ReactElement;
     player: Player;
     curse?: "damage";
 }) => {

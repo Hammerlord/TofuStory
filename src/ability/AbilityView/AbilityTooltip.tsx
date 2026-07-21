@@ -1,4 +1,3 @@
-import Tooltip from "@material-ui/core/Tooltip";
 import { createUseStyles } from "react-jss";
 import { KeywordsTooltips, TooltipSection } from "../../view/KeywordsTooltip";
 import { fireSpirit } from "../magician/magicianAbilities";
@@ -6,6 +5,8 @@ import { Ability, ActionSummon } from "../types";
 import { soulBlade } from "../warrior/warriorAbilities";
 import AbilityView from "./AbilityView";
 import { chargingStone } from "../../item/starterItems";
+import { Tooltip } from "@mui/material";
+import { ReactElement } from "react";
 
 const useTooltipStyles = createUseStyles({
     tooltip: {
@@ -39,7 +40,7 @@ const minionCardLookup = {
     [fireSpirit.name]: fireSpirit,
 };
 
-const AbilityTooltip = ({ ability, children }: { ability: Ability; children: JSX.Element }) => {
+const AbilityTooltip = ({ ability, children }: { ability: Ability; children: ReactElement }) => {
     const cardsToAddMap = {};
     const findCardsToAdd = (obj) => {
         if (Array.isArray(obj)) {

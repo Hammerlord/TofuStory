@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef } from "react";
+import { forwardRef, ReactElement } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -101,7 +101,7 @@ interface IconInterface {
     size?: "min" | "xs" | "sm" | "md" | "lg" | "xl";
     className?: string;
     style?: any;
-    children?: JSX.Element;
+    children?: ReactElement;
     highlightText?: "positive" | "negative";
     [x: string]: any;
 }

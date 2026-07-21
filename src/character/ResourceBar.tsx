@@ -1,6 +1,6 @@
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { createUseStyles } from "react-jss";
 import Tooltip from "../view/Tooltip";
+import { LinearProgress } from "@mui/material";
 
 const useStyles = createUseStyles({
     root: {

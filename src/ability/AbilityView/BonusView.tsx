@@ -1,13 +1,13 @@
+import { ReactElement } from "react";
 import { findCombatantData } from "../../battle/actions/actions";
 import { getMultiplier } from "../../battle/utils";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { AlchemistStoneImage, NimbleJewelCImage } from "../../images";
+import { NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HeartIcon, HourglassIcon, ShieldIcon, SnowflakeIcon } from "../../images/icons";
-import { polymorph } from "../magician/magicianAbilities";
 import { Action, Bonus, Condition, EFFECT_CLASSES, EFFECT_TYPES, Effect } from "../types";
 
-const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): JSX.Element => {
+const getIconForEffectType = (effectType: EFFECT_TYPES, key: number): ReactElement => {
     const map = {
         [EFFECT_TYPES.BLEED]: <Icon icon={BloodIcon} key={key} size={"sm"} />,
         [EFFECT_TYPES.STUN]: <Icon icon={DizzyIcon} key={key} size={"sm"} />,

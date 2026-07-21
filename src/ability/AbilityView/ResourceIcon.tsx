@@ -41,7 +41,7 @@ const AbilityResourceIcon = ({
     disableBattleIndicators?: boolean;
 }) => {
     const classes = useStyles();
-    const ref = useRef();
+    const ref = useRef(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
     // @ts-ignore - effects does not exist on Ability but we are setting a default here in that case

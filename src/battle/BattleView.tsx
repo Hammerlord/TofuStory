@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
@@ -263,13 +263,13 @@ const BattlefieldContainer = () => {
     }: BattleState = state.battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
-    const allyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
-    const enemyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef());
+    const allyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const enemyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
     const handRef = useRef({});
-    const battlefieldRef: React.RefObject<HTMLDivElement> = useRef();
-    const deckRef: React.RefObject<HTMLDivElement> = useRef();
-    const discardRef: React.RefObject<HTMLDivElement> = useRef();
-    const depleteRef: React.RefObject<HTMLDivElement> = useRef();
+    const battlefieldRef: React.RefObject<HTMLDivElement> = useRef(null);
+    const deckRef: React.RefObject<HTMLDivElement> = useRef(null);
+    const discardRef: React.RefObject<HTMLDivElement> = useRef(null);
+    const depleteRef: React.RefObject<HTMLDivElement> = useRef(null);
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
@@ -337,7 +337,7 @@ const BattlefieldContainer = () => {
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
         (!hand.length || hand.every((ability: CombatAbility) => !canUseAbility(player, getCardByInstanceId(hand, ability.instanceId))));
 
-    const warn = (text: string | JSX.Element) => {
+    const warn = (text: string | ReactElement) => {
         dispatch(
             setNotification({
                 severity: "warning",
@@ -578,7 +578,7 @@ const BattlefieldContainer = () => {
         i = 0,
         delay = 2500,
     }: {
-        description?: string | string[] | JSX.Element | JSX.Element[];
+        description?: string | string[] | ReactElement | ReactElement[];
         i?: number;
         delay?: number;
     }) => {
@@ -595,7 +595,7 @@ const BattlefieldContainer = () => {
         }, delay);
     };
 
-    const battleStateRef: MutableRefObject<BATTLE_STATES | undefined> = useRef();
+    const battleStateRef: MutableRefObject<BATTLE_STATES | undefined> = useRef(null);
 
     useEffect(() => {
         // Preload character sprites, projectiles, etc. or they may be invisible

@@ -73,7 +73,7 @@ const Map = ({
     disableClick?: boolean;
 }) => {
     const classes = useStyles();
-    const containerRef = useRef() as any;
+    const containerRef = useRef(null) as any;
     const [positions, setPositions] = useState([]);
     const [container, setContainer] = useState({});
 

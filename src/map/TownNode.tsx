@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { LockIcon } from "../images/icons";
+import { ReactElement } from "react";
 
 const useStyles = createUseStyles({
     node: {
@@ -88,7 +89,7 @@ const TownNode = ({
     onClick: () => void;
     icon;
     nodeImage?: string;
-    nodeEl?: JSX.Element;
+    nodeEl?: ReactElement;
     label: string;
 }) => {
     const classes = useStyles();

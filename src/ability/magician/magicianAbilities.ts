@@ -3026,7 +3026,7 @@ export const flareBolt: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            summon: [{ minion: [fireSpirit.minion] }],
+            summon: [{ minion: [fireSpirit.minion as Minion] }],
         },
     ],
     upgrades: [

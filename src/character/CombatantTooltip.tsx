@@ -1,4 +1,3 @@
-import { Tooltip } from "@material-ui/core";
 import Handlebars from "handlebars";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
@@ -6,6 +5,7 @@ import { JapaneseOgreIcon, MilitaryMedalIcon } from "../images/icons";
 import { TooltipSection } from "../view/KeywordsTooltip";
 import { getEffectGroups } from "./effects/EffectIcons";
 import { Combatant } from "./types";
+import { Tooltip } from "@mui/material";
 
 const useStyles = createUseStyles({
     tooltip: {

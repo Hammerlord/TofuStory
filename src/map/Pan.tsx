@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { AnonymushroomImage } from "../images";
-import ButtonBase from "@material-ui/core/ButtonBase";
 import classNames from "classnames";
 import { INTRO_PAN_TIME, RE_PAN_TIME } from "../constants";
+import { ButtonBase } from "@mui/material";
 
 const useStyles = createUseStyles({
     panContainer: {
@@ -53,7 +53,7 @@ const Pan = ({
     const [y, setY] = useState(0);
     const [position, setLastInteractionPos] = useState([null, null]);
     const [isInteracting, setIsInteracting] = useState(false);
-    const containerRef = useRef() as any;
+    const containerRef = useRef(null) as any;
     const [isPanning, setIsPanning] = useState(false);
     const [isIntroPan, setIsIntroPan] = useState(true);
     const classes = useStyles();

@@ -1,44 +1,41 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    entry: './src/index.js',
+    entry: "./src/index.js",
     output: {
-        filename: '[name].[hash].js'
+        filename: "[name].[hash].js",
     },
     module: {
         rules: [
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader'
-            },
-            { test: /\.(js)$/, use: 'babel-loader' },
+            { test: /\.([cm]?ts|tsx)$/, loader: "ts-loader" },
+            { test: /\.(js)$/, use: "babel-loader" },
             {
                 test: /\.(jpe?g|png|gif)$/i,
-                loader: 'file-loader',
+                loader: "file-loader",
                 options: {
-                    name: '[path][name].[ext]'
-                }
+                    name: "[path][name].[ext]",
+                },
             },
             {
                 test: /\.svg$/,
-                use: ['@svgr/webpack'],
+                use: ["@svgr/webpack"],
             },
-        ]
+        ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: [".tsx", ".ts", ".js"],
         alias: {
-            'handlebars': 'handlebars/dist/handlebars.js'
-        }
+            handlebars: "handlebars/dist/handlebars.js",
+        },
     },
     devServer: {
         hot: true,
-        open: true
+        open: true,
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: "./src/index.html",
         }),
-    ]
+    ],
 };

@@ -28,8 +28,8 @@ const useStyles = createUseStyles({
 
 const SnailRaceBackdrop = ({ player, winner, onComplete }: { player: Player; winner: "blue" | "red"; onComplete? }) => {
     const classes = useStyles();
-    const redSnailRef = useRef();
-    const blueSnailRef = useRef();
+    const redSnailRef = useRef(null);
+    const blueSnailRef = useRef(null);
 
     useEffect(() => {
         if (!winner) {

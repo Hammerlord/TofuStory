@@ -1,5 +1,4 @@
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Popper from "@material-ui/core/Popper";
+import { ClickAwayListener, Popper } from "@mui/material";
 import classNames from "classnames";
 import Handlebars from "handlebars";
 import { useState } from "react";

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { FC, forwardRef, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
@@ -358,8 +358,8 @@ const CombatantView = forwardRef(
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = { ...findCombatantData(() => state, oldState?.id), combatant };
-        const weaponRef = useRef();
-        const characterImageRef = useRef();
+        const weaponRef = useRef(null);
+        const characterImageRef = useRef(null);
 
         useEffect(() => {
             const statChanges = getCharacterStatChanges({
@@ -453,7 +453,7 @@ const CombatantView = forwardRef(
                     />
                 );
             } else if (typeof portrait === "function") {
-                const ImageNode = portrait as Function;
+                const ImageNode: FC<{ className?: string }> = portrait;
                 return (
                     <div {...props} style={{ ...customStyles, filter, ...props?.style }} ref={characterImageRef}>
                         <ImageNode />
@@ -495,7 +495,7 @@ const CombatantView = forwardRef(
             if (typeof image === "string") {
                 return <img src={image} className={classes.shouting} />;
             } else if (typeof image === "function") {
-                const Icon: Function = image;
+                const Icon: FC<{ className?: string }> = image;
                 return <Icon className={classes.shouting} />;
             }
         };

@@ -1,18 +1,16 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import * as uuid from "uuid";
+import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, AbilityUpgrade, CombatAbility } from "../ability/types";
-import Button from "../view/Button";
-import { cloneDeep } from "lodash";
-import { getUpgradeCard } from "./utils";
-import { Checkbox } from "@material-ui/core";
+import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import { CombatAbility } from "../ability/types";
 import { useAppSelector } from "../hooks";
 import { Item } from "../item/types";
-import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
-import { JOB_CARD_MAP } from "../ability";
-import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import Button from "../view/Button";
+import { getUpgradeCard } from "./utils";
+import { Checkbox } from "@mui/material";
 
 const useStyles = createUseStyles({
     root: {
