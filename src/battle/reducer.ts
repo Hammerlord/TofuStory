@@ -47,6 +47,8 @@ export interface BattleState {
     isTutorial?: boolean;
     addAbilities: CombatAbility[];
     deckCycled?: boolean;
+    selectedHandAbilityId?: string | null;
+    selectedAllyId?: string | null;
 }
 
 // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
@@ -170,6 +172,20 @@ export const battleStateSlice = createSlice({
             return {
                 ...state,
                 notification: action.payload,
+            };
+        },
+        selectHandAbility: (state, action: PayloadAction<string | null>) => {
+            return {
+                ...state,
+                selectedAllyId: null,
+                selectedHandAbilityId: action.payload,
+            };
+        },
+        selectAlly: (state, action: PayloadAction<string | null>) => {
+            return {
+                ...state,
+                selectedAllyId: action.payload,
+                selectedHandAbilityId: null,
             };
         },
     },

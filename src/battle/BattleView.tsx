@@ -223,8 +223,16 @@ const useStyles = createUseStyles({
 
 const BATTLEFIELD_SIZE = 5;
 
-const { popEventQueue, updateBattleState, updateBattle, promptPlayerSelectCards, closePlayerSelectCardsPrompt, setNotification } =
-    battleStateSlice.actions;
+const {
+    popEventQueue,
+    updateBattleState,
+    updateBattle,
+    promptPlayerSelectCards,
+    closePlayerSelectCardsPrompt,
+    setNotification,
+    selectHandAbility,
+    selectAlly,
+} = battleStateSlice.actions;
 
 const movementAbility: Ability = {
     name: "Move",
@@ -260,6 +268,8 @@ const BattlefieldContainer = () => {
         backgroundImage,
         round,
         isTutorial,
+        selectedAllyId,
+        selectedHandAbilityId,
     } = battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
@@ -273,9 +283,7 @@ const BattlefieldContainer = () => {
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
-    const [selectedAbilityId, setSelectedAbilityId] = useState(null); // From the hand only
     const [hoveredCombatant, setHoveredCombatant]: [{ side: BATTLEFIELD_SIDES; index: number; id: string }, Function] = useState(null);
-    const [selectedAllyIndex, setSelectedAllyIndex] = useState(null);
     const classes = useStyles({ backgroundImage } as any);
     const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
 
@@ -315,9 +323,9 @@ const BattlefieldContainer = () => {
     })();
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
-    const selectedMinion = playerSide[selectedAllyIndex];
+    const selectedMinion = playerSide.find((combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId);
 
-    const selectedAbilityFromHand = getCardByInstanceId(hand, selectedAbilityId);
+    const selectedAbilityFromHand = getCardByInstanceId(hand, selectedHandAbilityId);
     const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
 
     const actor = selectedMinion || player;
@@ -368,7 +376,7 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        setSelectedAllyIndex(null);
+        dispatch(selectAlly(null));
         const ability = getCardByInstanceId(hand, id);
 
         if (!allowMoveCardFromHandToDeck) {
@@ -384,18 +392,23 @@ const BattlefieldContainer = () => {
         }
 
         if (isPlayerTurn) {
-            if (selectedAbilityId === id) {
-                setSelectedAbilityId(null);
+            if (selectedHandAbilityId === id) {
+                dispatch(selectHandAbility(null));
             } else {
-                setSelectedAbilityId(id);
+                dispatch(selectHandAbility(id));
                 e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
             }
         }
     };
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        setSelectedAbilityId(null);
-        dispatch(useHandAbility({ selectedTargetIndex: selectedIndex, selectedAbilityId, selectedTargetSide: side }) as any);
+        dispatch(
+            useHandAbility({
+                selectedTargetIndex: selectedIndex,
+                selectedAbilityId: selectedHandAbilityId,
+                selectedTargetSide: side,
+            }) as any
+        );
     };
 
     const handleSelectCardFromPrompt = () => {
@@ -420,16 +433,14 @@ const BattlefieldContainer = () => {
     };
 
     const handleAllyAttack = ({ index }) => {
-        const { id } = playerSide[selectedAllyIndex];
-        dispatch(onSummonAttack({ selectedIndex: index, actorId: id }));
-        setSelectedAllyIndex(null);
+        dispatch(onSummonAttack({ selectedIndex: index, actorId: selectedAllyId }));
+        dispatch(selectAlly(null));
     };
 
     const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
         const type = selectedAbilityFromHand?.selectCards?.type;
 
         if (hand.length <= 1) {
-            console.log(type);
             if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                 warn(battleWarnings.depleteMinCardInHand);
                 return;
@@ -442,7 +453,7 @@ const BattlefieldContainer = () => {
         dispatch(
             promptPlayerSelectCards({
                 selectCards: selectedAbilityFromHand.selectCards,
-                abilityQueued: { selectedAbilityId, selectedTargetSide: side, selectedTargetIndex: selectedIndex },
+                abilityQueued: { selectedAbilityId: selectedHandAbilityId, selectedTargetSide: side, selectedTargetIndex: selectedIndex },
             } as PlayerSelectCardsPrompt)
         );
     };
@@ -485,7 +496,7 @@ const BattlefieldContainer = () => {
                 } else if (isUntargetable(playerSide[index])) {
                     warn(battleWarnings.untargetable);
                 }
-                setSelectedAbilityId(null);
+                dispatch(selectHandAbility(null));
             }
             return;
         }
@@ -501,13 +512,13 @@ const BattlefieldContainer = () => {
                     })
                 );
             } else {
-                setSelectedAllyIndex(null);
+                dispatch(selectAlly(null));
             }
             return;
         }
 
         if (isEligibleToAttack(playerSide[index]) || (allowFriendlyMovement && playerSide[index])) {
-            setSelectedAllyIndex(index);
+            dispatch(selectAlly(playerSide[index].id));
             e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         }
     };
@@ -548,7 +559,7 @@ const BattlefieldContainer = () => {
                 warnTaunt();
                 e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
             } else {
-                setSelectedAllyIndex(null);
+                dispatch(selectAlly(null));
             }
             return;
         }
@@ -570,7 +581,7 @@ const BattlefieldContainer = () => {
                 if (!canUseAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
                 }
-                setSelectedAbilityId(null);
+                dispatch(selectHandAbility(null));
             }
             return;
         }
@@ -850,8 +861,10 @@ const BattlefieldContainer = () => {
         if (disableActions) {
             return null;
         }
-        return allyRefs[selectedAllyIndex]?.current || handRef.current?.[selectedAbilityId];
-    }, [disableActions, selectedAllyIndex, selectedAbilityId]);
+
+        const index = playerSide.findIndex((combatant: Combatant | null) => combatant && combatant.id === selectedAllyId);
+        return allyRefs[index]?.current || handRef.current?.[selectedHandAbilityId];
+    }, [disableActions, selectedAllyId, selectedHandAbilityId]);
 
     const showMovementAbility =
         allowFriendlyMovement &&
@@ -869,15 +882,15 @@ const BattlefieldContainer = () => {
     };
 
     const handleClickDeck = () => {
-        if (!selectedAbilityId || !allowMoveCardFromHandToDeck) {
+        if (!selectedHandAbilityId || !allowMoveCardFromHandToDeck) {
             return;
         }
 
-        setSelectedAbilityId(null);
+        dispatch(selectHandAbility(null));
 
         const newHand = baseHand.slice();
         const newDeck = deck.slice();
-        const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedAbilityId);
+        const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedHandAbilityId);
         const [card] = newHand.splice(cardIndex, 1);
         if (card) {
             newDeck.unshift(applyAbilityEventEffects({ event: card.onLeaveHand, ability: card }));
@@ -1028,13 +1041,11 @@ const BattlefieldContainer = () => {
                 <div
                     className={classes.battlefieldContainer}
                     onContextMenu={(e) => {
-                        setSelectedAbilityId(null);
-                        setSelectedAllyIndex(null);
+                        dispatch(selectHandAbility(null));
                         e.preventDefault();
                     }}
                     onMouseDown={() => {
-                        setSelectedAbilityId(null);
-                        setSelectedAllyIndex(null);
+                        dispatch(selectHandAbility(null));
                     }}
                 >
                     <ParticleCanvas event={events[0]} allyRefs={allyRefs} enemyRefs={enemyRefs} />
@@ -1083,7 +1094,7 @@ const BattlefieldContainer = () => {
                                     <Deck
                                         viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
                                         onMouseDown={handleClickDeck}
-                                        highlightDeck={Boolean(selectedAbilityId && allowMoveCardFromHandToDeck)}
+                                        highlightDeck={Boolean(selectedHandAbilityId && allowMoveCardFromHandToDeck)}
                                         deckRef={deckRef}
                                     />
                                     {allowMoveCardFromHandToDeck && (
@@ -1107,7 +1118,7 @@ const BattlefieldContainer = () => {
                                                 combatant={ally}
                                                 isEnemy={false}
                                                 onMouseDown={(e) => handleAllyClick(e, i)}
-                                                isSelected={selectedAllyIndex === i}
+                                                isSelected={selectedAllyId && selectedAllyId === ally?.id}
                                                 onMouseEnter={() =>
                                                     setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i, id: ally?.id })
                                                 }
@@ -1116,7 +1127,7 @@ const BattlefieldContainer = () => {
                                                 key={ally?.id || i}
                                                 event={combatantEvent}
                                                 events={events}
-                                                isHighlighted={isPlayerTurn && selectedAllyIndex === null && isEligibleToAttack(ally)}
+                                                isHighlighted={isPlayerTurn && selectedAllyId === null && isEligibleToAttack(ally)}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 selectedAbility={abilityToUse}
                                                 ref={allyRefs[i]}
@@ -1163,7 +1174,7 @@ const BattlefieldContainer = () => {
                         className={classes.abilities}
                         hand={hand}
                         cardRefs={handRef}
-                        selectedAbilityId={selectedAbilityId}
+                        selectedAbilityId={selectedHandAbilityId}
                         onAbilityClick={handleAbilityClick}
                     />
                 </div>
