@@ -1,7 +1,9 @@
+import { Box } from "@mui/material";
 import classNames from "classnames";
 import { cloneDeep } from "lodash";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
+import Button from "../../view/Button";
 
 const NUM_ROWS = 3;
 
@@ -67,6 +69,20 @@ const DimPath = ({ player, onComplete }) => {
         setRows(newRows);
     };
 
+    const onClickSkip = () => {
+        const newRows = cloneDeep(rows);
+        newRows.forEach((row) => {
+            row.forEach((_, i) => {
+                row[i] = true;
+            });
+        });
+
+        setRows(newRows);
+        setTimeout(() => {
+            onComplete();
+        }, 250);
+    };
+
     const classes = useStyles();
     return (
         <div>
@@ -86,6 +102,12 @@ const DimPath = ({ player, onComplete }) => {
                     ))}
                 </div>
             ))}
+
+            <Box sx={{ mt: 5 }}>
+                <Button onClick={onClickSkip} color={"primary"}>
+                    Skip
+                </Button>
+            </Box>
         </div>
     );
 };

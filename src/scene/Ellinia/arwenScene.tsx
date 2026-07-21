@@ -624,7 +624,7 @@ const maladyDialog: ScriptNode[] = [
                                                                                                     {
                                                                                                         scene: DarkForest1,
                                                                                                         dialog: [
-                                                                                                            "With the creatures defeated, you've fulfilled your end of the bargain with the fairies. It's time to return to Ellinia.]",
+                                                                                                            "[With the creatures defeated, you've fulfilled your end of the bargain with the fairies. It's time to return to Ellinia.]",
                                                                                                         ],
                                                                                                     },
                                                                                                     ...endingDialog,

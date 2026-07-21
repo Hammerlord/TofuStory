@@ -5,6 +5,8 @@ import { GreenFairiesImage } from "../../images";
 import { TombstoneIcon } from "../../images/icons";
 import { shuffle } from "../../utils";
 import Tooltip from "../../view/Tooltip";
+import Button from "../../view/Button";
+import { Box } from "@mui/material";
 
 const useStyles = createUseStyles({
     tombstoneContainer: {
@@ -135,6 +137,11 @@ const Tombstones = ({ player, onComplete }) => {
                     </Tooltip>
                 </span>
             ))}
+            <Box sx={{ mt: 5 }}>
+                <Button onClick={onComplete} color={"primary"}>
+                    Continue
+                </Button>
+            </Box>
         </div>
     );
 };
