@@ -358,12 +358,7 @@ const CombatantView = forwardRef(
         // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
         // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
         const combatantInfo = {
-            ...findCombatantData(
-                () => ({
-                    battle,
-                }),
-                oldState?.id
-            ),
+            ...findCombatantData(battle, oldState?.id),
             combatant,
         };
         const weaponRef = useRef(null);
@@ -595,16 +590,7 @@ const CombatantView = forwardRef(
                                     <AttackPower combatantInfo={combatantInfo} />
                                     {/** Update resources immediately as skills are used: UX issue where lagging resource feedback misleads people into thinking they have more/less resources */}
                                     {combatant?.isPlayer && (
-                                        <PlayerResources
-                                            player={
-                                                findCombatantData(
-                                                    () => ({
-                                                        battle,
-                                                    }),
-                                                    oldState?.id
-                                                )?.combatant as Player
-                                            }
-                                        />
+                                        <PlayerResources player={findCombatantData(battle, oldState?.id)?.combatant as Player} />
                                     )}
                                 </div>
                                 {animation === ANIMATION_TYPES.SNOOZE && (

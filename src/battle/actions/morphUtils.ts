@@ -166,7 +166,7 @@ export const getMorphMap = ({
         }
 
         const minionConfig = minions.find((minionConfig) => {
-            const getCalculationTarget = () => findCombatantData(getState, combatant?.id); // Current combatant will always be the target
+            const getCalculationTarget = () => findCombatantData(getState().battle, combatant?.id); // Current combatant will always be the target
             return passesConditions({ getCalculationTarget, proc: minionConfig, source });
         });
 

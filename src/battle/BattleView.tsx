@@ -331,12 +331,7 @@ const BattlefieldContainer = () => {
         const totalDamage =
             getDamageStatistics({
                 ability: ally.abilities[0],
-                actorInfo: findCombatantData(
-                    () => ({
-                        battle,
-                    }),
-                    ally.id
-                ),
+                actorInfo: findCombatantData(battle, ally.id),
             })?.baseDamage || 0;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
@@ -523,14 +518,7 @@ const BattlefieldContainer = () => {
 
     const tauntEnemies = enemySide
         .filter((combatant) => combatant?.HP)
-        .map((combatant) =>
-            findCombatantData(
-                () => ({
-                    battle,
-                }),
-                combatant.id
-            )
-        )
+        .map((combatant) => findCombatantData(battle, combatant.id))
         .filter((combatantInfo: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
 
     const mustTargetTauntError = (index: number): boolean => {
@@ -786,9 +774,7 @@ const BattlefieldContainer = () => {
                 ability: abilityToUse,
                 side,
                 index: hoveredIndex,
-                getState: () => ({
-                    battle,
-                }),
+                battle,
                 actorId,
             })
         ) {
@@ -799,12 +785,7 @@ const BattlefieldContainer = () => {
             return false;
         }
 
-        const actorInfo = findCombatantData(
-            () => ({
-                battle,
-            }),
-            actorId
-        );
+        const actorInfo = findCombatantData(battle, actorId);
         if (!actorInfo) {
             return false;
         }
@@ -831,9 +812,7 @@ const BattlefieldContainer = () => {
                     ability,
                     side: combatantSide,
                     index: combatantIndex,
-                    getState: () => ({
-                        battle,
-                    }),
+                    battle,
                     actorId,
                 })
             ) {
@@ -843,21 +822,14 @@ const BattlefieldContainer = () => {
                         ability,
                         side: hoveredCombatant.side,
                         index: hoveredCombatant.index,
-                        getState: () => {
-                            battle;
-                        },
+                        battle,
                         actorId,
                     })
                 ) {
                     return true;
                 }
 
-                const actorInfo = findCombatantData(
-                    () => ({
-                        battle,
-                    }),
-                    actorId
-                );
+                const actorInfo = findCombatantData(battle, actorId);
                 if (!actorInfo) {
                     return false;
                 }
@@ -948,7 +920,7 @@ const BattlefieldContainer = () => {
 
         let previousCombatantStates = previewAbilityCombatants;
         getEnemyMoveOrder({ enemies: enemySide, round }).forEach((enemyId) => {
-            const enemyInfo = findCombatantData(() => ({ battle: { ...battle, ...previousCombatantStates } }), enemyId);
+            const enemyInfo = findCombatantData({ ...battle, ...previousCombatantStates }, enemyId);
             const enemy = enemyInfo?.combatant;
             const { targeting, HP, uncontrollable } = enemy || {};
 

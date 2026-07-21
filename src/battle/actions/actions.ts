@@ -77,12 +77,9 @@ const { updatePlayer } = playerStateSlice?.actions || {};
 
 /**
  * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
- * @param getState - Redux getState function - Yikes, clean this up to pass the explicit objects
- * @param combatantId - Combatant UUID
  * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
  */
-export const findCombatantData = (getState: Function, combatantId?: string): CombatantInfo | undefined => {
-    const battle = getState()?.battle;
+export const findCombatantData = (battle: BattleState, combatantId?: string): CombatantInfo | undefined => {
     if (!battle || !combatantId) {
         return;
     }
@@ -120,13 +117,13 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
         }
 
         const { actorId, targetId } = triggerSource;
-        const killedByInfo = findCombatantData(getState, actorId);
+        const killedByInfo = findCombatantData(getState().battle, actorId);
         const { combatant: killedBy, index, friendly } = killedByInfo || {};
         if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
-        const killedInfo = findCombatantData(getState, targetId);
+        const killedInfo = findCombatantData(getState().battle, targetId);
         const isKilledTargetThreatening = Boolean(killedInfo?.combatant?.abilities?.[0]);
 
         if (isKilledTargetThreatening) {
@@ -145,7 +142,7 @@ const handleOnKill = (triggerSource?: TriggerSource) => {
                     source: {
                         ...triggerSource,
                     },
-                    getCombatantById: (id) => findCombatantData(getState, id),
+                    getCombatantById: (id) => findCombatantData(getState().battle, id),
                 });
 
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -206,7 +203,7 @@ const getHitEffects = ({
         return [];
     }
 
-    const actorInfo = findCombatantData(getState, actorId);
+    const actorInfo = findCombatantData(getState().battle, actorId);
     const { combatant: actor, index } = actorInfo || {};
     if (!actor || actor?.HP <= 0) {
         return [];
@@ -229,14 +226,14 @@ const getHitEffects = ({
                 healing: lifeOnHit * affectedTargets.length,
             },
             source,
-            getCombatantById: (id) => findCombatantData(getState, id),
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
 
         results.push(updated);
     }
 
     const totalThorns = affectedTargets.reduce((acc, id: string) => {
-        const combatantData = findCombatantData(getState, id);
+        const combatantData = findCombatantData(getState().battle, id);
         getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0, stacks = 1 }) => (acc += thorns * stacks));
         return acc;
     }, 0);
@@ -250,7 +247,7 @@ const getHitEffects = ({
                 damage: totalThorns,
             },
             source,
-            getCombatantById: (id) => findCombatantData(getState, id),
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
 
         results.push(updated);
@@ -272,7 +269,7 @@ const getHitEffects = ({
                 stealMesos: totalMesoSteal * affectedTargets.length,
             },
             source,
-            getCombatantById: (id) => findCombatantData(getState, id),
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
 
         const totalMesosGained = updatedTargets.reduce((acc, { statUpdate }) => {
@@ -289,7 +286,7 @@ const getHitEffects = ({
                 mesos: totalMesosGained,
             },
             source,
-            getCombatantById: (id) => findCombatantData(getState, id),
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
 
         results.push(updatedTargets, updatedActor);
@@ -300,7 +297,7 @@ const getHitEffects = ({
 
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
-        const { friendly, hostile, combatant, friendlySide, index } = findCombatantData(getState, combatantId) || {};
+        const { friendly, hostile, combatant, friendlySide, index } = findCombatantData(getState().battle, combatantId) || {};
         if (isActorPlayerSide({ side: getState().battle.playerSide, source: triggerSource })) {
             dispatch(
                 updateBattle({
@@ -393,7 +390,7 @@ const checkRedirectEnemyTargetingAfterAllyDeath = ({
         let battle = getState().battle;
 
         getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
-            const enemy = findCombatantData(() => ({ battle }), id)?.combatant;
+            const enemy = findCombatantData(battle, id)?.combatant;
             if (!enemy?.HP) {
                 return;
             }
@@ -414,7 +411,11 @@ const checkRedirectEnemyTargetingAfterAllyDeath = ({
                     return;
                 }
 
-                const updatedTargeting = autoSelectActionTarget({ action: ability?.actions[i], actorId: enemy.id, getState });
+                const updatedTargeting = autoSelectActionTarget({
+                    action: ability?.actions[i],
+                    actorId: enemy.id,
+                    battle: getState().battle,
+                });
                 // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
                 mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                 mutableUpdatedActionTargets[i] = updatedTargeting;
@@ -511,7 +512,7 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
             );
         }
 
-        const { combatant } = findCombatantData(getState, actorId) || {};
+        const { combatant } = findCombatantData(getState().battle, actorId) || {};
         const turnHistory = combatant?.turnHistory || [];
 
         dispatch(
@@ -562,7 +563,7 @@ export const handleDoTs =
 
             combatantIds.forEach((combatantId) => {
                 // Perform another lookup on combatant info as it may have changed between effect triggers
-                const combatantInfo = findCombatantData(getState, combatantId);
+                const combatantInfo = findCombatantData(getState().battle, combatantId);
                 const { combatant, index } = combatantInfo || {};
                 if (!combatant?.HP) {
                     return;
@@ -589,7 +590,7 @@ export const handleDoTs =
                         type: ACTION_TYPES.EFFECT,
                         damage,
                     },
-                    getCombatantById: (id) => findCombatantData(getState, id),
+                    getCombatantById: (id) => findCombatantData(getState().battle, id),
                 });
 
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -657,7 +658,7 @@ const checkUpdateEffectLifecycle =
             stacks: (effect.stacks || 1) - (decrementStacks || 0),
             duration: resetDuration ? effect.originalDuration : effect.duration,
         };
-        const { combatant } = findCombatantData(getState, ownerId) || {};
+        const { combatant } = findCombatantData(getState().battle, ownerId) || {};
         if (!combatant) {
             return;
         }
@@ -733,7 +734,7 @@ const onEffectEventTrigger = ({
             if (targetType === CONDITION_TARGETS.BATTLE) {
                 return getState().battle;
             }
-            return getCalculationTargetIds(targetType).map((id) => findCombatantData(getState, id));
+            return getCalculationTargetIds(targetType).map((id) => findCombatantData(getState().battle, id));
         };
 
         // Must pass parent effect conditions as well as child effectEvent conditions (if any)
@@ -741,7 +742,7 @@ const onEffectEventTrigger = ({
             passesConditions({ getCalculationTarget, proc: effect, source }) &&
             passesConditions({ getCalculationTarget, proc: effectEvent, source });
 
-        const caster = findCombatantData(getState, ownerId);
+        const caster = findCombatantData(getState().battle, ownerId);
         const chanceMultiplier = getMultiplier({
             actor: caster,
             target: caster,
@@ -759,7 +760,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const { combatant } = findCombatantData(getState, ownerId) || {};
+        const { combatant } = findCombatantData(getState().battle, ownerId) || {};
         const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isStunnedOrFrozen(combatant));
         if (cannotTrigger) {
             return;
@@ -770,7 +771,7 @@ const onEffectEventTrigger = ({
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, source }));
         dispatch(checkCardActions({ action: other, source })); // Why does this use original source when there is procSource?
 
-        const owner = findCombatantData(getState, ownerId);
+        const owner = findCombatantData(getState().battle, ownerId);
         if (owner?.combatant?.isPlayer) {
             const multiplier = getMultiplier({
                 multiplier: multiplierConfig,
@@ -788,7 +789,7 @@ const onEffectEventTrigger = ({
                     secondaryTargetType === targetType &&
                     [TRIGGER_TARGET_TYPES.TARGET, TRIGGER_TARGET_TYPES.ALL_TARGETS].includes(secondaryTargetType)
                 ) {
-                    return findCombatantData(getState, id);
+                    return findCombatantData(getState().battle, id);
                 }
 
                 return getCalculationTarget(secondaryTargetType);
@@ -796,7 +797,7 @@ const onEffectEventTrigger = ({
             return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, source });
         });
 
-        const initialTargetData = findCombatantData(getState, initialTargetIds[0]);
+        const initialTargetData = findCombatantData(getState().battle, initialTargetIds[0]);
         const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
         $applyStatChanges: {
@@ -813,7 +814,7 @@ const onEffectEventTrigger = ({
 
             // This calculates `action.area` for the effect event trigger
             initialTargetIds
-                .map((id) => findCombatantData(getState, id))
+                .map((id) => findCombatantData(getState().battle, id))
                 .map((data) =>
                     calculateTargetIndices({
                         action,
@@ -844,7 +845,7 @@ const onEffectEventTrigger = ({
                     type: ACTION_TYPES.EFFECT,
                 },
                 source: procSource,
-                getCombatantById: (id: string) => findCombatantData(getState, id),
+                getCombatantById: (id: string) => findCombatantData(getState().battle, id),
             });
 
             dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -873,16 +874,16 @@ const onEffectEventTrigger = ({
                 initialSelectedSide: friendlySide,
                 action,
                 actorId: ownerId,
-                getState,
+                battle: getState().battle,
             });
 
             const target = getState().battle[side]?.[index];
 
             const getCalculationTarget = (): CombatantInfo => {
-                return findCombatantData(getState, target?.id);
+                return findCombatantData(getState().battle, target?.id);
             };
 
-            const actorInfo = findCombatantData(getState, ownerId);
+            const actorInfo = findCombatantData(getState().battle, ownerId);
             const actor = actorInfo?.combatant;
             const isPassAliveConditions = actor?.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath;
             const canAct =
@@ -923,7 +924,7 @@ const onEffectEventTrigger = ({
         if (abilityUsed) {
             dispatch(
                 onUseAbility({
-                    actorInfo: findCombatantData(getState, ownerId),
+                    actorInfo: findCombatantData(getState().battle, ownerId),
                     source: {
                         ...procSource,
                         actorId: ownerId,
@@ -949,7 +950,7 @@ export const checkEventTrigger = ({
             return;
         }
 
-        const { combatant } = findCombatantData(getState, combatantId) || {};
+        const { combatant } = findCombatantData(getState().battle, combatantId) || {};
         if (!combatant) {
             return;
         }
@@ -968,7 +969,7 @@ export const checkEventTrigger = ({
             const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
 
             // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
-            const currentEffects = findCombatantData(getState, combatantId)?.combatant?.effects || [];
+            const currentEffects = findCombatantData(getState().battle, combatantId)?.combatant?.effects || [];
             const triggerSum = (effectEvent.triggerSum || 0) + (source?.trackSumAmount || 1);
             /**
              * Update the number of times this effect event triggered (regardless of whether the actual effects went through or not).
@@ -1168,7 +1169,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
         const combatantId = statUpdate.combatantId;
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState().battle, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
             return;
@@ -1232,7 +1233,7 @@ const updateEnemyTargetingAfterEffectsApplied = ({
             return;
         }
 
-        const { friendlySide, index } = findCombatantData(getState, combatantId) || {};
+        const { friendlySide, index } = findCombatantData(getState().battle, combatantId) || {};
         if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE) {
             return;
         }
@@ -1244,7 +1245,7 @@ const updateEnemyTargetingAfterEffectsApplied = ({
                 return;
             }
 
-            const enemyInfo = findCombatantData(getState, enemy.id);
+            const enemyInfo = findCombatantData(getState().battle, enemy.id);
             const ability = getNextTelegraphedAbility(enemyInfo);
 
             if (!ability?.actions) {
@@ -1253,7 +1254,7 @@ const updateEnemyTargetingAfterEffectsApplied = ({
 
             let mutableUpdatedActionTargets = [];
             ability.actions.forEach((action, i) => {
-                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, getState: () => ({ battle }) });
+                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, battle: battle });
                 mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                 mutableUpdatedActionTargets[i] = targeting;
 
@@ -1404,7 +1405,7 @@ export const triggerStatChangeEvents =
  */
 export const updateCombatant = ({ combatantId, newProperties }: { combatantId: string; newProperties: any }) => {
     return (dispatch, getState) => {
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState, combatantId) || {};
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState().battle, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
             return;
@@ -1425,7 +1426,7 @@ export const updateCombatant = ({ combatantId, newProperties }: { combatantId: s
  */
 export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_CLASSES) => {
     return (dispatch, getState) => {
-        const { combatant } = findCombatantData(getState, combatantId) || {};
+        const { combatant } = findCombatantData(getState().battle, combatantId) || {};
         if (!combatant) {
             return;
         }
@@ -1495,7 +1496,7 @@ const onSummonTriggers =
     (dispatch, getState) => {
         const source = { ...parentSource, targetId: summonedId, allTargetIds: [summonedId] };
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, source }));
-        const { hostile, friendly } = findCombatantData(getState, summonerId) || {};
+        const { hostile, friendly } = findCombatantData(getState().battle, summonerId) || {};
         hostile?.forEach((combatant) => {
             if (combatant?.id !== summonedId) {
                 dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onHostileSummon, source }));
@@ -1522,7 +1523,14 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
 
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
-        const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = findCombatantData(getState, actorId);
+        const {
+            friendly,
+            hostile,
+            friendlySide,
+            hostileSide,
+            index: actorIndex,
+            combatant: actor,
+        } = findCombatantData(getState().battle, actorId);
         const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
         const mutableHostile = hostile.slice();
         let didTributeKill = false;
@@ -1674,7 +1682,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
         let battle = getState().battle;
 
         getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
-            const enemy = findCombatantData(() => ({ battle }), id)?.combatant;
+            const enemy = findCombatantData(battle, id)?.combatant;
             if (!enemy?.HP) {
                 return;
             }
@@ -1697,7 +1705,7 @@ const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummo
                 const updatedTargeting = autoSelectActionTarget({
                     action,
                     actorId: enemy.id,
-                    getState: () => ({ battle }),
+                    battle: battle,
                 });
 
                 const { index, side } = updatedTargeting || {};
@@ -1767,7 +1775,7 @@ const checkHandleMorph = ({
         }
 
         const targets = morphTargetIds
-            .map((id: string) => findCombatantData(getState, id))
+            .map((id: string) => findCombatantData(getState().battle, id))
             .filter((combatantInfo) => action.morph.resurrect || combatantInfo.combatant?.HP > 0);
 
         if (!targets.length) {
@@ -1781,7 +1789,7 @@ const checkHandleMorph = ({
             morph: action.morph,
             source: parentSource,
             getState,
-            summoner: findCombatantData(getState, actorId),
+            summoner: findCombatantData(getState().battle, actorId),
         };
 
         if (type === MORPH_TYPES.MAP) {
@@ -1851,7 +1859,7 @@ const checkInduce = ({
                 }
 
                 affectedTargetIds.forEach((id) => {
-                    const combatantData = findCombatantData(getState, id);
+                    const combatantData = findCombatantData(getState().battle, id);
                     if (!combatantData) {
                         return;
                     }
@@ -1870,7 +1878,7 @@ const checkInduce = ({
                     const { index, side } = autoSelectActionTarget({
                         action,
                         actorId: id,
-                        getState,
+                        battle: getState().battle,
                     });
 
                     if (typeof index === "number") {
@@ -1886,7 +1894,7 @@ const checkInduce = ({
 
                         dispatch(
                             onUseAbility({
-                                actorInfo: findCombatantData(getState, id),
+                                actorInfo: findCombatantData(getState().battle, id),
                                 source: {
                                     ...parentSource,
                                     actorId: id,
@@ -1910,7 +1918,7 @@ const checkInduce = ({
 
         if (induceCombatantAttack) {
             shuffle(affectedTargetIds).forEach((id) => {
-                const { hostileSide, combatant } = findCombatantData(getState, id) || {};
+                const { hostileSide, combatant } = findCombatantData(getState().battle, id) || {};
                 if (!combatant.HP || isStunnedOrFrozen(combatant)) {
                     return;
                 }
@@ -1919,7 +1927,7 @@ const checkInduce = ({
                 const { index } = autoSelectActionTarget({
                     action: attackAction,
                     actorId: id,
-                    getState,
+                    battle: getState().battle,
                 });
 
                 if (typeof index === "number") {
@@ -1935,7 +1943,7 @@ const checkInduce = ({
 
                     dispatch(
                         onUseAbility({
-                            actorInfo: findCombatantData(getState, id),
+                            actorInfo: findCombatantData(getState().battle, id),
                             source: {
                                 ...parentSource,
                                 actorId: id,
@@ -2297,7 +2305,7 @@ export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, so
 
 const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps }) => {
     return (dispatch, getState) => {
-        const actorData = findCombatantData(getState, actorId);
+        const actorData = findCombatantData(getState().battle, actorId);
         const updatedSecondary = stageSecondaryAction({
             secondaryAction,
             getCalculationTarget,
@@ -2356,13 +2364,13 @@ export const performAction = ({
     isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
-        const actorData: CombatantInfo | undefined = findCombatantData(getState, actorId);
+        const actorData: CombatantInfo | undefined = findCombatantData(getState().battle, actorId);
         if (!actorData || !side) {
             return;
         }
 
         const battleSide = getState().battle[side];
-        const target = findCombatantData(getState, battleSide[selectedIndex]?.id);
+        const target = findCombatantData(getState().battle, battleSide[selectedIndex]?.id);
 
         const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
         const combatants = getState().battle[side];
@@ -2389,9 +2397,9 @@ export const performAction = ({
         const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
             if (targetType === CONDITION_TARGETS.TARGET) {
                 // This is the primary target only
-                return findCombatantData(getState, combatants[selectedIndex]?.id);
+                return findCombatantData(getState().battle, combatants[selectedIndex]?.id);
             } else if (targetType === CONDITION_TARGETS.ACTOR) {
-                return findCombatantData(getState, actorId);
+                return findCombatantData(getState().battle, actorId);
             }
         };
 
@@ -2403,7 +2411,7 @@ export const performAction = ({
             actorId,
             actionParent: parent,
             source,
-            getCombatantById: (id: string) => findCombatantData(getState, id),
+            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
         };
 
         let updatedSecondary;
@@ -2541,7 +2549,7 @@ export const performAction = ({
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentSource: { ...parentSource, actorId } }));
         dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentSource }));
         if (retreat) {
-            const { friendly, friendlySide } = findCombatantData(getState, actorId);
+            const { friendly, friendlySide } = findCombatantData(getState().battle, actorId);
             dispatch(
                 updateBattle({
                     [friendlySide]: friendly.map((combatant) => {
@@ -2611,15 +2619,15 @@ export const autoSelectActionTarget = ({
     initialSelectedSide,
     action,
     actorId,
-    getState,
+    battle: battle,
 }: {
     initialSelectedIndex?: number;
     initialSelectedSide?: BATTLEFIELD_SIDES;
     action: Action;
     actorId: string;
-    getState: Function;
+    battle: BattleState;
 }): { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } => {
-    const actorData = findCombatantData(getState, actorId);
+    const actorData = findCombatantData(battle, actorId);
     if (!actorData) {
         return { index: undefined, side: undefined };
     }
@@ -2852,7 +2860,7 @@ export const checkSummonMinion = ({
             minionEffects.push(tributeSummonBuff);
         }
 
-        const actor = findCombatantData(getState, actorId)?.combatant;
+        const actor = findCombatantData(getState().battle, actorId)?.combatant;
         if (actor?.isPlayer) {
             const itemEffects = actor.items.reduce((acc, item: Item) => {
                 if (item.applyEffectsToSummons) {
@@ -2926,7 +2934,7 @@ export const useAbility = ({
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
-        const { combatant, friendlySide } = findCombatantData(getState, actorId) || {};
+        const { combatant, friendlySide } = findCombatantData(getState().battle, actorId) || {};
 
         const totalResourceCost = getAbilityResourceCost({ combatant, resourceCost, effects });
         ability = {
@@ -2951,7 +2959,7 @@ export const useAbility = ({
         let prevSelection;
 
         const handleAction = (action: Action, i: number) => {
-            const actorInfo = findCombatantData(getState, actorId);
+            const actorInfo = findCombatantData(getState().battle, actorId);
             const actor = actorInfo?.combatant;
             // Something could've happened between actions that killed the actor
             const canAct = actor?.HP > 0 && !isTurnActionPrevented(actorInfo, { bypassPreventTurnAction: action.bypassPreventTurnAction });
@@ -2973,7 +2981,7 @@ export const useAbility = ({
                         target: TARGET_TYPES.RANDOM_HOSTILE,
                     },
                     actorId,
-                    getState,
+                    battle: getState().battle,
                 });
             }
             // If it is a multi-hit ability, the attacks should go to the same target
@@ -2985,7 +2993,7 @@ export const useAbility = ({
                     initialSelectedSide: initialSide,
                     action,
                     actorId,
-                    getState,
+                    battle: getState().battle,
                 });
 
                 prevSelection = selection;
@@ -2998,10 +3006,10 @@ export const useAbility = ({
                     return getState().battle;
                 }
                 if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                    return findCombatantData(getState, actorId);
+                    return findCombatantData(getState().battle, actorId);
                 }
 
-                return findCombatantData(getState, getState().battle[side]?.[index]?.id);
+                return findCombatantData(getState().battle, getState().battle[side]?.[index]?.id);
             };
 
             if (passesConditions({ getCalculationTarget, proc: action, source })) {
@@ -3023,7 +3031,7 @@ export const useAbility = ({
             dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, source }]));
         }
 
-        const actorInfo = findCombatantData(getState, actorId);
+        const actorInfo = findCombatantData(getState().battle, actorId);
         // Due to morph, the combatant may no longer exist
         if (actorInfo) {
             dispatch(onUseAbility({ actorInfo, source, ability, isAutoCast }));
@@ -3033,7 +3041,7 @@ export const useAbility = ({
 
 export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
-        const { index, friendlySide, combatant } = findCombatantData(getState, actorId) || {};
+        const { index, friendlySide, combatant } = findCombatantData(getState().battle, actorId) || {};
         if (!friendlySide) {
             return;
         }
@@ -3069,7 +3077,7 @@ export const useItem = ({ itemIndex, actorId }: { itemIndex: number; actorId: st
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    items: findCombatantData(getState, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
+                    items: findCombatantData(getState().battle, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
                 },
             })
         );
@@ -3228,7 +3236,7 @@ export const checkValidEnemyNextAbility = () => {
                 return;
             }
 
-            const actorInfo = findCombatantData(getState, enemy.id);
+            const actorInfo = findCombatantData(getState().battle, enemy.id);
             if (!actorInfo) {
                 return;
             }

@@ -305,7 +305,7 @@ const EffectGroupIcon = ({
 
     const isConditionsPassed = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => ({ battle }), owner?.id) : undefined,
+            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(battle, owner?.id) : undefined,
         proc: effects[0],
     });
 

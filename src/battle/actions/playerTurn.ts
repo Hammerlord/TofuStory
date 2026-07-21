@@ -90,7 +90,7 @@ export const usePlayerAbility = ({
             })
         );
 
-        const { hostile = [], friendly = [] } = findCombatantData(getState, actor.id) || {};
+        const { hostile = [], friendly = [] } = findCombatantData(getState().battle, actor.id) || {};
         hostile.concat(friendly).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -184,7 +184,7 @@ export const handleDiscard = (ability: CombatAbility) => {
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
-        const ability = findCombatantData(getState, actorId)?.combatant?.abilities[0];
+        const ability = findCombatantData(getState().battle, actorId)?.combatant?.abilities[0];
         if (!ability) {
             return;
         }
@@ -264,7 +264,8 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
 
-        const getPlayerSideInfo = () => getState().battle.playerSide.map((combatant) => findCombatantData(getState, combatant?.id));
+        const getPlayerSideInfo = () =>
+            getState().battle.playerSide.map((combatant) => findCombatantData(getState().battle, combatant?.id));
 
         if (round > 0) {
             dispatch(checkHalveArmor(getPlayerSideInfo()));
@@ -282,7 +283,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         // Maybe I'll regret this ordering for some other reason later.
         const { battle } = getState();
         const player: Player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState, player?.id) }).reduce(
+        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState().battle, player?.id) }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
             player.drawCardsPerTurn
         );

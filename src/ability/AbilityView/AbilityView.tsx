@@ -293,7 +293,7 @@ const AbilityView = forwardRef(
             );
         }
 
-        let playerInfo = findCombatantData(() => ({ battle }), character.player?.id);
+        let playerInfo = findCombatantData(battle, character.player?.id);
         let player: Player | undefined;
         if (disableBattleBonuses || !playerInfo?.combatant) {
             player = character.player;
@@ -364,12 +364,7 @@ const AbilityView = forwardRef(
                             }
 
                             if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                                return findCombatantData(
-                                    () => ({
-                                        battle,
-                                    }),
-                                    combatant?.id
-                                );
+                                return findCombatantData(battle, combatant?.id);
                             }
                         };
 
@@ -384,12 +379,7 @@ const AbilityView = forwardRef(
                         }
 
                         if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                            return findCombatantData(
-                                () => ({
-                                    battle,
-                                }),
-                                combatant?.id
-                            );
+                            return findCombatantData(battle, combatant?.id);
                         }
                     };
 

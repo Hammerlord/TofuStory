@@ -30,6 +30,7 @@ import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED }
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { BattleState } from "./reducer";
 
 // TODO use UpdatedCombatantStats from the Event instead of diffing here.
 // However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
@@ -195,13 +196,13 @@ export const canUseAbility = (character: Combatant, ability: CombatAbility | und
 export const isValidTarget = ({
     ability,
     side,
-    getState,
+    battle,
     index,
     actorId,
 }: {
     ability: Ability;
     side: BATTLEFIELD_SIDES;
-    getState;
+    battle: BattleState;
     index: number;
     actorId: string;
 }): boolean => {
@@ -211,7 +212,7 @@ export const isValidTarget = ({
 
     // Get the first action target to determine whether a valid target has been clicked.
     const { actions = [], minion } = ability;
-    const actorData = findCombatantData(getState, actorId);
+    const actorData = findCombatantData(battle, actorId);
     if (!actorData) {
         return false;
     }
@@ -250,7 +251,7 @@ export const isValidTarget = ({
                 if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                     return actorData;
                 } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                    return findCombatantData(getState, playerSide[index]?.id);
+                    return findCombatantData(battle, playerSide[index]?.id);
                 }
             };
             const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
@@ -289,7 +290,7 @@ export const isValidTarget = ({
 
         const tauntEnemies = enemySide
             .filter((combatant) => combatant?.HP)
-            .map((combatant) => findCombatantData(getState, combatant?.id))
+            .map((combatant) => findCombatantData(battle, combatant?.id))
             .filter((combatantInfo?: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
 
         if (tauntEnemies.length && tauntEnemies.every((enemy) => enemy?.combatant?.id !== targetedEnemy?.id)) {
@@ -300,7 +301,7 @@ export const isValidTarget = ({
             if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
                 return actorData;
             } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                return findCombatantData(getState, targetedEnemy?.id);
+                return findCombatantData(battle, targetedEnemy?.id);
             }
         };
 

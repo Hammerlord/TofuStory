@@ -224,7 +224,7 @@ export const onWaveStart = () => {
 
         enemySide.forEach((combatant: Combatant | null) => {
             if (combatant?.id) {
-                const actor = findCombatantData(getState, combatant.id);
+                const actor = findCombatantData(getState().battle, combatant.id);
                 if (!actor) {
                     return;
                 }
@@ -236,7 +236,7 @@ export const onWaveStart = () => {
 
                 let mutableUpdatedActionTargets = [];
                 ability.actions.forEach((action, i) => {
-                    const targeting = autoSelectActionTarget({ action, actorId: combatant.id, getState });
+                    const targeting = autoSelectActionTarget({ action, actorId: combatant.id, battle: getState().battle });
                     mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
                     mutableUpdatedActionTargets[i] = targeting;
 

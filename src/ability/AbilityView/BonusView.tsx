@@ -104,12 +104,7 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
         );
         const hasEffect = conditions?.find(({ hasEffect }) => hasEffect)?.hasEffect;
         const bonusMultiplier = getMultiplier({
-            actor: findCombatantData(
-                () => ({
-                    battle,
-                }),
-                player?.id
-            ),
+            actor: findCombatantData(battle, player?.id),
             multiplier,
             deck,
             hand,

@@ -28,7 +28,7 @@ const { updateBattle, updateBattleState } = battleStateSlice.actions;
 
 const handleCastTick = (combatantId: string) => {
     return (dispatch, getState) => {
-        const { combatant } = findCombatantData(getState, combatantId);
+        const { combatant } = findCombatantData(getState().battle, combatantId);
         const { ability, castTime = 0, channelDuration } = combatant.casting;
 
         const updatedCasting = { ...combatant.casting };
@@ -56,7 +56,7 @@ const handleCastTick = (combatantId: string) => {
         }
 
         dispatch(useAbility({ actorId: combatantId, ability }));
-        const { combatant: postAbilityActor } = findCombatantData(getState, combatantId) || {};
+        const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId) || {};
         if (!postAbilityActor) {
             return;
         }
@@ -77,7 +77,7 @@ const handleCastTick = (combatantId: string) => {
 
 const enemyAction = (combatantId: string) => {
     return (dispatch, getState) => {
-        const actorData = findCombatantData(getState, combatantId);
+        const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData) {
             return;
         }
@@ -142,8 +142,7 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
 const requeueRecentlyUsedAbility =
     ({ combatantId, battle, isRecentlySummoned }: { combatantId: string; battle: BattleState; isRecentlySummoned: boolean }) =>
     (dispatch) => {
-        const getState = () => ({ battle });
-        const actorInfo = findCombatantData(getState, combatantId);
+        const actorInfo = findCombatantData(battle, combatantId);
         if (!actorInfo?.combatant?.HP) {
             return;
         }
@@ -216,11 +215,9 @@ export const getUpdatedBattleActionTargets = ({
     battle: BattleState;
     actorInfo: CombatantInfo;
 }) => {
-    const getState = () => ({ battle });
-
     let targets: { index: number | undefined; side: BATTLEFIELD_SIDES }[] = [];
     ability.actions.forEach((action, i) => {
-        const targeting = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, getState });
+        const targeting = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, battle });
         targets = targets.slice();
         targets[i] = targeting;
 
@@ -247,7 +244,7 @@ export const getUpdatedBattleActionTargets = ({
 
 const enemyUseAbility = (combatantId: string) => {
     return (dispatch, getState) => {
-        const actorData = findCombatantData(getState, combatantId);
+        const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData?.combatant) {
             return;
         }
@@ -284,7 +281,7 @@ const enemyUseAbility = (combatantId: string) => {
         if (!castTime) {
             dispatch(useAbility({ ability, actorId: combatantId }));
 
-            const { combatant: postAbilityActor } = findCombatantData(getState, combatantId);
+            const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId);
             const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
 
             dispatch(
@@ -354,7 +351,7 @@ export const startEnemyTurn = () => {
 
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {
-                return findCombatantData(getState, combatant?.id);
+                return findCombatantData(getState().battle, combatant?.id);
             });
         };
 
@@ -376,7 +373,7 @@ export const enemyMoves = () => {
     return (dispatch, getState) => {
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {
-                return findCombatantData(getState, combatant?.id);
+                return findCombatantData(getState().battle, combatant?.id);
             });
         };
 
@@ -385,7 +382,7 @@ export const enemyMoves = () => {
         };
 
         const makeEnemyMove = (enemyId: string) => {
-            const enemyInfo = findCombatantData(getState, enemyId);
+            const enemyInfo = findCombatantData(getState().battle, enemyId);
             const enemy = enemyInfo?.combatant;
             if (!isEligibleToMove(enemy)) {
                 return;

@@ -145,7 +145,7 @@ const getAbilityPreviews = ({
     };
 
     const lookupCombatantDataHelper = (id: string): CombatantInfo => {
-        return findCombatantData(() => ({ battle: previousCombatantStates }), id);
+        return findCombatantData({ ...battle, ...previousCombatantStates }, id);
     };
 
     const handleStatUpdatePreviews = ({
