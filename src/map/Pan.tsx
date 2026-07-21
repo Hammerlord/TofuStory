@@ -45,90 +45,116 @@ const Pan = ({
     disableIntroAnimate,
 }: {
     userPosition?: { x: number; y: number };
-    children;
-    style?;
+    children: React.ReactNode;
+    style?: React.CSSProperties;
     disableIntroAnimate?: boolean;
 }) => {
-    const [x, setX] = useState(-500); // Start farther to the right
-    const [y, setY] = useState(0);
-    const [position, setLastInteractionPos] = useState([null, null]);
-    const [isInteracting, setIsInteracting] = useState(false);
-    const containerRef = useRef(null) as any;
-    const [isPanning, setIsPanning] = useState(false);
-    const [isIntroPan, setIsIntroPan] = useState(true);
     const classes = useStyles();
 
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const xRef = useRef(-500);
+    const yRef = useRef(0);
+
+    const interactionPosRef = useRef<[number, number] | null>(null);
+    const isInteractingRef = useRef(false);
+
+    const [isIntroPan, setIsIntroPan] = useState(true);
+
+    const applyTransform = () => {
+        if (!containerRef.current) return;
+
+        containerRef.current.style.transform = `translate(${xRef.current}px, ${yRef.current}px)`;
+    };
+
     const panToUserPosition = (panTime = RE_PAN_TIME) => {
-        if ([x, y, userPosition?.x, userPosition?.y].some((coords) => isNaN(coords) || coords === null)) {
+        if (!userPosition || [xRef.current, yRef.current, userPosition.x, userPosition.y].some((v) => v == null || isNaN(v))) {
             return;
         }
 
         containerRef.current?.animate(
             [
                 {
-                    transform: `translate(${x}px, ${y}px)`,
-                    easing: "ease-in-out",
-                    offset: 0,
+                    transform: `translate(${xRef.current}px, ${yRef.current}px)`,
                 },
                 {
                     transform: `translate(${userPosition.x}px, ${userPosition.y}px)`,
-                    easing: "ease-in-out",
                 },
             ],
-            panTime
+            {
+                duration: panTime,
+                easing: "ease-in-out",
+                fill: "forwards",
+            }
         );
 
-        setX(userPosition.x);
-        setY(userPosition.y);
+        xRef.current = userPosition.x;
+        yRef.current = userPosition.y;
+
+        applyTransform();
     };
 
     useEffect(() => {
+        if (!userPosition) return;
+
         if (isIntroPan && disableIntroAnimate) {
-            setX(userPosition?.x);
-            setY(userPosition?.y);
+            xRef.current = userPosition.x;
+            yRef.current = userPosition.y;
+            applyTransform();
             setIsIntroPan(false);
             return;
         }
+
         const panTime = isIntroPan ? INTRO_PAN_TIME : RE_PAN_TIME;
+
         panToUserPosition(panTime);
+
         if (isIntroPan) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setIsIntroPan(false);
             }, panTime);
+
+            return () => clearTimeout(timeout);
         }
     }, [userPosition?.x, userPosition?.y]);
 
     const handleStartInteraction = (e) => {
-        if (isIntroPan) {
-            return;
-        }
+        if (isIntroPan) return;
+
         const { screenX, screenY } = e.touches?.[0] || e;
-        setLastInteractionPos([screenX, screenY]);
-        setIsInteracting(true);
+        containerRef.current?.getAnimations().forEach((animation) => animation.cancel());
+
+        interactionPosRef.current = [screenX, screenY];
+        isInteractingRef.current = true;
     };
 
     const handleStopPan = () => {
-        setIsInteracting(false);
-        if (isPanning) {
-            setIsPanning(false);
-        }
+        isInteractingRef.current = false;
+        containerRef.current?.classList.remove("-grabbing");
     };
 
     const handlePan = (e) => {
-        if (!isInteracting) {
+        if (!isInteractingRef.current || !interactionPosRef.current) {
             return;
         }
 
         const { screenX, screenY } = e.touches?.[0] || e;
-        setIsPanning(true);
-        setX(x - (position[0] - screenX));
-        setY(y - (position[1] - screenY));
-        setLastInteractionPos([screenX, screenY]);
+
+        const [lastX, lastY] = interactionPosRef.current;
+
+        xRef.current += screenX - lastX;
+        yRef.current += screenY - lastY;
+
+        applyTransform();
+
+        interactionPosRef.current = [screenX, screenY];
+        containerRef.current?.classList.add("-grabbing");
     };
 
     return (
         <div>
             <div
+                ref={containerRef}
                 onMouseDown={handleStartInteraction}
                 onMouseMove={handlePan}
                 onMouseUp={handleStopPan}
@@ -136,18 +162,16 @@ const Pan = ({
                 onTouchStart={handleStartInteraction}
                 onTouchMove={handlePan}
                 onTouchEnd={handleStopPan}
-                ref={containerRef}
-                className={classNames(classes.panContainer, {
-                    ["-grabbing"]: isPanning,
-                })}
+                className={classNames(classes.panContainer)}
                 style={{
                     ...style,
-                    transform: `translate(${x}px, ${y}px)`,
+                    transform: `translate(${xRef.current}px, ${yRef.current}px)`,
                     height: "max-content",
                 }}
             >
                 {children}
             </div>
+
             <div className={classes.userPositionContainer}>
                 <ButtonBase onClick={() => panToUserPosition(500)} className={classes.userPosition} title="Center on your current location">
                     <img src={AnonymushroomImage} />
