@@ -72,7 +72,7 @@ const Pan = ({
             return;
         }
 
-        containerRef.current?.animate(
+        const animation = containerRef.current?.animate(
             [
                 {
                     transform: `translate(${xRef.current}px, ${yRef.current}px)`,
@@ -84,9 +84,13 @@ const Pan = ({
             {
                 duration: panTime,
                 easing: "ease-in-out",
-                fill: "forwards",
             }
         );
+
+        animation?.finished.then(() => {
+            animation.commitStyles();
+            animation.cancel();
+        });
 
         xRef.current = userPosition.x;
         yRef.current = userPosition.y;
@@ -122,7 +126,6 @@ const Pan = ({
         if (isIntroPan) return;
 
         const { screenX, screenY } = e.touches?.[0] || e;
-        containerRef.current?.getAnimations().forEach((animation) => animation.cancel());
 
         interactionPosRef.current = [screenX, screenY];
         isInteractingRef.current = true;
