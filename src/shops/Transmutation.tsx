@@ -470,7 +470,7 @@ export const TransmutationView = ({
 };
 
 const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; backdrop?: string }) => {
-    const { deck, player, townShops } = useAppSelector((state) => state).character;
+    const { deck, player, townShops } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const townWorkshop = townShops[town]?.workshop;
     const numTownTransmutes = townWorkshop?.numTransmutesRemaining;

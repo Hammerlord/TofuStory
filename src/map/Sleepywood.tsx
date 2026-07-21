@@ -58,7 +58,7 @@ const SLEEPYWOOD_PLACES = {
 const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProperties) => {
     const classes = useStyles();
     const [visited, setVisited] = useState({});
-    const { townShops } = useAppSelector((state) => state).character;
+    const townShops = useAppSelector((state) => state.character.townShops);
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const { tradingPost } = townShops[TOWNS.SLEEPYWOOD] || {};

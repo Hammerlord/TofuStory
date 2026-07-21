@@ -115,17 +115,18 @@ const ITEM_CLASS_NAME = "inventory-item";
 const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem: (item: Item) => void }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const { battle } = useAppSelector((state) => state);
+    const eventQueue = useAppSelector((state) => state.battle?.eventQueue);
+    const playerSide = useAppSelector((state) => state.battle?.playerSide);
 
     const shouldGlow = (item: Item): boolean => {
-        const event = battle?.eventQueue?.[0];
+        const event = eventQueue?.[0];
         return (event?.source?.source as CombatEffect)?.itemSource === item.name;
     };
 
     // For example, if an item like Steely is tracking the number of cards that has been drawn before proccing, show how many cards have been drawn.
     // Effects are copied over from the item onto the player during combat. So we need to do a lookup to find the effect instance.
     const getCombatCounter = (item: Item): number | undefined => {
-        const combatPlayer = battle?.playerSide?.find((combatant) => combatant?.isPlayer);
+        const combatPlayer = playerSide?.find((combatant) => combatant?.isPlayer);
         if (!combatPlayer) {
             return;
         }

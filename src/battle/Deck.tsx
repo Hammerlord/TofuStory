@@ -96,7 +96,7 @@ const Deck = ({
     deckRef;
 }) => {
     const classes = useStyles();
-    const { battle } = useAppSelector((state) => state);
+    const battle = useAppSelector((state) => state.battle);
     const { deck, deckCycled }: { deck: CombatAbility[]; deckCycled: boolean } = battle;
     const [deckSize, setDeckSize] = useState(deck.length); // This is purely for display animation purposes
 

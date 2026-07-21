@@ -148,7 +148,9 @@ const Main = () => {
     const [isGameOver, setIsGameOver] = useState(false);
     const classes = useStyles();
     const dispatch = useAppDispatch();
-    const { character, battle } = useAppSelector((state) => state);
+    const character = useAppSelector((state) => state.character);
+    const battle = useAppSelector((state) => state.battle);
+
     const {
         player,
         deck,

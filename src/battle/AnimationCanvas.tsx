@@ -164,8 +164,8 @@ const AnimationCanvas = ({
         displacements,
     } = event || {};
 
-    const { battle } = useAppSelector((state) => state);
-    const { deck, deckCycled } = battle;
+    const deck = useAppSelector((state) => state.battle?.deck);
+    const deckCycled = useAppSelector((state) => state.battle?.deckCycled);
     const dispatch = useAppDispatch();
 
     const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {

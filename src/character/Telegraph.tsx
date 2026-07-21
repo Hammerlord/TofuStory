@@ -172,7 +172,7 @@ export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?
  */
 const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const classes = useStyles();
-    const { battle } = useAppSelector((state) => state);
+    const battle = useAppSelector((state) => state.battle);
     const { combatant } = combatantInfo || {};
 
     if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || combatant.uncontrollable) {

@@ -167,8 +167,7 @@ const ClassSelection = ({
     onTransition: (callback: Function) => void;
 }) => {
     const [selectedClass, setSelectedClass] = useState(null);
-    const { character } = useAppSelector((state) => state);
-    const { player } = character || {};
+    const player = useAppSelector((state) => state.character?.player);
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const characterRef: any = useRef(null);

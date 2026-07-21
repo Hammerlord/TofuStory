@@ -66,6 +66,10 @@ const PlayerResources = ({ player }: { player: Player }) => {
     const classes = useStyles();
 
     useEffect(() => {
+        if (!player) {
+            return;
+        }
+
         const timeout = setTimeout(() => {
             setOldResources(player.resources);
         }, 1000);

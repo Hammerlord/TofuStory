@@ -107,7 +107,8 @@ const Header = ({
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
-    const { character, battle } = useAppSelector((state) => state);
+    const battle = useAppSelector((state) => state.battle);
+    const character = useAppSelector((state) => state.character);
     const { player: playerCharacter, deck, infamy } = character || {};
     const playerCombatant = battle?.playerSide.find((combatant) => combatant?.isPlayer);
     const player = playerCombatant || playerCharacter;

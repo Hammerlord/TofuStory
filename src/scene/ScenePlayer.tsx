@@ -260,7 +260,7 @@ const ScenePlayer = ({
     onChangeRegion?: (region: REGIONS) => void;
     region: REGIONS;
 }) => {
-    const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state)?.character || {};
+    const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state?.character) || {};
     const dispatch = useAppDispatch();
 
     const [dialogIndex, setDialogIndex] = useState(0);

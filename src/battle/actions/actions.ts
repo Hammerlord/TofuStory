@@ -77,7 +77,7 @@ const { updatePlayer } = playerStateSlice?.actions || {};
 
 /**
  * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
- * @param getState - Redux getState function
+ * @param getState - Redux getState function - Yikes, clean this up to pass the explicit objects
  * @param combatantId - Combatant UUID
  * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
  */

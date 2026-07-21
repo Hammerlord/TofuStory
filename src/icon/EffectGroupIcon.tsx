@@ -290,7 +290,7 @@ const EffectGroupIcon = ({
     const extraOptionsIconRef = useRef(null);
 
     const classes = useStyles();
-    const state = useAppSelector((state) => state);
+    const battle = useAppSelector((state) => state.battle);
 
     const {
         icon,
@@ -305,7 +305,7 @@ const EffectGroupIcon = ({
 
     const isConditionsPassed = passesConditions({
         getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => state, owner?.id) : undefined,
+            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(() => ({ battle }), owner?.id) : undefined,
         proc: effects[0],
     });
 

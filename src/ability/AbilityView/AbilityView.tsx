@@ -262,8 +262,8 @@ const AbilityView = forwardRef(
         ref
     ) => {
         const classes = useStyles();
-        const state = useAppSelector((state) => state);
-        const { character, battle } = state;
+        const character = useAppSelector((state) => state.character);
+        const battle = useAppSelector((state) => state.battle);
         const {
             actions = [],
             name,
@@ -293,7 +293,7 @@ const AbilityView = forwardRef(
             );
         }
 
-        let playerInfo = findCombatantData(() => state, character.player?.id);
+        let playerInfo = findCombatantData(() => ({ battle }), character.player?.id);
         let player: Player | undefined;
         if (disableBattleBonuses || !playerInfo?.combatant) {
             player = character.player;
@@ -364,7 +364,12 @@ const AbilityView = forwardRef(
                             }
 
                             if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                                return findCombatantData(() => state, combatant?.id);
+                                return findCombatantData(
+                                    () => ({
+                                        battle,
+                                    }),
+                                    combatant?.id
+                                );
                             }
                         };
 
@@ -379,7 +384,12 @@ const AbilityView = forwardRef(
                         }
 
                         if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                            return findCombatantData(() => state, combatant?.id);
+                            return findCombatantData(
+                                () => ({
+                                    battle,
+                                }),
+                                combatant?.id
+                            );
                         }
                     };
 
@@ -482,7 +492,7 @@ const AbilityView = forwardRef(
         };
 
         const shouldGlow =
-            isAbilityUsable && !disableGlow && !disableConditionGlow && state.battle && (hasBonus || effects.some((e) => e.highlightCard));
+            isAbilityUsable && !disableGlow && !disableConditionGlow && battle && (hasBonus || effects.some((e) => e.highlightCard));
 
         return (
             <AbilityTooltip ability={ability}>

@@ -184,7 +184,7 @@ const ShopView = ({
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const { player, purchasedConsumables } = useAppSelector((state) => state).character;
+    const { player, purchasedConsumables } = useAppSelector((state) => state.character);
     const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
     const dispatch = useAppDispatch();
 
@@ -407,9 +407,7 @@ const ShopView = ({
                     <div className={classNames(classes.column, classes.abilityColumn)}>
                         <div className={classes.abilitiesSection}>{abilities.map(getShopAbility)}</div>
                     </div>
-                    <div className={classes.column}>
-                        {items.map(getShopItem)}
-                    </div>
+                    <div className={classes.column}>{items.map(getShopItem)}</div>
                 </div>
             </div>
         </div>
@@ -417,7 +415,7 @@ const ShopView = ({
 };
 
 const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
-    const { deck, player, townShops } = useAppSelector((state) => state).character;
+    const { deck, player, townShops } = useAppSelector((state) => state.character);
 
     // Only used if `town` is not supplied, for temporary merchant shops not found in town
     const [shopState, setShopState] = useState({ ...generateShopInventory({ player, deck }), usedFreeFood: 0, usedNumRefreshes: 0 });

@@ -69,7 +69,7 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Henesys = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state).character;
+    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
