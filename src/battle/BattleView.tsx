@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import React, { MutableRefObject, ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
@@ -1022,6 +1022,40 @@ const BattlefieldContainer = () => {
         [events[0]?.id]
     );
 
+    const handleEnemyMouseEnter = useCallback(
+        (combatant: Combatant | null, i: number) => {
+            if (!shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)) {
+                return;
+            }
+
+            setHoveredCombatant({
+                side: BATTLEFIELD_SIDES.ENEMY_SIDE,
+                index: i,
+                id: combatant?.id || null,
+            });
+        },
+        [selectedHandAbilityId, selectedAllyId]
+    );
+
+    const handleAllyMouseEnter = useCallback(
+        (combatant: Combatant | null, i: number) => {
+            if (!shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)) {
+                return;
+            }
+
+            setHoveredCombatant({
+                side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+                index: i,
+                id: combatant?.id || null,
+            });
+        },
+        [selectedHandAbilityId, selectedAllyId]
+    );
+
+    const handleCombatantMouseLeave = useCallback(() => {
+        setHoveredCombatant(null);
+    }, []);
+
     return (
         <TargetLineCanvas originationRef={origination} color={targetLineColor}>
             <div className={classes.root}>
@@ -1060,12 +1094,10 @@ const BattlefieldContainer = () => {
                                     <CombatantView
                                         combatant={enemy}
                                         isEnemy={true}
-                                        onMouseDown={(e) => handleEnemyClick(e, i)}
+                                        onMouseDown={handleEnemyClick}
                                         isSelected={false}
-                                        onMouseEnter={() =>
-                                            setHoveredCombatant({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, index: i, id: enemy?.id })
-                                        }
-                                        onMouseLeave={() => setHoveredCombatant(null)}
+                                        onMouseEnter={handleEnemyMouseEnter}
+                                        onMouseLeave={handleCombatantMouseLeave}
                                         isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         key={enemy?.id || i}
                                         event={combatantEvent}
@@ -1117,12 +1149,10 @@ const BattlefieldContainer = () => {
                                             <CombatantView
                                                 combatant={ally}
                                                 isEnemy={false}
-                                                onMouseDown={(e) => handleAllyClick(e, i)}
+                                                onMouseDown={handleAllyClick}
                                                 isSelected={selectedAllyId && selectedAllyId === ally?.id}
-                                                onMouseEnter={() =>
-                                                    setHoveredCombatant({ side: BATTLEFIELD_SIDES.PLAYER_SIDE, index: i, id: ally?.id })
-                                                }
-                                                onMouseLeave={() => setHoveredCombatant(null)}
+                                                onMouseEnter={handleAllyMouseEnter}
+                                                onMouseLeave={handleCombatantMouseLeave}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 key={ally?.id || i}
                                                 event={combatantEvent}

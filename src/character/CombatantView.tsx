@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FC, forwardRef, useEffect, useRef, useState } from "react";
+import { FC, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
@@ -309,8 +309,6 @@ const CombatantView = forwardRef(
         {
             combatant,
             isEnemy,
-            onClick,
-            onMouseDown,
             isTargeted,
             event,
             events,
@@ -321,12 +319,12 @@ const CombatantView = forwardRef(
             previewTargetedBy,
             selectedAbility,
             index,
+            onMouseEnter,
+            onMouseDown,
             ...other
         }: {
             combatant?: Combatant | Player;
             isEnemy: boolean;
-            onClick?: (event: any) => void;
-            onMouseDown?: (event: any) => void;
             isTargeted: boolean;
             event: CurrentEvent;
             events: Event[]; // Current event queue
@@ -337,7 +335,8 @@ const CombatantView = forwardRef(
             previewTargetedBy?: PreviewStatUpdate;
             selectedAbility?: Ability | CombatAbility;
             index: number;
-            onMouseEnter?: (event: any) => void;
+            onMouseEnter?: (combatant: Combatant | null, index: number) => void;
+            onMouseDown?: (event: React.MouseEvent, index: number) => void;
             onMouseLeave?: (event: any) => void;
         },
         ref
@@ -503,14 +502,25 @@ const CombatantView = forwardRef(
             }
         };
 
+        const handleMouseEnter = useCallback(() => {
+            onMouseEnter && onMouseEnter(combatant, index);
+        }, [onMouseEnter, combatant, index]);
+
+        const handleMouseDown = useCallback(
+            (e) => {
+                onMouseDown && onMouseDown(e, index);
+            },
+            [onMouseDown,  index]
+        );
+
         return (
             <div
                 className={classNames(classes.root, {
                     "-selected": isSelected,
                     "-highlighted": isHighlighted,
                 })}
-                onClick={onClick}
-                onMouseDown={onMouseDown}
+                onMouseDown={handleMouseDown}
+                onMouseEnter={handleMouseEnter}
                 {...other}
             >
                 <div className={classes.inner}>
