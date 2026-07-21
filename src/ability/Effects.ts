@@ -387,6 +387,7 @@ export const stoneSkin: Effect = {
         {
             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             armor: 1,
+            maxArmor: 3,
             multiplier: {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 type: MULTIPLIER_TYPES.MAX_HP,
