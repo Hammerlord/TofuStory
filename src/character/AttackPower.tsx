@@ -8,6 +8,8 @@ import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { getNextTelegraphedAbility } from "./Telegraph";
+import { useAppSelector } from "../hooks";
+import { BattleState } from "../battle/reducer";
 
 const useStyles = createUseStyles({
     bonus: {
@@ -41,6 +43,8 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { combatant } = combatantInfo || {};
 
     const { HP, effects = [], casting, targeting } = combatant || {};
+    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
+    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
 
     if (!HP) {
         return null;
@@ -89,6 +93,28 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return null;
     }
 
+    const inner = (
+        <span>
+            <Icon
+                icon={<CrossedSwordsIcon />}
+                size={"lg"}
+                text={totalDamage || Math.max(0, totalAttackPower)}
+                className={classNames({
+                    [classes.bonus]: totalAttackPower > 0,
+                    [classes.negative]: totalAttackPower < 0 || (!isNaN(overrideDamage) && overrideDamage < damage),
+                    [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
+                        [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
+                    ),
+                })}
+            />
+            {timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${timesToAttack}`}</span>}
+        </span>
+    );
+
+    if (selectedAbility || selectedAlly) {
+        return inner;
+    }
+
     const tooltip = (
         <div>
             {!combatant.isPlayer && "Estimated attack damage."}
@@ -130,25 +156,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         </div>
     );
 
-    return (
-        <Tooltip title={tooltip}>
-            <span>
-                <Icon
-                    icon={<CrossedSwordsIcon />}
-                    size={"lg"}
-                    text={totalDamage || Math.max(0, totalAttackPower)}
-                    className={classNames({
-                        [classes.bonus]: totalAttackPower > 0,
-                        [classes.negative]: totalAttackPower < 0 || (!isNaN(overrideDamage) && overrideDamage < damage),
-                        [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
-                            [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
-                        ),
-                    })}
-                />
-                {timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${timesToAttack}`}</span>}
-            </span>
-        </Tooltip>
-    );
+    return <Tooltip title={tooltip}>{inner}</Tooltip>;
 };
 
 export default AttackPower;

@@ -6,6 +6,8 @@ import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import { CombatantInfo } from "../battle/types";
 import { getEnabledEffects } from "../battle/utils";
+import { useAppSelector } from "../hooks";
+import { BattleState } from "../battle/reducer";
 
 const ANIMATION_DURATION = 0.5;
 
@@ -86,6 +88,8 @@ interface ArmorInterface {
 
 const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
     const [oldAmount, setOldAmount] = useState(0);
+    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
+    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
     useEffect(() => {
         const timeout = setTimeout(() => {
             setOldAmount(amount);
@@ -101,6 +105,25 @@ const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
 
     const effects = getEnabledEffects({ combatantInfo });
     const pristineArmorEffect = effects.find((e) => e.preventArmorDecay);
+
+    const inner = (
+        <span>
+            <Icon
+                size="lg"
+                icon={pristineArmorEffect ? <PristineShieldIcon /> : <ShieldIcon />}
+                text={amount}
+                className={classNames(className, {
+                    [classes.refresh]: amount > oldAmount,
+                    [classes.hidden]: amount === 0,
+                    [classes.shake]: oldAmount > amount,
+                })}
+            />
+        </span>
+    );
+
+    if (selectedAlly || selectedAbility) {
+        return inner;
+    }
 
     return (
         <Tooltip
@@ -126,18 +149,7 @@ const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
             }
             arrow
         >
-            <span>
-                <Icon
-                    size="lg"
-                    icon={pristineArmorEffect ? <PristineShieldIcon /> : <ShieldIcon />}
-                    text={amount}
-                    className={classNames(className, {
-                        [classes.refresh]: amount > oldAmount,
-                        [classes.hidden]: amount === 0,
-                        [classes.shake]: oldAmount > amount,
-                    })}
-                />
-            </span>
+            {inner}
         </Tooltip>
     );
 };

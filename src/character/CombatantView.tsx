@@ -578,7 +578,9 @@ const CombatantView = forwardRef(
                         </div>
                         {oldState?.HP > 0 && (
                             <>
-                                {!isTargeted && !event?.id && <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />}
+                                {!isTargeted && !selectedAbility && !event?.id && (
+                                    <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />
+                                )}
                                 <div className={classes.leftContainer}>
                                     {getExtraContainerIcons("left")}
                                     <Armor amount={oldState.armor} combatantInfo={combatantInfo} />

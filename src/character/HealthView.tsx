@@ -8,6 +8,8 @@ import { Combatant } from "./types";
 import { passesConditions } from "../battle/passesConditions";
 import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { CombatantInfo } from "../battle/types";
+import { useAppSelector } from "../hooks";
+import { BattleState } from "../battle/reducer";
 
 const useStyles = createUseStyles({
     icon: {
@@ -19,6 +21,8 @@ const useStyles = createUseStyles({
 
 const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { combatant } = combatantInfo || {};
+    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
+    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
     if (!combatant) {
         return null;
     }
@@ -60,6 +64,23 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         {} as { [effectName: string]: { count: number; effect: Effect } }
     );
 
+    const inner = (
+        <span>
+            <Icon
+                icon={<HeartIcon />}
+                size={"lg"}
+                text={HP}
+                className={classNames(classes.icon, {
+                    injured: HP < maxHP,
+                })}
+            />
+        </span>
+    );
+
+    if (selectedAlly || selectedAbility) {
+        return inner;
+    }
+
     const tooltipContents = (
         <div>
             {HP} / {maxHP} HP
@@ -86,20 +107,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             )}
         </div>
     );
-    return (
-        <Tooltip title={tooltipContents}>
-            <span>
-                <Icon
-                    icon={<HeartIcon />}
-                    size={"lg"}
-                    text={HP}
-                    className={classNames(classes.icon, {
-                        injured: HP < maxHP,
-                    })}
-                />
-            </span>
-        </Tooltip>
-    );
+    return <Tooltip title={tooltipContents}>{inner}</Tooltip>;
 };
 
 export default Health;

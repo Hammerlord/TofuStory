@@ -16,6 +16,7 @@ import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
+import { BattleState } from "../battle/reducer";
 
 const indicatorSize = 8;
 
@@ -290,7 +291,9 @@ const EffectGroupIcon = ({
     const extraOptionsIconRef = useRef(null);
 
     const classes = useStyles();
-    const battle = useAppSelector((state) => state.battle);
+    const battle: BattleState = useAppSelector((state) => state.battle);
+    const selectedAlly = battle.selectedAllyId;
+    const selectedAbility = battle.selectedHandAbilityId;
 
     const {
         icon,
@@ -394,7 +397,7 @@ const EffectGroupIcon = ({
         </span>
     );
 
-    if (disableTooltip) {
+    if (disableTooltip || Boolean(selectedAlly || selectedAbility)) {
         return inner;
     }
 
