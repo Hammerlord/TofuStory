@@ -119,7 +119,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
     tooltips.push(<KeywordsTooltips object={ability} key={"keywords-tooltips"} />);
 
     return (
-        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500}>
+        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500} disableInteractive={true}>
             {children}
         </Tooltip>
     );
