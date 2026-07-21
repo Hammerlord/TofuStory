@@ -22,6 +22,7 @@
         "@mui/styles": "^6.5.0",
         "@reduxjs/toolkit": "^2.12.0",
         "classnames": "^2.3.1",
+        "framer-motion": "^12.42.2",
         "handlebars": "^4.7.8",
         "lodash": "^4.17.21",
         "ramda": "^0.27.1",
