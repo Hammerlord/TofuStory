@@ -20,6 +20,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
     const targetLineRef: React.RefObject<SVGPathElement> = useRef(null);
     const circleRef: React.RefObject<SVGCircleElement> = useRef(null);
     const bullseyeRef: React.RefObject<SVGCircleElement> = useRef(null);
+    const frameRef = useRef<number | null>(null);
+    const lastMouseRef = useRef<{ x: number; y: number } | null>(null);
 
     const classes = useStyles();
 
@@ -33,33 +35,43 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
         return `M ${x} ${y} Q ${x2} ${y2} ${x2} ${y2}`;
     };
 
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!origination) return;
+
+        lastMouseRef.current = {
+            x: e.clientX,
+            y: e.clientY,
+        };
+
+        if (frameRef.current !== null) return;
+
+        frameRef.current = requestAnimationFrame(() => {
+            frameRef.current = null;
+
+            const point = lastMouseRef.current;
+            if (!point || !targetLineRef.current) return;
+
+            const { x: clientX, y: clientY } = point;
+
+            const x = origination.left + origination.width / 2;
+            const y = origination.top + origination.height / 2;
+
+            const offset = (x - clientX) / 3;
+            const c1 = (x + clientX) / 2 + offset;
+            const c2 = (y + clientY) / 1.75;
+
+            targetLineRef.current.setAttribute("d", `M ${x} ${y} Q ${c1} ${c2} ${clientX} ${clientY}`);
+
+            bullseyeRef.current?.setAttribute("cx", String(clientX));
+            bullseyeRef.current?.setAttribute("cy", String(clientY));
+
+            circleRef.current?.setAttribute("cx", String(clientX));
+            circleRef.current?.setAttribute("cy", String(clientY));
+        });
+    };
+
     return (
-        <div
-            onMouseMove={(e) => {
-                if (origination && targetLineRef.current) {
-                    let { clientX, clientY } = e;
-
-                    const x = origination.left + origination.width / 2;
-                    const x2 = clientX;
-                    const y = origination.top + origination.height / 2;
-                    const y2 = clientY;
-
-                    const offset = (x - clientX) / 3;
-                    const c1 = (x + x2) / 2 + offset;
-                    const c2 = (y + y2) / 1.75;
-
-                    const d = `M ${x} ${y} Q ${c1} ${c2} ${x2} ${y2}`;
-                    targetLineRef.current.setAttribute("d", d);
-                    targetLineRef.current.setAttribute("qx", clientX.toString());
-                    targetLineRef.current.setAttribute("qy", clientY.toString());
-                    bullseyeRef.current.setAttribute("cx", clientX.toString());
-                    bullseyeRef.current.setAttribute("cy", clientY.toString());
-                    circleRef.current.setAttribute("cx", clientX.toString());
-                    circleRef.current.setAttribute("cy", clientY.toString());
-                }
-            }}
-            {...other}
-        >
+        <div onMouseMove={handleMouseMove} {...other}>
             {children}
             <div className={classes.canvas}>
                 {/** 0, 0 happens sometimes when you select cards too quickly */}
