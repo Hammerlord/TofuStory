@@ -731,6 +731,8 @@ export interface AbilityUpgrade {
 }
 
 export interface AbilityEvent {
+    // Percentage-based likelihood of the AbilityEvent proccing (0 - 1).
+    chance?: number;
     abilityEffects?: AbilityEffect[];
     ability?: Ability;
     conditions?: Condition[];

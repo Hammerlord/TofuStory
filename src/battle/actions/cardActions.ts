@@ -15,7 +15,7 @@ import {
     SelectCards,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
-import { getRandomItem, getRandomItems, shuffle } from "../../utils";
+import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
@@ -112,9 +112,18 @@ export const drawCards = ({
 
         dispatch(updateBattle(newState));
         cardsToDraw.forEach((card: CombatAbility) => {
-            if (card.onDraw?.ability) {
-                const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
-                dispatch(useAbility({ ability: card.onDraw?.ability, actorId: player?.id, isProc: true }));
+            const onDraw = card.onDraw;
+            if (onDraw) {
+                const { chance = 1, ability, abilityEffects } = onDraw;
+
+                if (ability && passesChance(chance)) {
+                    const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+                    dispatch(useAbility({ ability, actorId: player?.id, isProc: true }));
+                }
+
+                if (abilityEffects) {
+                    applyAbilityEventEffects({ event: onDraw, source, ability: card });
+                }
             }
         });
         playerSide.concat(enemySide).forEach((combatant) => {
@@ -642,7 +651,12 @@ export const applyAbilityEventEffects = ({
         return ability;
     }
 
-    const { abilityEffects = [], mode } = event || {};
+    const { abilityEffects = [], mode, chance } = event || {};
+
+    if (!passesChance(chance)) {
+        return ability;
+    }
+
     const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
 
     const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants

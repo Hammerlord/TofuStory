@@ -28,7 +28,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
-import { getRandomInt, getRandomItem, shuffle } from "../../utils";
+import { getRandomInt, getRandomItem, passesChance, shuffle } from "../../utils";
 import {
     MULTI_ACTION_PLAYBACK_SPEED,
     NORMAL_ACTION_PLAYBACK_SPEED,
@@ -1070,7 +1070,13 @@ export const checkEventTrigger = ({
             const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === source?.actorId);
             if (actorIsPlayer) {
                 hand.forEach((card: CombatAbility) => {
-                    if (card[effectEventKey]?.ability) {
+                    const cardEvent = card[effectEventKey];
+                    if (!cardEvent) {
+                        return;
+                    }
+
+                    const ability = cardEvent.ability;
+                    if (ability && passesChance(cardEvent.chance)) {
                         dispatch(useAbility({ ability: card[effectEventKey].ability, actorId: source?.actorId, isProc: true }));
                     }
                 });

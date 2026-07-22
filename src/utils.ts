@@ -61,3 +61,11 @@ export const moveTailToHead = (array: any[]): any[] => {
     newArray.unshift(newArray.pop());
     return newArray;
 };
+
+export const passesChance = (chance: number | any): boolean => {
+    if (typeof chance !== "number") {
+        return true;
+    }
+
+    return Math.random() <= chance;
+};
