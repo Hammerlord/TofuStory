@@ -744,6 +744,8 @@ export interface Ability {
     name: string;
     resourceCost?: number | "x"; // "x" means to expend the remainder of your resources
     exclusive?: string; // Eg. you cannot get more than one "Arm of the Exiled One" in any card selection screen
+    // Ability stays in your hand after turn end. This does not count against the number of cards drawn next turn.
+    retain?: boolean;
     actions: Action[];
     tooltip?: {
         title: string;

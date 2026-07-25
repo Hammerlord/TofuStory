@@ -241,10 +241,13 @@ export const playerEndTurn = () => {
         );
 
         const { discard, hand } = getState().battle;
+        const newHand = hand.filter((card: CombatAbility) => card.retain);
+        const cardsToDiscard = hand.filter((card: CombatAbility) => !card.retain);
+
         dispatch(
             updateBattle({
-                discard: [...prepareForDiscard(hand), ...discard],
-                hand: [],
+                discard: [...prepareForDiscard(cardsToDiscard), ...discard],
+                hand: newHand,
             })
         );
     };
