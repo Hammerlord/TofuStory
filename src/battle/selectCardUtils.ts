@@ -90,12 +90,18 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
     return filters.some((filter) => {
         const { actionTypes, hasMinion, comparator, abilityType } = filter;
         const primaryAction = card.actions?.[0];
-        if (abilityType === "support" && isSupportAction(primaryAction)) {
-            return comparator !== "not";
+        if (abilityType === "support") {
+            if (primaryAction && isSupportAction(primaryAction)) {
+                return comparator !== "not";
+            }
+            return false;
         }
 
-        if (abilityType === "offense" && isOffensiveAction(primaryAction)) {
-            return comparator !== "not";
+        if (abilityType === "offense") {
+            if (primaryAction && isOffensiveAction(primaryAction)) {
+                return comparator !== "not";
+            }
+            return false;
         }
 
         if (actionTypes) {
