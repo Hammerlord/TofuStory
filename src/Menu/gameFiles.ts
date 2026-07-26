@@ -5,7 +5,7 @@ import { Ability } from "../ability/types";
 import { CharacterState } from "../character/playerReducer";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
-import { chargingStone, greaterChargingStone, rageStone, rampageStone } from "../item/starterItems";
+import { chargingStone, greaterChargingStone, greaterHonestyStone, honestyStone, rageStone, rampageStone } from "../item/starterItems";
 import { Item } from "../item/types";
 import { CLASS_ITEMS } from "../map/routes/eventList";
 import { ShopAbility } from "../shops/constants";
@@ -113,7 +113,7 @@ export const getGameFile = () => {
 
         const hydratedDeck = deck.map(hydrateAbility).filter((v) => v);
 
-        const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone];
+        const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone, honestyStone, greaterHonestyStone];
         const consumables = [halfEatenHotdog, unagiItem, cakeItem];
         const other = [tofu, tofuSoup];
         const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables, ...other];

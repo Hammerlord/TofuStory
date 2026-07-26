@@ -2,18 +2,23 @@ import * as uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";
 import {
+    AvengersArrowImage,
     BlueUmbrellaImage,
+    BowMushImage,
     FrozenTunaImage,
     OldGladiusImage,
     OldWoodenStaffImage,
     PicoPicoHammerImage,
     StarCandyPopsicleImage,
+    WarBowImage,
     WarMushImage,
     WizMushImage,
     WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
-import { chargingStone, rageStone } from "../item/starterItems";
+import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
+import WeaponSkins from "../Menu/WeaponSkins";
+import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "../ability/types";
 
 /** Default character stats */
 const defaultCharacterProperties = {
@@ -59,6 +64,37 @@ export const wizardProperties = {
         { name: "Star Candy Popsicle", image: StarCandyPopsicleImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
+    ],
+};
+
+export const bowmanProperties = {
+    ...defaultCharacterProperties,
+    class: PLAYER_CLASSES.BOWMAN,
+    image: BowMushImage,
+    HP: 65,
+    maxHP: 65,
+    weapon: WarBowImage,
+    items: [honestyStone],
+    WeaponSkins: [],
+    abilities: [
+        {
+            name: "Shoot",
+            image: AvengersArrowImage,
+            resourceCost: 0,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: AvengersArrowImage,
+                    damage: 2,
+                    animationOptions: {
+                        rotateToFaceTarget: true,
+                        rotate: 135,
+                    },
+                },
+            ],
+        },
     ],
 };
 

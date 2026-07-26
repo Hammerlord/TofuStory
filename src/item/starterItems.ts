@@ -1,8 +1,17 @@
 import { JOB_CARD_MAP } from "../ability";
-import { AlchemistStoneImage, HumilityStoneImage } from "../images";
+import { AlchemistStoneImage, HonestyStoneImage, HumilityStoneImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
-import { CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    CONDITION_TARGETS,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 import { getUpgradeCard } from "./../Menu/utils";
 
 import { furiousStrikeCard } from "../ability/warrior/warriorAbilities";
@@ -160,7 +169,65 @@ export const greaterChargingStone: Item = {
     ],
 };
 
+export const honestyStone: Item = {
+    name: "Honesty Stone",
+    description: "Attacking has a 25% chance to cause you or an ally to attack an extra time.",
+    image: HonestyStoneImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Honesty Stone",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAttack: {
+                disableTriggerFromProcs: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                chance: 0.25,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    type: MULTIPLIER_TYPES.RESOURCES_SPENT,
+                },
+                ability: {
+                    name: "Command",
+                    image: HonestyStoneImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.RANDOM_FRIENDLY,
+                            induceCombatantAttack: true,
+                            playbackTime: 250,
+                            conditions: [
+                                {
+                                    calculationTarget: CONDITION_TARGETS.TARGET,
+                                    name: "Scarecrow",
+                                    comparator: "not",
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+};
+
+export const greaterHonestyStone: Item = {
+    ...honestyStone,
+    name: "Greater Honesty Stone",
+    description: "Attacking has a 33% chance to cause you or an ally to attack an extra time.",
+    effects: [
+        {
+            ...honestyStone.effects[0],
+            onAttack: {
+                ...honestyStone.effects[0].onAttack,
+                chance: 0.4,
+            },
+        },
+    ],
+};
+
 export const STARTER_ITEM_UPGRADE_MAP = {
     [PLAYER_CLASSES.WARRIOR]: rampageStone,
     [PLAYER_CLASSES.MAGICIAN]: greaterChargingStone,
+    [PLAYER_CLASSES.BOWMAN]: greaterHonestyStone,
 };

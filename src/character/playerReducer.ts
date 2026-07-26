@@ -14,7 +14,7 @@ import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
 import { NUM_TRADING_POST_TRADES, NUM_TRANSMUTATIONS, ShopAbility, ShopItem } from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
-import defaultCharacterProperties, { wizardProperties } from "./defaultCharacterProperties";
+import defaultCharacterProperties, { bowmanProperties, wizardProperties } from "./defaultCharacterProperties";
 import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
@@ -128,6 +128,7 @@ export const playerStateSlice = createSlice({
             const classMap = {
                 [PLAYER_CLASSES.WARRIOR]: defaultCharacterProperties,
                 [PLAYER_CLASSES.MAGICIAN]: wizardProperties,
+                [PLAYER_CLASSES.BOWMAN]: bowmanProperties,
             };
             return {
                 ...state,

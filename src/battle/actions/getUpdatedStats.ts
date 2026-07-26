@@ -129,7 +129,7 @@ export const getUpdatedStats = ({
             damage = Math.ceil(damage / (targets.length || 1));
         }
 
-        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier });
+        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, source });
         if (decayArmor) {
             const halveArmorAmount = getHalveArmorAmount(target);
             totalArmor += halveArmorAmount;

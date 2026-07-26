@@ -3,6 +3,7 @@ export { default as ArrowDownIcon } from "./ArrowDown.svg";
 export { default as BlackShieldIcon } from "./BlackShield.svg";
 export { default as BloodIcon } from "./Blood.svg";
 export { default as BoomIcon } from "./Boom.svg";
+export { default as BullseyeIcon } from "./Bullseye.svg";
 export { default as CactusIcon } from "./Cactus.svg";
 export { default as CampingIcon } from "./Camping.svg";
 export { default as CloudIcon } from "./Cloud.svg";

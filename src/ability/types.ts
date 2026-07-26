@@ -446,6 +446,8 @@ export enum MULTIPLIER_TYPES {
     ALL_CARDS = "all-cards",
     EFFECT_STACKS = "effect-stacks",
     ABILITIES_USED = "abilities-used",
+    NUM_ALLIES = "numAllies",
+    MISSING_HP = "missingHP",
 }
 
 export type CardFilterCondition = {
@@ -851,6 +853,7 @@ export interface AbilityEffect {
     applierId?: string;
     resourceCost?: number;
     damage?: number;
+    armor?: number;
     removeParentCardAfterTurn?: boolean; // Effectively adds the 'ephemeral' keyword on the parent ability
     upgradedByLevels?: number;
     maxApplications?: number;

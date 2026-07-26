@@ -10,12 +10,15 @@ import { playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     AnonymushroomImage,
+    BowMushImage,
+    ClassBowmanImage,
     ClassMagicianImage,
     ClassWarriorImage,
     LandImage,
     OldGladiusImage,
     OldWoodenStaffImage,
     StarImage,
+    WarBowImage,
     WarMushImage,
     WizMushImage,
 } from "../images";
@@ -27,6 +30,7 @@ import { COMMON_STYLES } from "../constants";
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
     [PLAYER_CLASSES.MAGICIAN]: WizMushImage,
+    [PLAYER_CLASSES.BOWMAN]: BowMushImage,
 };
 
 const useStyles = createUseStyles({
@@ -256,6 +260,10 @@ const ClassSelection = ({
         if (selectedClass === PLAYER_CLASSES.MAGICIAN) {
             return <Weapon image={OldWoodenStaffImage} wielderRef={characterRef} />;
         }
+
+        if (selectedClass === PLAYER_CLASSES.BOWMAN) {
+            return <Weapon image={WarBowImage} wielderRef={characterRef} />;
+        }
     };
 
     return (
@@ -315,6 +323,18 @@ const ClassSelection = ({
                         </span>
                         <br />
                         <span className={classes.classTitle}>MAGICIAN</span>
+                    </button>
+                    <button
+                        onClick={() => setSelectedClass(PLAYER_CLASSES.BOWMAN)}
+                        className={classNames(classes.classCard, {
+                            selected: selectedClass === PLAYER_CLASSES.BOWMAN,
+                        })}
+                    >
+                        <span className={classes.iconContainer}>
+                            <img src={ClassBowmanImage} />
+                        </span>
+                        <br />
+                        <span className={classes.classTitle}>BOWMAN</span>
                     </button>
                 </div>
                 <Button color="primary" disabled={!selectedClass} onClick={handleSelectClass}>
