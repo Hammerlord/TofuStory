@@ -502,6 +502,8 @@ const handleOnReceiveAction = ({
 const onAction = ({ action, source }: { action: Action; source?: TriggerSource }) => {
     return (dispatch, getState) => {
         const actorId = source?.actorId;
+        const { combatant, hostile } = findCombatantData(getState().battle, actorId) || {};
+
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(
                 checkEventTrigger({
@@ -510,9 +512,22 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
                     source,
                 })
             );
+
+            if (Array.isArray(hostile)) {
+                hostile.forEach((combatant) => {
+                    if (combatant?.id) {
+                        dispatch(
+                            checkEventTrigger({
+                                combatantId: combatant.id,
+                                effectEventKey: EFFECT_EVENT_KEYS.onHostileAttack,
+                                source: source,
+                            })
+                        );
+                    }
+                });
+            }
         }
 
-        const { combatant } = findCombatantData(getState().battle, actorId) || {};
         const turnHistory = combatant?.turnHistory || [];
 
         dispatch(

@@ -134,6 +134,7 @@ export enum EFFECT_EVENT_KEYS {
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",
     onHostileAbility = "onHostileAbility",
+    onHostileAttack = "onHostileAttack",
     onPlayerAbility = "onPlayerAbility", // This includes any ability from procs
     onPlayCard = "onPlayCard", // Whenever the player specifically plays a card
     onHostileSupportAbility = "onHostileSupportAbility",

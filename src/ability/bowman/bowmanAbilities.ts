@@ -25,6 +25,7 @@ import {
     SoulArrowImage,
     SteelArrowImage,
     StrafeImage,
+    TragosImage,
     WeaponMasteryLGImage,
     WuTienEagleImage,
 } from "../../images";
@@ -982,12 +983,20 @@ export const lycanthropeMinion: Minion = {
     effects: [
         {
             name: "Slayer",
-            description: "Gains +3 ATT when it kills.",
+            description: "Gains +3 ATT when it kills a threatening target.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAttack: {
+            onKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [{ ...attackPower, stacks: 3 }],
+                conditions: [
+                    {
+                        property: "abilities.0",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        value: undefined,
+                        comparator: "not",
+                    },
+                ],
             },
         },
     ],
@@ -995,6 +1004,7 @@ export const lycanthropeMinion: Minion = {
 
 export const lycanthropeAbility: Ability = {
     name: "Lycanthrope",
+    description: "Gains +3 ATT when it kills a threatening target.",
     minion: lycanthropeMinion,
     image: LycanthropeImage,
     resourceCost: 2,
@@ -1052,6 +1062,96 @@ export const doubleJump: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+export const tragosMinion: Minion = {
+    name: "Tragos",
+    maxHP: 18,
+    image: TragosImage,
+    uncontrollable: true,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            ...taunt,
+            onHostileAttack: {
+                targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                ability: {
+                    ...attack,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
+                            damage: 3,
+                            playbackTime: 350,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onSummoned: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                induceCombatantAttack: true,
+            },
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                induceCombatantAttack: true,
+            },
+        },
+    ],
+};
+
+export const tragosAbility: Ability = {
+    name: "Tragos",
+    description: "Counterattacks whenever it or an ally is attacked.",
+    minion: tragosMinion,
+    image: TragosImage,
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 5,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        onHostileAttack: {
+                            ability: {
+                                actions: [
+                                    {
+                                        damage: 1,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

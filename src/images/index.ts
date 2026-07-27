@@ -700,6 +700,7 @@ export { default as TornadoImage } from "./Tornado.png";
 export { default as TortieShellImage } from "./TortieShell.png";
 export { default as TownTransmuteImage } from "./TownTransmute.png";
 export { default as ToyHammerImage } from "./ToyHammer.png";
+export { default as TragosImage } from "./Tragos.gif";
 export { default as TreasureChestImage } from "./TreasureChest.png";
 export { default as TreeBranchImage } from "./TreeBranch.png";
 export { default as TriangularZamadarImage } from "./TriangularZamadar.png";
