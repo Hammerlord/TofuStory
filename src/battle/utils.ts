@@ -3,7 +3,7 @@ import { AbilityEffect, ActionOptionalProperties, SkillBonus } from "./../abilit
  * @file Helpers for various battle functions
  */
 import _ from "lodash";
-import { isAttackAbility, isOffensiveAbility } from "../ability/AbilityView/utils";
+import { isAttackAbility, isAttackAction, isOffensiveAbility } from "../ability/AbilityView/utils";
 import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
 import {
@@ -552,7 +552,43 @@ export const getMultiplier = ({
         return (friendly || []).filter((combatant) => combatant && combatant.HP >= 0).length;
     }
 
+    if (type === MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND) {
+        return calculateAttackDamageInHand({ hand, actor: combatantInfo, actionParent: source?.source });
+    }
+
     return 1;
+};
+
+const calculateAttackDamageInHand = ({
+    hand,
+    actor,
+    actionParent,
+}: {
+    hand: CombatAbility[];
+    actor: CombatantInfo;
+    actionParent?: Ability | Item | Action | CombatEffect;
+}): number => {
+    let damage = 0;
+    hand.forEach((card) => {
+        const isSameCard = actionParent && card.instanceId === (actionParent as CombatAbility)?.instanceId;
+        if (isSameCard || !isOffensiveAbility(card)) {
+            return;
+        }
+
+        (card.actions || []).forEach((action: Action) => {
+            if (isAttackAction(action)) {
+                const actionDamage = calculateDamage({
+                    actor,
+                    action,
+                    actionParent: card,
+                    source: { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                });
+                damage += actionDamage;
+            }
+        });
+    });
+
+    return damage;
 };
 
 export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {

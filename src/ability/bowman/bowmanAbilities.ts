@@ -23,6 +23,7 @@ import {
     PiercingArrowImage,
     ScarecrowImage,
     ShieldImage,
+    SnipeImage,
     SoulArrowImage,
     SteelArrowImage,
     StrafeImage,
@@ -1194,6 +1195,44 @@ export const roar: Ability = {
                             duration: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const snipe: Ability = {
+    name: "Snipe",
+    resourceCost: 2,
+    image: SnipeImage,
+    description: "+ Damage equal to the sum of attack damage in your hand, excluding this card.",
+    overrideBodyText: true,
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            damage: 0,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+            },
+            bonus: {
+                damage: 1,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },

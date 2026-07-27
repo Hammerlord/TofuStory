@@ -449,6 +449,7 @@ export enum MULTIPLIER_TYPES {
     ABILITIES_USED = "abilities-used",
     NUM_ALLIES = "numAllies",
     MISSING_HP = "missingHP",
+    ATTACK_DAMAGE_IN_HAND = "attackDamageInHand",
 }
 
 export type CardFilterCondition = {
