@@ -25,6 +25,7 @@ import {
     lycanthropeAbility,
     doubleJump,
     tragosAbility,
+    roar,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -364,6 +365,7 @@ export const JOB_CARD_MAP = {
             lycanthropeAbility,
             doubleJump,
             tragosAbility,
+            roar,
         ],
         starters: [spotWeakness, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

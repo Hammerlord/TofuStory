@@ -6,6 +6,7 @@ import {
     AvengersArrowImage,
     BlockImage,
     BowExpertImage,
+    ConcentrateImage,
     CoveringFireImage,
     DogImage,
     DoubleJumpImage,
@@ -1152,6 +1153,49 @@ export const tragosAbility: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const roar: Ability = {
+    name: "Roar",
+    image: ConcentrateImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 0,
+    actions: [
+        {
+            resources: 1,
+            drawCards: {
+                amount: 1,
+            },
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.SHOUT,
+            effects: [
+                {
+                    name: "Critical Roar",
+                    icon: ConcentrateImage,
+                    drawCardsPerTurn: 1,
+                    resourcesPerTurn: 1,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 2,
+                    maxApplications: 1,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            duration: 1,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
