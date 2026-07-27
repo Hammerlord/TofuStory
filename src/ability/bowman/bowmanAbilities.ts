@@ -15,6 +15,7 @@ import {
     FrozenArrowImage,
     HamstringImage,
     IronArrowImage,
+    LycanthropeImage,
     MarksmanshipImage,
     MortalBlowImage,
     PiercingArrowImage,
@@ -734,7 +735,7 @@ export const focus: Ability = {
 export const chargedShot: Ability = {
     name: "Charged Shot",
     retain: true,
-    removeAfterTurn: true,
+    depletedOnUse: true,
     rarity: RARITIES.RARE,
     resourceCost: 1,
     image: DrainArrowImage,
@@ -952,6 +953,64 @@ export const callWolves: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [{ minion: [cloneDeep(wolfMinion)] }, { minion: [cloneDeep(wolfMinion)] }],
+        },
+    ],
+};
+
+export const lycanthropeMinion: Minion = {
+    name: "Lycanthrope",
+    maxHP: 12,
+    image: LycanthropeImage,
+    description: "Gains +3 ATT when it kills.",
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 5,
+                    area: 1,
+                    effects: [{ ...bleed }],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Slayer",
+            description: "Gains +3 ATT when it kills.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAttack: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [{ ...attackPower, stacks: 3 }],
+            },
+        },
+    ],
+};
+
+export const lycanthropeAbility: Ability = {
+    name: "Lycanthrope",
+    minion: lycanthropeMinion,
+    image: LycanthropeImage,
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 3,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 2,
+                            },
+                        ],
+                    },
+                ],
+            },
         },
     ],
 };

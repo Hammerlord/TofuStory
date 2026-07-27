@@ -22,6 +22,7 @@ import {
     strafe,
     tagShot,
     volley,
+    lycanthropeAbility,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -358,6 +359,7 @@ export const JOB_CARD_MAP = {
             focus,
             tagShot,
             callWolves,
+            lycanthropeAbility,
         ],
         starters: [spotWeakness, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

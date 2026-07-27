@@ -392,6 +392,7 @@ export { default as LunarPiecesImage } from "./LunarPieces.png";
 export { default as LupinImage } from "./Lupin.gif";
 export { default as LupinCardImage } from "./LupinCard.png";
 export { default as LupinRunningImage } from "./LupinRunning.gif";
+export { default as LycanthropeImage } from "./Lycanthrope.gif";
 export { default as MagicArmorImage } from "./MagicArmor.png";
 export { default as MagicArmorOldImage } from "./MagicArmorOld.gif";
 export { default as MagicBoosterImage } from "./MagicBooster.png";

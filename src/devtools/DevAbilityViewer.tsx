@@ -67,12 +67,11 @@ const DevAbilityViewer = ({ onClose }) => {
                 Close
             </Button>
             <div>
-                <div className={classes.class} onClick={() => setSelectedClass(PLAYER_CLASSES.WARRIOR)}>
-                    {PLAYER_CLASSES.WARRIOR}
-                </div>
-                <div className={classes.class} onClick={() => setSelectedClass(PLAYER_CLASSES.MAGICIAN)}>
-                    {PLAYER_CLASSES.MAGICIAN}
-                </div>
+                {Object.values(PLAYER_CLASSES).map((className) => (
+                    <div className={classes.class} onClick={() => setSelectedClass(className)}>
+                        {className}
+                    </div>
+                ))}
             </div>
             {selectedClass && (
                 <div className={classes.viewer}>
