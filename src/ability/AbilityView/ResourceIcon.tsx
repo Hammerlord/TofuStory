@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { Fury, Mana } from "../../resource/ResourcesView";
+import { Fury, Mana, Stamina } from "../../resource/ResourcesView";
 import { Ability, AbilityEffect, CombatAbility } from "../types";
 import { PLAYER_CLASSES } from "../../Menu/types";
 import { Player } from "../../character/types";
@@ -27,6 +27,16 @@ const useStyles = createUseStyles({
         width: 24,
     },
 });
+
+const getClassResourceIcon = (playerClass: PLAYER_CLASSES) => {
+    return (
+        {
+            [PLAYER_CLASSES.WARRIOR]: Fury,
+            [PLAYER_CLASSES.MAGICIAN]: Mana,
+            [PLAYER_CLASSES.BOWMAN]: Stamina,
+        }[playerClass] || Fury
+    );
+};
 
 /**
  * Resource (Fury, Mana, etc.) cost icon that shows on the top right of a card.
@@ -76,11 +86,7 @@ const AbilityResourceIcon = ({
         return <div className={classes.placeholder} />;
     }
 
-    const Icon =
-        {
-            [PLAYER_CLASSES.WARRIOR]: Fury,
-            [PLAYER_CLASSES.MAGICIAN]: Mana,
-        }[player?.class] || Fury;
+    const Icon = getClassResourceIcon(player?.class);
 
     let className;
     if (!disableBattleIndicators) {
@@ -104,11 +110,7 @@ export const ResourceIcon = ({
     size?: "xl" | "lg" | "md" | "sm";
     className?: string;
 }) => {
-    const Icon =
-        {
-            [PLAYER_CLASSES.WARRIOR]: Fury,
-            [PLAYER_CLASSES.MAGICIAN]: Mana,
-        }[playerClass] || Fury;
+    const Icon = getClassResourceIcon(playerClass);
     return <Icon text={text} size={size} className={className} />;
 };
 

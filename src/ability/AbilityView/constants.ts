@@ -50,6 +50,7 @@ export const GREY = "rgb(100, 100, 100)";
 export const resourceClassNameMap = {
     [PLAYER_CLASSES.WARRIOR]: "Fury",
     [PLAYER_CLASSES.MAGICIAN]: "Mana",
+    [PLAYER_CLASSES.BOWMAN]: "Stamina",
 };
 
 export const DEFAULT_CARD_MAX_LEVEL = 2;
