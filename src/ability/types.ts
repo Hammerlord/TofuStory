@@ -852,6 +852,7 @@ export interface AbilityEffect {
     name?: string; // Doubles as an ID for maxApplications
     applierId?: string;
     resourceCost?: number;
+    drawCards?: number;
     damage?: number;
     armor?: number;
     removeParentCardAfterTurn?: boolean; // Effectively adds the 'ephemeral' keyword on the parent ability

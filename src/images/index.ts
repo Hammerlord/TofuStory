@@ -165,6 +165,7 @@ export { default as DiamondOreImage } from "./DiamondOre.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DogImage } from "./Dog.gif";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";
+export { default as DoubleJumpImage } from "./DoubleJump.png";
 export { default as DoubleShotImage } from "./DoubleShot.gif";
 export { default as DoubleStabImage } from "./DoubleStab.png";
 export { default as DoubleTimeImage } from "./DoubleTime.png";

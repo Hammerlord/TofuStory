@@ -30,6 +30,32 @@ import { getLastPlayedCards } from "../../ability/AbilityView/utils";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
+const sumCardDrawAmount = ({
+    effects,
+    source,
+    amount,
+}: {
+    effects?: AbilityEffect[];
+    filters?: ACTION_TYPES[];
+    amount: number;
+    source?: TriggerSource;
+}) => {
+    if (effects?.length) {
+        amount += effects.reduce((acc, cur) => {
+            return (acc += cur?.drawCards || 0);
+        }, 0);
+    }
+
+    const parentEffects = (source?.source as CombatAbility)?.effects;
+    if (parentEffects?.length) {
+        amount += parentEffects.reduce((acc, cur) => {
+            return (acc += cur?.drawCards || 0);
+        }, 0);
+    }
+
+    return amount;
+};
+
 export const drawCards = ({
     effects = [],
     filters = [],
@@ -46,8 +72,9 @@ export const drawCards = ({
         let newDeck: Ability[] = deck.slice();
         let newHand = hand.slice();
         let newDiscard = discard.slice();
-        const cardsToDraw = [];
+        let cardsToDraw: CombatAbility[] = [];
         let deckCycled = false;
+        amount = sumCardDrawAmount({ effects, source, amount });
 
         if (filters.length) {
             // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
@@ -85,14 +112,19 @@ export const drawCards = ({
         }
 
         let handTooFull = false;
-        for (const card of cardsToDraw) {
+        for (let card of cardsToDraw) {
             if (newHand.length > MAX_HAND_SIZE) {
                 newDiscard.push(card);
                 handTooFull = true;
                 continue;
             }
 
+            const onDrawEffects = card.onDraw?.abilityEffects;
+            if (onDrawEffects) {
+                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card });
+            }
             const existingEffects = card.effects || [];
+
             newHand.push({
                 ...card,
                 effects: [...existingEffects, ...effects],
@@ -114,15 +146,11 @@ export const drawCards = ({
         cardsToDraw.forEach((card: CombatAbility) => {
             const onDraw = card.onDraw;
             if (onDraw) {
-                const { chance = 1, ability, abilityEffects } = onDraw;
+                const { chance = 1, ability } = onDraw;
 
                 if (ability && passesChance(chance)) {
                     const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
                     dispatch(useAbility({ ability, actorId: player?.id, isProc: true }));
-                }
-
-                if (abilityEffects) {
-                    applyAbilityEventEffects({ event: onDraw, source, ability: card });
                 }
             }
         });

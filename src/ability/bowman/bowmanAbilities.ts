@@ -8,6 +8,7 @@ import {
     BowExpertImage,
     CoveringFireImage,
     DogImage,
+    DoubleJumpImage,
     DoubleShotImage,
     DrainArrowImage,
     FinalAttackImage,
@@ -249,6 +250,7 @@ export const soulArrow: Ability = {
             {
                 damage: 3,
                 maxApplications: 1,
+                highlightCard: true,
             },
         ],
     },
@@ -573,6 +575,7 @@ export const guard: Ability = {
             {
                 armor: 3,
                 maxApplications: 1,
+                highlightCard: true,
             },
         ],
     },
@@ -1011,6 +1014,44 @@ export const lycanthropeAbility: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const doubleJump: Ability = {
+    name: "Double Jump",
+    resourceCost: 1,
+    image: DoubleJumpImage,
+    description: "Draw {{ actions.0.drawCards.amount }} cards. <b>Critical:</b> +1 card.",
+    overrideBodyText: true,
+    onDraw: {
+        chance: 0.5,
+        abilityEffects: [
+            {
+                drawCards: 1,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 2,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+            ],
         },
     ],
 };
