@@ -8,6 +8,7 @@ import {
     BowExpertImage,
     ConcentrateImage,
     CoveringFireImage,
+    CrowImage,
     DogImage,
     DoubleJumpImage,
     DoubleShotImage,
@@ -36,7 +37,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { attackPower, bleed, defDown, stun, taunt, thorns } from "../Effects";
+import { attackPower, avenger, bleed, defDown, stun, taunt, thorns } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -1334,6 +1335,67 @@ export const quickShot: Ability = {
                     damage: 3,
                 },
             ],
+        },
+    ],
+};
+
+const crow: Minion = {
+    name: "Crow",
+    maxHP: 6,
+    image: CrowImage,
+    description: "<b>Avenger.</b>",
+    uncontrollable: true,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onSummoned: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                induceCombatantAttack: true,
+            },
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                induceCombatantAttack: true,
+            },
+        },
+        avenger,
+    ],
+};
+
+export const murderOfCrows: Ability = {
+    name: "Murder Of Crows",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 3,
+    image: CrowImage,
+    depletedOnUse: true,
+    description: "Summon 3 Crows. For each that doesn't fit, a random summon is Tributed.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            summon: [
+                { minion: [cloneDeep(crow)], tributePossible: true },
+                { minion: [cloneDeep(crow)], tributePossible: true },
+                { minion: [cloneDeep(crow)], tributePossible: true },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };

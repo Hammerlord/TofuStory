@@ -140,6 +140,7 @@ export { default as CoveringFireImage } from "./CoveringFire.png";
 export { default as CrabCardImage } from "./CrabCard.png";
 export { default as CrocoImage } from "./Croco.gif";
 export { default as CrossedSwordsImage } from "./CrossedSwords.png";
+export { default as CrowImage } from "./Crow.gif";
 export { default as CrystalIlbiImage } from "./CrystalIlbi.png";
 export { default as CupImage } from "./Cup.png";
 export { default as CurseImage } from "./Curse.png";
