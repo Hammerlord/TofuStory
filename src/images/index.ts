@@ -14,6 +14,7 @@ export { default as AquamarineImage } from "./Aquamarine.png";
 export { default as ArcaneAimImage } from "./ArcaneAim.png";
 export { default as ArcaneOverdriveImage } from "./ArcaneOverdrive.png";
 export { default as ArcStaffImage } from "./ArcStaff.png";
+export { default as ArrowBlowImage } from "./ArrowBlow.gif";
 export { default as ArrowBombImage } from "./ArrowBomb.gif";
 export { default as ArrowEruptionImage } from "./ArrowEruption.gif";
 export { default as ArrowRainImage } from "./ArrowRain.png";

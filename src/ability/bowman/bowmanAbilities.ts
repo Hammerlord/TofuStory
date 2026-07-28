@@ -1,5 +1,6 @@
 import { attack } from "../../enemy/abilities";
 import {
+    ArrowBlowImage,
     ArrowBombImage,
     ArrowEruptionImage,
     ArrowRainImage,
@@ -1396,6 +1397,47 @@ export const murderOfCrows: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+export const arrowBlow: Ability = {
+    name: "Arrow Blow",
+    resourceCost: 0,
+    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}",
+    image: ArrowBlowImage,
+    onDraw: {
+        chance: 0.5,
+        abilityEffects: [
+            {
+                damage: 10,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 1,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        damage: 4,
+                    },
+                ],
+            },
         },
     ],
 };
