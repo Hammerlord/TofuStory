@@ -319,6 +319,7 @@ export { default as IcicleMinionImage } from "./IcicleMinion.png";
 export { default as IciclesPortraitImage } from "./IciclesPortrait.png";
 export { default as IfritImage } from "./Ifrit.png";
 export { default as IgniteImage } from "./Ignite.png";
+export { default as IllusionStepImage } from "./IllusionStep.png";
 export { default as IncomingDamageArrowImage } from "./IncomingDamageArrow.png";
 export { default as IncomingDamageArrow2Image } from "./IncomingDamageArrow2.png";
 export { default as IncomingSupportArrowImage } from "./IncomingSupportArrow.png";

@@ -16,6 +16,7 @@ import {
     FocusImage,
     FrozenArrowImage,
     HamstringImage,
+    IllusionStepImage,
     IronArrowImage,
     LycanthropeImage,
     MarksmanshipImage,
@@ -44,6 +45,7 @@ import {
     EFFECT_TYPES,
     Minion,
     MULTIPLIER_TYPES,
+    SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
@@ -1264,6 +1266,39 @@ export const lockOn: Ability = {
                             attackDamageReceived: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const wayfind: Ability = {
+    name: "Wayfind",
+    image: IllusionStepImage,
+    resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
+    description: "Select cards to discard from your hand. Then, draw that many + {{ actions.0.drawCards.amount }}.",
+    overrideBodyText: true,
+    depletedOnUse: true,
+    selectCards: {
+        type: SELECT_CARD_TYPES.DISCARD_TO_DRAW,
+    },
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             ],
         },
