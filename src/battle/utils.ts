@@ -867,22 +867,51 @@ export const calculateHealing = ({ target, action }: { target?: CombatantInfo; a
  */
 export const getValidTargetIndices = (
     characters: (Combatant | null)[],
-    options: { excludeStealth?: boolean; excludeIndex?: number; onlyTaunt?: boolean; excludeUntargetable?: boolean } = {}
+    options: {
+        excludeStealth?: boolean;
+        excludeIndex?: number;
+        onlyTaunt?: boolean;
+        excludeUntargetable?: boolean;
+        onlyPriorityTarget?: boolean;
+    } = {}
 ): number[] => {
     const indices: number[] = [];
-    const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true } = options;
-    if (onlyTaunt) {
-        // Check for taunting characters first.
+    const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
+
+    const getIndicesForEffectType = (effectType: EFFECT_TYPES) => {
+        const effectIndices = [];
         characters.forEach((character: Combatant | null, i: number) => {
             const notExcluded = excludeIndex !== i;
-            if (character?.effects?.some((effect) => effect.type === EFFECT_TYPES.TAUNT) && character?.HP > 0 && notExcluded) {
-                indices.push(i);
+            if (character?.effects?.some((effect) => effect.type === effectType) && character?.HP > 0 && notExcluded) {
+                effectIndices.push(i);
             }
         });
 
-        if (indices.length) {
-            return indices;
+        return effectIndices;
+    };
+
+    let priorityIndices;
+    if (onlyPriorityTarget) {
+        priorityIndices = getIndicesForEffectType(EFFECT_TYPES.PRIORITY_TARGET);
+    }
+
+    if (onlyTaunt) {
+        const tauntingIndices = getIndicesForEffectType(EFFECT_TYPES.TAUNT);
+
+        if (priorityIndices?.length) {
+            const intersected = _.intersection(tauntingIndices, priorityIndices);
+            if (intersected.length > 0) {
+                return intersected;
+            }
         }
+
+        if (tauntingIndices.length) {
+            return tauntingIndices;
+        }
+    }
+
+    if (priorityIndices?.length) {
+        return priorityIndices;
     }
 
     characters.forEach((character: Combatant | null, i: number) => {

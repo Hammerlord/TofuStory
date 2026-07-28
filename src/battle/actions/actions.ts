@@ -51,6 +51,7 @@ import {
     getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
+    hasEffectType,
     hasTruesight,
     isSilenced,
     isStunnedOrFrozen,
@@ -2601,6 +2602,7 @@ export const pickHostileIndex = ({
         // TODO area attacks are still applicable to stealthed units
         excludeStealth: !hasTruesight(actorData.combatant),
         onlyTaunt: true,
+        onlyPriorityTarget: true,
     }).filter((i) => {
         return Math.abs(i - initialIndex || 0) <= (area || Infinity);
     });
@@ -2674,9 +2676,11 @@ export const autoSelectActionTarget = ({
         }
 
         const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true }).filter((i) => {
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-        });
+        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true, onlyPriorityTarget: true }).filter(
+            (i) => {
+                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            }
+        );
 
         if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
             return {
@@ -2700,7 +2704,7 @@ export const autoSelectActionTarget = ({
     }
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
-        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true }).filter((i) => {
+        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true, onlyPriorityTarget: true }).filter((i) => {
             return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
         });
 

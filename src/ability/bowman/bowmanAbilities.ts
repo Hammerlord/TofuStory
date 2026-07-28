@@ -22,6 +22,7 @@ import {
     MortalBlowImage,
     PiercingArrowImage,
     ScarecrowImage,
+    SharpEyesImage,
     ShieldImage,
     SnipeImage,
     SoulArrowImage,
@@ -1233,6 +1234,36 @@ export const snipe: Ability = {
             actions: [
                 {
                     damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const lockOn: Ability = {
+    name: "Lock On",
+    image: SharpEyesImage,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description:
+        "Applies <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
+    actions: [
+        {
+            damage: 0,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.EFFECT,
+            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 2, attackDamageReceived: 1, icon: BullseyeIcon }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            attackDamageReceived: 1,
+                        },
+                    ],
                 },
             ],
         },

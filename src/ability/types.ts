@@ -29,6 +29,7 @@ export enum EFFECT_TYPES {
     LIFE_LINK = "life-link",
     FEAR = "fear",
     TAUNT = "taunt", // Characters hostile to a unit with this effect are only allowed to target that unit
+    PRIORITY_TARGET = "priority-target", // "Random attack" abilities will prioritize this target.
 }
 
 export enum EFFECT_CLASSES {
