@@ -401,6 +401,7 @@ export { default as LupinRunningImage } from "./LupinRunning.gif";
 export { default as LycanthropeImage } from "./Lycanthrope.gif";
 export { default as MagicArmorImage } from "./MagicArmor.png";
 export { default as MagicArmorOldImage } from "./MagicArmorOld.gif";
+export { default as MagicArrowImage } from "./MagicArrow.png";
 export { default as MagicBoosterImage } from "./MagicBooster.png";
 export { default as MagicClawImage } from "./MagicClaw.gif";
 export { default as MagicClawProjectileImage } from "./MagicClawProjectile.png";

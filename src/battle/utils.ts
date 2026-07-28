@@ -556,6 +556,16 @@ export const getMultiplier = ({
         return calculateAttackDamageInHand({ hand, actor: combatantInfo, actionParent: source?.source });
     }
 
+    if (type === MULTIPLIER_TYPES.MISSING_HP) {
+        if (!combatant) {
+            return 0;
+        }
+
+        const HP = combatant.HP || 0;
+        const maxHP = combatant.maxHP || 1;
+        return (maxHP - HP) / maxHP;
+    }
+
     return 1;
 };
 

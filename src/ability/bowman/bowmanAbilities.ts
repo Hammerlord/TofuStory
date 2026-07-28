@@ -21,6 +21,7 @@ import {
     IllusionStepImage,
     IronArrowImage,
     LycanthropeImage,
+    MagicArrowImage,
     MarksmanBoostImage,
     MarksmanshipImage,
     MortalBlowImage,
@@ -247,12 +248,13 @@ export const ironArrow: Ability = {
     ],
 };
 
-export const soulArrow: Ability = {
-    name: "Soul Arrow",
+export const soulShot: Ability = {
+    name: "Soul Shot",
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    image: SoulArrowImage,
+    image: MagicArrowImage,
     description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}",
+    removeAfterTurn: true,
     onDraw: {
         chance: 0.5,
         abilityEffects: [
@@ -269,10 +271,12 @@ export const soulArrow: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
+            icon: MagicArrowImage,
             animationOptions: {
                 rotateToFaceTarget: true,
                 rotate: 135,
+                width: 50,
+                height: 50,
             },
         },
     ],
@@ -288,6 +292,32 @@ export const soulArrow: Ability = {
             actions: [
                 {
                     damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const soulArrow: Ability = {
+    name: "Soul Arrow",
+    rarity: RARITIES.UNCOMMON,
+    image: SoulArrowImage,
+    resourceCost: 1,
+    depletedOnUse: true,
+    actions: [
+        {
+            addCardsToDeck: [soulShot, soulShot, soulShot],
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    addCardOptions: {
+                        upgradeLevels: 1,
+                    },
                 },
             ],
         },
@@ -363,7 +393,7 @@ export const darkArrow: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
+            icon: FrozenArrowImage,
             animationOptions: {
                 rotateToFaceTarget: true,
                 rotate: 135,
@@ -371,14 +401,8 @@ export const darkArrow: Ability = {
             },
             effects: [
                 {
-                    name: "Dark Arrow",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.DEBUFF,
-                    onFriendlyReceiveAttack: {
-                        excludeEffectOwner: true,
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        damage: 2,
-                    },
+                    ...bleed,
+                    stacks: 10,
                 },
             ],
         },
@@ -487,6 +511,7 @@ export const mortalBlow: Ability = {
     name: "Mortal Blow",
     resourceCost: 1,
     description: "Deals extra damage based on target's missing HP, up to {{ actions.0.bonus.damage }}.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     image: MortalBlowImage,
     actions: [
@@ -616,7 +641,7 @@ export const guard: Ability = {
 export const artillery: Ability = {
     name: "Artillery",
     description:
-        "On turn start, fire an arrow for <b>{{ actions.0.effects.0.onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}} </b> and {{{ _bleed_ }}}.",
+        "When you draw cards, fire an arrow for <b>{{ actions.0.effects.0.onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> + {{{ _bleed_ }}}.",
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: SteelArrowImage,
@@ -624,6 +649,8 @@ export const artillery: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            icon: SteelArrowImage,
+            animation: ANIMATION_TYPES.CONSUMABLE,
             effects: [
                 {
                     name: "Artillery",
@@ -631,18 +658,18 @@ export const artillery: Ability = {
                     duration: 4,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    onTurnStart: {
+                    onDrawCard: {
                         ability: {
                             name: "Shoot",
                             image: AvengersArrowImage,
                             actions: [
                                 {
-                                    damage: 5,
+                                    damage: 2,
                                     type: ACTION_TYPES.RANGE_ATTACK,
                                     target: TARGET_TYPES.HOSTILE,
                                     animation: ANIMATION_TYPES.ONE_WAY,
                                     icon: AvengersArrowImage,
-                                    effects: [{ ...bleed }],
+                                    effects: [{ ...bleed, stacks: 1 }],
                                     animationOptions: {
                                         rotateToFaceTarget: true,
                                         rotate: 135,
@@ -661,11 +688,11 @@ export const artillery: Ability = {
                 {
                     effects: [
                         {
-                            onTurnStart: {
+                            onDrawCard: {
                                 ability: {
                                     actions: [
                                         {
-                                            damage: 2,
+                                            damage: 1,
                                         },
                                     ],
                                 },
@@ -694,7 +721,7 @@ export const barbedArrows: Ability = {
                 rotateToFaceTarget: true,
                 rotate: 135,
             },
-            effects: [{ ...bleed }],
+            effects: [{ ...bleed, stacks: 1 }],
         },
     ],
     upgrades: [
@@ -746,8 +773,7 @@ export const focus: Ability = {
 
 export const chargedShot: Ability = {
     name: "Charged Shot",
-    retain: true,
-    depletedOnUse: true,
+    removeAfterTurn: true,
     rarity: RARITIES.RARE,
     resourceCost: 1,
     image: DrainArrowImage,
@@ -778,21 +804,6 @@ export const chargedShot: Ability = {
                     filterOutProcs: true,
                 },
             },
-        },
-    ],
-};
-
-export const chargeUp: Ability = {
-    name: "Charge Up",
-    resourceCost: 1,
-    rarity: RARITIES.RARE,
-    depletedOnUse: true,
-    image: BowExpertImage,
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            addCardsToDiscard: [chargedShot],
         },
     ],
 };
@@ -912,7 +923,7 @@ export const tagShot: Ability = {
 export const wolfMinion: Minion = {
     name: "Wolf",
     image: DogImage,
-    maxHP: 6,
+    maxHP: 5,
     description: "Gains <b>+1 {{{ _damage_}}}</b> when it attacks.",
     uncontrollable: true,
     abilities: [
@@ -971,7 +982,7 @@ export const callWolves: Ability = {
 
 export const lycanthropeMinion: Minion = {
     name: "Lycanthrope",
-    maxHP: 12,
+    maxHP: 10,
     image: LycanthropeImage,
     description: "Gains +3 ATT when it kills.",
     abilities: [
@@ -1076,7 +1087,7 @@ export const doubleJump: Ability = {
 
 export const tragosMinion: Minion = {
     name: "Tragos",
-    maxHP: 18,
+    maxHP: 15,
     image: TragosImage,
     uncontrollable: true,
     abilities: [
@@ -1168,6 +1179,7 @@ export const roar: Ability = {
     name: "Roar",
     image: ConcentrateImage,
     rarity: RARITIES.RARE,
+    depletedOnUse: true,
     resourceCost: 0,
     actions: [
         {
@@ -1211,7 +1223,7 @@ export const snipe: Ability = {
     name: "Snipe",
     resourceCost: 2,
     image: SnipeImage,
-    description: "+ Damage equal to the sum of attack damage in your hand, excluding this card.",
+    description: "+ Damage equal to the sum of attack damage of other cards in your hand.",
     overrideBodyText: true,
     rarity: RARITIES.RARE,
     actions: [
