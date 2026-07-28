@@ -29,6 +29,8 @@ import {
     snipe,
     lockOn,
     wayfind,
+    coveringFire,
+    quickShot,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -372,6 +374,8 @@ export const JOB_CARD_MAP = {
             snipe,
             lockOn,
             wayfind,
+            coveringFire,
+            quickShot,
         ],
         starters: [spotWeakness, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

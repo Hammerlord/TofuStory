@@ -793,7 +793,7 @@ export interface Ability {
     onAbility?: AbilityEvent;
     /** Something that happens when this specific ability is used */
     onUse?: AbilityEvent;
-    /** Something that happens when you draw this card. Currently does NOT apply abilityEffects */
+    /** Something that happens when you draw this card. */
     onDraw?: AbilityEvent;
     /** Something that happens when this card leaves your hand (not necessarily discarded) */
     onLeaveHand?: AbilityEvent;

@@ -19,6 +19,7 @@ import {
     IllusionStepImage,
     IronArrowImage,
     LycanthropeImage,
+    MarksmanBoostImage,
     MarksmanshipImage,
     MortalBlowImage,
     PiercingArrowImage,
@@ -1299,6 +1300,38 @@ export const wayfind: Ability = {
                     drawCards: {
                         amount: 1,
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const quickShot: Ability = {
+    name: "Quick Shot",
+    resourceCost: 1,
+    image: MarksmanBoostImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            damage: 8,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+            },
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },
