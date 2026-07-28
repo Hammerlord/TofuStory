@@ -520,6 +520,7 @@ export { default as PlungerImage } from "./Plunger.png";
 export { default as PoisonImage } from "./Poison.png";
 export { default as PoisonBreathImage } from "./PoisonBreath.png";
 export { default as PolearmImage } from "./Polearm.png";
+export { default as PowerKnockbackImage } from "./PowerKnockback.png";
 export { default as PowerStanceImage } from "./PowerStance.png";
 export { default as ProofOfAHeroImage } from "./ProofOfAHero.png";
 export { default as PunctureImage } from "./Puncture.png";

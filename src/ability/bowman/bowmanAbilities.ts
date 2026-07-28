@@ -26,6 +26,7 @@ import {
     MarksmanshipImage,
     MortalBlowImage,
     PiercingArrowImage,
+    PowerKnockbackImage,
     ScarecrowImage,
     SharpEyesImage,
     ShieldImage,
@@ -1450,6 +1451,49 @@ export const arrowBlow: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const momentum: Ability = {
+    name: "Momentum",
+    description: "Search your deck for a {{{ _offense_ }}} card. It costs <b>{{{ _stamina_ }}}</b> less.",
+    resourceCost: 0,
+    depletedOnUse: true,
+    image: PowerKnockbackImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            selectCards: {
+                type: SELECT_CARD_TYPES.SEARCH_DECK,
+                filters: [
+                    {
+                        abilityType: "offense",
+                    },
+                ],
+                effects: [
+                    {
+                        resourceCost: -1,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    selectCards: {
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
+                    },
+                },
+            ],
         },
     ],
 };
