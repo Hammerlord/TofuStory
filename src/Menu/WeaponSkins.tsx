@@ -54,7 +54,7 @@ const useStyles = createUseStyles({
         fontFamily: "Barlow",
         zIndex: "1000",
         color: "white",
-        maxWidth: 350,
+        maxWidth: 355, // Fits 5 items across
     },
     menuInner: {
         padding: "16px",
@@ -67,6 +67,9 @@ const useStyles = createUseStyles({
     },
     useButtonContainer: {
         marginTop: "8px",
+    },
+    skinsContainer: {
+        whiteSpace: "break-spaces",
     },
 });
 
@@ -95,17 +98,19 @@ const WeaponSkins = ({
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
-                            {(player.weaponSkins || []).map(({ name, image, weaponImageOptions }) => (
-                                <button
-                                    onClick={() => onSelectWeaponSkin(image, weaponImageOptions)}
-                                    key={name}
-                                    className={classNames(classes.item, {
-                                        [classes.selectedItem]: image === player.weapon,
-                                    })}
-                                >
-                                    <img src={image} alt={name} title={name} />
-                                </button>
-                            ))}
+                            <div className={classes.skinsContainer}>
+                                {(player.weaponSkins || []).map(({ name, image, weaponImageOptions }) => (
+                                    <button
+                                        onClick={() => onSelectWeaponSkin(image, weaponImageOptions)}
+                                        key={name}
+                                        className={classNames(classes.item, {
+                                            [classes.selectedItem]: image === player.weapon,
+                                        })}
+                                    >
+                                        <img src={image} alt={name} title={name} />
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </ClickAwayListener>
                 </Popper>
