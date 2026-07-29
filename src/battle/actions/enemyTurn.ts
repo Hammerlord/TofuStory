@@ -1,7 +1,7 @@
 import { isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
-import getAbilityPreviews from "../../character/getAbilityPreviews";
+import getAbilityPreviews, { previewAction } from "../../character/getAbilityPreviews";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
 import { getRandomInt, shuffle } from "../../utils";
@@ -17,6 +17,7 @@ import {
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
+    performAction,
     updateCombatant,
     useAbility,
     useItem,
@@ -217,25 +218,25 @@ export const getUpdatedBattleActionTargets = ({
 }) => {
     let targets: { index: number | undefined; side: BATTLEFIELD_SIDES }[] = [];
     ability.actions.forEach((action, i) => {
-        const targeting = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, battle });
+        const target = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, battle });
         targets = targets.slice();
-        targets[i] = targeting;
+        targets[i] = target;
 
-        const previews = getAbilityPreviews({
-            ability,
-            actor: {
-                ...actorInfo.combatant,
-                targeting: {
-                    ability,
-                    actionTargets: targets,
-                },
-            },
-            battle,
+        const preview = previewAction({
+            actionFn: performAction({
+                action,
+                parent: ability,
+                selectedIndex: target.index,
+                side: target.side,
+                actorId: actorInfo.combatant.id,
+            }),
+            battle: battle,
         });
 
         battle = {
             ...battle,
-            ...previews.combatantStates,
+            playerSide: preview.battle.playerSide,
+            enemySide: preview.battle.enemySide,
         };
     });
 
@@ -418,14 +419,17 @@ export const enemyMoves = () => {
         let prevBattleState = getState().battle;
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        getState().battle.enemySide.forEach((combatant) => {
+        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round: round + 1 });
+
+        nextMoveOrderIds.forEach((combatantId) => {
+            const combatant = enemySide.find((enemy) => enemy?.id === combatantId);
             if (!combatant?.HP) {
                 return;
             }
 
-            const isRecentlySummoned = !moveOrderIds.includes(combatant.id);
+            const isRecentlySummoned = !moveOrderIds.includes(combatantId);
             const battleStateSnapshot =
-                dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id, battle: prevBattleState, isRecentlySummoned })) || {};
+                dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId, battle: prevBattleState, isRecentlySummoned })) || {};
             prevBattleState = {
                 ...prevBattleState,
                 ...battleStateSnapshot,

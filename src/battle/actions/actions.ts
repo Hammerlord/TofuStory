@@ -70,7 +70,7 @@ import { tributeSummonBuff } from "../../ability/Effects";
 import { BloodIcon, FireIcon } from "../../images/icons";
 import { PoisonImage } from "../../images";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
-import getAbilityPreviews from "../../character/getAbilityPreviews";
+import getAbilityPreviews, { previewAction } from "../../character/getAbilityPreviews";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
@@ -367,89 +367,6 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
             dispatch(updatePlayer(player));
             return;
         }
-
-        // Something on the player side died. Any enemy that was targeting it should be redirected elsewhere.
-        dispatch(checkRedirectEnemyTargetingAfterAllyDeath({ friendlySide, index, source: triggerSource }));
-    };
-};
-
-const checkRedirectEnemyTargetingAfterAllyDeath = ({
-    friendlySide,
-    index,
-    source,
-}: {
-    friendlySide: BATTLEFIELD_SIDES;
-    index: number;
-    source?: TriggerSource;
-}) => {
-    return (dispatch, getState) => {
-        // If the death was caused by a tribute kill, the targeting stays the same (on the newly-summoned minion that took the place of the tributed one)
-        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE || source?.isTribute) {
-            return;
-        }
-
-        let battle = getState().battle;
-
-        getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
-            const enemy = findCombatantData(battle, id)?.combatant;
-            if (!enemy?.HP) {
-                return;
-            }
-
-            const { actionTargets = [], ability } = enemy.targeting || {};
-
-            if (!ability) {
-                return;
-            }
-
-            let mutableUpdatedActionTargets = [...actionTargets];
-
-            actionTargets.forEach((targeting, i) => {
-                const { index: targetingIndex, side } = targeting || {};
-
-                const isOtherTarget = index !== targetingIndex || side !== friendlySide;
-                if (isOtherTarget) {
-                    return;
-                }
-
-                const updatedTargeting = autoSelectActionTarget({
-                    action: ability?.actions[i],
-                    actorId: enemy.id,
-                    battle: getState().battle,
-                });
-                // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
-                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
-                mutableUpdatedActionTargets[i] = updatedTargeting;
-                const previews = getAbilityPreviews({
-                    ability,
-                    actor: {
-                        ...enemy,
-                        targeting: {
-                            ...enemy.targeting,
-                            actionTargets: mutableUpdatedActionTargets,
-                        },
-                    },
-                    battle,
-                });
-
-                battle = {
-                    ...battle,
-                    ...previews.combatantStates,
-                };
-            });
-
-            dispatch(
-                updateCombatant({
-                    combatantId: enemy.id,
-                    newProperties: {
-                        targeting: {
-                            actionTargets: mutableUpdatedActionTargets,
-                            ability,
-                        },
-                    },
-                })
-            );
-        });
     };
 };
 
@@ -1255,63 +1172,95 @@ const updateEnemyTargetingAfterEffectsApplied = ({
             return;
         }
 
-        const { friendlySide, index } = findCombatantData(getState().battle, combatantId) || {};
-        if (friendlySide !== BATTLEFIELD_SIDES.PLAYER_SIDE) {
-            return;
+        const combatant = findCombatantData(getState().battle, combatantId);
+        if (combatant.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            dispatch(checkValidEnemyTargeting({ validTargetSwitchId: combatantId }));
+        }
+    };
+};
+
+/**
+ * Enemy targeting is rolled once after their turn. But if during the player's turn, the board changes such that their targeting
+ * becomes invalid (eg. applying armor to a Taunt unit that would have died), update the targeting here.
+ */
+export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: string }) => {
+    return (dispatch, getState) => {
+        let battle: BattleState = getState().battle;
+        const validTargetSwitchId: string = options?.validTargetSwitchId;
+        let targetSwitch: CombatantInfo | undefined;
+
+        if (validTargetSwitchId) {
+            targetSwitch = findCombatantData(battle, validTargetSwitchId);
         }
 
-        let battle = getState().battle;
-
-        getState().battle.enemySide.forEach((enemy) => {
-            if (!enemy?.HP) {
+        const enemyOrderIds = getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round });
+        enemyOrderIds.forEach((enemyId: string) => {
+            const enemyInfo = findCombatantData(battle, enemyId);
+            if (!enemyInfo?.combatant?.HP) {
                 return;
             }
 
-            const enemyInfo = findCombatantData(getState().battle, enemy.id);
             const ability = getNextTelegraphedAbility(enemyInfo);
-
             if (!ability?.actions) {
                 return;
             }
 
+            const currentTargeting = enemyInfo.combatant.targeting;
+            const isSameAbilityAsBefore = ability.name === currentTargeting?.ability?.name;
+
             let mutableUpdatedActionTargets = [];
             ability.actions.forEach((action, i) => {
-                const targeting = autoSelectActionTarget({ action, actorId: enemy.id, battle: battle });
-                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
-                mutableUpdatedActionTargets[i] = targeting;
+                let target;
+                if (isSameAbilityAsBefore) {
+                    const { side, index: currentTarIndex } = currentTargeting?.actionTargets?.[i] || {};
+                    const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo });
+                    if (validIndices.some((item) => item.side === side && item.index === currentTarIndex)) {
+                        target = currentTargeting?.actionTargets?.[i];
 
-                const previews = getAbilityPreviews({
-                    ability,
-                    actor: {
-                        ...enemyInfo.combatant,
-                        targeting: {
-                            ability,
-                            actionTargets: mutableUpdatedActionTargets,
-                        },
-                    },
-                    battle,
+                        if (targetSwitch) {
+                            const randomTarget = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
+                            if (randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
+                                target = randomTarget;
+                            }
+                        }
+                    }
+                }
+
+                if (!target) {
+                    target = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
+                }
+
+                mutableUpdatedActionTargets[i] = target;
+
+                const preview = previewAction({
+                    actionFn: performAction({
+                        action,
+                        parent: ability,
+                        selectedIndex: target.index,
+                        side: target.side,
+                        actorId: enemyId,
+                    }),
+                    battle: battle,
                 });
 
                 battle = {
                     ...battle,
-                    ...previews.combatantStates,
+                    playerSide: preview.battle.playerSide,
+                    enemySide: preview.battle.enemySide,
                 };
-
-                // If targeting picked the new taunting unit, then switch targets.
-                if (targeting.side === friendlySide && targeting.index === index) {
-                    dispatch(
-                        updateCombatant({
-                            combatantId: enemy.id,
-                            newProperties: {
-                                targeting: {
-                                    actionTargets: mutableUpdatedActionTargets,
-                                    ability,
-                                },
-                            },
-                        })
-                    );
-                }
             });
+
+            dispatch(
+                updateCombatant({
+                    combatantId: enemyId,
+                    newProperties: {
+                        targeting: {
+                            actionTargets: mutableUpdatedActionTargets,
+                            ability,
+                        },
+                    },
+                })
+            );
         });
     };
 };
@@ -1687,93 +1636,6 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
         minionsSummoned.forEach((minion) => {
             dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: minion.id, effectsApplied: minion.effects }));
         });
-
-        /*
-        if (!didTributeKill) {
-            dispatch(updateEnemyTargetingAfterSummon(minionsSummoned, friendlySide));
-        }
-        */
-    };
-};
-
-/**
- * Rearrange the enemy targeting based on new combatants being added to the board
- */
-const updateEnemyTargetingAfterSummon = (minionsSummoned: Combatant[], sideSummoned: BATTLEFIELD_SIDES) => {
-    return (dispatch, getState) => {
-        let battle = getState().battle;
-
-        getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round, ignoreSupport: true }).forEach((id) => {
-            const enemy = findCombatantData(battle, id)?.combatant;
-            if (!enemy?.HP) {
-                return;
-            }
-
-            const { actionTargets = [], ability } = enemy.targeting || {};
-
-            if (!ability) {
-                return;
-            }
-            let mutableUpdatedActionTargets = [...actionTargets];
-
-            actionTargets.forEach((targeting, i) => {
-                const action = ability?.actions[i];
-                // It is confusing, HUD-wise, for an area attack to switch targets randomly.
-                // May consider canceling target switching on summon in general.
-                if (!action || action.area >= 1) {
-                    return;
-                }
-
-                const updatedTargeting = autoSelectActionTarget({
-                    action,
-                    actorId: enemy.id,
-                    battle: battle,
-                });
-
-                const { index, side } = updatedTargeting || {};
-
-                // If the summoned minions are on the player side, only switch if it rolled one of them
-                const isTargetingNewPlayerSideMinion =
-                    sideSummoned === BATTLEFIELD_SIDES.PLAYER_SIDE &&
-                    minionsSummoned.some((minion) => minion.id === battle[side]?.[index]?.id);
-
-                if (!isTargetingNewPlayerSideMinion) {
-                    return;
-                }
-
-                // Used to snapshot the future state so that enemies don't dogpile the same character needlessly
-                mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
-                mutableUpdatedActionTargets[i] = updatedTargeting;
-                const previews = getAbilityPreviews({
-                    ability,
-                    actor: {
-                        ...enemy,
-                        targeting: {
-                            ability,
-                            actionTargets: mutableUpdatedActionTargets,
-                        },
-                    },
-                    battle,
-                });
-
-                battle = {
-                    ...battle,
-                    ...previews.combatantStates,
-                };
-            });
-
-            dispatch(
-                updateCombatant({
-                    combatantId: enemy.id,
-                    newProperties: {
-                        targeting: {
-                            actionTargets: mutableUpdatedActionTargets,
-                            ability,
-                        },
-                    },
-                })
-            );
-        });
     };
 };
 
@@ -1851,8 +1713,6 @@ const checkHandleMorph = ({
                 })
             );
         });
-
-        //dispatch(updateEnemyTargetingAfterSummon([summons], side));
     };
 };
 
@@ -2588,25 +2448,12 @@ export const performAction = ({
 };
 
 export const pickHostileIndex = ({
-    hostile,
+    targetIndices,
     actorData,
-    initialIndex,
-    area,
 }: {
-    hostile: (Combatant | null)[];
+    targetIndices: number[];
     actorData: CombatantInfo;
-    initialIndex?: number;
-    area?: number;
 }): number | undefined => {
-    const targetIndices = getValidTargetIndices(hostile, {
-        // TODO area attacks are still applicable to stealthed units
-        excludeStealth: !hasTruesight(actorData.combatant),
-        onlyTaunt: true,
-        onlyPriorityTarget: true,
-    }).filter((i) => {
-        return Math.abs(i - initialIndex || 0) <= (area || Infinity);
-    });
-
     const actorIndex = actorData.index;
 
     let baseProbability = 1 / targetIndices.length;
@@ -2633,6 +2480,152 @@ export const pickHostileIndex = ({
     return getRandomItem(targetIndices);
 };
 
+export const getValidTargetIndicesForAction = ({
+    initialSelectedIndex,
+    initialSelectedSide,
+    action,
+    actorData,
+}: {
+    initialSelectedIndex?: number;
+    initialSelectedSide?: BATTLEFIELD_SIDES;
+    action: Action;
+    actorData: CombatantInfo;
+}): { index: number | undefined; side: BATTLEFIELD_SIDES | undefined }[] => {
+    let isPlayerHostile: boolean | undefined;
+    const { friendly, hostile, friendlySide, hostileSide, combatant, index } = actorData;
+    const actorId = combatant?.id;
+    const { targetArea: area = 0, target, targetName, excludeActor, radiate } = action || {};
+
+    if (radiate) {
+        return [
+            {
+                index,
+                side: friendlySide,
+            },
+        ];
+    }
+
+    if (target === TARGET_TYPES.PLAYER) {
+        const friendlyPlayerIndex = friendly.findIndex((combatant) => combatant?.isPlayer);
+        if (friendlyPlayerIndex > -1) {
+            return [
+                {
+                    index: friendlyPlayerIndex,
+                    side: friendlySide,
+                },
+            ];
+        }
+
+        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
+        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true, onlyPriorityTarget: true }).filter(
+            (i) => {
+                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            }
+        );
+
+        if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
+            return [
+                {
+                    index: hostilePlayerIndex,
+                    side: hostileSide,
+                },
+            ];
+        }
+
+        isPlayerHostile = hostilePlayerIndex > -1;
+    }
+
+    const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
+
+    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
+        return getValidTargetIndices(hostile, {
+            // TODO area attacks are still applicable to stealthed units
+            excludeStealth: !hasTruesight(actorData.combatant),
+            onlyTaunt: true,
+            onlyPriorityTarget: true,
+        })
+            .filter((i) => {
+                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            })
+            .map((index) => ({ index, side: hostileSide }));
+    }
+
+    if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
+        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true, onlyPriorityTarget: true })
+            .filter((i) => {
+                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            })
+            .map((index) => ({ index, side: hostileSide }));
+
+        if (targetIndices.length) {
+            return targetIndices;
+        }
+
+        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
+        return [
+            {
+                index: hostilePlayerIndex,
+                side: hostileSide,
+            },
+        ];
+    }
+
+    if (
+        target === TARGET_TYPES.RANDOM_FRIENDLY ||
+        (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
+    ) {
+        const targetIndices = getValidTargetIndices(friendly, { excludeUntargetable: false }).filter((i) => {
+            if (excludeActor && actorId && friendly[i]?.id === actorId) {
+                return false;
+            }
+
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+        });
+
+        return [
+            {
+                index: getRandomItem(targetIndices),
+                side: friendlySide,
+            },
+        ];
+    }
+
+    if (target === TARGET_TYPES.SELF) {
+        return [
+            {
+                index: friendly.findIndex((ally) => ally?.id === actorId),
+                side: friendlySide,
+            },
+        ];
+    }
+
+    if (target === TARGET_TYPES.FRIENDLY_CHARACTER) {
+        const index = friendly.findIndex((ally) => ally?.name === targetName);
+        if (index > -1) {
+            return [
+                {
+                    index,
+                    side: friendlySide,
+                },
+            ];
+        }
+    }
+
+    if (target === TARGET_TYPES.HOSTILE_CHARACTER) {
+        const index = hostile.findIndex((ally) => ally?.name === targetName);
+        if (index > -1) {
+            return [
+                {
+                    index,
+                    side: hostileSide,
+                },
+            ];
+        }
+    }
+
+    return [{ index: initialSelectedIndex, side: initialSelectedSide }];
+};
+
 /**
  * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
  * This orients the target to the right place (if applicable) as actions are parsed.
@@ -2655,110 +2648,24 @@ export const autoSelectActionTarget = ({
         return { index: undefined, side: undefined };
     }
 
-    const { friendly, hostile, friendlySide, hostileSide, index } = actorData;
-    const { targetArea: area = 0, target, targetName, radiate, excludeActor } = action || {};
+    const indices = getValidTargetIndicesForAction({
+        initialSelectedIndex,
+        initialSelectedSide,
+        action,
+        actorData,
+    });
 
-    if (radiate) {
-        return {
-            index,
-            side: friendlySide,
-        };
+    if (indices.length === 1) {
+        return indices[0];
     }
 
-    let isPlayerHostile;
-    if (target === TARGET_TYPES.PLAYER) {
-        const friendlyPlayerIndex = friendly.findIndex((combatant) => combatant?.isPlayer);
-        if (friendlyPlayerIndex > -1) {
-            return {
-                index: friendlyPlayerIndex,
-                side: friendlySide,
-            };
+    if (indices.length > 1) {
+        const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
+        if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
+            const index = pickHostileIndex({ targetIndices: indices.map((item) => item.index), actorData });
+            return { index, side: indices[0].side };
         }
-
-        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true, onlyPriorityTarget: true }).filter(
-            (i) => {
-                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-            }
-        );
-
-        if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
-            return {
-                index: hostilePlayerIndex,
-                side: hostileSide,
-            };
-        }
-
-        isPlayerHostile = hostilePlayerIndex > -1;
-    }
-
-    const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
-
-    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
-        const index = pickHostileIndex({ hostile, actorData, initialIndex: initialSelectedIndex, area });
-        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        return {
-            index: typeof index === "number" ? index : hostilePlayerIndex,
-            side: hostileSide,
-        };
-    }
-
-    if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
-        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true, onlyPriorityTarget: true }).filter((i) => {
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-        });
-
-        const index = getRandomItem(targetIndices);
-        const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        return {
-            index: typeof index === "number" ? index : hostilePlayerIndex,
-            side: hostileSide,
-        };
-    }
-
-    if (
-        target === TARGET_TYPES.RANDOM_FRIENDLY ||
-        (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
-    ) {
-        const targetIndices = getValidTargetIndices(friendly, { excludeUntargetable: false }).filter((i) => {
-            if (excludeActor && actorId && friendly[i]?.id === actorId) {
-                return false;
-            }
-
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-        });
-
-        return {
-            index: getRandomItem(targetIndices),
-            side: friendlySide,
-        };
-    }
-
-    if (target === TARGET_TYPES.SELF) {
-        return {
-            index: friendly.findIndex((ally) => ally?.id === actorId),
-            side: friendlySide,
-        };
-    }
-
-    if (target === TARGET_TYPES.FRIENDLY_CHARACTER) {
-        const index = friendly.findIndex((ally) => ally?.name === targetName);
-        if (index > -1) {
-            return {
-                index,
-                side: friendlySide,
-            };
-        }
-    }
-
-    if (target === TARGET_TYPES.HOSTILE_CHARACTER) {
-        const index = hostile.findIndex((ally) => ally?.name === targetName);
-        if (index > -1) {
-            return {
-                index,
-                side: hostileSide,
-            };
-        }
+        return getRandomItem(indices);
     }
 
     return { index: initialSelectedIndex, side: initialSelectedSide };
@@ -2933,11 +2840,6 @@ export const checkSummonMinion = ({
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentSource }));
 
         dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: summonedMinion.id, effectsApplied: summonedMinion.effects }));
-        /*
-        if (!parentSource?.isPreviewMode) {
-            dispatch(updateEnemyTargetingAfterSummon([summonedMinion], side));
-        }
-        */
     };
 };
 

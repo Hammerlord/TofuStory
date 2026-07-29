@@ -8,6 +8,7 @@ import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResourc
 import {
     checkEventTrigger,
     checkValidEnemyNextAbility,
+    checkValidEnemyTargeting,
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
@@ -112,6 +113,7 @@ export const usePlayerAbility = ({
         // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
         dispatch(recalculateEffectsFromAbilities());
         dispatch(checkValidEnemyNextAbility());
+        dispatch(checkValidEnemyTargeting());
     };
 };
 

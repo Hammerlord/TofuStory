@@ -13,7 +13,7 @@ import { validate as uuidValidate } from "uuid";
 
 export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
 
-const previewAction = ({ actionFn, battle }) => {
+export const previewAction = ({ actionFn, battle }) => {
     const statUpdates = {};
 
     const dispatch = (arg) => {
