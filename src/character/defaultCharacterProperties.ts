@@ -6,6 +6,7 @@ import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants
 import {
     BlueUmbrellaImage,
     BowMushImage,
+    ChickenSmackarooImage,
     FrozenTunaImage,
     GoldenChickImage,
     OldGladiusImage,
@@ -34,6 +35,12 @@ const bowImageOptions: WeaponImageOptions = {
     left: "50px",
 };
 
+const sharedSkins = [
+    { name: "Golden Chick", image: GoldenChickImage },
+    { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+    { name: "Chicken Smackaroo", image: ChickenSmackarooImage, weaponImageOptions: { top: "-60px", left: "35px" } },
+];
+
 const defaultCharacterProperties: Player = {
     name: "Player",
     id: uuid.v4(),
@@ -60,8 +67,7 @@ const defaultCharacterProperties: Player = {
         { name: "Frozen Tuna", image: FrozenTunaImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
-        { name: "Golden Chick", image: GoldenChickImage },
-        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+        ...sharedSkins,
     ],
 };
 
@@ -79,8 +85,7 @@ export const wizardProperties: Player = {
         { name: "Star Candy Popsicle", image: StarCandyPopsicleImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
-        { name: "Golden Chick", image: GoldenChickImage },
-        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+        ...sharedSkins,
     ],
 };
 
@@ -101,8 +106,7 @@ export const bowmanProperties: Player = {
         { name: "Toy Machine Gun", image: ToyMachineGunImage },
         { name: "Rainbow Bow", image: RainbowBowImage, weaponImageOptions: bowImageOptions },
         { name: "Water Gun", image: WaterGunImage },
-        { name: "Golden Chick", image: GoldenChickImage },
-        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+        ...sharedSkins,
     ],
     abilities: [bowmanDefaultAttack],
 };

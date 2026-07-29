@@ -117,6 +117,7 @@ export { default as CaseyImage } from "./Casey.png";
 export { default as ChainLightningSpreadImage } from "./ChainLightningSpread.png";
 export { default as ChanceAttackImage } from "./ChanceAttack.png";
 export { default as ChargedBlastImage } from "./ChargedBlast.png";
+export { default as ChickenSmackarooImage } from "./ChickenSmackaroo.png";
 export { default as ChocolateCupcakeImage } from "./ChocolateCupcake.png";
 export { default as ChocolateMuffinImage } from "./ChocolateMuffin.png";
 export { default as ClassBowmanImage } from "./ClassBowman.png";
