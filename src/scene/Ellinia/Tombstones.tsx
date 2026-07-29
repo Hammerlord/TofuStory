@@ -138,7 +138,7 @@ const Tombstones = ({ player, onComplete }) => {
                 </span>
             ))}
             <Box sx={{ mt: 5 }}>
-                <Button onClick={onComplete} color={"primary"}>
+                <Button onClick={() => onComplete()} color={"primary"}>
                     Continue
                 </Button>
             </Box>

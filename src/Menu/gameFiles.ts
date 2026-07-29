@@ -72,15 +72,25 @@ export const saveGame = (characterObject: CharacterState) => {
         return acc;
     }, {});
 
-    localStorage.setItem(
-        "saveFile",
-        JSON.stringify({
+    try {
+        localStorage.setItem(
+            "saveFile",
+            JSON.stringify({
+                ...characterObject,
+                deck: flattenDeck,
+                player: { ...player, items: flattenPlayerItems },
+                townShops: flattenTownShops,
+            })
+        );
+    } catch (e) {
+        console.log("Failed to save file:", e);
+        console.log("File object was", {
             ...characterObject,
             deck: flattenDeck,
             player: { ...player, items: flattenPlayerItems },
             townShops: flattenTownShops,
-        })
-    );
+        });
+    }
 };
 
 export const getGameFile = () => {
