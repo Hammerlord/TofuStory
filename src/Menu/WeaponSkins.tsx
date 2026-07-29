@@ -2,6 +2,8 @@ import { ClickAwayListener, Popper } from "@mui/material";
 import classNames from "classnames";
 import { RefObject, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { WeaponImageOptions } from "../ability/types";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -68,7 +70,13 @@ const useStyles = createUseStyles({
     },
 });
 
-const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
+const WeaponSkins = ({
+    player,
+    onSelectWeaponSkin,
+}: {
+    player: Player;
+    onSelectWeaponSkin: (weaponSkin: string, options: WeaponImageOptions) => void;
+}) => {
     const [weaponSkinInventoryOpen, setWeaponSkinInventoryOpen] = useState(false);
     const menuAnchor = useRef(null) as RefObject<HTMLDivElement>;
     const classes = useStyles();
@@ -87,9 +95,9 @@ const WeaponSkins = ({ player, onSelectWeaponSkin }) => {
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
-                            {(player.weaponSkins || []).map(({ name, image }) => (
+                            {(player.weaponSkins || []).map(({ name, image, weaponImageOptions }) => (
                                 <button
-                                    onClick={() => onSelectWeaponSkin(image)}
+                                    onClick={() => onSelectWeaponSkin(image, weaponImageOptions)}
                                     key={name}
                                     className={classNames(classes.item, {
                                         [classes.selectedItem]: image === player.weapon,

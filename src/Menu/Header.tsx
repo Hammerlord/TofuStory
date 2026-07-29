@@ -9,6 +9,7 @@ import Tooltip from "../view/Tooltip";
 import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
+import { WeaponImageOptions } from "../ability/types";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -103,7 +104,7 @@ const Header = ({
     onSelectWeaponSkin,
 }: {
     onUseItem?: (item: Item) => void;
-    onSelectWeaponSkin: (weaponSkin: string) => void;
+    onSelectWeaponSkin: (weaponSkin: string, options: WeaponImageOptions) => void;
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);

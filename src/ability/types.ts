@@ -291,6 +291,12 @@ export type CombatEffect = Effect & {
     originalDuration?: number;
 };
 
+export interface WeaponImageOptions {
+    top?: string;
+    left?: string;
+    transform?: string;
+}
+
 export interface Minion {
     name: string;
     image: string;
@@ -312,11 +318,7 @@ export interface Minion {
     mesos?: number;
     items?: Item[];
     weapon?: string;
-    weaponImageOptions?: {
-        top?: string;
-        left?: string;
-        transform?: string;
-    };
+    weaponImageOptions?: WeaponImageOptions;
     uncontrollable?: boolean;
     // If true, the minion cannot be targeted for Tribute Summon.
     disableTribute?: boolean;

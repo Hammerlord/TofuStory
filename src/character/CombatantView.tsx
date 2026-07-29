@@ -569,7 +569,6 @@ const CombatantView = forwardRef(
                                         >
                                             <Weapon
                                                 image={weapon}
-                                                options={oldState.weaponImageOptions}
                                                 target={targetRef}
                                                 wielderRef={weaponRef?.current as any}
                                                 wielder={oldState}

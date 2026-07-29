@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Action, Effect } from "../ability/types";
+import { ACTION_TYPES, Action, Effect, WeaponImageOptions } from "../ability/types";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
 import { Combatant } from "./types";
 import { Event } from "../battle/types";
@@ -13,7 +13,7 @@ const useStyles = createUseStyles({
         transformOrigin: "150% 150%",
         pointerEvents: "none",
         "& img": {
-            transform: (options: any) => options?.transform || "scale(4, 4) rotate(90deg)",
+            transform: (options: WeaponImageOptions) => options?.transform || "scale(4, 4) rotate(90deg)",
             imageRendering: "pixelated",
         },
     },
@@ -156,19 +156,18 @@ const spin = ({ object, playbackTime = 1000, startingPoint }) => {
 
 const Weapon = ({
     image,
-    options,
     wielder,
     wielderRef,
     target,
     event,
 }: {
     image?: string | null;
-    options?: { transform?: string };
     wielder?: Combatant;
     wielderRef: HTMLElement;
     target?: HTMLElement;
     event?: Event;
 }) => {
+    const options = wielder?.weaponImageOptions;
     const classes = useStyles(options as any);
     const { action } = (event?.actorId === wielder?.id && event) || {};
     const { type, area } = action || {};

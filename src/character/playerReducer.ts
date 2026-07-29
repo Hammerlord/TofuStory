@@ -102,6 +102,12 @@ export type ActivityHistoryLog = {
     type?: "card-matching";
 };
 
+export const classMap = {
+    [PLAYER_CLASSES.WARRIOR]: defaultCharacterProperties,
+    [PLAYER_CLASSES.MAGICIAN]: wizardProperties,
+    [PLAYER_CLASSES.BOWMAN]: bowmanProperties,
+};
+
 export const playerStateSlice = createSlice({
     name: "player",
     initialState: INITIAL_STATE,
@@ -125,11 +131,6 @@ export const playerStateSlice = createSlice({
             };
         },
         onSelectClass: (state, action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>) => {
-            const classMap = {
-                [PLAYER_CLASSES.WARRIOR]: defaultCharacterProperties,
-                [PLAYER_CLASSES.MAGICIAN]: wizardProperties,
-                [PLAYER_CLASSES.BOWMAN]: bowmanProperties,
-            };
             return {
                 ...state,
                 player: {

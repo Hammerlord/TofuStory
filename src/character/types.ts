@@ -1,5 +1,5 @@
 import { PLAYER_CLASSES } from "../Menu/types";
-import { Ability, CombatAbility, Minion } from "../ability/types";
+import { Ability, CombatAbility, Minion, WeaponImageOptions } from "../ability/types";
 import { BATTLEFIELD_SIDES } from "../battle/types";
 import { Item } from "../item/types";
 import { Action, CombatEffect } from "./../ability/types";
@@ -32,7 +32,6 @@ export interface Combatant extends Minion {
     resourcesPerTurn?: number;
     items: Item[];
     mesos?: number;
-    weapon?: string; // Weapon image
     targeting?: {
         // A targeting object for each ability.action
         actionTargets: {
@@ -47,6 +46,6 @@ export interface Player extends Combatant {
     class?: PLAYER_CLASSES;
     secondaryClass?: string | null;
     drawCardsPerTurn: number;
-    weaponSkins: { name: string; image: string }[];
+    weaponSkins: { name: string; image: string; weaponImageOptions?: WeaponImageOptions }[];
     mesos: number;
 }

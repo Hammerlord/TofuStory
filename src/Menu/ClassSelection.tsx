@@ -6,7 +6,8 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import Weapon from "../character/Weapon";
 import { playExplodeAnimation, playFadeInAnimation, playStompAnimation, playTossUpAnimation } from "../character/animations";
-import { playerStateSlice } from "../character/playerReducer";
+import { classMap, playerStateSlice } from "../character/playerReducer";
+import { COMMON_STYLES } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     AnonymushroomImage,
@@ -15,17 +16,14 @@ import {
     ClassMagicianImage,
     ClassWarriorImage,
     LandImage,
-    OldGladiusImage,
-    OldWoodenStaffImage,
     StarImage,
-    WarBowImage,
     WarMushImage,
     WizMushImage,
 } from "../images";
 import Button from "../view/Button";
 import { getGameFile } from "./gameFiles";
 import { PLAYER_CLASSES } from "./types";
-import { COMMON_STYLES } from "../constants";
+import { Player } from "../character/types";
 
 const portraits = {
     [PLAYER_CLASSES.WARRIOR]: WarMushImage,
@@ -64,7 +62,12 @@ const useStyles = createUseStyles({
     },
     portraitContainer: {
         margin: "64px 0",
-        minHeight: "115px",
+        position: "relative",
+    },
+    portraitInner: {
+        display: "inline-block",
+        width: "170px",
+        height: "70px",
         position: "relative",
     },
     portrait: {
@@ -129,11 +132,13 @@ const useStyles = createUseStyles({
     ghost: {
         opacity: 0,
     },
-    weaponContainer: {
-        position: "absolute",
-        top: 0,
-        left: "calc(50% - 25px)",
-        transform: "translateX(-50%)",
+    weaponContainer: (properties: Player) => {
+        const { left, top } = properties?.weaponImageOptions || {};
+        return {
+            position: "absolute",
+            top: top || -50,
+            left: left || 50,
+        };
     },
     "@keyframes applyEffect": {
         "0%": {
@@ -172,7 +177,7 @@ const ClassSelection = ({
 }) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const player = useAppSelector((state) => state.character?.player);
-    const classes = useStyles();
+    const classes = useStyles(classMap[selectedClass] || null);
     const dispatch = useAppDispatch();
     const characterRef: any = useRef(null);
     const ghostRefs: any = Array.from({ length: 3 }).map(() => useRef(null));
@@ -253,17 +258,11 @@ const ClassSelection = ({
 
     const previousRun = getGameFile();
     const getWeapon = () => {
-        if (selectedClass === PLAYER_CLASSES.WARRIOR) {
-            return <Weapon image={OldGladiusImage} wielderRef={characterRef} />;
+        if (!selectedClass) {
+            return null;
         }
-
-        if (selectedClass === PLAYER_CLASSES.MAGICIAN) {
-            return <Weapon image={OldWoodenStaffImage} wielderRef={characterRef} />;
-        }
-
-        if (selectedClass === PLAYER_CLASSES.BOWMAN) {
-            return <Weapon image={WarBowImage} wielderRef={characterRef} />;
-        }
+        const selectedClassProperties = classMap[selectedClass];
+        return <Weapon image={selectedClassProperties.weapon} wielder={selectedClassProperties} wielderRef={characterRef} />;
     };
 
     return (
@@ -273,28 +272,30 @@ const ClassSelection = ({
                     <h1>You wake up without arms or legs.</h1>
                     <div className={classes.bg} />
                     <div className={classes.portraitContainer} ref={characterRef}>
-                        {Array.from({ length: 3 }).map((_, i) => (
+                        <div className={classes.portraitInner}>
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <img
+                                    key={i}
+                                    src={portraits[selectedClass] || AnonymushroomImage}
+                                    className={classNames(classes.portrait, classes.ghost)}
+                                    ref={ghostRefs[i]}
+                                />
+                            ))}
                             <img
-                                key={i}
                                 src={portraits[selectedClass] || AnonymushroomImage}
-                                className={classNames(classes.portrait, classes.ghost)}
-                                ref={ghostRefs[i]}
+                                className={classNames(classes.portrait, {
+                                    [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                                })}
                             />
-                        ))}
-                        <img
-                            src={portraits[selectedClass] || AnonymushroomImage}
-                            className={classNames(classes.portrait, {
-                                [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
-                            })}
-                        />
-                        <div
-                            className={classNames(classes.weaponContainer, {
-                                [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
-                            })}
-                        >
-                            {getWeapon()}
+                            <div
+                                className={classNames(classes.weaponContainer, {
+                                    [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                                })}
+                            >
+                                {getWeapon()}
+                            </div>
+                            <img src={StarImage} ref={projectileRef} className={classes.ghost} />
                         </div>
-                        <img src={StarImage} ref={projectileRef} className={classes.ghost} />
                     </div>
                     <p>After some time spent fumbling around, you realize that you are, in fact, a mushroom.</p>
                     <p>You don't remember much, but you do remember you were a...</p>

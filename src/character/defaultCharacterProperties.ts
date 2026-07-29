@@ -1,29 +1,41 @@
 import * as uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
+import { WeaponImageOptions } from "../ability/types";
 import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";
 import {
-    AvengersArrowImage,
     BlueUmbrellaImage,
     BowMushImage,
     FrozenTunaImage,
+    GoldenChickImage,
     OldGladiusImage,
     OldWoodenStaffImage,
+    OlympusImage,
     PicoPicoHammerImage,
+    PinkFlowerTubeImage,
+    RainbowBowImage,
     StarCandyPopsicleImage,
+    ToyMachineGunImage,
+    ToyRifleImage,
     WarBowImage,
     WarMushImage,
+    WaterGunImage,
+    WhiteNeschereImage,
     WizMushImage,
     WoodenStaffImage,
     YellowUmbrellaImage,
 } from "../images";
 import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
-import WeaponSkins from "../Menu/WeaponSkins";
-import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "../ability/types";
-import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
+import { Player } from "./types";
 
-/** Default character stats */
-const defaultCharacterProperties = {
-    name: "",
+// Bows/oblong weapons have a different shape compared to swords and need to be positioned closer to the character
+const bowImageOptions: WeaponImageOptions = {
+    top: "-25px",
+    left: "50px",
+};
+
+const defaultCharacterProperties: Player = {
+    name: "Player",
     id: uuid.v4(),
     class: PLAYER_CLASSES.WARRIOR,
     secondaryClass: null,
@@ -48,10 +60,12 @@ const defaultCharacterProperties = {
         { name: "Frozen Tuna", image: FrozenTunaImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
+        { name: "Golden Chick", image: GoldenChickImage },
+        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
     ],
 };
 
-export const wizardProperties = {
+export const wizardProperties: Player = {
     ...defaultCharacterProperties,
     class: PLAYER_CLASSES.MAGICIAN,
     image: WizMushImage,
@@ -65,18 +79,31 @@ export const wizardProperties = {
         { name: "Star Candy Popsicle", image: StarCandyPopsicleImage },
         { name: "Blue Umbrella", image: BlueUmbrellaImage },
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
+        { name: "Golden Chick", image: GoldenChickImage },
+        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
     ],
 };
 
-export const bowmanProperties = {
+export const bowmanProperties: Player = {
     ...defaultCharacterProperties,
     class: PLAYER_CLASSES.BOWMAN,
     image: BowMushImage,
     HP: 65,
     maxHP: 65,
     weapon: WarBowImage,
+    weaponImageOptions: bowImageOptions,
     items: [honestyStone],
-    WeaponSkins: [],
+    weaponSkins: [
+        { name: "War Bow", image: WarBowImage, weaponImageOptions: bowImageOptions },
+        { name: "Olympus", image: OlympusImage, weaponImageOptions: bowImageOptions },
+        { name: "Toy Rifle", image: ToyRifleImage },
+        { name: "White Neschere", image: WhiteNeschereImage },
+        { name: "Toy Machine Gun", image: ToyMachineGunImage },
+        { name: "Rainbow Bow", image: RainbowBowImage, weaponImageOptions: bowImageOptions },
+        { name: "Water Gun", image: WaterGunImage },
+        { name: "Golden Chick", image: GoldenChickImage },
+        { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+    ],
     abilities: [bowmanDefaultAttack],
 };
 

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability } from "../ability/types";
+import { Ability, WeaponImageOptions } from "../ability/types";
 import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
 import { startBattle } from "../battle/actions/phases";
@@ -514,19 +514,20 @@ const Main = () => {
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
-    const handleSelectWeaponSkin = (weaponSkin: string) => {
+    const handleSelectWeaponSkin = (weaponSkin: string, weaponImageOptions?: WeaponImageOptions) => {
         if (battle) {
             dispatch(
                 updateCombatant({
                     combatantId: player.id,
                     newProperties: {
                         weapon: weaponSkin,
+                        weaponImageOptions,
                     },
                 })
             );
         }
 
-        dispatch(updatePlayer({ weapon: weaponSkin }));
+        dispatch(updatePlayer({ weapon: weaponSkin, weaponImageOptions }));
     };
 
     const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
