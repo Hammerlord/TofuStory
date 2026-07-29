@@ -132,6 +132,10 @@ const BonusView = ({ ability, player, deck, hand, discard }) => {
     return (
         <>
             {bonusDescriptions.map(({ totalDamage, totalHealing, totalArmor, conditionText, area }, i) => {
+                if (!conditionText?.length) {
+                    return null;
+                }
+
                 return (
                     <div key={i}>
                         {totalDamage > 0 && (

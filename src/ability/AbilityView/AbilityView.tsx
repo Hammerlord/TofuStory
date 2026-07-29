@@ -541,8 +541,8 @@ const AbilityView = forwardRef(
                             <div className={classes.body}>
                                 {(tributeSummon || taunt) && (
                                     <div>
-                                        {tributeSummon && <span className={classes.bold}>Tribute.</span>}
-                                        {taunt && <span className={classes.bold}> Taunt.</span>}
+                                        {tributeSummon && <span className={classes.bold}>Tribute</span>}
+                                        {taunt && <span className={classes.bold}> Taunt</span>}
                                     </div>
                                 )}
                                 {preemptive && <div className={classes.bold}>Pre-emptive</div>}
@@ -568,7 +568,7 @@ const AbilityView = forwardRef(
                                         Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
                                     </div>
                                 )}
-                                {!armorCornerIcon && armorTotal > 0 && (
+                                {!overrideBodyText && !armorCornerIcon && armorTotal > 0 && (
                                     <div>
                                         Gain{" "}
                                         <Icon
@@ -579,7 +579,7 @@ const AbilityView = forwardRef(
                                         />
                                     </div>
                                 )}
-                                {resourceGain > 0 && (
+                                {!overrideBodyText && resourceGain > 0 && (
                                     <div>
                                         Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
                                     </div>

@@ -62,11 +62,10 @@ export const spotWeakness: Ability = {
     image: MarksmanshipImage,
     actions: [
         {
-            damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             area: 1,
-            effects: [{ ...defDown, duration: 3, attackDamageReceived: 2 }],
+            effects: [{ ...defDown, duration: 2, attackDamageReceived: 2 }],
         },
     ],
     upgrades: [
@@ -191,6 +190,8 @@ export const arrowBomb: Ability = {
     image: ArrowBombImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
+    description: "Apply {{{ _stun_ }}}",
+    overrideBodyText: true,
     actions: [
         {
             damage: 5,
@@ -330,6 +331,7 @@ export const eagle: Ability = {
     image: WuTienEagleImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
     minion: {
         name: "Eagle",
         image: WuTienEagleImage,
@@ -389,6 +391,8 @@ export const darkArrow: Ability = {
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     image: FrozenArrowImage,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _bleed_ }}}</b>",
+    overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -414,7 +418,7 @@ export const darkArrow: Ability = {
                 {
                     effects: [
                         {
-                            damage: 1,
+                            stacks: 3,
                         },
                     ],
                 },
@@ -506,12 +510,30 @@ export const strafe: Ability = {
             },
         },
     ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
 };
 
 export const mortalBlow: Ability = {
     name: "Mortal Blow",
     resourceCost: 1,
-    description: "Deals extra damage based on target's missing HP, up to {{ actions.0.bonus.damage }}.",
+    description: "Deals extra damage based on target's missing HP, up to <b>{{ actions.0.bonus.damage }}</b>.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     image: MortalBlowImage,
@@ -642,7 +664,7 @@ export const guard: Ability = {
 export const artillery: Ability = {
     name: "Artillery",
     description:
-        "When you draw cards, fire an arrow for <b>{{ actions.0.effects.0.onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> + {{{ _bleed_ }}}.",
+        "When you draw cards, shoot a random target for <b>{{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}}</b> + {{{ _bleed_ }}}.",
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: SteelArrowImage,
@@ -779,6 +801,7 @@ export const chargedShot: Ability = {
     resourceCost: 1,
     image: DrainArrowImage,
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique card used this battle.",
+    overrideBodyText: true,
     actions: [
         {
             damage: 1,
@@ -854,6 +877,8 @@ export const coveringFire: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: CoveringFireImage,
+    description: "You and your allies gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b>",
+    overrideBodyText: true,
     actions: [
         {
             damage: 7,
@@ -866,7 +891,7 @@ export const coveringFire: Ability = {
                 rotate: 135,
             },
             secondaryAction: {
-                armor: 3,
+                armor: 2,
                 area: 2,
             },
         },
@@ -1024,7 +1049,7 @@ export const lycanthropeMinion: Minion = {
 
 export const lycanthropeAbility: Ability = {
     name: "Lycanthrope",
-    description: "Gains +3 ATT when it kills a threatening target.",
+    description: "Gains <b>+3 {{{ _damage_ }}}</b> when it kills a threatening target.",
     minion: lycanthropeMinion,
     image: LycanthropeImage,
     resourceCost: 2,
@@ -1139,7 +1164,8 @@ export const tragosMinion: Minion = {
 
 export const tragosAbility: Ability = {
     name: "Tragos",
-    description: "Counterattacks whenever it or an ally is attacked.",
+    description: "<b>Counterattacks</b> whenever it or an ally is attacked.",
+    overrideBodyText: true,
     minion: tragosMinion,
     image: TragosImage,
     resourceCost: 2,
@@ -1182,6 +1208,9 @@ export const roar: Ability = {
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 0,
+    description:
+        "Gain {{{ _stamina_ }}} and draw a card. For the next <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain an extra {{{ _stamina_ }}} and card draw.",
+    overrideBodyText: true,
     actions: [
         {
             resources: 1,
@@ -1224,7 +1253,7 @@ export const snipe: Ability = {
     name: "Snipe",
     resourceCost: 2,
     image: SnipeImage,
-    description: "+ Damage equal to the sum of attack damage of other cards in your hand.",
+    description: "+ {{{ _damage_ }}} equal to total attack damage of other {{{ _offense_ }}} cards in your hand.",
     overrideBodyText: true,
     rarity: RARITIES.RARE,
     actions: [
@@ -1264,7 +1293,7 @@ export const lockOn: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "Applies <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
+        "Applies <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Random attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
     actions: [
         {
             damage: 0,
@@ -1457,7 +1486,8 @@ export const arrowBlow: Ability = {
 
 export const momentum: Ability = {
     name: "Momentum",
-    description: "Search your deck for a {{{ _offense_ }}} card. It costs <b>{{{ _stamina_ }}}</b> less.",
+    description:
+        "<b>Search</b> for a {{{ _offense_ }}} card. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _stamina_ }}}</b> less.",
     resourceCost: 0,
     depletedOnUse: true,
     image: PowerKnockbackImage,
