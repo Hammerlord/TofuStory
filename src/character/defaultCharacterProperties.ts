@@ -19,6 +19,7 @@ import {
 import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
 import WeaponSkins from "../Menu/WeaponSkins";
 import { ACTION_TYPES, ANIMATION_TYPES, TARGET_TYPES } from "../ability/types";
+import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
 
 /** Default character stats */
 const defaultCharacterProperties = {
@@ -76,26 +77,7 @@ export const bowmanProperties = {
     weapon: WarBowImage,
     items: [honestyStone],
     WeaponSkins: [],
-    abilities: [
-        {
-            name: "Shoot",
-            image: AvengersArrowImage,
-            resourceCost: 0,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
-                    icon: AvengersArrowImage,
-                    damage: 2,
-                    animationOptions: {
-                        rotateToFaceTarget: true,
-                        rotate: 135,
-                    },
-                },
-            ],
-        },
-    ],
+    abilities: [bowmanDefaultAttack],
 };
 
 export default defaultCharacterProperties;

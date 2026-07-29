@@ -56,6 +56,30 @@ import {
 } from "../types";
 import { cloneDeep } from "lodash";
 
+const bowmanAnimationOption = {
+    rotateToFaceTarget: true,
+    rotate: 135,
+    weapon: {
+        rotateToFaceTarget: true,
+    },
+};
+
+export const bowmanDefaultAttack: Ability = {
+    name: "Shoot",
+    image: AvengersArrowImage,
+    resourceCost: 0,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            damage: 2,
+            animationOptions: bowmanAnimationOption,
+        },
+    ],
+};
+
 export const spotWeakness: Ability = {
     name: "Spot Weakness",
     resourceCost: 1,
@@ -95,10 +119,7 @@ export const volley: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [
@@ -123,10 +144,7 @@ export const shootAbility: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             damage: 7,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [
@@ -201,10 +219,7 @@ export const arrowBomb: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [
@@ -233,10 +248,7 @@ export const ironArrow: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [
@@ -275,8 +287,7 @@ export const soulShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: MagicArrowImage,
             animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
+                ...bowmanAnimationOption,
                 width: 50,
                 height: 50,
             },
@@ -400,8 +411,7 @@ export const darkArrow: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: FrozenArrowImage,
             animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
+                ...bowmanAnimationOption,
                 brightness: -0.75,
             },
             effects: [
@@ -439,10 +449,7 @@ export const doubleShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
         {
             damage: 4,
@@ -450,10 +457,7 @@ export const doubleShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
 };
@@ -471,10 +475,7 @@ export const strafe: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
         {
             damage: 5,
@@ -482,10 +483,7 @@ export const strafe: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
         {
             damage: 5,
@@ -493,10 +491,7 @@ export const strafe: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
         {
             damage: 5,
@@ -504,10 +499,7 @@ export const strafe: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [
@@ -544,10 +536,8 @@ export const mortalBlow: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             bonus: {
                 damage: 10,
                 conditions: [
@@ -593,10 +583,8 @@ export const powerShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             bonus: {
                 damage: 2,
                 multiplier: {
@@ -693,10 +681,7 @@ export const artillery: Ability = {
                                     animation: ANIMATION_TYPES.ONE_WAY,
                                     icon: AvengersArrowImage,
                                     effects: [{ ...bleed, stacks: 1 }],
-                                    animationOptions: {
-                                        rotateToFaceTarget: true,
-                                        rotate: 135,
-                                    },
+                                    animationOptions: bowmanAnimationOption,
                                 },
                             ],
                         },
@@ -740,10 +725,8 @@ export const barbedArrows: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             effects: [{ ...bleed, stacks: 1 }],
         },
     ],
@@ -810,12 +793,12 @@ export const chargedShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
+                ...bowmanAnimationOption,
                 flash: 200,
                 width: 50,
                 height: 50,
                 weapon: {
+                    rotateToFaceTarget: true,
                     glow: true,
                 },
             },
@@ -845,10 +828,8 @@ export const finalAttack: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             bonus: {
                 damage: 2,
                 multiplier: {
@@ -886,10 +867,8 @@ export const coveringFire: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             secondaryAction: {
                 armor: 2,
                 area: 2,
@@ -1263,10 +1242,8 @@ export const snipe: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             bonus: {
                 damage: 1,
                 multiplier: {
@@ -1362,10 +1339,8 @@ export const quickShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
+
             drawCards: {
                 amount: 1,
             },
@@ -1465,10 +1440,7 @@ export const arrowBlow: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotateToFaceTarget: true,
-                rotate: 135,
-            },
+            animationOptions: bowmanAnimationOption,
         },
     ],
     upgrades: [

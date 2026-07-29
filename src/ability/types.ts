@@ -657,6 +657,7 @@ export type Action = {
         weapon?: {
             hide?: boolean;
             glow?: boolean;
+            rotateToFaceTarget?: boolean; // For ranged attacks where the weapon should face the target
         };
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.

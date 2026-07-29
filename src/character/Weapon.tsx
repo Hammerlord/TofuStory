@@ -175,17 +175,21 @@ const Weapon = ({
     const weaponRef = useRef(null);
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef(null));
     const animationRefs = useRef([]);
+    const weaponAnimationOptions = action?.animationOptions?.weapon || {};
+    const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !area;
+    const isRotateWeaponToFaceTarget = weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
 
     const rotation = useMemo(() => {
-        if (type !== ACTION_TYPES.ATTACK || !target || !wielderRef || area) {
+        if (!target || !wielderRef) {
             return;
         }
 
-        // Single target rotates the weapon to face the target
-        return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
+        if (isRotateWeaponToFaceTarget) {
+            return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
+        }
     }, [event?.id, target]);
 
-    const isGlowing = wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow") || action?.animationOptions?.weapon?.glow;
+    const isGlowing = wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow") || weaponAnimationOptions.glow;
 
     useEffect(() => {
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {
@@ -223,8 +227,8 @@ const Weapon = ({
             ))}
             <div
                 className={classNames(classes.root, {
-                    [classes.idle]: type !== ACTION_TYPES.ATTACK,
-                    [classes.stab]: type === ACTION_TYPES.ATTACK && !area,
+                    [classes.idle]: type !== ACTION_TYPES.ATTACK && type !== ACTION_TYPES.RANGE_ATTACK,
+                    [classes.stab]: isRotateWeaponToFaceTarget,
                 })}
                 style={{
                     transform: rotation ? `rotate(${rotation}deg)` : "unset",
