@@ -319,6 +319,7 @@ const CombatantView = forwardRef(
             previewTargetedBy,
             selectedAbility,
             index,
+            isHoveringCombatant,
             onMouseEnter,
             onMouseDown,
             ...other
@@ -335,6 +336,7 @@ const CombatantView = forwardRef(
             previewTargetedBy?: PreviewStatUpdate;
             selectedAbility?: Ability | CombatAbility;
             index: number;
+            isHoveringCombatant?: boolean; // If any Combatant is being hovered, not just this one
             onMouseEnter?: (combatant: Combatant | null, index: number) => void;
             onMouseDown?: (event: React.MouseEvent, index: number) => void;
             onMouseLeave?: (event: any) => void;
@@ -510,7 +512,7 @@ const CombatantView = forwardRef(
             (e) => {
                 onMouseDown && onMouseDown(e, index);
             },
-            [onMouseDown,  index]
+            [onMouseDown, index]
         );
 
         return (
@@ -625,7 +627,14 @@ const CombatantView = forwardRef(
                         className={classes.previewAttacked}
                     />
                 )}
-                {oldState?.HP > 0 && <AbilityPreview previewStatUpdate={previewStatUpdate} combatant={oldState} isEnemy={isEnemy} />}
+                {oldState?.HP > 0 && (
+                    <AbilityPreview
+                        previewStatUpdate={previewStatUpdate}
+                        combatant={oldState}
+                        isEnemy={isEnemy}
+                        mode={isHoveringCombatant ? "default" : "discreet"}
+                    />
+                )}
                 {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
                 {oldState?.HP > 0 && (
                     <div className={classes.statusEffectAnnouncerContainer}>

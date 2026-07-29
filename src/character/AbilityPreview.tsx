@@ -23,6 +23,9 @@ const useStyles = createUseStyles({
         display: "flex",
         whiteSpace: "nowrap",
         top: 25,
+        filter: "saturate(1)",
+        opacity: 1,
+        transition: "opacity 200ms ease, filter 200ms ease",
     },
     inner: {
         animationName: "$fadeIn",
@@ -147,6 +150,9 @@ const useStyles = createUseStyles({
         filter: "saturate(0.25)",
         opacity: 0.85,
     },
+    previewContainer: {
+        transform: "translateY(10px)",
+    },
 });
 
 export interface PreviewStatUpdate {
@@ -163,11 +169,13 @@ const AbilityPreview = ({
     combatant,
     isEnemy,
     className,
+    mode,
 }: {
     previewStatUpdate: PreviewStatUpdate[];
     combatant?: Combatant;
     isEnemy: boolean;
     className?: string;
+    mode?: "default" | "discreet";
 }) => {
     const classes = useStyles();
 
@@ -322,13 +330,11 @@ const AbilityPreview = ({
     return (
         <div
             className={classNames(classes.previewRoot, className, {
-                [classes.faded]: !combatant?.HP,
+                [classes.faded]: !combatant?.HP || mode === "discreet",
             })}
         >
-            <div className={classes.inner}>
-                {getIndicator()}
-                {getPreviewElement()}
-            </div>
+            {mode !== "discreet" && <div className={classes.inner}>{getIndicator()}</div>}
+            <span className={classes.previewContainer}>{getPreviewElement()}</span>
         </div>
     );
 };

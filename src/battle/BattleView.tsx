@@ -916,16 +916,41 @@ const BattlefieldContainer = () => {
         combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
     } => {
         const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
-        if (!hoveredCombatant || !selectedAbility || !shouldShowReticle(hoveredCombatant.side, hoveredCombatant.index)) {
-            return { result: {}, combatantStates: undefined } as any;
+        const empty = { result: {}, combatantStates: undefined } as any;
+        if (!selectedAbility) {
+            return empty;
         }
 
-        return getAbilityPreviews({
-            ability: selectedAbility,
-            actor: selectedMinion || player,
-            target: hoveredCombatant,
-            battle,
-        });
+        if (hoveredCombatant && shouldShowReticle(hoveredCombatant.side, hoveredCombatant.index)) {
+            return getAbilityPreviews({
+                ability: selectedAbility,
+                actor: selectedMinion || player,
+                target: hoveredCombatant,
+                battle,
+            });
+        }
+
+        const allPotentialTargetResults = {};
+
+        const calculatePotentialResults = (combatants: (Combatant | null)[], side: BATTLEFIELD_SIDES) => {
+            combatants.forEach((combatant, i) => {
+                if (!combatant?.HP || !shouldShowReticle(side, i)) {
+                    return;
+                }
+
+                const preview = getAbilityPreviews({
+                    ability: selectedAbility,
+                    actor: selectedMinion || player,
+                    target: { index: i, id: combatant.id, side },
+                    battle,
+                });
+                allPotentialTargetResults[combatant.id] = preview.result[combatant.id];
+            });
+        };
+
+        calculatePotentialResults(enemySide, BATTLEFIELD_SIDES.ENEMY_SIDE);
+        calculatePotentialResults(playerSide, BATTLEFIELD_SIDES.PLAYER_SIDE);
+        return { result: allPotentialTargetResults, combatantStates: undefined };
     })();
 
     const targetedByEnemyAbilities = useMemo(() => {
@@ -1104,6 +1129,7 @@ const BattlefieldContainer = () => {
                                         events={events}
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
+                                        isHoveringCombatant={Boolean(hoveredCombatant)}
                                         previewStatUpdate={abilityUsePreviews[enemy?.id]}
                                         previewTargetedBy={
                                             targetedByEnemyAbilities[enemy?.id] ||
@@ -1154,6 +1180,7 @@ const BattlefieldContainer = () => {
                                                 onMouseEnter={handleAllyMouseEnter}
                                                 onMouseLeave={handleCombatantMouseLeave}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
+                                                isHoveringCombatant={Boolean(hoveredCombatant)}
                                                 key={ally?.id || i}
                                                 event={combatantEvent}
                                                 events={events}
