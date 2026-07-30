@@ -31,6 +31,7 @@ import {
     PowerKnockbackImage,
     ScarecrowImage,
     SharpEyesImage,
+    ShatteringArrowImage,
     ShieldImage,
     SnipeImage,
     SoulArrowImage,
@@ -1220,12 +1221,13 @@ export const lockOn: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "Applies <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Random attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
+        "Pierces <b>Stealth</b> to apply <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Random attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
     actions: [
         {
             damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
+            bypassStealth: true,
             effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 2, attackDamageReceived: 3, icon: BullseyeIcon }],
         },
     ],
@@ -1507,6 +1509,54 @@ export const treat: Ability = {
                             name: "Player",
                             comparator: "eq",
                             calculationTarget: CONDITION_TARGETS.TARGET,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const shatteringArrow: Ability = {
+    name: "Shattering Arrow",
+    image: ShatteringArrowImage,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    description:
+        "Pierces <b>Immune</b> and <b>Stealth</b>. <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
+    overrideBodyText: true,
+    actions: [
+        {
+            damage: 9,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            bypassImmunity: true,
+            bypassStealth: true,
+            bonus: [
+                {
+                    damage: 5,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            armor: 0,
+                            comparator: "gt",
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                    bonus: [
+                        {
+                            damage: 2,
                         },
                     ],
                 },

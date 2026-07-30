@@ -798,10 +798,11 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const ability = typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
+        const ability: Ability | undefined =
+            typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
         let abilityUsed = false; // One or more actions must have been performed to trigger onUseAbility
 
-        ability?.actions.forEach((action) => {
+        ability?.actions.forEach((action: Action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: i,
                 initialSelectedSide: friendlySide,
@@ -831,7 +832,10 @@ const onEffectEventTrigger = ({
                 return;
             }
 
-            if ([TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) && !canTargetIfStealthed(actor, target)) {
+            if (
+                [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) &&
+                !canTargetIfStealthed(actor, target, action)
+            ) {
                 return;
             }
 

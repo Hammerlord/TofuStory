@@ -127,8 +127,8 @@ export const isSilenced = (character: Combatant): boolean => {
     return character?.effects?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };
 
-export const canTargetIfStealthed = (actor: Combatant, target: Combatant): boolean => {
-    return !isStealthed(target) || hasTruesight(actor);
+export const canTargetIfStealthed = (actor: Combatant, target: Combatant, action?: Action): boolean => {
+    return !isStealthed(target) || hasTruesight(actor) || action?.bypassStealth;
 };
 
 export const isStealthed = (character?: Combatant | null): boolean => {
@@ -281,7 +281,7 @@ export const isValidTarget = ({
         }
 
         const targetedEnemy = enemySide[index];
-        if (isStealthed(targetedEnemy) && !area) {
+        if (isStealthed(targetedEnemy) && !area && !ability?.actions?.[0].bypassStealth) {
             return false;
         }
         if (isUntargetable(targetedEnemy)) {
@@ -711,7 +711,10 @@ export const calculateDamage = ({
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
-    if (hasEffectType(target, EFFECT_TYPES.IMMUNITY) || (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY))) {
+    if (
+        !action.bypassImmunity &&
+        (hasEffectType(target, EFFECT_TYPES.IMMUNITY) || (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY)))
+    ) {
         return 0;
     }
 

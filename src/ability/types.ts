@@ -677,6 +677,8 @@ export type Action = {
     decayArmor?: boolean;
     affectsDeadCharacters?: boolean;
     bypassPreventTurnAction?: boolean;
+    bypassImmunity?: boolean;
+    bypassStealth?: boolean; // Pierces stealth (especially if it is a single target ability)
 };
 
 export type ActionOptionalProperties = { [key in keyof Action]?: Action[key] };

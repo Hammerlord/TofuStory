@@ -553,7 +553,7 @@ const BattlefieldContainer = () => {
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
-            } else if (!canTargetIfStealthed(selectedMinion, enemySide[index])) {
+            } else if (!canTargetIfStealthed(selectedMinion, enemySide[index], abilityToUse?.actions?.[0])) {
                 warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
@@ -572,7 +572,7 @@ const BattlefieldContainer = () => {
                 }
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
-            } else if (!canTargetIfStealthed(player, enemySide[index])) {
+            } else if (!canTargetIfStealthed(player, enemySide[index], abilityToUse?.actions?.[0])) {
                 warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
