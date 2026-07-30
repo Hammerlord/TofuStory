@@ -2126,7 +2126,7 @@ export const calculateTargetIndices = ({
     const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
     const isPreviewMode = source?.isPreviewMode;
 
-    let extraTargetIndices = getValidTargetIndices(battle[side], {
+    let extraTargetIndices = getValidTargetIndices(battle[side], action.area, {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
     }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
@@ -2526,11 +2526,13 @@ export const getValidTargetIndicesForAction = ({
         }
 
         const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
-        const targetIndices = getValidTargetIndices(hostile, { excludeStealth: true, onlyTaunt: true, onlyPriorityTarget: true }).filter(
-            (i) => {
-                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
-            }
-        );
+        const targetIndices = getValidTargetIndices(hostile, action.area, {
+            excludeStealth: true,
+            onlyTaunt: true,
+            onlyPriorityTarget: true,
+        }).filter((i) => {
+            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+        });
 
         if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
             return [
@@ -2547,8 +2549,7 @@ export const getValidTargetIndicesForAction = ({
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
     if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
-        return getValidTargetIndices(hostile, {
-            // TODO area attacks are still applicable to stealthed units
+        return getValidTargetIndices(hostile, action.area, {
             excludeStealth: !hasTruesight(actorData.combatant),
             onlyTaunt: true,
             onlyPriorityTarget: true,
@@ -2560,7 +2561,7 @@ export const getValidTargetIndicesForAction = ({
     }
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
-        const targetIndices = getValidTargetIndices(hostile, { onlyTaunt: true, onlyPriorityTarget: true })
+        const targetIndices = getValidTargetIndices(hostile, action.area, { onlyTaunt: true, onlyPriorityTarget: true })
             .filter((i) => {
                 return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
             })
@@ -2583,7 +2584,7 @@ export const getValidTargetIndicesForAction = ({
         target === TARGET_TYPES.RANDOM_FRIENDLY ||
         (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
     ) {
-        const targetIndices = getValidTargetIndices(friendly, { excludeUntargetable: false }).filter((i) => {
+        const targetIndices = getValidTargetIndices(friendly, action.area, { excludeUntargetable: false }).filter((i) => {
             if (excludeActor && actorId && friendly[i]?.id === actorId) {
                 return false;
             }

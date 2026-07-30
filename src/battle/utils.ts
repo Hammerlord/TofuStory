@@ -899,6 +899,7 @@ export const calculateHealing = ({ target, action }: { target?: CombatantInfo; a
  */
 export const getValidTargetIndices = (
     characters: (Combatant | null)[],
+    area: number,
     options: {
         excludeStealth?: boolean;
         excludeIndex?: number;
@@ -907,7 +908,6 @@ export const getValidTargetIndices = (
         onlyPriorityTarget?: boolean;
     } = {}
 ): number[] => {
-    const indices: number[] = [];
     const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
 
     const getIndicesForEffectType = (effectType: EFFECT_TYPES) => {
@@ -946,6 +946,8 @@ export const getValidTargetIndices = (
         return priorityIndices;
     }
 
+    area = area || 0;
+    const indices = {};
     characters.forEach((character: Combatant | null, i: number) => {
         const hp = character?.HP || 0;
         if (hp > 0) {
@@ -953,17 +955,18 @@ export const getValidTargetIndices = (
             const notExcluded = excludeIndex !== i;
             const untargetable = excludeUntargetable && isUntargetable(character);
             if (notStealth && notExcluded && !untargetable) {
-                indices.push(i);
+                indices[i] = true;
+            }
+        } else if (area >= 1) {
+            for (let j = i - area; j <= i + area; ++j) {
+                if ((characters[j]?.HP || 0) > 0) {
+                    indices[i] = true;
+                    break;
+                }
             }
         }
     });
-    return indices;
-};
-
-export const getHealableIndices = (characters: (Combatant | null)[]): number[] => {
-    const indices = getValidTargetIndices(characters);
-    // Injured targets only
-    return indices.filter((i) => (characters[i]?.HP || 0) < getMaxHP(characters[i]));
+    return Object.keys(indices).map((key) => Number(key));
 };
 
 export const calculateActionArea = ({
