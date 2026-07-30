@@ -344,7 +344,7 @@ export const warding: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: GemHeartImage,
     description: "Periodically gaining a shield that wards off the next non-auto attack.",
-    turnsTriggerFrequency: 2,
+    turnsTriggerFrequency: 3,
     onWaveStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [
@@ -381,13 +381,14 @@ export const stoneSkin: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Gaining Armor every turn. While the character has armor, it gains +1 ATT.",
+    description: "Gaining Armor every other turn. While the character has armor, it gains +1 ATT.",
+    turnsTriggerFrequency: 2,
     icon: StoneShieldImage,
     onBattleStart: [
         {
             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             armor: 1,
-            maxArmor: 3,
+            maxArmor: 5,
             multiplier: {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 type: MULTIPLIER_TYPES.MAX_HP,
