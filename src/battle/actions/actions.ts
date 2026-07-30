@@ -1200,7 +1200,8 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
         const enemyOrderIds = getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round });
         enemyOrderIds.forEach((enemyId: string) => {
             const enemyInfo = findCombatantData(battle, enemyId);
-            if (!enemyInfo?.combatant?.HP) {
+            const combatant = enemyInfo?.combatant;
+            if (!combatant?.HP) {
                 return;
             }
 
@@ -1209,7 +1210,7 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
                 return;
             }
 
-            const currentTargeting = enemyInfo.combatant.targeting;
+            const currentTargeting = combatant.targeting;
             const isSameAbilityAsBefore = ability.name === currentTargeting?.ability?.name;
 
             let mutableUpdatedActionTargets = [];
@@ -1236,22 +1237,26 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
 
                 mutableUpdatedActionTargets[i] = target;
 
-                const preview = previewAction({
-                    actionFn: performAction({
-                        action,
-                        parent: ability,
-                        selectedIndex: target.index,
-                        side: target.side,
-                        actorId: enemyId,
-                    }),
-                    battle: battle,
-                });
+                // If it's still casting, it's not going to actually use the ability yet.
+                const unableToAct = isTurnActionPrevented(enemyInfo) || !combatant.abilities?.length || combatant.cantMove;
+                if (!unableToAct && (!ability.castTime || !combatant.casting?.castTime)) {
+                    const preview = previewAction({
+                        actionFn: performAction({
+                            action,
+                            parent: ability,
+                            selectedIndex: target.index,
+                            side: target.side,
+                            actorId: enemyId,
+                        }),
+                        battle: battle,
+                    });
 
-                battle = {
-                    ...battle,
-                    playerSide: preview.battle.playerSide,
-                    enemySide: preview.battle.enemySide,
-                };
+                    battle = {
+                        ...battle,
+                        playerSide: preview.battle.playerSide,
+                        enemySide: preview.battle.enemySide,
+                    };
+                }
             });
 
             dispatch(
