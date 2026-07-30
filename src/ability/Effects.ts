@@ -175,9 +175,9 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: Infinity,
     icon: FireIcon,
-    description: "On turn start, take 3 damage per stack, and reduce stacks by 1.",
+    description: "On turn start, take 2 damage per stack, and reduce stacks by 1.",
     maxApplications: 1,
-    stacks: 3,
+    stacks: 2,
     onTurnStart: {
         decrementStacks: 1,
     },

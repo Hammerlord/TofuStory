@@ -7,6 +7,7 @@ import {
     AvengersArrowImage,
     BlockImage,
     BowExpertImage,
+    BroilerShotImage,
     ConcentrateImage,
     CoveringFireImage,
     CrowImage,
@@ -43,7 +44,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { armorUp, attackPower, avenger, bleed, defDown, stun, taunt, thorns } from "../Effects";
+import { armorUp, attackPower, avenger, bleed, burn, defDown, stun, taunt, thorns } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -1557,6 +1558,46 @@ export const shatteringArrow: Ability = {
                     bonus: [
                         {
                             damage: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const fireStarter: Ability = {
+    name: "Fire Starter",
+    resourceCost: 1,
+    description: "Your attacks inflict {{{ _burn_ }}}.",
+    rarity: RARITIES.RARE,
+    image: BroilerShotImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Flaming Arrows",
+                    icon: BroilerShotImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 2,
+                    onAttack: {
+                        effects: [{ ...burn, stacks: 1 }],
+                        targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            duration: 1,
                         },
                     ],
                 },

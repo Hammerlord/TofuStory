@@ -95,6 +95,7 @@ export { default as BowMushImage } from "./BowMush.png";
 export { default as BrandishImage } from "./Brandish.png";
 export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";
+export { default as BroilerShotImage } from "./BroilerShot.png";
 export { default as BrokenHeartEmojiImage } from "./BrokenHeartEmoji.png";
 export { default as BrokenMirrorGlassImage } from "./BrokenMirrorGlass.png";
 export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
