@@ -7,6 +7,8 @@ import AbilityView from "./AbilityView";
 import { chargingStone } from "../../item/starterItems";
 import { Tooltip } from "@mui/material";
 import { ReactElement } from "react";
+import { GREEN } from "./constants";
+import classNames from "classnames";
 
 const useTooltipStyles = createUseStyles({
     tooltip: {
@@ -30,6 +32,16 @@ const useTooltipStyles = createUseStyles({
         "& > .card-container:not(:last-child)": {
             marginRight: 8,
         },
+    },
+    diamond: {
+        width: "24px",
+        height: "24px",
+        transform: "rotate(45deg)",
+        display: "inline-block",
+    },
+
+    minion: {
+        background: GREEN,
     },
 });
 
@@ -89,7 +101,10 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
 
     const tooltips = [];
 
-    if (JSON.stringify(ability).includes("Charged")) {
+    const stringified = JSON.stringify(ability);
+
+    if (stringified.includes('"Charged"')) {
+        // exclude Charged Shot (Bowman ability)
         const chargedTooltip = {
             title: "Charged Ability",
             icon: chargingStone.image,
@@ -114,6 +129,19 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
     if (ability.tooltip) {
         const { title, description, icon } = ability.tooltip;
         tooltips.push(<TooltipSection title={title} description={description} icon={icon} key={title} />);
+    }
+
+    if (ability.minion || stringified.includes("summon")) {
+        const diamond = <span className={classNames(classes.diamond, classes.minion)} />;
+        tooltips.push(
+            <TooltipSection
+                title={"Summon"}
+                description={
+                    "A minion fights alongside you. Most minions auto-attack at the end of your turn. Each Summon card can only be played once per battle."
+                }
+                icon={diamond}
+            />
+        );
     }
 
     tooltips.push(<KeywordsTooltips object={ability} key={"keywords-tooltips"} />);
