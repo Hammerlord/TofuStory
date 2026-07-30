@@ -18,12 +18,14 @@ import {
     FocusImage,
     FrozenArrowImage,
     HamstringImage,
+    HerosWillImage,
     IllusionStepImage,
     IronArrowImage,
     LycanthropeImage,
     MagicArrowImage,
     MarksmanBoostImage,
     MarksmanshipImage,
+    MeatImage,
     MortalBlowImage,
     PiercingArrowImage,
     PowerKnockbackImage,
@@ -40,7 +42,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { attackPower, avenger, bleed, defDown, stun, taunt, thorns } from "../Effects";
+import { armorUp, attackPower, avenger, bleed, defDown, stun, taunt, thorns } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -1427,6 +1429,86 @@ export const momentum: Ability = {
                             },
                         ],
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const takeCover: Ability = {
+    name: "Take Cover",
+    image: HerosWillImage,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 1,
+    actions: [
+        {
+            armor: 10,
+            target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
+            area: 2,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const treat: Ability = {
+    name: "Treat",
+    image: MeatImage,
+    rarity: RARITIES.UNCOMMON,
+    depletedOnUse: true,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description: "Gain <b>+1 {{{ _damage_ }}}</b> and <b>+1 Armor Up</b>. x2 effect if played on a Summon.",
+    actions: [
+        {
+            target: TARGET_TYPES.FRIENDLY,
+            icon: MeatImage,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            bonus: [
+                {
+                    effects: [
+                        {
+                            ...attackPower,
+                            stacks: 2,
+                        },
+                        {
+                            ...armorUp,
+                            stacks: 2,
+                        },
+                    ],
+                    conditions: [
+                        {
+                            name: "Player",
+                            comparator: "not",
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                        },
+                    ],
+                },
+                {
+                    effects: [
+                        {
+                            ...attackPower,
+                        },
+                        {
+                            ...armorUp,
+                        },
+                    ],
+                    conditions: [
+                        {
+                            name: "Player",
+                            comparator: "eq",
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                        },
+                    ],
                 },
             ],
         },

@@ -31,7 +31,9 @@ import {
     spotWeakness,
     strafe,
     tagShot,
+    takeCover,
     tragosAbility,
+    treat,
     volley,
     wayfind,
 } from "./bowman/bowmanAbilities";
@@ -380,6 +382,8 @@ export const JOB_CARD_MAP = {
             murderOfCrows,
             arrowBlow,
             momentum,
+            takeCover,
+            treat,
         ],
         starters: [spotWeakness, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },
