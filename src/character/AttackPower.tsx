@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect } from "../ability/types";
 import { ATTACK_POWER_COEFF } from "../battle/constants";
 import { CombatantInfo } from "../battle/types";
-import { calculateAttackPowerDamage, getEnabledEffects, getSkillBonusDamage, isTurnActionPrevented } from "../battle/utils";
+import { calculateAttackPowerDamage, getEnabledEffects, getMultiplier, getSkillBonusDamage, isTurnActionPrevented } from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
@@ -74,10 +74,15 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
             return !excludeEffectOwner && (attackPower !== 0 || skillBonus);
         }
     );
-    const totalAttackPower: number = attackPowerEffects.reduce((acc: number, { attackPower = 0, skillBonus }) => {
-        const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
-        return acc + attackPower + skillBonusDamage;
-    }, 0);
+    const totalAttackPower: number = attackPowerEffects.reduce(
+        (acc: number, { attackPower = 0, skillBonus, multiplier: multiplierConfig }) => {
+            const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
+            // Hand, deck and discard are NOT implemented in the actual damage calculation. Fix that before changing the display.
+            const multiplier = getMultiplier({ actor: combatantInfo, multiplier: multiplierConfig, hand: [], deck: [], discard: [] });
+            return acc + attackPower * multiplier + skillBonusDamage;
+        },
+        0
+    );
 
     const totalDamage = (() => {
         const total = calculateAttackPowerDamage({ totalAttackPower, damage: overrideDamage || damage });

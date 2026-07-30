@@ -281,6 +281,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
         modulo: string;
     };
     maxResources?: number;
+    // ONLY works for attack power. Hand/card/deck-based multipliers NOI implemented. See Wolf for an example of how this is used.
+    multiplier?: Multiplier;
 };
 
 export type CombatEffect = Effect & {

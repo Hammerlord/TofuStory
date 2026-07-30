@@ -188,7 +188,7 @@ export const puppet: Ability = {
     minion: {
         name: "Puppet",
         image: ScarecrowImage,
-        maxHP: 9,
+        maxHP: 8,
         abilities: [],
         effects: [taunt, thorns],
     },
@@ -266,7 +266,6 @@ export const soulShot: Ability = {
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     image: MagicArrowImage,
-    description: "Draw a card.",
     removeAfterTurn: true,
     actions: [
         {
@@ -338,8 +337,7 @@ export const eagle: Ability = {
     minion: {
         name: "Eagle",
         image: WuTienEagleImage,
-        maxHP: 7,
-
+        maxHP: 5,
         abilities: [
             {
                 ...attack,
@@ -358,7 +356,7 @@ export const eagle: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 3,
+                maxHP: 2,
                 abilities: [
                     {
                         actions: [
@@ -394,7 +392,7 @@ export const darkArrow: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 10,
+                    stacks: 7,
                 },
             ],
         },
@@ -874,7 +872,7 @@ export const tagShot: Ability = {
     image: HamstringImage,
     actions: [
         {
-            damage: 9,
+            damage: 8,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -903,8 +901,7 @@ export const wolfMinion: Minion = {
     name: "Wolf",
     image: DogImage,
     maxHP: 5,
-    description: "Gains <b>+1 {{{ _damage_}}}</b> when it attacks.",
-
+    description: "Gains <b>+1{{{ _damage_}}}</b> for every other ally.",
     abilities: [
         {
             ...attack,
@@ -920,11 +917,14 @@ export const wolfMinion: Minion = {
     effects: [
         {
             name: "One with the Pack",
+            description: "Gaining +1 ATT for every other ally.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAttack: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [{ ...attackPower }],
+            icon: WeaponMasteryLGImage,
+            attackPower: 1,
+            multiplier: {
+                type: MULTIPLIER_TYPES.NUM_ALLIES,
+                calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
     ],

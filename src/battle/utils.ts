@@ -362,6 +362,10 @@ export const getMultiplier = ({
     hand: Ability[];
     discard: Ability[];
 }): number => {
+    if (!multiplier) {
+        return 1;
+    }
+
     const getCalculationTarget = (calculationTarget) => {
         if (calculationTarget === CONDITION_TARGETS.ACTOR) {
             return actor;
@@ -371,12 +375,8 @@ export const getMultiplier = ({
             return target;
         }
     };
-    const combatantInfo = getCalculationTarget(multiplier?.calculationTarget);
+    const combatantInfo = getCalculationTarget(multiplier.calculationTarget);
     const { combatant, friendly = [] } = combatantInfo || {};
-
-    if (!multiplier) {
-        return 1;
-    }
 
     const { value, type, filters, filterUnique, filterOutProcs } = multiplier;
 
@@ -549,7 +549,9 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.NUM_ALLIES) {
-        return (friendly || []).filter((combatant) => combatant && combatant.HP >= 0).length;
+        // Excluding itself
+        const totalAllies = (friendly || []).filter((combatant) => combatant && combatant.HP >= 0).length;
+        return Math.max(totalAllies - 1, 0);
     }
 
     if (type === MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND) {
@@ -760,13 +762,30 @@ export const calculateDamage = ({
 
     if (isAttack) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(
-            ({ attackPower = 0, skillBonus = [], excludeEffectOwner, minimumAttackDamage = 0, stacks = 1 }) => {
+            ({
+                attackPower = 0,
+                skillBonus = [],
+                excludeEffectOwner,
+                minimumAttackDamage = 0,
+                stacks = 1,
+                multiplier: multiplierConfig,
+            }) => {
                 if (excludeEffectOwner) {
                     return;
                 }
 
+                const effectMultiplier = getMultiplier({
+                    actor,
+                    target,
+                    allTargets: [target],
+                    multiplier: multiplierConfig,
+                    // TODO needs access to deck, hand, discard for multiplier to work for those.
+                    deck: [],
+                    hand: [],
+                    discard: [],
+                });
                 totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus }) * stacks;
-                totalAttackPower += attackPower * stacks;
+                totalAttackPower += attackPower * effectMultiplier * stacks;
                 if (minimumAttackDamage > minimumDamage) {
                     minimumDamage = minimumAttackDamage;
                 }
