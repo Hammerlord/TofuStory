@@ -267,18 +267,8 @@ export const soulShot: Ability = {
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     image: MagicArrowImage,
-    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}",
+    description: "Draw a card.",
     removeAfterTurn: true,
-    onDraw: {
-        chance: 0.5,
-        abilityEffects: [
-            {
-                damage: 3,
-                maxApplications: 1,
-                highlightCard: true,
-            },
-        ],
-    },
     actions: [
         {
             damage: 7,
@@ -290,6 +280,9 @@ export const soulShot: Ability = {
                 ...bowmanAnimationOption,
                 width: 50,
                 height: 50,
+            },
+            drawCards: {
+                amount: 1,
             },
         },
     ],
@@ -356,7 +349,7 @@ export const eagle: Ability = {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
                         damage: 2,
-                        effects: [{ ...bleed }],
+                        effects: [{ ...bleed, stacks: 1 }],
                     },
                 ],
             },
@@ -996,7 +989,7 @@ export const lycanthropeMinion: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                     area: 1,
-                    effects: [{ ...bleed }],
+                    effects: [{ ...bleed, stacks: 1 }],
                 },
             ],
         },
@@ -1009,7 +1002,7 @@ export const lycanthropeMinion: Minion = {
             class: EFFECT_CLASSES.BUFF,
             onKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [{ ...attackPower, stacks: 3 }],
+                effects: [{ ...attackPower, stacks: 2 }],
                 conditions: [
                     {
                         property: "abilities.0",
@@ -1025,7 +1018,7 @@ export const lycanthropeMinion: Minion = {
 
 export const lycanthropeAbility: Ability = {
     name: "Lycanthrope",
-    description: "Gains <b>+3 {{{ _damage_ }}}</b> when it kills a threatening target.",
+    description: "Gains <b>+{{{ minion.effects.0.onKill.effects.0.stacks }}}{{{ _damage_ }}}</b> when it kills a threatening target.",
     minion: lycanthropeMinion,
     image: LycanthropeImage,
     resourceCost: 2,
@@ -1039,7 +1032,7 @@ export const lycanthropeAbility: Ability = {
                     {
                         actions: [
                             {
-                                damage: 2,
+                                damage: 1,
                             },
                         ],
                     },
@@ -1273,7 +1266,7 @@ export const lockOn: Ability = {
             damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 2, attackDamageReceived: 1, icon: BullseyeIcon }],
+            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 2, attackDamageReceived: 3, icon: BullseyeIcon }],
         },
     ],
     upgrades: [
