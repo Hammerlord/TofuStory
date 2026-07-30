@@ -5,6 +5,7 @@ import {
     armorUp,
     attackDown,
     attackPower,
+    avenger,
     bleed,
     burn,
     chill,
@@ -55,11 +56,6 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         keys: ["Tribute"],
     },
     {
-        name: "Auto",
-        description: "Summon can't be controlled to attack directly. Its ability is triggered another way.",
-        keys: ['"Auto"'],
-    },
-    {
         name: "Reusable",
         description: "Ability stays in your hand when used.",
     },
@@ -87,7 +83,10 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     thorns,
     incorporeal,
-    stun,
+    {
+        ...stun,
+        keys: ['"Stun"'], // Bandaid for Crow showing Stun in its tooltip
+    },
     {
         ...chill,
         description: Handlebars.compile(chill.description || "")(chill),
@@ -107,6 +106,10 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         ...silence,
         keys: ["Disables certain buffs."],
+    },
+    {
+        ...avenger,
+        keys: ['"Avenger"'],
     },
 ];
 
