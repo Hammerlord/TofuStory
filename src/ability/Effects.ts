@@ -500,7 +500,7 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "Explodes when it dies.",
+    description: "Explodes for its max HP when it dies, up to 10. Damage is split among targets.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -512,7 +512,8 @@ export const explosive: Effect = {
                     animation: ANIMATION_TYPES.EXPLODE,
                     area: 3,
                     damage: 1,
-                    maxDamage: 15,
+                    maxDamage: 10,
+                    damageDividedByTargets: true,
                     bonus: {
                         damage: 1,
                         multiplier: {
