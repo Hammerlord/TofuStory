@@ -19,6 +19,7 @@ import { MapleLeavesImage } from "../images";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./constants";
 import { battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, Event } from "./types";
+import { Combatant } from "../character/types";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -181,6 +182,13 @@ const AnimationCanvas = ({
         if (enemyIndex > -1) {
             return enemyRefs[enemyIndex];
         }
+    };
+
+    const getCombatantFromId = (characterId: string): Combatant | null => {
+        if (!characterId) {
+            return;
+        }
+        return playerSide.concat(enemySide).find((c) => c?.id === characterId);
     };
 
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
@@ -406,7 +414,12 @@ const AnimationCanvas = ({
             },
         } as any;
 
-        if (typeof icon === "string") {
+        let projectile = icon;
+        const character = getCombatantFromId(actorId);
+        if (projectile && character?.projectileOverride) {
+            projectile = character?.projectileOverride;
+        }
+        if (typeof projectile === "string") {
             return (
                 <span
                     className={classNames(classes.iconProjectile, {
@@ -416,7 +429,7 @@ const AnimationCanvas = ({
                     {...props}
                 >
                     <img
-                        src={icon}
+                        src={projectile}
                         className={classNames(classes.projectileInner, {
                             [classes.mirrorX]: mirrorX,
                         })}
@@ -426,8 +439,8 @@ const AnimationCanvas = ({
                     />
                 </span>
             );
-        } else if (typeof icon === "function") {
-            const Icon: FC<{ className?: string }> = icon;
+        } else if (typeof projectile === "function") {
+            const Icon: FC<{ className?: string }> = projectile;
             return (
                 <span
                     className={classNames(classes.iconProjectile, {

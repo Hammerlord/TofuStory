@@ -902,10 +902,7 @@ export const tagShot: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            animationOptions: {
-                rotate: -45,
-                rotateToFaceTarget: true,
-            },
+            animationOptions: bowmanAnimationOption,
         },
         {
             type: ACTION_TYPES.EFFECT,

@@ -78,7 +78,15 @@ const WeaponSkins = ({
     onSelectWeaponSkin,
 }: {
     player: Player;
-    onSelectWeaponSkin: (weaponSkin: string, options: WeaponImageOptions) => void;
+    onSelectWeaponSkin: ({
+        weaponSkin,
+        weaponImageOptions,
+        projectileOverride,
+    }: {
+        weaponSkin: string;
+        weaponImageOptions?: WeaponImageOptions;
+        projectileOverride?: string;
+    }) => void;
 }) => {
     const [weaponSkinInventoryOpen, setWeaponSkinInventoryOpen] = useState(false);
     const menuAnchor = useRef(null) as RefObject<HTMLDivElement>;
@@ -99,9 +107,9 @@ const WeaponSkins = ({
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
                             <div className={classes.skinsContainer}>
-                                {(player.weaponSkins || []).map(({ name, image, weaponImageOptions }) => (
+                                {(player.weaponSkins || []).map(({ name, image, weaponImageOptions, projectileOverride }) => (
                                     <button
-                                        onClick={() => onSelectWeaponSkin(image, weaponImageOptions)}
+                                        onClick={() => onSelectWeaponSkin({ weaponSkin: image, weaponImageOptions, projectileOverride })}
                                         key={name}
                                         className={classNames(classes.item, {
                                             [classes.selectedItem]: image === player.weapon,

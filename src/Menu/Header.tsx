@@ -104,7 +104,15 @@ const Header = ({
     onSelectWeaponSkin,
 }: {
     onUseItem?: (item: Item) => void;
-    onSelectWeaponSkin: (weaponSkin: string, options: WeaponImageOptions) => void;
+    onSelectWeaponSkin: ({
+        weaponSkin,
+        weaponImageOptions,
+        projectileOverride,
+    }: {
+        weaponSkin: string;
+        weaponImageOptions?: WeaponImageOptions;
+        projectileOverride?: string;
+    }) => void;
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);

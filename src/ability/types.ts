@@ -319,6 +319,7 @@ export interface Minion {
     items?: Item[];
     weapon?: string;
     weaponImageOptions?: WeaponImageOptions;
+    projectileOverride?: string; // For ranged attacks, this overrides the projectile image
     uncontrollable?: boolean;
     // If true, the minion cannot be targeted for Tribute Summon.
     disableTribute?: boolean;

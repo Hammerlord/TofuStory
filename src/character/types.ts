@@ -46,6 +46,6 @@ export interface Player extends Combatant {
     class?: PLAYER_CLASSES;
     secondaryClass?: string | null;
     drawCardsPerTurn: number;
-    weaponSkins: { name: string; image: string; weaponImageOptions?: WeaponImageOptions }[];
+    weaponSkins: { name: string; image: string; weaponImageOptions?: WeaponImageOptions; projectileOverride?: string }[];
     mesos: number;
 }

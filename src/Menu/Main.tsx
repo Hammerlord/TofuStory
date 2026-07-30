@@ -514,7 +514,15 @@ const Main = () => {
 
     const setPlayer = (player) => dispatch(updatePlayer(player));
     const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
-    const handleSelectWeaponSkin = (weaponSkin: string, weaponImageOptions?: WeaponImageOptions) => {
+    const handleSelectWeaponSkin = ({
+        weaponSkin,
+        weaponImageOptions,
+        projectileOverride,
+    }: {
+        weaponSkin: string;
+        weaponImageOptions?: WeaponImageOptions;
+        projectileOverride?: string;
+    }) => {
         if (battle) {
             dispatch(
                 updateCombatant({
@@ -522,12 +530,13 @@ const Main = () => {
                     newProperties: {
                         weapon: weaponSkin,
                         weaponImageOptions,
+                        projectileOverride,
                     },
                 })
             );
         }
 
-        dispatch(updatePlayer({ weapon: weaponSkin, weaponImageOptions }));
+        dispatch(updatePlayer({ weapon: weaponSkin, weaponImageOptions, projectileOverride }));
     };
 
     const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
