@@ -111,7 +111,7 @@ const Header = ({
     }: {
         weaponSkin: string;
         weaponImageOptions?: WeaponImageOptions;
-        projectileOverride?: string;
+        projectileOverride?: string | string[];
     }) => void;
 }) => {
     const classes = useStyles();

@@ -20,6 +20,7 @@ import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./const
 import { battleStateSlice } from "./reducer";
 import { BATTLEFIELD_SIDES, Event } from "./types";
 import { Combatant } from "../character/types";
+import { getRandomItem } from "../utils";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -417,8 +418,13 @@ const AnimationCanvas = ({
         let projectile = icon;
         const character = getCombatantFromId(actorId);
         if (projectile && character?.projectileOverride) {
-            projectile = character?.projectileOverride;
+            if (Array.isArray(character.projectileOverride) && character.projectileOverride.length > 0) {
+                projectile = getRandomItem(character.projectileOverride);
+            } else if (typeof character.projectileOverride === "string") {
+                projectile = character?.projectileOverride;
+            }
         }
+
         if (typeof projectile === "string") {
             return (
                 <span

@@ -521,7 +521,7 @@ const Main = () => {
     }: {
         weaponSkin: string;
         weaponImageOptions?: WeaponImageOptions;
-        projectileOverride?: string;
+        projectileOverride?: string | string[];
     }) => {
         if (battle) {
             dispatch(

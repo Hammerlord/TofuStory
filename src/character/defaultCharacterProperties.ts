@@ -6,7 +6,10 @@ import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants
 import {
     BlueUmbrellaImage,
     BowMushImage,
+    ChickenEggImage,
+    ChickenLegImage,
     ChickenSmackarooImage,
+    FantasticComboImage,
     FrozenTunaImage,
     GoldenChickImage,
     OldGladiusImage,
@@ -39,7 +42,12 @@ const bowImageOptions: WeaponImageOptions = {
 const sharedSkins = [
     { name: "Golden Chick", image: GoldenChickImage },
     { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
-    { name: "Chicken Smackaroo", image: ChickenSmackarooImage, weaponImageOptions: { top: "-60px", left: "35px" } },
+    {
+        name: "Chicken Smackaroo",
+        image: ChickenSmackarooImage,
+        weaponImageOptions: { top: "-60px", left: "35px" },
+        projectileOverride: [ChickenEggImage, ChickenLegImage, FantasticComboImage],
+    },
 ];
 
 const defaultCharacterProperties: Player = {

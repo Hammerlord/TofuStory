@@ -85,7 +85,7 @@ const WeaponSkins = ({
     }: {
         weaponSkin: string;
         weaponImageOptions?: WeaponImageOptions;
-        projectileOverride?: string;
+        projectileOverride?: string | string[];
     }) => void;
 }) => {
     const [weaponSkinInventoryOpen, setWeaponSkinInventoryOpen] = useState(false);
