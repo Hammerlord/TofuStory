@@ -8,6 +8,7 @@ import {
     CombatEffect,
     Comparator,
     Condition,
+    EFFECT_CLASSES,
     Effect,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
@@ -70,6 +71,8 @@ export const passesConditions = ({
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
         const {
+            numBuffs,
+            numDebuffs,
             hasEffectType,
             hasEffectClass,
             hasEffect,
@@ -276,6 +279,22 @@ export const passesConditions = ({
                         return false;
                     }
                 } else if (!otherEffects.some(({ name }) => name === hasEffect)) {
+                    return false;
+                }
+            }
+
+            if (typeof numDebuffs === "number") {
+                const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.DEBUFF).length;
+
+                if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numDebuffs, comparator })) {
+                    return false;
+                }
+            }
+
+            if (typeof numBuffs === "number") {
+                const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.BUFF).length;
+
+                if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numBuffs, comparator })) {
                     return false;
                 }
             }

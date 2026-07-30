@@ -1408,7 +1408,7 @@ export const adamantiumPlate: Item = {
 
 export const wildKargoEye: Item = {
     name: "Wild Kargo Eye",
-    description: "+1 ATT against debuffed targets.",
+    description: "+1 ATT against targets with 2 or more different Debuffs.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: WildKargoEyeImage,
@@ -1421,7 +1421,8 @@ export const wildKargoEye: Item = {
             attackPower: 1,
             conditions: [
                 {
-                    hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                    numDebuffs: 1,
+                    comparator: "gt",
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             ],
@@ -2083,7 +2084,7 @@ export const emerald: Item = {
 
 export const yellowHat: Item = {
     name: "Yellow Hat",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: YellowHatImage,
     description: "On battle start, play a random minion from your deck.",

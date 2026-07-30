@@ -382,7 +382,7 @@ export interface Condition {
         property: string;
     };
 
-    /** Unique effects, not stacks; TODO numDebuffs/Buffs do nothing */
+    /** Number of unique effects, not stacks */
     numDebuffs?: number;
     numBuffs?: number;
     hasEffectType?: EFFECT_TYPES[];
