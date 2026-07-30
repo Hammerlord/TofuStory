@@ -98,7 +98,10 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     bleed,
     poison,
     stealth,
-    freeze,
+    {
+        ...freeze,
+        keys: ['"Freeze"'],
+    },
     {
         ...immunity,
         keys: ["Immunity"],

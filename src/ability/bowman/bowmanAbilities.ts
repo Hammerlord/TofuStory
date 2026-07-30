@@ -20,6 +20,7 @@ import {
     FrozenArrowImage,
     HamstringImage,
     HerosWillImage,
+    HurricaneImage,
     IllusionStepImage,
     IronArrowImage,
     LycanthropeImage,
@@ -34,6 +35,7 @@ import {
     SharpEyesImage,
     ShatteringArrowImage,
     ShieldImage,
+    SnapfreezeShotImage,
     SnipeImage,
     SoulArrowImage,
     SteelArrowImage,
@@ -44,7 +46,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { armorUp, attackPower, avenger, bleed, burn, defDown, stun, taunt, thorns } from "../Effects";
+import { armorUp, attackPower, avenger, bleed, burn, chill, defDown, stun, taunt, thorns } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -1600,6 +1602,92 @@ export const fireStarter: Ability = {
                             duration: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const hurricaneAbility: Ability = {
+    name: "Hurricane",
+    resourceCost: 1,
+    description: "Selects a random target x3.",
+    image: HurricaneImage,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            damage: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            targetArea: 5,
+            area: 1,
+        },
+        {
+            damage: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            targetArea: 5,
+            area: 1,
+        },
+        {
+            damage: 5,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            targetArea: 5,
+            area: 1,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const snapfreezeShot: Ability = {
+    name: "Frigid Shot",
+    image: SnapfreezeShotImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    overrideBodyText: true,
+    resourceCost: 1,
+    actions: [
+        {
+            damage: 3,
+            area: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            effects: [{ ...chill, stacks: 1, duration: 2 }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
                 },
             ],
         },

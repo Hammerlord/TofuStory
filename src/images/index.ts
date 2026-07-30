@@ -644,6 +644,7 @@ export { default as SmackdownFistImage } from "./SmackdownFist.png";
 export { default as SmallTreeStumpImage } from "./SmallTreeStump.png";
 export { default as SnailImage } from "./Snail.png";
 export { default as SnailShellImage } from "./SnailShell.gif";
+export { default as SnapfreezeShotImage } from "./SnapfreezeShot.gif";
 export { default as SnipeImage } from "./Snipe.gif";
 export { default as SnowballImage } from "./Snowball.png";
 export { default as SnowflakeEmojiImage } from "./SnowflakeEmoji.png";
