@@ -208,10 +208,29 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
     };
 };
 
+const minionAutoAttack = () => {
+    return (dispatch, getState) => {
+        const { playerSide } = getState().battle;
+
+        playerSide.forEach((combatant: Combatant | null) => {
+            if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
+                return;
+            }
+
+            const abilityToUse = combatant.abilities[0];
+            if (!abilityToUse) {
+                return;
+            }
+
+            dispatch(useAbility({ ability: abilityToUse, actorId: combatant.id }));
+        });
+    };
+};
+
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
-
+        dispatch(minionAutoAttack());
         const { playerSide, enemySide } = getState().battle; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
         const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 

@@ -20,7 +20,7 @@ const boulder: Minion = {
     name: "Boulder",
     image: RockImage,
     maxHP: 22,
-    uncontrollable: true,
+    cantMove: true,
     abilities: [
         {
             ...attack,

@@ -2635,7 +2635,7 @@ export const ifrit: Ability = {
     minion: {
         name: "Ifrit",
         image: IfritImage,
-        uncontrollable: true,
+
         imageOptions: {
             animation: "float",
         },
@@ -2690,16 +2690,6 @@ export const ifrit: Ability = {
                     },
                 },
             },
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
-            },
         ],
     },
     actions: [],
@@ -2733,7 +2723,7 @@ export const elquines: Ability = {
         imageOptions: {
             animation: "float",
         },
-        uncontrollable: true,
+
         maxHP: 7,
         abilities: [
             {
@@ -2773,16 +2763,6 @@ export const elquines: Ability = {
                             },
                         ],
                     },
-                },
-            },
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
                 },
             },
         ],
@@ -2883,7 +2863,7 @@ export const whelp: Ability = {
     minion: {
         name: "Star Whelp",
         image: BabyDragonImage,
-        uncontrollable: true,
+
         maxHP: 4,
         abilities: [
             {
@@ -2901,21 +2881,6 @@ export const whelp: Ability = {
                         },
                     },
                 ],
-            },
-        ],
-        effects: [
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
             },
         ],
     },
@@ -2942,13 +2907,12 @@ export const fireSpirit: Ability = {
     name: "Fire Spirit",
     resourceCost: 1,
     image: FireSpiritImage,
-    description: "<b>Auto:</b> Apply <b>{{ minion.abilities.0.actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} on an enemy every turn.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     minion: {
         name: "Fire Spirit",
         image: FireSpiritImage,
-        uncontrollable: true,
+
         maxHP: 6,
         abilities: [
             {
@@ -2968,21 +2932,6 @@ export const fireSpirit: Ability = {
                         ],
                     },
                 ],
-            },
-        ],
-        effects: [
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
             },
         ],
     },

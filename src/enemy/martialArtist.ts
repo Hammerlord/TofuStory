@@ -39,7 +39,7 @@ const bomb: Minion = {
     name: "Bomb",
     maxHP: 5,
     image: BombImage,
-    uncontrollable: true,
+    cantMove: true,
     abilities: [explode],
     effects: [
         {

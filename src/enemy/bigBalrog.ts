@@ -397,7 +397,7 @@ export const beaconCard: Ability = {
     minion: {
         name: "Beacon",
         maxHP: 3,
-        uncontrollable: true,
+        cantMove: true,
         image: LampImage,
         abilities: [],
         bypassDisableTribute: true,

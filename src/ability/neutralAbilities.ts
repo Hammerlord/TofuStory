@@ -338,7 +338,7 @@ export const firstExiledArm: Ability = {
     exclusive: "Arm of the Exiled One",
     resourceCost: 1,
     image: ZakumArmLeftImage,
-    description: "<b>Incorporeal. Untargetable.</b> Immune to debuffs. <b>Auto:</b> Attack every turn.",
+    description: "<b>Incorporeal. Untargetable.</b> Immune to debuffs.",
     tooltip: {
         title: "Arm of the Exiled One",
         icon: ZakumHelmetImage,
@@ -349,7 +349,6 @@ export const firstExiledArm: Ability = {
     rarity: RARITIES.RARE,
     minion: {
         name: "First Arm of the Exiled One",
-        uncontrollable: true,
         image: ZakumArmLeftImage,
         maxHP: 3,
         imageOptions: {

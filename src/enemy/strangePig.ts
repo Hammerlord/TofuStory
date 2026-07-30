@@ -89,7 +89,7 @@ export const strangePig: Minion = {
 const stalagmite: Minion = {
     name: "Stalagmite",
     maxHP: 17,
-    uncontrollable: true,
+    cantMove: true,
     image: MountainIcon,
     abilities: [
         {

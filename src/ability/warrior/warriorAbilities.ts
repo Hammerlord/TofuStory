@@ -380,18 +380,6 @@ export const warBanner: Ability = {
         name: "War Banner",
         image: FlagImage,
         maxHP: 3,
-        abilities: [
-            {
-                ...attack,
-                actions: [
-                    {
-                        type: ACTION_TYPES.ATTACK,
-                        target: TARGET_TYPES.HOSTILE,
-                        damage: 0,
-                    },
-                ],
-            },
-        ],
         effects: [
             {
                 ...stealth,
@@ -1804,14 +1792,14 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeImage,
     overrideBodyText: true,
-    description: "<b>Ward.</b> <br/> <b>Summon:</b> Attack. <b>Auto:</b> 50% chance to attack whenever you play a {{{ _offense_ }}} card.",
+    description: "<b>Ward.</b> <br/> <b>Summon:</b> Attack. 50% chance to attack whenever you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
         name: "Soul Blade",
         image: BurningSoulBladeMinionImage,
         maxHP: 2,
-        uncontrollable: true,
+        cantMove: true,
         abilities: [
             {
                 ...attack,
@@ -2768,13 +2756,12 @@ export const ballista: Ability = {
     name: "Ballista",
     resourceCost: 1,
     image: BallistaImage,
-    description: "<b>Auto:</b> Apply <b>{{ minion.abilities.0.actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}} every turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "Ballista",
         image: BallistaImage,
-        uncontrollable: true,
+
         maxHP: 6,
         abilities: [
             {
@@ -2794,21 +2781,6 @@ export const ballista: Ability = {
                         },
                     },
                 ],
-            },
-        ],
-        effects: [
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
             },
         ],
     },

@@ -320,7 +320,9 @@ export interface Minion {
     weapon?: string;
     weaponImageOptions?: WeaponImageOptions;
     projectileOverride?: string; // For ranged attacks, this overrides the projectile image
-    uncontrollable?: boolean;
+    controllable?: boolean; // Player-only property. If true, the character can be selected to make an attack as directed by the player.
+    // If true, the character doesn't attempt to make any move on its own. Think characters that are like rocks, objects.
+    cantMove?: boolean;
     // If true, the minion cannot be targeted for Tribute Summon.
     disableTribute?: boolean;
     // If true, the minion can be played over another minion with disableTribute: true

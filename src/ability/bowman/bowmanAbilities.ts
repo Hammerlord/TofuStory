@@ -188,7 +188,6 @@ export const puppet: Ability = {
     minion: {
         name: "Puppet",
         image: ScarecrowImage,
-        uncontrollable: true,
         maxHP: 9,
         abilities: [],
         effects: [taunt, thorns],
@@ -340,7 +339,7 @@ export const eagle: Ability = {
         name: "Eagle",
         image: WuTienEagleImage,
         maxHP: 7,
-        uncontrollable: true,
+
         abilities: [
             {
                 ...attack,
@@ -352,21 +351,6 @@ export const eagle: Ability = {
                         effects: [{ ...bleed, stacks: 1 }],
                     },
                 ],
-            },
-        ],
-        effects: [
-            {
-                name: "",
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                onSummoned: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
-                onTurnStart: {
-                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    induceCombatantAttack: true,
-                },
             },
         ],
     },
@@ -920,7 +904,7 @@ export const wolfMinion: Minion = {
     image: DogImage,
     maxHP: 5,
     description: "Gains <b>+1 {{{ _damage_}}}</b> when it attacks.",
-    uncontrollable: true,
+
     abilities: [
         {
             ...attack,
@@ -934,19 +918,6 @@ export const wolfMinion: Minion = {
         },
     ],
     effects: [
-        {
-            name: "",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onSummoned: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
-            },
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
-            },
-        },
         {
             name: "One with the Pack",
             type: EFFECT_TYPES.NONE,
@@ -1084,7 +1055,7 @@ export const tragosMinion: Minion = {
     name: "Tragos",
     maxHP: 15,
     image: TragosImage,
-    uncontrollable: true,
+
     abilities: [
         {
             ...attack,
@@ -1113,19 +1084,6 @@ export const tragosMinion: Minion = {
                         },
                     ],
                 },
-            },
-        },
-        {
-            name: "",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onSummoned: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
-            },
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
             },
         },
     ],
@@ -1352,7 +1310,7 @@ const crow: Minion = {
     maxHP: 6,
     image: CrowImage,
     description: "<b>Avenger.</b>",
-    uncontrollable: true,
+
     abilities: [
         {
             ...attack,
@@ -1365,22 +1323,7 @@ const crow: Minion = {
             ],
         },
     ],
-    effects: [
-        {
-            name: "",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onSummoned: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
-            },
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                induceCombatantAttack: true,
-            },
-        },
-        avenger,
-    ],
+    effects: [avenger],
 };
 
 export const murderOfCrows: Ability = {

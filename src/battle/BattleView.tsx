@@ -332,7 +332,7 @@ const BattlefieldContainer = () => {
     const actorId: string | undefined = actor?.id;
 
     const isEligibleToAttack = (ally: Combatant): boolean => {
-        if (!ally || ally.isPlayer || ally.HP === 0 || ally.uncontrollable || !ally.abilities?.length) {
+        if (!ally || ally.isPlayer || ally.HP === 0 || !ally.controllable || !ally.abilities?.length) {
             return false;
         }
 
@@ -960,9 +960,9 @@ const BattlefieldContainer = () => {
         getEnemyMoveOrder({ enemies: enemySide, round }).forEach((enemyId) => {
             const enemyInfo = findCombatantData({ ...battle, ...previousCombatantStates }, enemyId);
             const enemy = enemyInfo?.combatant;
-            const { targeting, HP, uncontrollable } = enemy || {};
+            const { targeting, HP, cantMove } = enemy || {};
 
-            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo) || uncontrollable) {
+            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo) || cantMove) {
                 return;
             }
 
