@@ -325,7 +325,7 @@ export const avenger: Effect = {
                         armor: 1,
                         multiplier: {
                             type: MULTIPLIER_TYPES.MAX_HP,
-                            value: 0.1,
+                            value: 0.05,
                             calculationTarget: CONDITION_TARGETS.ACTOR,
                         },
                     },

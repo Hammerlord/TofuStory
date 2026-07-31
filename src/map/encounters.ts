@@ -39,28 +39,20 @@ const findAttackDamage = (minion: Minion): number => {
     return attackDamage || backupAttackDamage;
 };
 
-const generateTantrumAttack = (baseEnemy: Minion): Ability => {
-    const attackDamage = findAttackDamage(baseEnemy) || 1;
+const generateTantrumAttack = (baseEnemy: Minion, numAttacks: number = 3): Ability => {
+    const attackDamage = Math.min(1, findAttackDamage(baseEnemy) - 1);
 
+    const actions = [];
+    for (let i = 0; i < numAttacks; ++i) {
+        actions.push({
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: Math.ceil(attackDamage),
+        });
+    }
     return {
         ...tantrum,
-        actions: [
-            {
-                target: TARGET_TYPES.RANDOM_HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-                damage: Math.ceil(attackDamage),
-            },
-            {
-                target: TARGET_TYPES.RANDOM_HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-                damage: Math.ceil(attackDamage),
-            },
-            {
-                target: TARGET_TYPES.RANDOM_HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-                damage: Math.ceil(attackDamage),
-            },
-        ],
+        actions,
     };
 };
 
@@ -174,10 +166,10 @@ const generateEliteTriad = ({
         affixPool.push(stoneSkin);
     }
     const affixes = shuffle(affixPool).slice(0, numAffixes);
-
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
-
+    const hasRaging = affixes.some((a) => a.name === raging.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
+
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 15));
 
     const enemy = {
@@ -230,7 +222,8 @@ const generateEliteDuo = ({
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);
 
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
+    const hasRaging = affixes.some((a) => a.name === raging.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6 + 20));
