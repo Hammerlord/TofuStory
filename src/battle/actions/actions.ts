@@ -748,8 +748,13 @@ const onEffectEventTrigger = ({
             // This calculates `action.area` for the effect event trigger
             initialTargetIds
                 .map((id) => findCombatantData(getState().battle, id))
-                .map((data) =>
-                    calculateTargetIndices({
+                .map((data) => {
+                    // Bug with Curse Eye mirror images where a combatant could not be looked up; don't know why though
+                    if (!data) {
+                        return [];
+                    }
+
+                    return calculateTargetIndices({
                         action,
                         selectedIndex: data.index,
                         side: data.friendlySide,
@@ -757,8 +762,8 @@ const onEffectEventTrigger = ({
                         targetData: data,
                         battle: getState().battle,
                         source: procSource,
-                    })
-                )
+                    });
+                })
                 .map((indices: number[]) => {
                     indices.forEach((i) => {
                         const id = targets[i]?.id;
