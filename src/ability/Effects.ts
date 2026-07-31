@@ -250,7 +250,6 @@ export const raging: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: AngerIcon,
     description: "Ramping ATT. ATT stacks are removed if stunned or frozen.",
-    turnsTriggerFrequency: 2,
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         ability: {

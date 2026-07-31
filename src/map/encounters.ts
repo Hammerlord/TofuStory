@@ -161,7 +161,15 @@ const generateEliteTriad = ({
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
-    const affixPool = [eliteThorns, raging, getAdjustedAvenger(baseEnemy), warding, lifeLink, sneaky, taunting];
+    const affixPool: Effect[] = [
+        eliteThorns,
+        { ...raging, turnsTriggerFrequency: 3 },
+        getAdjustedAvenger(baseEnemy),
+        warding,
+        lifeLink,
+        sneaky,
+        taunting,
+    ];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -215,7 +223,15 @@ const generateEliteDuo = ({
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
-    const affixPool: Effect[] = [eliteThorns, raging, warding, lifeLink, sneaky, poisonous, { ...taunting, turnsTriggerFrequency: 2 }];
+    const affixPool: Effect[] = [
+        eliteThorns,
+        { ...raging, turnsTriggerFrequency: 3 },
+        warding,
+        lifeLink,
+        sneaky,
+        poisonous,
+        { ...taunting, turnsTriggerFrequency: 2 },
+    ];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -302,7 +318,7 @@ const generateElite = ({
     };
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.single, previousEncounters });
-    const affixPool = [eliteThorns, raging, warding, eruptive, swarming, sneaky, poisonous];
+    const affixPool = [eliteThorns, { ...raging, turnsTriggerFrequency: 2 }, warding, eruptive, swarming, sneaky, poisonous];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
