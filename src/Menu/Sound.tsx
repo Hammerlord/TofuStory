@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { MusicIcon, XIcon } from "../images/icons";
@@ -90,25 +90,38 @@ const MUSIC_PLAYING_KEY = "musicPlaying";
 
 const fadeOutAudio = (audio: HTMLAudioElement) => {
     const currentVolume = audio.volume;
-    const interval = setInterval(() => {
-        const decrementAmount = Math.min(audio.volume, currentVolume / FADE_INCREMENT);
-        audio.volume -= decrementAmount;
+
+    const interval = window.setInterval(() => {
+        const decrement = Math.min(audio.volume, currentVolume / FADE_INCREMENT);
+        audio.volume -= decrement;
     }, TRANSITION_TIME / FADE_INCREMENT);
-    setTimeout(() => {
+
+    const timeout = window.setTimeout(() => {
         audio.pause();
         clearInterval(interval);
     }, TRANSITION_TIME);
+
+    return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+    };
 };
 
-const fadeInAudio = (audio: HTMLAudioElement, currentVolume: number) => {
-    const interval = setInterval(() => {
-        const incrementAmount = Math.min(1 - audio.volume, currentVolume / FADE_INCREMENT);
-        audio.volume += incrementAmount;
+const fadeInAudio = (audio: HTMLAudioElement, targetVolume: number) => {
+    const interval = window.setInterval(() => {
+        const increment = Math.min(targetVolume - audio.volume, targetVolume / FADE_INCREMENT);
+
+        audio.volume += increment;
     }, TRANSITION_TIME / FADE_INCREMENT);
 
-    setTimeout(() => {
+    const timeout = window.setTimeout(() => {
         clearInterval(interval);
     }, TRANSITION_TIME);
+
+    return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+    };
 };
 
 const getDefaultPlaying = (): boolean => {
@@ -175,42 +188,63 @@ const Sound = ({
             if (overrideAudio) {
                 overrideAudio.volume = minVolume;
             }
+        } else {
+            playlistAudio.volume = volume;
+            if (overrideAudio) {
+                overrideAudio.volume = volume;
+            }
         }
     };
 
     useEffect(() => {
-        // Loop playlist audio
-        let indexInTracks = tracks.findIndex((track) => track === playlistAudio.src);
-        if (indexInTracks === -1) {
-            indexInTracks = 0;
-        }
-
-        setTrackIndex(indexInTracks);
-        if (playlistAudio.src !== tracks[indexInTracks]) {
-            fadeOutAudio(playlistAudio);
-            playlistAudio.src = tracks[indexInTracks];
-            setTimeout(() => {
-                if (isPlaying) {
-                    playlistAudio.play();
-                }
-                fadeInAudio(playlistAudio, volume);
-            }, TRANSITION_TIME);
-        }
         const onEnded = () => {
-            const newIndex = (trackIndex + 1) % tracks.length;
-            playlistAudio.src = tracks[newIndex];
-            setTrackIndex(newIndex);
-            setTimeout(() => {
-                if (isPlaying) {
-                    playlistAudio.play();
-                }
-            }, NEXT_TRACK_TRANSITION_TIME);
+            setTrackIndex((index) => {
+                return (index + 1) % tracks.length;
+            });
         };
+
         playlistAudio.addEventListener("ended", onEnded);
+
         return () => {
             playlistAudio.removeEventListener("ended", onEnded);
         };
-    }, [tracks, trackIndex, isPlaying]);
+    }, [playlistAudio, tracks.length]);
+
+    useEffect(() => {
+        // Handle tracklist loop
+        if (playTrack || overrideAudio) {
+            return;
+        }
+        let fadeinCleanup;
+        const timeout = setTimeout(() => {
+            if (isPlaying) {
+                playlistAudio.play().catch(console.error);
+                fadeinCleanup = fadeInAudio(playlistAudio, volume);
+            }
+        }, NEXT_TRACK_TRANSITION_TIME);
+
+        return () => {
+            if (fadeinCleanup) {
+                fadeinCleanup();
+            }
+            clearTimeout(timeout);
+        };
+    }, [trackIndex, isPlaying, playTrack, overrideAudio]);
+
+    useEffect(() => {
+        // Handle tracklist/region change
+        if (playTrack || overrideAudio) {
+            return;
+        }
+
+        if (playlistAudio.src !== tracks[trackIndex]) {
+            playlistAudio.src = tracks[trackIndex];
+        }
+
+        if (isPlaying && playlistAudio.paused) {
+            playlistAudio.play().catch(console.error);
+        }
+    }, [trackIndex, tracks, isPlaying, playTrack, overrideAudio]);
 
     useEffect(() => {
         if (!isGameOver) {
@@ -218,54 +252,114 @@ const Sound = ({
         }
 
         if (overrideAudio) {
-            fadeOutAudio(overrideAudio);
-            setTimeout(() => {
+            const cleanupFadeout = fadeOutAudio(overrideAudio);
+            const timeout = setTimeout(() => {
                 overrideAudio.src = "";
                 setOverrideAudio(null);
             }, TRANSITION_TIME);
-        } else {
-            fadeOutAudio(playlistAudio);
-            setTimeout(() => {
-                playlistAudio.src = "";
-                setPlaylistAudio(null);
-            }, TRANSITION_TIME);
+
+            return () => {
+                cleanupFadeout();
+                clearTimeout(timeout);
+            };
         }
+
+        const cleanupFadeout = fadeOutAudio(playlistAudio);
+        const timeout = setTimeout(() => {
+            playlistAudio.src = "";
+            setPlaylistAudio(null);
+        }, TRANSITION_TIME);
+
+        return () => {
+            cleanupFadeout();
+            clearTimeout(timeout);
+        };
     }, [isGameOver]);
 
+    const previousOverride = useRef<string | null>(null);
+
     useEffect(() => {
-        if (!isPlaying || playTrack === overrideAudio?.src) {
+        if (!isPlaying) {
             return;
         }
 
-        if (overrideAudio) {
-            fadeOutAudio(overrideAudio);
-            setTimeout(() => {
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        let cleanupFadeOut: (() => void) | undefined;
+        let cleanupFadeIn: (() => void) | undefined;
+
+        const enteringOverride = !previousOverride.current && playTrack;
+        const leavingOverride = previousOverride.current && !playTrack;
+
+        if (enteringOverride) {
+            previousOverride.current = playTrack;
+
+            const audio = new Audio(playTrack);
+            audio.volume = 0;
+
+            setOverrideAudio(audio);
+
+            cleanupFadeOut = fadeOutAudio(playlistAudio);
+
+            timeout = setTimeout(() => {
+                audio.play().catch(console.error);
+                cleanupFadeIn = fadeInAudio(audio, volume);
+            }, TRANSITION_TIME);
+        }
+
+        if (leavingOverride) {
+            previousOverride.current = null;
+
+            if (!overrideAudio) {
+                return;
+            }
+
+            cleanupFadeOut = fadeOutAudio(overrideAudio);
+
+            timeout = setTimeout(() => {
+                overrideAudio.pause();
                 overrideAudio.src = "";
+
                 setOverrideAudio(null);
-                playlistAudio.play();
-                fadeInAudio(playlistAudio, volume);
+
+                playlistAudio.volume = 0;
+                playlistAudio.play().catch(console.error);
+                cleanupFadeIn = fadeInAudio(playlistAudio, volume);
             }, TRANSITION_TIME);
+        }
+
+        return () => {
+            cleanupFadeOut?.();
+            cleanupFadeIn?.();
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+        };
+    }, [playTrack, isPlaying, volume]);
+
+    useEffect(() => {
+        if (!overrideAudio) {
             return;
         }
 
-        if (playTrack) {
-            fadeOutAudio(playlistAudio);
-            const newOverrideAudio = new Audio(playTrack);
-            setOverrideAudio(newOverrideAudio);
-            setTimeout(() => {
-                newOverrideAudio.volume = 0;
-                newOverrideAudio.play();
-                fadeInAudio(newOverrideAudio, volume);
-            }, TRANSITION_TIME);
+        let timeout: number | undefined;
 
-            const onEnded = () => {
-                setTimeout(() => {
-                    newOverrideAudio.play();
-                }, NEXT_TRACK_TRANSITION_TIME);
-            };
-            newOverrideAudio.addEventListener("ended", onEnded);
-        }
-    }, [playTrack, isPlaying]);
+        const onEnded = () => {
+            timeout = window.setTimeout(() => {
+                overrideAudio.play();
+            }, NEXT_TRACK_TRANSITION_TIME);
+        };
+
+        overrideAudio.addEventListener("ended", onEnded);
+
+        return () => {
+            overrideAudio.removeEventListener("ended", onEnded);
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+        };
+    }, [overrideAudio]);
 
     const handleChangeVolume = (e, value: number) => {
         setVolume(value);
