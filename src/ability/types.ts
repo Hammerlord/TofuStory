@@ -540,6 +540,18 @@ export type MoveCards = {
     moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
 };
 
+// A bonus from a card action. Specifically looks at the cards that were newly gained/lost from the card action
+// (rather than the Bonus of abilities which mainly looks at combatants).
+export type CardBonus = {
+    conditions?: {
+        property?: string;
+        value?: any;
+        comparator?: Comparator;
+    }[];
+
+    resources?: number;
+};
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -601,6 +613,7 @@ export type Action = {
         amount: number;
         effects?: AbilityEffect[];
         filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
+        bonus?: CardBonus[];
     };
     // Auto-play the top `amount` cards from your deck/discard
     playCards?: {
@@ -669,6 +682,7 @@ export type Action = {
         };
     };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
+    // Use this to avoid an extra playback for an effect that could be applied in the same action event.
     secondaryAction?: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;

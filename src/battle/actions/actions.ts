@@ -2415,6 +2415,7 @@ export const performAction = ({
                 )
             );
         });
+
         // Same reasoning as hitEffects
         if (updatedSecondary) {
             dispatch(

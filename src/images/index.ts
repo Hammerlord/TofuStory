@@ -215,6 +215,7 @@ export { default as EnergyBoltProjectileImage } from "./EnergyBoltProjectile.png
 export { default as EnrageImage } from "./Enrage.png";
 export { default as EpicAdventureImage } from "./EpicAdventure.png";
 export { default as EstherShieldImage } from "./EstherShield.png";
+export { default as EvasionBoostImage } from "./EvasionBoost.png";
 export { default as EvilCupImage } from "./EvilCup.png";
 export { default as EvilEyeImage } from "./EvilEye.png";
 export { default as EvilEyeCardImage } from "./EvilEyeCard.png";

@@ -9,8 +9,10 @@ import {
     AbilityEvent,
     Action,
     CARD_PILE_TYPES,
+    CardBonus,
     CombatAbility,
     CombatEffect,
+    Comparator,
     EFFECT_EVENT_KEYS,
     MoveCards,
     SELECT_CARD_TYPES,
@@ -20,13 +22,14 @@ import { Combatant } from "../../character/types";
 import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
-import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
+import { applyStatChanges, checkEventTrigger, findCombatantData, updateCombatant, useAbility } from "./actions";
 import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
+import { getUpdatedStats } from "./getUpdatedStats";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -77,15 +80,85 @@ const getTotalCritChance = (playerSide: (Combatant | null)[]) => {
     return total;
 };
 
+/**
+ * Eg. when you draw a card, check that card for a certain condition to trigger a bonus.
+ * @see maneuver Bowman ability for an example how this is used.
+ */
+const handleCardActionBonus = ({
+    bonus,
+    targetCards,
+    triggerSource,
+}: {
+    bonus?: CardBonus[];
+    targetCards: CombatAbility[];
+    triggerSource: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        if (!bonus) {
+            return;
+        }
+
+        const passesConditions = (
+            conditions: {
+                property?: string;
+                value?: any;
+                comparator?: Comparator;
+            }[]
+        ) => {
+            if (!conditions?.length) {
+                return true;
+            }
+            return targetCards.some((card) => {
+                return conditions.some((condition) => {
+                    const { property, value, comparator } = condition;
+                    const propertyVal = _.get(card, property);
+                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                });
+            });
+        };
+
+        const battle: BattleState = getState().battle;
+        const player = battle.playerSide.find((c) => c?.isPlayer);
+
+        const bonusesInEffect = bonus
+            .filter((bonus: CardBonus) => {
+                return passesConditions(bonus.conditions);
+            })
+            .reduce((acc, cur) => {
+                return {
+                    ...acc,
+                    resources: (acc.resources || 0) + (cur.resources || 0),
+                };
+            }, {});
+
+        const updated = getUpdatedStats({
+            ...getState().battle,
+            actorId: player.id,
+            targetIds: [player.id],
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                ...bonusesInEffect,
+            },
+            source: {
+                ...triggerSource,
+            },
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
+        });
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+    };
+};
+
 export const drawCards = ({
     effects = [],
     filters = [],
     amount,
+    bonus,
     source,
 }: {
     effects?: AbilityEffect[];
     filters?: ACTION_TYPES[];
     amount: number;
+    bonus?: CardBonus[];
     source?: TriggerSource;
 }) => {
     return (dispatch, getState) => {
@@ -176,6 +249,8 @@ export const drawCards = ({
                 }
             }
         });
+
+        dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, triggerSource: source }));
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -198,6 +273,7 @@ export const drawCards = ({
                 }
             });
         }
+
         dispatch(recalculateEffectsFromAbilities());
     };
 };

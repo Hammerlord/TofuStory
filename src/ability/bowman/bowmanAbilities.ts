@@ -15,6 +15,7 @@ import {
     DoubleJumpImage,
     DoubleShotImage,
     DrainArrowImage,
+    EvasionBoostImage,
     FinalAttackImage,
     FocusImage,
     FrozenArrowImage,
@@ -1877,6 +1878,35 @@ export const turtleUp: Ability = {
                     armor: 2,
                 },
             ],
+        },
+    ],
+};
+
+export const maneuver: Ability = {
+    name: "Maneuver",
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    image: EvasionBoostImage,
+    description: "Draw a card. If it is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+                bonus: [
+                    {
+                        conditions: [
+                            {
+                                property: "onDraw",
+                                comparator: "not",
+                                value: undefined,
+                            },
+                        ],
+                        resources: 1,
+                    },
+                ],
+            },
         },
     ],
 };
