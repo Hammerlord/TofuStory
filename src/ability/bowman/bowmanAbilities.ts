@@ -1308,14 +1308,33 @@ export const lockOn: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "Pierces <b>Stealth</b> to apply <b>{{ actions.0.effects.0.attackDamageReceived }} DEF down.</b> Random attacks prioritize this target. <b>{{ actions.0.effects.0.duration}} {{{ _duration_ }}}</b>",
+        "<b>Pierce.</b> Applies <b>{{ actions.0.effects.0.stacks }} DEF down</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b> and commands a friendly unit to attack this target.",
     actions: [
         {
             damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             bypassStealth: true,
-            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 3, attackDamageReceived: 3, icon: BullseyeIcon }],
+            effects: [
+                {
+                    ...defDown,
+                    duration: 3,
+                    stacks: 3,
+                },
+                {
+                    name: "Locked On",
+                    type: EFFECT_TYPES.PRIORITY_TARGET,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    bypassImmunity: true,
+                    onReceiveAttack: {
+                        removeEffect: true,
+                    },
+                },
+            ],
+            secondaryAction: {
+                induceCombatantAttack: true,
+                target: TARGET_TYPES.RANDOM_FRIENDLY,
+            },
         },
     ],
     upgrades: [
@@ -1324,7 +1343,7 @@ export const lockOn: Ability = {
                 {
                     effects: [
                         {
-                            attackDamageReceived: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -1460,10 +1479,11 @@ export const murderOfCrows: Ability = {
 export const arrowBlow: Ability = {
     name: "Arrow Blow",
     resourceCost: 1,
-    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    description:
+        "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}.</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
     image: ArrowBlowImage,
     onDraw: {
-        chance: 0,
+        chance: 0.2,
         abilityEffects: [
             {
                 damage: 13,
@@ -1474,7 +1494,7 @@ export const arrowBlow: Ability = {
     },
     actions: [
         {
-            damage: 1,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
