@@ -46,7 +46,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { armorUp, attackPower, avenger, bleed, burn, chill, defDown, stun, taunt, thorns } from "../Effects";
+import { armorUp, attackPower, avenger, bleed, burn, chill, defDown, freeze, stun, taunt, thorns } from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -90,12 +90,14 @@ export const spotWeakness: Ability = {
     name: "Spot Weakness",
     resourceCost: 1,
     image: MarksmanshipImage,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} DEF down {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
+    overrideBodyText: true,
     actions: [
         {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             area: 1,
-            effects: [{ ...defDown, duration: 2, attackDamageReceived: 2 }],
+            effects: [{ ...defDown, duration: 2, stacks: 2 }],
         },
     ],
     upgrades: [
@@ -104,7 +106,7 @@ export const spotWeakness: Ability = {
                 {
                     effects: [
                         {
-                            attackDamageReceived: 1,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -130,9 +132,19 @@ export const volley: Ability = {
     ],
     upgrades: [
         {
+            description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+            onDraw: {
+                abilityEffects: [
+                    {
+                        damage: 2,
+                        maxApplications: 1,
+                        highlightCard: true,
+                    },
+                ],
+            },
             actions: [
                 {
-                    damage: 3,
+                    damage: 1,
                 },
             ],
         },
@@ -143,6 +155,17 @@ export const shootAbility: Ability = {
     name: "Shoot",
     resourceCost: 1,
     image: AvengersArrowImage,
+    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 3,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -155,9 +178,16 @@ export const shootAbility: Ability = {
     ],
     upgrades: [
         {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        damage: 1,
+                    },
+                ],
+            },
             actions: [
                 {
-                    damage: 4,
+                    damage: 3,
                 },
             ],
         },
@@ -179,7 +209,7 @@ export const defend: Ability = {
         {
             actions: [
                 {
-                    armor: 4,
+                    armor: 3,
                 },
             ],
         },
@@ -273,6 +303,17 @@ export const soulShot: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: MagicArrowImage,
     removeAfterTurn: true,
+    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 3,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             damage: 7,
@@ -316,7 +357,7 @@ export const soulArrow: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            addCardsToDeck: [soulShot, soulShot, soulShot],
+            addCardsToDeck: [soulShot, soulShot],
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -340,6 +381,7 @@ export const eagle: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
+    description: "Grants <b>+{{ minion.effects.0.criticalChance }} Critical</b>",
     minion: {
         name: "Eagle",
         image: WuTienEagleImage,
@@ -355,6 +397,16 @@ export const eagle: Ability = {
                         effects: [{ ...bleed, stacks: 1 }],
                     },
                 ],
+            },
+        ],
+        effects: [
+            {
+                name: "Critical Bonus",
+                description: "Granting Critical Chance.",
+                icon: BullseyeIcon,
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.BUFF,
+                criticalChance: 0.1,
             },
         ],
     },
@@ -421,8 +473,18 @@ export const darkArrow: Ability = {
 export const doubleShot: Ability = {
     name: "Double Shot",
     resourceCost: 1,
-    description: "Hits twice",
+    description: "Hits x2 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
     image: DoubleShotImage,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 2,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             damage: 4,
@@ -434,48 +496,6 @@ export const doubleShot: Ability = {
         },
         {
             damage: 4,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-        },
-    ],
-};
-
-export const strafe: Ability = {
-    name: "Strafe",
-    resourceCost: 2,
-    description: "Hits x4",
-    rarity: RARITIES.UNCOMMON,
-    image: StrafeImage,
-    actions: [
-        {
-            damage: 5,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-        },
-        {
-            damage: 5,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-        },
-        {
-            damage: 5,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-        },
-        {
-            damage: 5,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -485,18 +505,65 @@ export const strafe: Ability = {
     ],
     upgrades: [
         {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        damage: 2,
+                    },
+                ],
+            },
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
+                },
+            ],
+        },
+    ],
+};
+
+const strafeHit = {
+    damage: 4,
+    type: ACTION_TYPES.RANGE_ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+    animation: ANIMATION_TYPES.ONE_WAY,
+    icon: AvengersArrowImage,
+    animationOptions: bowmanAnimationOption,
+};
+
+export const strafe: Ability = {
+    name: "Strafe",
+    resourceCost: 2,
+    description: "Hits x4 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
+    rarity: RARITIES.UNCOMMON,
+    image: StrafeImage,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 1,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [{ ...strafeHit }, { ...strafeHit }, { ...strafeHit }, { ...strafeHit }],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
+                },
+                {
+                    damage: 1,
                 },
             ],
         },
@@ -559,7 +626,7 @@ export const powerShot: Ability = {
     rarity: RARITIES.RARE,
     actions: [
         {
-            damage: 14,
+            damage: 10,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -596,7 +663,7 @@ export const guard: Ability = {
     description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.armor }} {{{ _armor_ }}}",
     rarity: RARITIES.COMMON,
     onDraw: {
-        chance: 0.5,
+        chance: 0,
         abilityEffects: [
             {
                 armor: 3,
@@ -617,7 +684,7 @@ export const guard: Ability = {
             onDraw: {
                 abilityEffects: [
                     {
-                        armor: 1,
+                        armor: 2,
                     },
                 ],
             },
@@ -707,17 +774,22 @@ export const barbedArrows: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
-
             effects: [{ ...bleed, stacks: 1 }],
         },
     ],
     upgrades: [
         {
-            actions: [
-                {
-                    damage: 2,
-                },
-            ],
+            description: "<b>Critical: +{{{ _bleed_ }}}</b>",
+            onDraw: {
+                chance: 0,
+                abilityEffects: [
+                    {
+                        effects: [{ ...bleed, stacks: 1 }],
+                        maxApplications: 1,
+                        highlightCard: true,
+                    },
+                ],
+            },
         },
     ],
 };
@@ -726,18 +798,29 @@ export const focus: Ability = {
     name: "Focus",
     resourceCost: 1,
     image: FocusImage,
-    description: "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
+    description:
+        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Critical</b> and <b>+{{ actions.0.effects.0.resourcesPerTurn }} {{{ _stamina_ }}}</b> per turn until the end of your next turn.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.FRIENDLY,
-            area: 2,
-            armor: 3,
+            target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    ...attackPower,
-                    duration: 3,
+                    name: "Focusing",
+                    icon: FocusImage,
+                    resourcesPerTurn: 1,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 2,
+                },
+                {
+                    name: "Critical",
+                    icon: BullseyeIcon,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    criticalChance: 0.5,
+                    duration: 2,
                 },
             ],
         },
@@ -746,10 +829,9 @@ export const focus: Ability = {
         {
             actions: [
                 {
-                    armor: 1,
                     effects: [
                         {
-                            duration: 1,
+                            resourcesPerTurn: 1,
                         },
                     ],
                 },
@@ -762,7 +844,7 @@ export const chargedShot: Ability = {
     name: "Charged Shot",
     removeAfterTurn: true,
     rarity: RARITIES.RARE,
-    resourceCost: 1,
+    resourceCost: 0,
     image: DrainArrowImage,
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique card used this battle.",
     overrideBodyText: true,
@@ -956,7 +1038,7 @@ export const lycanthropeMinion: Minion = {
     name: "Lycanthrope",
     maxHP: 10,
     image: LycanthropeImage,
-    description: "Gains +3 ATT when it kills.",
+    description: "Gains +2 ATT when it kills.",
     abilities: [
         {
             ...attack,
@@ -1026,7 +1108,7 @@ export const doubleJump: Ability = {
     description: "Draw {{ actions.0.drawCards.amount }} cards. <b>Critical:</b> +1 card.",
     overrideBodyText: true,
     onDraw: {
-        chance: 0.5,
+        chance: 0,
         abilityEffects: [
             {
                 drawCards: 1,
@@ -1107,7 +1189,7 @@ export const tragosAbility: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 5,
+                maxHP: 3,
                 abilities: [
                     {
                         actions: [
@@ -1142,7 +1224,7 @@ export const roar: Ability = {
     depletedOnUse: true,
     resourceCost: 0,
     description:
-        "Gain {{{ _stamina_ }}} and draw a card. For the next <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain an extra {{{ _stamina_ }}} and card draw.",
+        "Gain {{{ _stamina_ }}} and draw a card. For the next <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _stamina_ }}} and card draw.",
     overrideBodyText: true,
     actions: [
         {
@@ -1163,6 +1245,7 @@ export const roar: Ability = {
                     class: EFFECT_CLASSES.BUFF,
                     duration: 2,
                     maxApplications: 1,
+                    criticalChance: 0.3,
                 },
             ],
         },
@@ -1231,7 +1314,7 @@ export const lockOn: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             bypassStealth: true,
-            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 2, attackDamageReceived: 3, icon: BullseyeIcon }],
+            effects: [{ ...defDown, type: EFFECT_TYPES.PRIORITY_TARGET, duration: 3, attackDamageReceived: 3, icon: BullseyeIcon }],
         },
     ],
     upgrades: [
@@ -1287,6 +1370,15 @@ export const quickShot: Ability = {
     resourceCost: 1,
     image: MarksmanBoostImage,
     rarity: RARITIES.UNCOMMON,
+    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 3,
+            },
+        ],
+    },
     actions: [
         {
             damage: 8,
@@ -1295,7 +1387,6 @@ export const quickShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
-
             drawCards: {
                 amount: 1,
             },
@@ -1303,6 +1394,13 @@ export const quickShot: Ability = {
     ],
     upgrades: [
         {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        damage: 1,
+                    },
+                ],
+            },
             actions: [
                 {
                     damage: 3,
@@ -1360,14 +1458,14 @@ export const murderOfCrows: Ability = {
 
 export const arrowBlow: Ability = {
     name: "Arrow Blow",
-    resourceCost: 0,
-    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}",
+    resourceCost: 1,
+    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
     image: ArrowBlowImage,
     onDraw: {
-        chance: 0.5,
+        chance: 0,
         abilityEffects: [
             {
-                damage: 10,
+                damage: 13,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1388,7 +1486,7 @@ export const arrowBlow: Ability = {
             onDraw: {
                 abilityEffects: [
                     {
-                        damage: 4,
+                        damage: 5,
                     },
                 ],
             },
@@ -1472,7 +1570,7 @@ export const treat: Ability = {
     depletedOnUse: true,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Gain <b>+1 {{{ _damage_ }}}</b> and <b>+1 Armor Up</b>. x2 effect if played on a Summon.",
+    description: "Gain <b>+1 {{{ _damage_ }}}</b> and <b>+1 Armor Up</b>, <b>x2</b> if played on a Summon.",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -1526,8 +1624,18 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Pierces <b>Immune</b> and <b>Stealth</b>. <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
+        "<b>Pierce.</b> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
     overrideBodyText: true,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 5,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             damage: 9,
@@ -1668,7 +1776,18 @@ export const snapfreezeShot: Ability = {
     name: "Frigid Shot",
     image: SnapfreezeShotImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description:
+        "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <br/> <b>Critical:</b> {{{ _freeze_ }}}",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                effects: [freeze],
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     overrideBodyText: true,
     resourceCost: 1,
     actions: [

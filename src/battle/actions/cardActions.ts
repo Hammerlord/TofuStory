@@ -1,5 +1,7 @@
+import _ from "lodash";
 import * as uuid from "uuid";
 import { aggregateAbilityEffects } from "../../Menu/utils";
+import { getLastPlayedCards } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     Ability,
@@ -17,6 +19,7 @@ import {
 import { Combatant } from "../../character/types";
 import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
+import { passesConditions, passesValueComparison } from "../passesConditions";
 import { battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
@@ -24,9 +27,6 @@ import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import { checkEventTrigger, updateCombatant, useAbility } from "./actions";
 import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
-import { passesConditions, passesValueComparison } from "../passesConditions";
-import _ from "lodash";
-import { getLastPlayedCards } from "../../ability/AbilityView/utils";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
@@ -54,6 +54,27 @@ const sumCardDrawAmount = ({
     }
 
     return amount;
+};
+
+/**
+ * Bowman mechanic.
+ * The "Critical" keyword is actually just an onDraw effect where its chance rate is the player's total criticalChance + the draw effect event's chance.
+ */
+const getTotalCritChance = (playerSide: (Combatant | null)[]) => {
+    let total = 0;
+    playerSide.forEach((combatant) => {
+        if (!combatant?.HP) {
+            return;
+        }
+
+        combatant.effects.forEach((e) => {
+            if (typeof e.criticalChance === "number") {
+                total += e.criticalChance;
+            }
+        });
+    });
+
+    return total;
 };
 
 export const drawCards = ({
@@ -121,7 +142,8 @@ export const drawCards = ({
 
             const onDrawEffects = card.onDraw?.abilityEffects;
             if (onDrawEffects) {
-                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card });
+                const totalCritChance = getTotalCritChance(playerSide);
+                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card, bonusChance: totalCritChance });
             }
             const existingEffects = card.effects || [];
 
@@ -670,10 +692,12 @@ export const applyAbilityEventEffects = ({
     event,
     ability,
     source,
+    bonusChance,
 }: {
     event: AbilityEvent;
     ability: CombatAbility;
     source?: TriggerSource;
+    bonusChance?: number;
 }): CombatAbility => {
     if (!event) {
         return ability;
@@ -681,7 +705,7 @@ export const applyAbilityEventEffects = ({
 
     const { abilityEffects = [], mode, chance } = event || {};
 
-    if (!passesChance(chance)) {
+    if (!passesChance(chance + (bonusChance || 0))) {
         return ability;
     }
 

@@ -393,6 +393,6 @@ export const JOB_CARD_MAP = {
             hurricaneAbility,
             snapfreezeShot,
         ],
-        starters: [spotWeakness, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
+        starters: [puppet, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },
 };

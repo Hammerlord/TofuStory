@@ -208,8 +208,15 @@ export const getUpdatedStats = ({
         const effects: CombatEffect[] = [];
         const failedToApplyEffects: CombatEffect[] = [];
 
+        const allActionEffects = [...actionEffects];
+        ((source?.source as CombatAbility)?.effects || []).forEach((e) => {
+            if (Array.isArray(e.effects)) {
+                allActionEffects.push(...e.effects);
+            }
+        });
+
         Array.from({ length: multiplier }).forEach(() => {
-            const effectsToAdd = actionEffects
+            const effectsToAdd = allActionEffects
                 .map((effect: String | Effect) => {
                     if (typeof effect === "string") {
                         return {

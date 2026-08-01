@@ -171,7 +171,7 @@ export const greaterChargingStone: Item = {
 
 export const honestyStone: Item = {
     name: "Honesty Stone",
-    description: "Attacking has a 25% chance to cause you or an ally to attack an extra time.",
+    description: "+30% chance to activate a bonus when drawing cards with the Critical effect.",
     image: HonestyStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -179,34 +179,7 @@ export const honestyStone: Item = {
             name: "Honesty Stone",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onAttack: {
-                disableTriggerFromProcs: true,
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                chance: 0.25,
-                multiplier: {
-                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                    type: MULTIPLIER_TYPES.RESOURCES_SPENT,
-                },
-                ability: {
-                    name: "Command",
-                    image: HonestyStoneImage,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.RANDOM_FRIENDLY,
-                            induceCombatantAttack: true,
-                            playbackTime: 250,
-                            conditions: [
-                                {
-                                    calculationTarget: CONDITION_TARGETS.TARGET,
-                                    name: "Scarecrow",
-                                    comparator: "not",
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
+            criticalChance: 0.3,
         },
     ],
 };

@@ -283,6 +283,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     maxResources?: number;
     // ONLY works for attack power. Hand/card/deck-based multipliers NOI implemented. See Wolf for an example of how this is used.
     multiplier?: Multiplier;
+    criticalChance?: number;
 };
 
 export type CombatEffect = Effect & {
@@ -877,6 +878,7 @@ export interface AbilityEffect {
     isLocked?: boolean; // The card becomes unplayable.
     highlightCard?: boolean; // A visual effect that gives the card a yellow border (the visual effect for a passing condition).
     onUse?: AbilityEvent;
+    effects?: Effect[];
 }
 
 export enum SELECT_CARD_TYPES {
