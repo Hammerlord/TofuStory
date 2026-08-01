@@ -174,6 +174,7 @@ export const honestyStone: Item = {
     description: "+30% chance to activate a bonus when drawing cards with the Critical effect.",
     image: HonestyStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.STARTER,
     effects: [
         {
             name: "Honesty Stone",
@@ -187,14 +188,12 @@ export const honestyStone: Item = {
 export const greaterHonestyStone: Item = {
     ...honestyStone,
     name: "Greater Honesty Stone",
-    description: "Attacking has a 33% chance to cause you or an ally to attack an extra time.",
+    description: "+40% chance to activate a bonus when drawing cards with the Critical effect.",
+    rarity: RARITIES.UNCOMMON,
     effects: [
         {
             ...honestyStone.effects[0],
-            onAttack: {
-                ...honestyStone.effects[0].onAttack,
-                chance: 0.4,
-            },
+            criticalChance: 0.4,
         },
     ],
 };
