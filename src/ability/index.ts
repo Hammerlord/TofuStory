@@ -38,6 +38,7 @@ import {
     takeCover,
     tragosAbility,
     treat,
+    turtleUp,
     volley,
     wayfind,
 } from "./bowman/bowmanAbilities";
@@ -392,6 +393,7 @@ export const JOB_CARD_MAP = {
             fireStarter,
             hurricaneAbility,
             snapfreezeShot,
+            turtleUp,
         ],
         starters: [puppet, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

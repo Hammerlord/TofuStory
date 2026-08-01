@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatantInfo } from "../../battle/types";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateArmor, calculateBonus, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
@@ -68,7 +68,12 @@ export const getArmorStatistics = ({
 
             return {
                 ...action,
-                armor: calculateArmor({ target: playerInfo, action, multiplier }),
+                armor: calculateArmor({
+                    target: playerInfo,
+                    action,
+                    multiplier,
+                    source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                }),
             };
         });
 

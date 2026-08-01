@@ -40,6 +40,7 @@ import {
     SoulArrowImage,
     SteelArrowImage,
     StrafeImage,
+    TortieShellImage,
     TragosImage,
     WeaponMasteryLGImage,
     WuTienEagleImage,
@@ -1807,6 +1808,53 @@ export const snapfreezeShot: Ability = {
             actions: [
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const turtleUp: Ability = {
+    name: "Turtle Up",
+    image: TortieShellImage,
+    resourceCost: 1,
+    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.armor }} {{{ _armor_ }}}",
+    rarity: RARITIES.UNCOMMON,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                armor: 2,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            armor: 5,
+            target: TARGET_TYPES.FRIENDLY,
+            type: ACTION_TYPES.EFFECT,
+            icon: TortieShellImage,
+            animation: ANIMATION_TYPES.YOYO,
+            animationOptions: {
+                ricochet: true,
+            },
+            area: 1,
+        },
+    ],
+    upgrades: [
+        {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        armor: 1,
+                    },
+                ],
+            },
+            actions: [
+                {
+                    armor: 2,
                 },
             ],
         },
