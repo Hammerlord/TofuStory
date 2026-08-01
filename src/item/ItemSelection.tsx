@@ -74,8 +74,8 @@ const ItemSelection = ({
         const itemSelection = items.filter((item: Item) => !alreadyObtained[item.name]);
 
         if (!disableItemReplacements) {
+            const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
             for (let i = itemSelection.length; i < numChoices; ++i) {
-                const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
                 const equipment = getRandomItem(itemPool);
                 if (equipment) {
                     itemSelection.push(equipment);

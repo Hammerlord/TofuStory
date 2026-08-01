@@ -109,8 +109,8 @@ const CardRewards = ({
             bonuses = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         }
 
+        const selectedRarity = rollRarity({ player, bonuses, disableRarities });
         Array.from({ length: numChoices - choices.length }).forEach(() => {
-            const selectedRarity = rollRarity({ player, bonuses, disableRarities });
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);

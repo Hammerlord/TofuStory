@@ -111,22 +111,37 @@ const ItemRewards = ({
 
         const items = (overrideItemChoices || []).filter((item: Item) => !alreadyObtained[item.name]);
         if (!overrideItemChoices && items.length < numChoicesOffered) {
-            Array.from({ length: numChoicesOffered - items.length }).forEach(() => {
-                let rareBonus = 0;
-                let uncommonBonus = 0;
-                if (rewardType === BATTLE_TYPES.BOSS) {
-                    rareBonus = BOSS_RARE_RATE;
-                    uncommonBonus = BOSS_UNCOMMON_RATE;
-                } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-                    rareBonus = ELITE_RARE_RATE;
-                    uncommonBonus = ELITE_UNCOMMON_RATE;
+            let rareBonus = 0;
+            let uncommonBonus = 0;
+            if (rewardType === BATTLE_TYPES.BOSS) {
+                rareBonus = BOSS_RARE_RATE;
+                uncommonBonus = BOSS_UNCOMMON_RATE;
+            } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
+                rareBonus = ELITE_RARE_RATE;
+                uncommonBonus = ELITE_UNCOMMON_RATE;
+            }
+            const itemPool = rollItemPool({
+                player,
+                bonuses: {
+                    rare: rareBonus,
+                    uncommon: ELITE_UNCOMMON_RATE,
+                },
+                excludeItems: items,
+            });
+
+            for (let i = 0; i < numChoicesOffered - items.length; i++) {
+                const index = Math.floor(Math.random() * itemPool.length);
+
+                if (index === undefined || itemPool.length === 0) {
+                    break;
                 }
-                const itemPool = rollItemPool({ player, bonuses: { rare: rareBonus, uncommon: ELITE_UNCOMMON_RATE }, excludeItems: items });
-                const equipment = getRandomItem(itemPool);
+
+                const [equipment] = itemPool.splice(index, 1);
+
                 if (equipment) {
                     items.push(equipment);
                 }
-            });
+            }
         }
 
         if (!items.length) {
