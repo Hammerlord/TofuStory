@@ -10,6 +10,7 @@ import {
     Ability,
     AbilityEffect,
     Action,
+    ActionOptionalProperties,
     AutoCastAbility,
     CONDITION_TARGETS,
     CombatAbility,
@@ -2173,47 +2174,56 @@ export const calculateTargetIndices = ({
     }, []);
 };
 
-export const stageSecondaryAction = ({ secondaryAction, getCalculationTarget, source, battle, actorData, statsProps }) => {
-    if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
-        return;
-    }
-
-    const { index: actorIndex, friendly = [], friendlySide } = actorData;
-    const recipientIndices = calculateTargetIndices({
-        action: { ...secondaryAction, type: ACTION_TYPES.EFFECT, target: TARGET_TYPES.SELF },
-        selectedIndex: actorIndex,
-        side: friendlySide,
-        actorData,
-        targetData: actorData,
-        battle,
-        source,
-    });
-    const recipientIds = recipientIndices.map((i: number) => friendly[i]?.id).filter((v) => v);
-
-    return getUpdatedStats({
-        ...statsProps,
-        // Only actor recipient is supported for now
-        recipientIds,
-        selectedIndex: undefined,
-        action: secondaryAction,
-    });
-};
-
 const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps }) => {
     return (dispatch, getState) => {
-        const actorData = findCombatantData(getState().battle, actorId);
-        const updatedSecondary = stageSecondaryAction({
-            secondaryAction,
-            getCalculationTarget,
-            source,
-            battle: getState().battle,
-            actorData,
-            statsProps: updatedStatsProps,
-        });
-        if (!updatedSecondary) {
+        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             return;
         }
 
+        const actorData = findCombatantData(getState().battle, actorId);
+        secondaryAction = {
+            ...secondaryAction,
+            type: secondaryAction.type || ACTION_TYPES.NONE,
+            target: secondaryAction.target || TARGET_TYPES.SELF,
+        };
+
+        const combatant = actorData?.combatant;
+        if (!combatant?.HP) {
+            return;
+        }
+
+        const battle = getState().battle;
+
+        const target = autoSelectActionTarget({
+            action: secondaryAction,
+            actorId: actorData?.combatant.id,
+            battle,
+        });
+
+        const targetId = battle[target?.side]?.[target.index]?.id;
+        const targetData = findCombatantData(battle, targetId);
+        if (!targetData) {
+            return [];
+        }
+
+        const recipientIndices = calculateTargetIndices({
+            action: secondaryAction,
+            selectedIndex: target.index,
+            side: target.side,
+            actorData,
+            targetData,
+            battle,
+            source,
+        });
+        const recipientIds = recipientIndices.map((i: number) => targetData.friendly[i]?.id).filter((v) => v);
+        const updatedSecondary = getUpdatedStats({
+            ...updatedStatsProps,
+            actorId,
+            targetIds: recipientIds,
+            recipientIds,
+            selectedIndex: target.index,
+            action: secondaryAction,
+        });
         dispatch(applyStatChanges(updatedSecondary.map(({ statUpdate }) => statUpdate)));
         if (secondaryAction.returnParentCardToHand) {
             // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
@@ -2237,6 +2247,8 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
                 })
             );
         }
+
+        dispatch(checkInduce({ action: secondaryAction, affectedTargetIds: recipientIds, parentSource: source }));
 
         return updatedSecondary;
     };
@@ -2348,10 +2360,6 @@ export const performAction = ({
             dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
         });
 
-        if (!secondaryAction?.isPriority) {
-            updatedSecondary = triggerSecondaryAction();
-        }
-
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
 
@@ -2384,7 +2392,12 @@ export const performAction = ({
             )
         );
 
+        if (!secondaryAction?.isPriority) {
+            updatedSecondary = triggerSecondaryAction();
+        }
+
         // *But don't trigger the related effect events until after the action has resolved
+
         hitEffects.forEach((statChanges) => {
             dispatch(
                 triggerStatChangeEvents(
@@ -2402,7 +2415,6 @@ export const performAction = ({
                 )
             );
         });
-
         // Same reasoning as hitEffects
         if (updatedSecondary) {
             dispatch(
