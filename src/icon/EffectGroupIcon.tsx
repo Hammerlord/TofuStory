@@ -413,6 +413,7 @@ const EffectGroupIcon = ({
                     disabled={disabled}
                 />
             }
+            disableInteractive={true}
         >
             {inner}
         </Tooltip>

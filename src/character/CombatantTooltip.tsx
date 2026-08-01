@@ -110,7 +110,7 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
     );
 
     return (
-        <Tooltip title={combatantTooltip} classes={{ tooltip: classes.tooltip }}>
+        <Tooltip title={combatantTooltip} classes={{ tooltip: classes.tooltip }} disableInteractive={true}>
             <div className={classes.tooltipAnchor} />
         </Tooltip>
     );
