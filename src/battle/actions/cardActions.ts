@@ -206,6 +206,18 @@ export const drawCards = ({
         }
 
         let handTooFull = false;
+        cardsToDraw = cardsToDraw.map((card) => {
+            const onDrawEffects = card.onDraw?.abilityEffects;
+            if (onDrawEffects) {
+                const totalCritChance = getTotalCritChance(playerSide);
+                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card, bonusChance: totalCritChance });
+            }
+            return {
+                ...card,
+                effects: [...(card.effects || []), ...effects],
+            };
+        });
+
         for (let card of cardsToDraw) {
             if (newHand.length > MAX_HAND_SIZE) {
                 newDiscard.push(card);
@@ -213,17 +225,7 @@ export const drawCards = ({
                 continue;
             }
 
-            const onDrawEffects = card.onDraw?.abilityEffects;
-            if (onDrawEffects) {
-                const totalCritChance = getTotalCritChance(playerSide);
-                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card, bonusChance: totalCritChance });
-            }
-            const existingEffects = card.effects || [];
-
-            newHand.push({
-                ...card,
-                effects: [...existingEffects, ...effects],
-            });
+            newHand.push(card);
         }
 
         if (handTooFull) {
@@ -251,6 +253,7 @@ export const drawCards = ({
         });
 
         dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, triggerSource: source }));
+
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -266,6 +269,7 @@ export const drawCards = ({
                 );
             }
         });
+
         if (deckCycled) {
             playerSide.concat(enemySide).forEach((combatant) => {
                 if (combatant) {

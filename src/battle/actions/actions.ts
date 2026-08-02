@@ -2397,7 +2397,6 @@ export const performAction = ({
         }
 
         // *But don't trigger the related effect events until after the action has resolved
-
         hitEffects.forEach((statChanges) => {
             dispatch(
                 triggerStatChangeEvents(

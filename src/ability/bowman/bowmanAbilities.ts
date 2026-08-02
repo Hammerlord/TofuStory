@@ -1882,11 +1882,14 @@ export const turtleUp: Ability = {
     ],
 };
 
+// These are really loose ways to check for the Critical keyword (existence of the onDraw.chance property, which for bowman at the moment only associates to Critical effects)
+// as well 'activated Critical' checking the first applied effect on that card, which may later mistake a different effect.
 export const maneuver: Ability = {
     name: "Maneuver",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: EvasionBoostImage,
+    overrideBodyText: true,
     description: "Draw a card. If it is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
     actions: [
         {
@@ -1898,7 +1901,7 @@ export const maneuver: Ability = {
                     {
                         conditions: [
                             {
-                                property: "onDraw",
+                                property: "onDraw.chance",
                                 comparator: "not",
                                 value: undefined,
                             },
@@ -1907,6 +1910,31 @@ export const maneuver: Ability = {
                     },
                 ],
             },
+        },
+    ],
+    upgrades: [
+        {
+            description:
+                "Draw a card. If it has <b>Critical</b>, gain {{{ _stamina_ }}}. If <b>Critical</b> activates, gain +1 {{{ _stamina_ }}}.",
+            actions: [
+                {
+                    drawCards: {
+                        bonus: [
+                            {},
+                            {
+                                conditions: [
+                                    {
+                                        property: "effects.0",
+                                        comparator: "not",
+                                        value: undefined,
+                                    },
+                                ],
+                                resources: 1,
+                            },
+                        ],
+                    },
+                },
+            ],
         },
     ],
 };

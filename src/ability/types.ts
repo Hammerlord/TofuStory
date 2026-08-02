@@ -739,6 +739,7 @@ export interface AbilityUpgrade {
             amount?: number;
             effects?: AbilityEffect[];
             filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
+            bonus?: CardBonus[];
         };
 
         area?: number;
