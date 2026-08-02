@@ -14,6 +14,7 @@ import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import {
     autoSelectActionTarget,
     checkEventTrigger,
+    checkValidEnemyTargeting,
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
@@ -141,8 +142,9 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
 
 // FIX ME: The recently used ability log also contains proc abilities, when we want just the ability the enemy used for its main turn
 const requeueRecentlyUsedAbility =
-    ({ combatantId, battle, isRecentlySummoned }: { combatantId: string; battle: BattleState; isRecentlySummoned: boolean }) =>
-    (dispatch) => {
+    ({ combatantId, isRecentlySummoned }: { combatantId: string; isRecentlySummoned: boolean }) =>
+    (dispatch, getState) => {
+        const battle = getState().battle;
         const actorInfo = findCombatantData(battle, combatantId);
         if (!actorInfo?.combatant?.HP) {
             return;
@@ -189,22 +191,17 @@ const requeueRecentlyUsedAbility =
             return;
         }
 
-        const updatedTargets = getUpdatedBattleActionTargets({ ability, battle, actorInfo });
-        battle = updatedTargets.battle;
-
         dispatch(
             updateCombatant({
                 combatantId,
                 newProperties: {
                     targeting: {
-                        actionTargets: updatedTargets.targets,
+                        actionTargets: [], // This is updated by checkValidEnemyTargeting() in the function that calls this
                         ability,
                     },
                 },
             })
         );
-
-        return battle;
     };
 
 export const getUpdatedBattleActionTargets = ({
@@ -416,7 +413,6 @@ export const enemyMoves = () => {
 
         dispatch(checkTurnResourceGain(getEnemySideInfo()));
 
-        let prevBattleState = getState().battle;
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
         const nextMoveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round: round + 1 });
@@ -428,13 +424,10 @@ export const enemyMoves = () => {
             }
 
             const isRecentlySummoned = !moveOrderIds.includes(combatantId);
-            const battleStateSnapshot =
-                dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId, battle: prevBattleState, isRecentlySummoned })) || {};
-            prevBattleState = {
-                ...prevBattleState,
-                ...battleStateSnapshot,
-            };
+            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId, isRecentlySummoned })) || {};
         });
+
+        dispatch(checkValidEnemyTargeting());
         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
     };
 };

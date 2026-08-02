@@ -1210,29 +1210,29 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
             if (!combatant?.HP) {
                 return;
             }
-
-            const ability = getNextTelegraphedAbility(enemyInfo);
-            if (!ability?.actions) {
+            const unableToAct = isTurnActionPrevented(enemyInfo) || !combatant.abilities?.length || combatant.cantMove;
+            if (unableToAct) {
                 return;
             }
 
             const currentTargeting = combatant.targeting;
-            const isSameAbilityAsBefore = ability.name === currentTargeting?.ability?.name;
+            const ability = currentTargeting?.ability;
+            if (!ability?.actions) {
+                return;
+            }
 
             let mutableUpdatedActionTargets = [];
             ability.actions.forEach((action, i) => {
                 let target;
-                if (isSameAbilityAsBefore) {
-                    const { side, index: currentTarIndex } = currentTargeting?.actionTargets?.[i] || {};
-                    const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo });
-                    if (validIndices.some((item) => item.side === side && item.index === currentTarIndex)) {
-                        target = currentTargeting?.actionTargets?.[i];
+                const { side, index: currentTarIndex } = currentTargeting?.actionTargets?.[i] || {};
+                const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo });
+                if (validIndices.some((item) => item.side === side && item.index === currentTarIndex)) {
+                    target = currentTargeting?.actionTargets?.[i];
 
-                        if (targetSwitch) {
-                            const randomTarget = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
-                            if (randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
-                                target = randomTarget;
-                            }
+                    if (targetSwitch) {
+                        const randomTarget = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
+                        if (randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
+                            target = randomTarget;
                         }
                     }
                 }
@@ -1243,9 +1243,10 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
 
                 mutableUpdatedActionTargets[i] = target;
 
-                // If it's still casting, it's not going to actually use the ability yet.
-                const unableToAct = isTurnActionPrevented(enemyInfo) || !combatant.abilities?.length || combatant.cantMove;
-                if (!unableToAct && (!ability.castTime || !combatant.casting?.castTime)) {
+                // If it's casting, it's not going to actually use the ability yet.
+                const castAboutToTrigger = (combatant.casting?.castTime || 0) === 1;
+                const notQueuingCast = !ability.castTime && !combatant.casting?.castTime;
+                if (castAboutToTrigger || notQueuingCast) {
                     const preview = previewAction({
                         actionFn: performAction({
                             action,
