@@ -120,7 +120,7 @@ const dancesWithBalrogWarLeap: Ability = {
             damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            effects: [bleed],
+            effects: [{ ...bleed, stacks: 2 }],
         },
     ],
 };

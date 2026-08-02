@@ -936,6 +936,7 @@ export const axeStump: Minion = {
     armor: 30,
     mesos: 25,
     abilities: [
+        loaf,
         {
             ...attack,
             actions: [
@@ -2823,34 +2824,6 @@ export const stirge: Minion = {
                     damage: 3,
                 },
             ],
-        },
-    ],
-    effects: [
-        {
-            name: "Flock",
-            description: "Summons a Stirge when it dies.",
-            icon: StirgeBackImage,
-            class: EFFECT_CLASSES.NONE,
-            type: EFFECT_TYPES.NONE,
-            onDeath: {
-                target: TARGET_TYPES.SELF,
-                ability: {
-                    image: StirgeBackImage,
-                    name: "Summon Stirge",
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
-                            resurrect: true,
-                            summon: [
-                                {
-                                    minion: ["Stirge"],
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
         },
     ],
 };
