@@ -214,11 +214,12 @@ const AbilityPreview = ({
     };
 
     const getPreviewElement = () => {
-        // FIX ME: bandaiding an issue where tribute kill has a double preview object.
         let isDeathBlowShown = false;
+        let totalHealthDamage = 0;
+        let isDefiniteKill = false;
         const inner = previewStatUpdate.map((preview, i) => {
             const { action, nondeterministic, statUpdate } = preview || {};
-            const { rawDamage = 0, effects = [], failedToApplyEffects = [], armor, resources = 0, isDeathBlow } = statUpdate;
+            const { rawDamage = 0, healthDamage, effects = [], failedToApplyEffects = [], armor, resources = 0, isDeathBlow } = statUpdate;
             const showDamage = action?.damage > 0 || rawDamage > 0;
             const showArmor = action?.armor > 0;
             const nothingToShow = !showDamage && !showArmor && !effects.length && !failedToApplyEffects.length && !resources;
@@ -226,32 +227,32 @@ const AbilityPreview = ({
                 return null;
             }
 
+            totalHealthDamage += healthDamage;
+
             const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
-            const isDefiniteKill = rawDamage === Infinity;
-            const showDeathBlow = isDeathBlow && !isDeathBlowShown;
+            if (rawDamage === Infinity) {
+                isDefiniteKill = true;
+            }
+            const showDeathBlow = (isDeathBlow && !isDeathBlowShown) || totalHealthDamage >= combatant?.HP || isDefiniteKill;
             if (showDeathBlow) {
                 isDeathBlowShown = true;
             }
 
-            if (isDefiniteKill) {
-                if (showDeathBlow) {
-                    return (
-                        <span key={i} className={classes.statUpdate}>
-                            <Icon icon={CrossbonesIcon} size={"xs"} />
-                        </span>
-                    );
-                }
-                return null;
-            }
+            const last = i == previewStatUpdate.length - 1;
 
             return (
                 <span key={i}>
-                    {effects.map((e, i) => (
-                        <span className={classes.previewIconContainer} key={[e.name, i].join("-")}>
-                            <Icon icon={e.icon} size="sm" />
-                            {e.stacks && <span className={classes.stacks}>{e.stacks}</span>}
-                        </span>
-                    ))}
+                    {effects.map((e, i) => {
+                        if (!e.icon) {
+                            return null;
+                        }
+                        return (
+                            <span className={classes.previewIconContainer} key={[e.name, i].join("-")}>
+                                <Icon icon={e.icon} size="sm" />
+                                {e.stacks && <span className={classes.stacks}>{e.stacks}</span>}
+                            </span>
+                        );
+                    })}
                     {failedToApplyEffects.map((e, i) => (
                         <span className={classNames(classes.previewIconContainer)} key={[e.name, i].join("-")}>
                             <Icon icon={e.icon} className={classes.immuned} size="sm" />
@@ -260,28 +261,26 @@ const AbilityPreview = ({
                         </span>
                     ))}
                     {showDivider && <span className={classes.divider} />}
-                    {showDamage && (
+                    {showDamage && !isDefiniteKill && (
                         <>
-                            {!isDefiniteKill && (
-                                <span className={classes.previewIconContainer}>
-                                    <Icon icon={CrossedSwordsIcon} size="sm" />
-                                </span>
-                            )}
+                            <span className={classes.previewIconContainer}>
+                                <Icon icon={CrossedSwordsIcon} size="sm" />
+                            </span>
                             <span
                                 className={classNames(classes.statUpdate, {
-                                    [classes.negative]: !isDeathBlow && rawDamage < action?.damage,
+                                    [classes.negative]: rawDamage < action?.damage,
                                 })}
                                 key={["damage-update", i].join("-")}
                             >
-                                {!isDefiniteKill && (rawDamage || 0)}
+                                {rawDamage || 0}
                                 {nondeterministic && "?"}{" "}
-                                {isDeathBlow && (
-                                    <span className={classes.lethalIcon}>
-                                        <Icon icon={CrossbonesIcon} size={"xs"} />
-                                    </span>
-                                )}
                             </span>
                         </>
+                    )}
+                    {last && isDeathBlowShown && (
+                        <span className={classNames(classes.statUpdate, classes.lethalIcon)}>
+                            <Icon icon={CrossbonesIcon} size={"xs"} />
+                        </span>
                     )}
                     {showArmor && (
                         <>
