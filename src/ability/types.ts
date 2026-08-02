@@ -779,9 +779,10 @@ export interface Ability {
     retain?: boolean;
     actions: Action[];
     tooltip?: {
-        title: string;
-        icon: string;
-        description: string;
+        title?: string;
+        icon?: string;
+        description?: string;
+        minion?: Minion;
     };
     minion?: Minion;
     minionOptions?: {
@@ -892,6 +893,7 @@ export interface AbilityEffect {
     reusable?: boolean; // The card becomes reusable while this effect persists.
     isLocked?: boolean; // The card becomes unplayable.
     highlightCard?: boolean; // A visual effect that gives the card a yellow border (the visual effect for a passing condition).
+    bypassUnplayable?: boolean;
     onUse?: AbilityEvent;
     effects?: Effect[];
 }

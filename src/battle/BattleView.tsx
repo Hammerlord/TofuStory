@@ -380,7 +380,8 @@ const BattlefieldContainer = () => {
         const ability = getCardByInstanceId(hand, id);
 
         if (!allowMoveCardFromHandToDeck) {
-            if (ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
+            const isUnplayable = ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
+            if (isUnplayable || ability.effects?.some((e) => e.isLocked)) {
                 warn(battleWarnings.unplayable);
                 return;
             }

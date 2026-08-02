@@ -175,7 +175,8 @@ export const hasEffectType = (target: CombatantInfo | undefined, effectType: EFF
  * Player conditional helpers
  */
 export const canUseAbility = (character: Combatant, ability: CombatAbility | undefined): boolean => {
-    if (!character || !ability || ability.unplayable || ability.effects?.some((e) => e.isLocked)) {
+    const isUnplayable = ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
+    if (!character || !ability || isUnplayable || ability.effects?.some((e) => e.isLocked)) {
         return false;
     }
 

@@ -5,6 +5,7 @@ import {
     ArrowEruptionImage,
     ArrowRainImage,
     AvengersArrowImage,
+    BlazingExtinctionImage,
     BlockImage,
     BowExpertImage,
     BroilerShotImage,
@@ -18,6 +19,7 @@ import {
     DrainArrowImage,
     EvasionBoostImage,
     FinalAttackImage,
+    FireMarbleImage,
     FocusImage,
     FrozenArrowImage,
     HamstringImage,
@@ -31,6 +33,8 @@ import {
     MarksmanshipImage,
     MeatImage,
     MortalBlowImage,
+    PhoenixEggImage,
+    PhoenixImage,
     PiercingArrowImage,
     PowerKnockbackImage,
     ScarecrowImage,
@@ -1967,6 +1971,90 @@ export const peckingOrder: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+const fireBurst: Ability = {
+    name: "Fire Burst",
+    image: BlazingExtinctionImage,
+    actions: [
+        {
+            damage: 3,
+            area: 2,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            icon: FireMarbleImage,
+            animationOptions: {
+                width: 75,
+                height: 75,
+                fadeOut: true,
+                brightness: 1.2,
+                opacity: 0.5,
+            },
+            secondaryAction: {
+                damage: 1,
+            },
+            effects: [{ ...burn }],
+        },
+    ],
+};
+
+const phoenix: Minion = {
+    name: "Phoenix",
+    maxHP: 1,
+    armor: 30,
+    abilities: [fireBurst],
+    image: PhoenixImage,
+    description: "<b>On death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
+    effects: [
+        {
+            name: "Blazing Bird",
+            description: "When this character is summoned and when it dies, it will attack. Deals 1 damage to itself with each attack.",
+            icon: BlazingExtinctionImage,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onDeath: {
+                ability: fireBurst,
+                usableWhileDead: true,
+            },
+        },
+    ],
+};
+
+export const phoenixEgg: Ability = {
+    name: "Phoenix Egg",
+    rarity: RARITIES.RARE,
+    image: PhoenixEggImage,
+    onDraw: {
+        abilityEffects: [
+            {
+                bypassUnplayable: true,
+                highlightCard: true,
+            },
+        ],
+    },
+    minion: phoenix,
+    resourceCost: 1,
+    unplayable: true,
+    description: "<b>Critical:</b> Playable. Summon a Phoenix.",
+    actions: [],
+    tooltip: {
+        minion: phoenix,
+    },
+    upgrades: [
+        {
+            minion: {
+                description: "<b>On summon</b> and <b>death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
+                effects: [
+                    {
+                        onSummon: {
+                            ability: fireBurst,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

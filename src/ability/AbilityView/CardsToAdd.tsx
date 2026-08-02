@@ -25,7 +25,8 @@ const CardsToAdd = ({ ability, isInline, player }: { ability: { actions: Action[
         addCards = {},
         addCardsToDeck = {},
         addCardsToDiscard = {},
-    } = ability.actions.reduce((acc, { addCards = [], addCardsToDeck = [], addCardsToDiscard = [], addLastPlayedCards }) => {
+    } = ability.actions.reduce((acc, current: Action) => {
+        const { addCards = [], addCardsToDeck = [], addCardsToDiscard = [], addLastPlayedCards } = current;
         if (!acc.addCards) {
             acc.addCards = {};
         }

@@ -113,6 +113,18 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
         tooltips.push(<TooltipSection {...chargedTooltip} key={chargedTooltip.title} />);
     }
 
+    const minionTooltip = ability.tooltip?.minion;
+    if (minionTooltip) {
+        const minionCardDisplay = {
+            name: minionTooltip.name,
+            description: minionTooltip.description,
+            minion: minionTooltip,
+            actions: [],
+            overrideBodyText: true,
+        };
+        cardsToAddMap[minionTooltip.name] = minionCardDisplay;
+    }
+
     const cardsToAdd = Object.values(cardsToAddMap);
     if (cardsToAdd.length > 0) {
         tooltips.push(

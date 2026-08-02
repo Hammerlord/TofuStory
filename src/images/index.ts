@@ -519,6 +519,8 @@ export { default as PerionStreetImage } from "./PerionStreet.png";
 export { default as PerionTradingPostImage } from "./PerionTradingPost.png";
 export { default as PerionWarriorHallImage } from "./PerionWarriorHall.png";
 export { default as PersonalAnvilImage } from "./PersonalAnvil.png";
+export { default as PhoenixImage } from "./Phoenix.gif";
+export { default as PhoenixEggImage } from "./PhoenixEgg.png";
 export { default as PicoPicoHammerImage } from "./PicoPicoHammer.png";
 export { default as PieceOfBirthdayCakeImage } from "./PieceOfBirthdayCake.png";
 export { default as PieceOfIceImage } from "./PieceOfIce.png";

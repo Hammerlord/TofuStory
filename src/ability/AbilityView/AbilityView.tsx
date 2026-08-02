@@ -279,7 +279,7 @@ const AbilityView = forwardRef(
             effects = [],
         } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets, addLastPlayedCards } = actions[0] || {};
-        const cardImage = minion?.image || image;
+        const cardImage = image || minion?.image;
         let imageNode = null;
 
         if (typeof cardImage === "string") {
