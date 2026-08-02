@@ -146,7 +146,7 @@ const requeueRecentlyUsedAbility =
     (dispatch, getState) => {
         const battle = getState().battle;
         const actorInfo = findCombatantData(battle, combatantId);
-        if (!actorInfo?.combatant?.HP) {
+        if (!actorInfo?.combatant?.HP || !actorInfo?.combatant?.abilities?.length) {
             return;
         }
 
