@@ -2225,6 +2225,7 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
             action: secondaryAction,
         });
         dispatch(applyStatChanges(updatedSecondary.map(({ statUpdate }) => statUpdate)));
+
         if (secondaryAction.returnParentCardToHand) {
             // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
             const ability: CombatAbility | undefined = parentSource?.source as CombatAbility;
@@ -2247,6 +2248,14 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
                 })
             );
         }
+        dispatch(
+            triggerStatChangeEvents(
+                updatedSecondary.map(({ statUpdate }) => ({
+                    statUpdate,
+                    source,
+                }))
+            )
+        );
 
         dispatch(checkInduce({ action: secondaryAction, affectedTargetIds: recipientIds, parentSource: source }));
 
