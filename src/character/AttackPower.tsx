@@ -38,7 +38,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
+const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; isEnemy: boolean }) => {
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
@@ -51,7 +51,7 @@ const AttackPower = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     }
 
     const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
-    const abilityToUse = casting?.ability || targeting?.ability || getNextTelegraphedAbility(combatantInfo);
+    const abilityToUse = isEnemy ? casting?.ability || targeting?.ability : combatant?.abilities?.[0];
 
     const defaultActionStats = { damage: 0, timesToAttack: 0 };
     const { damage, timesToAttack } =

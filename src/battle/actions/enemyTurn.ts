@@ -142,7 +142,7 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
 
 // FIX ME: The recently used ability log also contains proc abilities, when we want just the ability the enemy used for its main turn
 const requeueRecentlyUsedAbility =
-    ({ combatantId, isRecentlySummoned }: { combatantId: string; isRecentlySummoned: boolean }) =>
+    ({ combatantId }: { combatantId: string }) =>
     (dispatch, getState) => {
         const battle = getState().battle;
         const actorInfo = findCombatantData(battle, combatantId);
@@ -161,29 +161,27 @@ const requeueRecentlyUsedAbility =
             let abilityIndex = -1;
             if (abilityUsed) {
                 abilityIndex = actor.abilities.findIndex((ability) => ability.name === abilityUsed?.name);
-            } else if (!isRecentlySummoned) {
+            } else {
                 abilityIndex = getUseAbilityIndex(actorInfo);
             }
 
-            if (abilityIndex !== -1) {
-                const updatedAbilities = [...actor.abilities];
-                const [used] = updatedAbilities.splice(abilityIndex, 1);
-                updatedAbilities.push(used);
+            const updatedAbilities = [...actor.abilities];
+            const [used] = updatedAbilities.splice(abilityIndex, 1);
+            updatedAbilities.push(used);
 
-                dispatch(
-                    updateCombatant({
-                        combatantId,
-                        newProperties: {
-                            abilities: updatedAbilities,
-                        },
-                    })
-                );
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        abilities: updatedAbilities,
+                    },
+                })
+            );
 
-                postUpdateActorInfo.combatant = {
-                    ...actorInfo.combatant,
-                    abilities: updatedAbilities,
-                };
-            }
+            postUpdateActorInfo.combatant = {
+                ...actorInfo.combatant,
+                abilities: updatedAbilities,
+            };
         }
 
         const ability = getNextTelegraphedAbility(postUpdateActorInfo);
@@ -298,7 +296,7 @@ export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
 
-        const { playerSide, enemySide } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
+        const { playerSide, enemySide, round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
         const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
         dispatch(
@@ -331,6 +329,21 @@ export const endEnemyTurn = () => {
                 }),
             })
         );
+
+        // Queue the next ability unless the combatant is channeling.
+        // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
+        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: getState().battle.enemySide, round: round + 1 });
+
+        nextMoveOrderIds.forEach((combatantId) => {
+            const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
+            if (!combatant?.HP) {
+                return;
+            }
+
+            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId })) || {};
+        });
+
+        dispatch(checkValidEnemyTargeting());
     };
 };
 
@@ -412,22 +425,6 @@ export const enemyMoves = () => {
         }
 
         dispatch(checkTurnResourceGain(getEnemySideInfo()));
-
-        // Queue the next ability unless the combatant is channeling.
-        // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round: round + 1 });
-
-        nextMoveOrderIds.forEach((combatantId) => {
-            const combatant = enemySide.find((enemy) => enemy?.id === combatantId);
-            if (!combatant?.HP) {
-                return;
-            }
-
-            const isRecentlySummoned = !moveOrderIds.includes(combatantId);
-            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId, isRecentlySummoned })) || {};
-        });
-
-        dispatch(checkValidEnemyTargeting());
         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
     };
 };

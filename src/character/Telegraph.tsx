@@ -180,7 +180,7 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     }
 
     const { channelDuration, castTime: castingCastTime } = combatant?.casting || {};
-    const ability = combatant.targeting?.ability || getNextTelegraphedAbility(combatantInfo);
+    const ability = combatant.targeting?.ability;
 
     if (!ability) {
         return null;

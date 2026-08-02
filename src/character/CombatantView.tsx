@@ -600,7 +600,7 @@ const CombatantView = forwardRef(
 
                                 <div className={classes.rightContainer}>
                                     {getExtraContainerIcons("right")}
-                                    <AttackPower combatantInfo={combatantInfo} />
+                                    <AttackPower combatantInfo={combatantInfo} isEnemy={isEnemy}/>
                                     {/** Update resources immediately as skills are used: UX issue where lagging resource feedback misleads people into thinking they have more/less resources */}
                                     {combatant?.isPlayer && (
                                         <PlayerResources player={findCombatantData(battle, oldState?.id)?.combatant as Player} />
