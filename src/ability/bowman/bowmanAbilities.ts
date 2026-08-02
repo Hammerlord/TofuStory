@@ -8,6 +8,7 @@ import {
     BlockImage,
     BowExpertImage,
     BroilerShotImage,
+    ChickenCouponImage,
     ConcentrateImage,
     CoveringFireImage,
     CrowImage,
@@ -395,7 +396,7 @@ export const eagle: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 2,
+                        damage: 3,
                         effects: [{ ...bleed, stacks: 1 }],
                     },
                 ],
@@ -1433,7 +1434,7 @@ export const quickShot: Ability = {
 
 const crow: Minion = {
     name: "Crow",
-    maxHP: 6,
+    maxHP: 5,
     image: CrowImage,
     description: "<b>Avenger.</b>",
 
@@ -1932,6 +1933,37 @@ export const maneuver: Ability = {
                                 resources: 1,
                             },
                         ],
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const peckingOrder: Ability = {
+    name: "Pecking Order",
+    resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
+    image: ChickenCouponImage,
+    overrideBodyText: true,
+    description: "Deal <b>{{ actions.0.damage }} {{{ _damage_ }}}</b> to a friendly unit. Draw {{ actions.0.drawCards.amount }} cards.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            damage: 5,
+            drawCards: {
+                amount: 3,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                    drawCards: {
+                        amount: 1,
                     },
                 },
             ],

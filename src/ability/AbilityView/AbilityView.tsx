@@ -584,7 +584,7 @@ const AbilityView = forwardRef(
                                         Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
                                     </div>
                                 )}
-                                {selfDamage > 0 && (
+                                {!overrideBodyText && selfDamage > 0 && (
                                     <div>
                                         Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
                                     </div>
