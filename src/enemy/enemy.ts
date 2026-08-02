@@ -263,7 +263,7 @@ export const redSnail: Minion = {
         {
             name: "Rollout",
             image: RedSnailShellImage,
-            description: "Bounces to 2 other targets for 2 damage.",
+            description: "Bounces to 2 other targets for 1 damage.",
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -271,7 +271,7 @@ export const redSnail: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    secondaryDamage: 2,
+                    secondaryDamage: 1,
                     animation: ANIMATION_TYPES.YOYO,
                     animationOptions: {
                         ricochet: true,

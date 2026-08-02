@@ -378,7 +378,7 @@ export const manoEnemy: Minion = {
             name: "Rollout",
             image: RedSnailShellImage,
             castTime: 1,
-            channelDuration: 3,
+            channelDuration: 2,
             resourceCost: 3,
             actions: [
                 {
@@ -389,9 +389,9 @@ export const manoEnemy: Minion = {
                         ricochet: true,
                     },
                     playbackTime: 750,
-                    description: "Bounces to 2 other targets for 3 damage.",
-                    damage: 5,
-                    secondaryDamage: 3,
+                    description: "Bounces to 2 other targets for 2 damage.",
+                    damage: 6,
+                    secondaryDamage: 2,
                     numTargets: 2,
                     targetArea: 2,
                 },
@@ -400,19 +400,19 @@ export const manoEnemy: Minion = {
         {
             name: "Withdraw",
             image: BlueSnailShellImage,
-            channelDuration: 2,
             resourceCost: 3,
+            description: "Sacrifices up to 10 HP to gain 20 Armor",
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    armor: 10,
-                    effects: [
-                        {
-                            ...thorns,
-                            duration: 2,
-                        },
-                    ],
+                    armor: 20,
+                    secondaryAction: {
+                        damage: 10,
+                        bypassArmor: true,
+                        isPriority: true,
+                        targetMinHP: 1,
+                    },
                 },
             ],
         },

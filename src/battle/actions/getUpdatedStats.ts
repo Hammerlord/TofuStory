@@ -106,6 +106,7 @@ export const getUpdatedStats = ({
             targetMinHP = 0,
             decayArmor = false,
             damageDividedByTargets = false,
+            bypassArmor = false,
         } = action;
 
         const enabledEffects = getEnabledEffects({ combatantInfo: target });
@@ -136,10 +137,10 @@ export const getUpdatedStats = ({
             totalArmor += halveArmorAmount;
         }
 
-        const updatedTargetArmor = Math.max(0, totalArmor - damage);
+        const updatedTargetArmor = Math.max(0, bypassArmor ? totalArmor : totalArmor - damage);
         const armorGained = updatedTargetArmor - targetCombatant.armor;
         const targetApplicableHP = targetCombatant.HP - targetMinHP;
-        const healthDamage = Math.min(targetApplicableHP, Math.max(0, damage - totalArmor));
+        const healthDamage = Math.min(targetApplicableHP, Math.max(0, bypassArmor ? damage : damage - totalArmor));
         const rawDamage = damage;
 
         let rawHealing = 0;

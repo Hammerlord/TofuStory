@@ -555,8 +555,9 @@ export type CardBonus = {
 export type Action = {
     damage?: number;
     maxDamage?: number;
-    secondaryDamage?: number;
+    secondaryDamage?: number; // Damage dealt to the secondary targets of an area ability (excluding the primary target)
     flatDamage?: number; // Deal damage that is not affected by any modifiers except multiplier
+    bypassArmor?: boolean; // Damage ignores armor.
     damageDividedByTargets?: boolean; // Eg. if an AoE attack does 6 damage and there are 3 targets, it deals 2 damage per target. Rounded up, so 5 damage -> 2, 2, 2
     targetMinHP?: number; // Target will stay at this HP if the damage would otherwise bring it below, see Stay of Execution
     type?: ACTION_TYPES;
