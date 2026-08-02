@@ -14,9 +14,11 @@ import {
     CombatEffect,
     Comparator,
     EFFECT_EVENT_KEYS,
+    Effect,
     MoveCards,
     SELECT_CARD_TYPES,
     SelectCards,
+    TARGET_TYPES,
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../utils";
@@ -27,7 +29,15 @@ import getCardSelection from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
-import { applyStatChanges, checkEventTrigger, findCombatantData, updateCombatant, useAbility } from "./actions";
+import {
+    applyStatChanges,
+    checkEventTrigger,
+    findCombatantData,
+    stageStatChanges,
+    triggerStatChangeEvents,
+    updateCombatant,
+    useAbility,
+} from "./actions";
 import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
 import { getUpdatedStats } from "./getUpdatedStats";
 
@@ -148,6 +158,43 @@ const handleCardActionBonus = ({
     };
 };
 
+const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: CombatAbility; effects: Effect[] }) => {
+    return (dispatch, getState) => {
+        const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+
+        const updated = getUpdatedStats({
+            ...getState().battle,
+            action: {
+                type: ACTION_TYPES.EFFECT,
+                target: TARGET_TYPES.SELF,
+                effects,
+            },
+            actorId: player.id,
+            targetIds: [player.id],
+            actionParent: ability,
+            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            getCombatantById: (id) => findCombatantData(getState().battle, id),
+        });
+
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+        dispatch(
+            triggerStatChangeEvents(
+                updated.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    source: {
+                        source: action,
+                        type: TRIGGER_SOURCE_TYPES.EFFECT,
+                        actorId: player.id,
+                        targetId: player.id,
+                        statUpdate,
+                        triggerHistory: [],
+                    },
+                }))
+            )
+        );
+    };
+};
+
 export const drawCards = ({
     effects = [],
     filters = [],
@@ -243,11 +290,19 @@ export const drawCards = ({
         cardsToDraw.forEach((card: CombatAbility) => {
             const onDraw = card.onDraw;
             if (onDraw) {
-                const { chance = 1, ability } = onDraw;
+                const { chance = 1, ability, effects } = onDraw;
 
-                if (ability && passesChance(chance)) {
-                    const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
-                    dispatch(useAbility({ ability, actorId: player?.id, isProc: true }));
+                if (!passesChance(chance)) {
+                    return;
+                }
+
+                if (ability) {
+                    const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+                    dispatch(useAbility({ ability, actorId: player.id, isProc: true }));
+                }
+
+                if (effects) {
+                    dispatch(triggerCardActionCombatantBonuses({ ability: card, effects }));
                 }
             }
         });

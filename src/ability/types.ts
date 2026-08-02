@@ -766,6 +766,7 @@ export interface AbilityEvent {
     chance?: number;
     abilityEffects?: AbilityEffect[];
     ability?: Ability;
+    effects?: Effect[];
     conditions?: Condition[];
     // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
     mode?: "random-pick";

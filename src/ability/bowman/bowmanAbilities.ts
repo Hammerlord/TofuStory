@@ -49,6 +49,7 @@ import {
     TortieShellImage,
     TragosImage,
     WeaponMasteryLGImage,
+    WoodenSlingshotImage,
     WuTienEagleImage,
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
@@ -2028,6 +2029,7 @@ export const phoenixEgg: Ability = {
     rarity: RARITIES.RARE,
     image: PhoenixEggImage,
     onDraw: {
+        chance: 0,
         abilityEffects: [
             {
                 bypassUnplayable: true,
@@ -2055,6 +2057,54 @@ export const phoenixEgg: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const potShot: Ability = {
+    name: "Pot Shot",
+    description: "<b>Critical:</b> This card enters your hand next turn.",
+    rarity: RARITIES.COMMON,
+    image: WoodenSlingshotImage,
+    onDraw: {
+        chance: 0,
+        effects: [
+            {
+                name: "Draw Pot Shot",
+                type: EFFECT_TYPES.NONE,
+                class: EFFECT_CLASSES.NONE,
+                onTurnDraw: {
+                    drawOriginalAbility: true,
+                    // HACK: onTurnDraw happens immediately after onDraw procs, but we need it to be on the next turn's draw, hence the trigger frequency is 2
+                    eventTriggerFrequency: 2,
+                    removeEffect: true,
+                },
+            },
+        ],
+        abilityEffects: [
+            {
+                highlightCard: true,
+            },
+        ],
+    },
+    resourceCost: 0,
+    actions: [
+        {
+            damage: 6,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            icon: AvengersArrowImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            animationOptions: bowmanAnimationOption,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
