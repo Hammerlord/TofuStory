@@ -13,7 +13,13 @@ import { validate as uuidValidate } from "uuid";
 
 export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
 
-export const previewAction = ({ actionFn, battle }) => {
+export const previewAction = ({
+    actionFn,
+    battle,
+}: {
+    actionFn: (dispatch, getState) => void;
+    battle: BattleState;
+}): { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } } => {
     const statUpdates = {};
 
     const dispatch = (arg) => {
@@ -154,7 +160,7 @@ const getAbilityPreviews = ({
         targetIndex,
     }: {
         targetsRandomly?: boolean;
-        previews;
+        previews: { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } };
         targetIndex?: number;
     }) => {
         previousCombatantStates.playerSide = previews.battle.playerSide;
@@ -186,7 +192,7 @@ const getAbilityPreviews = ({
                 const { index } = combatantInfo;
                 const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
-                const isProcHostileAction = previews.battle.source?.isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
+                const isProcHostileAction = statUpdate.source?.isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
 
                 result[id].push({
                     statUpdate,

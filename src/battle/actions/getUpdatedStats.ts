@@ -47,6 +47,7 @@ export interface UpdatedCombatantStats {
     isArmorBroken?: boolean;
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
     overkill?: number;
+    source?: TriggerSource;
 }
 
 export const getUpdatedStats = ({
@@ -291,6 +292,7 @@ export const getUpdatedStats = ({
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
             failedToApplyEffects,
+            source,
         };
 
         return {
