@@ -265,6 +265,7 @@ export const mutantSnailEnemy: Minion = {
                                 minion: blueMinionSnail,
                             },
                         ],
+                        setOriginalHealthPercentage: true,
                     },
                 },
             ],

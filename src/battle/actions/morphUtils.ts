@@ -152,7 +152,7 @@ export const getMorphMap = ({
     source: TriggerSource;
     summoner: CombatantInfo;
 }) => {
-    const { minions } = morph;
+    const { minions, setOriginalHealthPercentage } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide } = summoner || targets[0] || {};
     if (!friendly) {
@@ -181,6 +181,11 @@ export const getMorphMap = ({
                 const summon = { ...createCombatant(minionToSummon), id: combatant.id };
                 if (storeTarget) {
                     summon.effects.push(getStoredTargetEffect({ combatant, duration: turnLimit }));
+                }
+
+                if (setOriginalHealthPercentage) {
+                    const originalPercentage = (combatant?.HP || 1) / (combatant?.maxHP || 1);
+                    summon.HP = Math.ceil(summon.HP * originalPercentage);
                 }
 
                 summons.push(summon);

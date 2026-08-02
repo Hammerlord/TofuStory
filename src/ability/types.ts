@@ -503,6 +503,9 @@ export interface Morph {
         // After this many turns, the original target/summoner will be restored. Requires storeTarget or storeSummoner to be true.
         turnLimit?: number;
     }[];
+    // The morph target will have the same HP % as the original character, rounded up.
+    setOriginalHealthPercentage?: boolean;
+    // Mathematical modifiers for individual character properties.
     modifiers?: {
         HP?: MORPH_MINION_MODIFIERS;
         maxHP?: MORPH_MINION_MODIFIERS;
