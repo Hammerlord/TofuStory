@@ -229,8 +229,21 @@ const minionAutoAttack = () => {
 
 export const playerEndTurn = () => {
     return (dispatch, getState) => {
-        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
+        // Order matters: discard first, so that any lingering minion attacks that result in a card draw don't have that card immediately discarded
+        // Then, tick down end turn triggers so that buffs don't fall off before minions can attack
+        const { discard, hand } = getState().battle;
+        const newHand = hand.filter((card: CombatAbility) => card.retain);
+        const cardsToDiscard = hand.filter((card: CombatAbility) => !card.retain);
+
+        dispatch(
+            updateBattle({
+                discard: [...prepareForDiscard(cardsToDiscard), ...discard],
+                hand: newHand,
+            })
+        );
+
         dispatch(minionAutoAttack());
+        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
         const { playerSide, enemySide } = getState().battle; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
         const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
@@ -258,17 +271,6 @@ export const playerEndTurn = () => {
 
                     return combatant;
                 }),
-            })
-        );
-
-        const { discard, hand } = getState().battle;
-        const newHand = hand.filter((card: CombatAbility) => card.retain);
-        const cardsToDiscard = hand.filter((card: CombatAbility) => !card.retain);
-
-        dispatch(
-            updateBattle({
-                discard: [...prepareForDiscard(cardsToDiscard), ...discard],
-                hand: newHand,
             })
         );
     };
