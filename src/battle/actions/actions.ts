@@ -31,6 +31,8 @@ import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomInt, getRandomItem, passesChance, shuffle } from "../../utils";
 import {
+    dotAbilityMap,
+    dotDamageMap,
     MULTI_ACTION_PLAYBACK_SPEED,
     NORMAL_ACTION_PLAYBACK_SPEED,
     RANGED_ACTION_PLAYBACK_SPEED,
@@ -468,30 +470,6 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
 export const handleDoTs =
     ({ combatantIds, side }: { combatantIds: string[]; side: BATTLEFIELD_SIDES }) =>
     (dispatch, getState) => {
-        const dotDamageMap = {
-            [EFFECT_TYPES.BLEED]: 1,
-            [EFFECT_TYPES.POISON]: 1,
-            [EFFECT_TYPES.BURN]: 3,
-        };
-
-        const dotAbilityMap = {
-            [EFFECT_TYPES.BLEED]: {
-                name: "Bleed",
-                image: BloodIcon,
-                actions: [],
-            },
-            [EFFECT_TYPES.POISON]: {
-                name: "Poison",
-                image: PoisonImage,
-                actions: [],
-            },
-            [EFFECT_TYPES.BURN]: {
-                name: "Burn",
-                image: FireIcon,
-                actions: [],
-            },
-        };
-
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
             const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] = [];
 

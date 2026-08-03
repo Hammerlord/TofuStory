@@ -1,3 +1,7 @@
+import { EFFECT_TYPES } from "../ability/types";
+import { PoisonImage } from "../images";
+import { BloodIcon, FireIcon } from "../images/icons";
+
 export const MAX_HAND_SIZE = 9;
 export const BASE_RESOURCES_PER_TURN = 3;
 export const BASE_MAX_RESOURCES = 4;
@@ -28,4 +32,28 @@ export const battleWarnings = {
     targetTaunt: "You must target the enemy that has Taunt.",
     handFull: "Your hand is too full!",
     untargetable: "That character cannot be targeted.",
+};
+
+export const dotDamageMap = {
+    [EFFECT_TYPES.BLEED]: 1,
+    [EFFECT_TYPES.POISON]: 1,
+    [EFFECT_TYPES.BURN]: 2,
+};
+
+export const dotAbilityMap = {
+    [EFFECT_TYPES.BLEED]: {
+        name: "Bleed",
+        image: BloodIcon,
+        actions: [],
+    },
+    [EFFECT_TYPES.POISON]: {
+        name: "Poison",
+        image: PoisonImage,
+        actions: [],
+    },
+    [EFFECT_TYPES.BURN]: {
+        name: "Burn",
+        image: FireIcon,
+        actions: [],
+    },
 };
