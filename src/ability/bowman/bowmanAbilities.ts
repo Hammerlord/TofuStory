@@ -38,6 +38,7 @@ import {
     PhoenixImage,
     PiercingArrowImage,
     PowerKnockbackImage,
+    RoastingShotImage,
     ScarecrowImage,
     SharpEyesImage,
     ShatteringArrowImage,
@@ -2119,6 +2120,62 @@ export const potShot: Ability = {
             actions: [
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const roastingShot: Ability = {
+    name: "Roasting Shot",
+    depletedOnUse: true,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>. When the target dies, gain a <b>Treat</b>.",
+    overrideBodyText: true,
+    image: RoastingShotImage,
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 1,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: AvengersArrowImage,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            animationOptions: bowmanAnimationOption,
+            damage: 3,
+            effects: [
+                {
+                    ...burn,
+                    stacks: 4,
+                },
+                {
+                    name: "Roasting Alive",
+                    icon: MeatImage,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.DEBUFF,
+                    onDeath: {
+                        usableWhileDead: true,
+                        usableWhileStunned: true,
+                        addCards: [
+                            {
+                                ...treat,
+                                resourceCost: 0,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
