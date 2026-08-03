@@ -542,6 +542,7 @@ export { default as PoisonBreathImage } from "./PoisonBreath.png";
 export { default as PolearmImage } from "./Polearm.png";
 export { default as PowerKnockbackImage } from "./PowerKnockback.png";
 export { default as PowerStanceImage } from "./PowerStance.png";
+export { default as PrettyPinkBeanBalloonImage } from "./PrettyPinkBeanBalloon.png";
 export { default as ProofOfAHeroImage } from "./ProofOfAHero.png";
 export { default as PunctureImage } from "./Puncture.png";
 export { default as PuppetreeImage } from "./Puppetree.png";

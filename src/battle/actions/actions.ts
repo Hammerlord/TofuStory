@@ -585,17 +585,18 @@ const checkUpdateEffectLifecycle =
         ownerId: string;
     }) =>
     (dispatch, getState) => {
-        const { removeEffect, decrementStacks = 0, resetDuration } = effectEvent;
+        const { removeEffect, decrementStacks = 0, incrementStacks = 0, resetDuration } = effectEvent;
 
-        const updatedEffect = {
-            ...effect,
-            stacks: (effect.stacks || 1) - (decrementStacks || 0),
-            duration: resetDuration ? effect.originalDuration : effect.duration,
-        };
         const { combatant } = findCombatantData(getState().battle, ownerId) || {};
         if (!combatant) {
             return;
         }
+
+        const updatedEffect = {
+            ...effect,
+            stacks: (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0),
+            duration: resetDuration ? effect.originalDuration : effect.duration,
+        };
 
         if (removeEffect || updatedEffect.stacks === 0) {
             const removedEffects = [];
@@ -607,7 +608,7 @@ const checkUpdateEffectLifecycle =
             return;
         }
 
-        if ((decrementStacks && updatedEffect.stacks > 0) || resetDuration) {
+        if ((decrementStacks && updatedEffect.stacks > 0) || resetDuration || incrementStacks) {
             const newEffects = combatant.effects.map((e: CombatEffect) => {
                 return e.id === effect.id ? updatedEffect : e;
             });
@@ -633,7 +634,7 @@ const onEffectEventTrigger = ({
             return;
         }
 
-        const { canBeSilenced } = effect;
+        const { canBeSilenced, stacks } = effect;
         const {
             removeEffect,
             targetType,
@@ -739,8 +740,23 @@ const onEffectEventTrigger = ({
                 break $applyStatChanges;
             }
 
+            let effects = [];
+            if (Array.isArray(other.effects)) {
+                effects = other.effects.map((e) => {
+                    if (typeof e === "string") {
+                        return e;
+                    }
+
+                    const totalStacks = (e.stacks || 1) * (stacks || 1);
+                    return { ...e, stacks: totalStacks };
+                });
+            }
+
+            console.log("effects to apply", effects);
+
             const action = {
                 ...other,
+                effects,
                 type: ACTION_TYPES.EFFECT,
             };
 
@@ -779,9 +795,8 @@ const onEffectEventTrigger = ({
                 targetIds,
                 actorId: ownerId,
                 action: {
-                    ...other,
+                    ...action,
                     multiplier: multiplierConfig,
-                    type: ACTION_TYPES.EFFECT,
                 },
                 source: procSource,
                 getCombatantById: (id: string) => findCombatantData(getState().battle, id),

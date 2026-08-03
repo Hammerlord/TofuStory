@@ -83,6 +83,7 @@ import {
     PigsRibbonImage,
     PlungerImage,
     PolearmImage,
+    PrettyPinkBeanBalloonImage,
     RabbitFootImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
@@ -581,7 +582,7 @@ export const aquamarine: Item = {
 
 export const boneHelm: Item = {
     name: "Bone Helm",
-    description: "Receive 1 less damage when attacked by the enemy directly in front of you.",
+    description: "Take 1 less damage when attacked by the enemy directly in front of you.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: BoneHelmImage,
@@ -2491,6 +2492,27 @@ export const greenJester: Item = {
                     damage: 1,
                 },
             ],
+        },
+    ],
+};
+
+export const monsterParadeBalloon: Item = {
+    name: "Monster Parade Balloon",
+    description: "When you summon a minion, it gains +1 ATT. +1 with each summon.",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: PrettyPinkBeanBalloonImage,
+    effects: [
+        {
+            name: "Monster Parade Balloon",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            stacks: 1,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [attackPower],
+                incrementStacks: 1,
+            },
         },
     ],
 };
