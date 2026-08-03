@@ -45,6 +45,7 @@ import {
     turtleUp,
     volley,
     wayfind,
+    wolfAbility,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -378,6 +379,7 @@ export const JOB_CARD_MAP = {
             chargedShot,
             focus,
             tagShot,
+            wolfAbility,
             callWolves,
             lycanthropeAbility,
             doubleJump,

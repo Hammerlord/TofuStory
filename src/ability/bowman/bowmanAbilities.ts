@@ -414,7 +414,7 @@ export const eagle: Ability = {
                     {
                         type: ACTION_TYPES.ATTACK,
                         target: TARGET_TYPES.HOSTILE,
-                        damage: 3,
+                        damage: 2,
                         effects: [{ ...bleed, stacks: 1 }],
                     },
                 ],
@@ -1010,8 +1010,8 @@ export const tagShot: Ability = {
 export const wolfMinion: Minion = {
     name: "Wolf",
     image: DogImage,
-    maxHP: 5,
-    description: "Gains <b>+1{{{ _damage_}}}</b> for every other ally.",
+    maxHP: 4,
+    description: "Gains <b>+1 {{{ _damage_}}}</b> for every other ally.",
     abilities: [
         {
             ...attack,
@@ -1019,7 +1019,7 @@ export const wolfMinion: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
+                    damage: 2,
                 },
             ],
         },
@@ -1038,6 +1038,16 @@ export const wolfMinion: Minion = {
             },
         },
     ],
+};
+
+export const wolfAbility: Ability = {
+    name: "Wolf",
+    minion: wolfMinion,
+    rarity: RARITIES.COMMON,
+    resourceCost: 1,
+    description: "Gains <b>+1 {{{ _damage_}}}</b> for every other ally.",
+    overrideBodyText: true,
+    actions: [],
 };
 
 export const callWolves: Ability = {
