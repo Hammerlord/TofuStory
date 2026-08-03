@@ -381,7 +381,7 @@ export const stoneSkin: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     description: "Gaining Armor every other turn. While the character has armor, it gains +1 ATT.",
-    turnsTriggerFrequency: 2,
+    turnsTriggerFrequency: 3,
     icon: StoneShieldImage,
     onBattleStart: [
         {

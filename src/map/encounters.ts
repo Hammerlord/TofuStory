@@ -111,7 +111,7 @@ export const generateEliteSquad = ({
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
     const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
-    const affixPool = [eliteThorns, raging, warding, lifeLink, sneaky];
+    const affixPool = [eliteThorns, { ...raging, turnsTriggerFrequency: 3 }, warding, lifeLink, sneaky];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
