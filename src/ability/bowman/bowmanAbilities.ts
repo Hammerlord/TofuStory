@@ -54,7 +54,20 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
-import { armorUp, attackPower, avenger, bleed, burn, chill, defDown, freeze, stun, taunt, thorns } from "../Effects";
+import {
+    armorUp,
+    attackPower,
+    avenger,
+    bleed,
+    burn,
+    chill,
+    defDown,
+    freeze,
+    preventArmorDecayPlayer,
+    stun,
+    taunt,
+    thorns,
+} from "../Effects";
 import {
     Ability,
     ACTION_TYPES,
@@ -284,7 +297,7 @@ export const ironArrow: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 14,
+            damage: 13,
             damageDividedByTargets: true,
             area: 1,
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -827,7 +840,7 @@ export const focus: Ability = {
                     icon: BullseyeIcon,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    criticalChance: 0.5,
+                    criticalChance: 0.3,
                     duration: 2,
                 },
             ],
@@ -838,8 +851,9 @@ export const focus: Ability = {
             actions: [
                 {
                     effects: [
+                        {},
                         {
-                            resourcesPerTurn: 1,
+                            criticalChance: 0.1,
                         },
                     ],
                 },
@@ -968,7 +982,7 @@ export const tagShot: Ability = {
     image: HamstringImage,
     actions: [
         {
-            damage: 8,
+            damage: 9,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1325,7 +1339,7 @@ export const lockOn: Ability = {
             effects: [
                 {
                     ...defDown,
-                    duration: 3,
+                    duration: 2,
                     stacks: 3,
                 },
                 {
@@ -1333,9 +1347,7 @@ export const lockOn: Ability = {
                     type: EFFECT_TYPES.PRIORITY_TARGET,
                     class: EFFECT_CLASSES.DEBUFF,
                     bypassImmunity: true,
-                    onReceiveAttack: {
-                        removeEffect: true,
-                    },
+                    duration: 1,
                 },
             ],
             secondaryAction: {
@@ -1578,6 +1590,7 @@ export const takeCover: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             area: 2,
+            effects: [{ ...preventArmorDecayPlayer }],
         },
     ],
     upgrades: [
@@ -1888,15 +1901,14 @@ export const turtleUp: Ability = {
     ],
 };
 
-// These are really loose ways to check for the Critical keyword (existence of the onDraw.chance property, which for bowman at the moment only associates to Critical effects)
-// as well 'activated Critical' checking the first applied effect on that card, which may later mistake a different effect.
+// Really loose way to check for the Critical keyword (existence of the onDraw.chance property, which for bowman at the moment only associates to Critical effects)
 export const maneuver: Ability = {
     name: "Maneuver",
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     image: EvasionBoostImage,
     overrideBodyText: true,
-    description: "Draw a card. If it is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
+    description: "Draw {{ actions.0.drawCards.amount }} card. If it is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -1920,24 +1932,11 @@ export const maneuver: Ability = {
     ],
     upgrades: [
         {
-            description:
-                "Draw a card. If it has <b>Critical</b>, gain {{{ _stamina_ }}}. If <b>Critical</b> activates, gain +1 {{{ _stamina_ }}}.",
+            description: "Draw {{ actions.0.drawCards.amount }} cards. If any of them is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
             actions: [
                 {
                     drawCards: {
-                        bonus: [
-                            {},
-                            {
-                                conditions: [
-                                    {
-                                        property: "effects.0",
-                                        comparator: "not",
-                                        value: undefined,
-                                    },
-                                ],
-                                resources: 1,
-                            },
-                        ],
+                        amount: 1,
                     },
                 },
             ],
@@ -1956,7 +1955,7 @@ export const peckingOrder: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            damage: 5,
+            damage: 6,
             drawCards: {
                 amount: 3,
             },
