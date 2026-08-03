@@ -19,7 +19,7 @@ export const slimeGlobule: Minion = {
     image: SlimeIdleImage,
     isBoss: true,
     maxHP: 100,
-    resources: 1,
+    resources: 2,
     effects: [
         stun,
         {
@@ -103,6 +103,7 @@ export const kingSlimeEnemy: Minion = {
                         {
                             type: ACTION_TYPES.EFFECT,
                             target: TARGET_TYPES.SELF,
+                            damage: 30,
                             morph: {
                                 type: MORPH_TYPES.MERGE,
                                 minions: [

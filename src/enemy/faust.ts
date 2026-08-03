@@ -121,7 +121,7 @@ export const faust: Minion = {
                     {
                         ...stun,
                         bypassImmunity: true,
-                        duration: 3,
+                        duration: 2,
                     },
                 ],
             },
@@ -142,7 +142,7 @@ const puppeteerRevive: EffectEventTrigger = {
             canBeSilenced: false,
             persistsWhenDead: true,
             description: "Revives when this effect ends.",
-            duration: 3,
+            duration: 2,
             maxApplications: 1,
             onEnd: {
                 usableWhileStunned: true,
