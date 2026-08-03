@@ -800,7 +800,8 @@ const onEffectEventTrigger = ({
             dispatch(checkInduce({ action: effectEvent, affectedTargetIds: targetIds, parentSource: procSource }));
         }
 
-        if (!effectEventAbility) {
+        // Disable procs for ability previews; especially procs that will randomly trigger or target are very problematic for preview
+        if (!effectEventAbility || source?.isPreviewMode) {
             return;
         }
 
