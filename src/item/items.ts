@@ -43,6 +43,7 @@ import {
     CursedDollImage,
     DiamondImage,
     DiamondOreImage,
+    DioramaImage,
     DrakeBloodImage,
     EmeraldImage,
     EstherShieldImage,
@@ -2513,6 +2514,31 @@ export const monsterParadeBalloon: Item = {
                 effects: [attackPower],
                 incrementStacks: 1,
             },
+        },
+    ],
+};
+
+export const barrenDiorama: Item = {
+    name: "Barren Diorama",
+    description: "While you have no allies, gain +1 ATT +1 Armor Up.",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: DioramaImage,
+    effects: [
+        {
+            name: "Barren Diorama",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: DioramaImage,
+            attackPower: 1,
+            armorReceived: 1,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    comparator: "lt",
+                    numFriendly: 2, // Includes itself
+                },
+            ],
         },
     ],
 };

@@ -752,8 +752,6 @@ const onEffectEventTrigger = ({
                 });
             }
 
-            console.log("effects to apply", effects);
-
             const action = {
                 ...other,
                 effects,

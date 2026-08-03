@@ -170,6 +170,7 @@ export { default as DeepDungeonBGImage } from "./DeepDungeonBG.jpg";
 export { default as DeepeningForestImage } from "./DeepeningForest.png";
 export { default as DiamondImage } from "./Diamond.png";
 export { default as DiamondOreImage } from "./DiamondOre.png";
+export { default as DioramaImage } from "./Diorama.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DogImage } from "./Dog.gif";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";

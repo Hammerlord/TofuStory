@@ -105,6 +105,7 @@ import {
     fruitKnife,
     greenJester,
     monsterParadeBalloon,
+    barrenDiorama,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -216,6 +217,7 @@ export const ITEMS = [
     starRock,
     fruitKnife,
     monsterParadeBalloon,
+    barrenDiorama,
 ];
 
 export const CLASS_ITEMS = {
