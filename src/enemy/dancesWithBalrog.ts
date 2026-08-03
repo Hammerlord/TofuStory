@@ -244,7 +244,7 @@ const balrogStanceEffect: Effect = {
 export const dancesWithBalrog: Minion = {
     name: "Dances With Balrog",
     image: DancesWithBalrogImage,
-    maxHP: 450,
+    maxHP: 500,
     mesos: 75,
     resources: 1,
     abilities: [

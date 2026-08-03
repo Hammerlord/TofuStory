@@ -93,6 +93,7 @@ export { default as BowExpertImage } from "./BowExpert.gif";
 export { default as BowMasteryImage } from "./BowMastery.png";
 export { default as BowMushImage } from "./BowMush.png";
 export { default as BrandishImage } from "./Brandish.png";
+export { default as BreadImage } from "./Bread.png";
 export { default as BrickImage } from "./Brick.png";
 export { default as BricksImage } from "./Bricks.png";
 export { default as BroilerShotImage } from "./BroilerShot.png";

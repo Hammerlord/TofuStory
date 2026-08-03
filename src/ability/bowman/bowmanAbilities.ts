@@ -8,6 +8,7 @@ import {
     BlazingExtinctionImage,
     BlockImage,
     BowExpertImage,
+    BreadImage,
     BroilerShotImage,
     ChickenCouponImage,
     ConcentrateImage,
@@ -1480,22 +1481,28 @@ const crow: Minion = {
     effects: [avenger],
 };
 
+const crowAbility: Ability = {
+    name: "Crow",
+    image: CrowImage,
+    minion: crow,
+    resourceCost: 0,
+    removeAfterTurn: true,
+    actions: [],
+};
+
 export const murderOfCrows: Ability = {
     name: "Murder Of Crows",
     rarity: RARITIES.UNCOMMON,
     resourceCost: 3,
     image: CrowImage,
     depletedOnUse: true,
-    description: "Summon 3 Crows. For each that doesn't fit, a random summon is Tributed.",
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            addCards: [crowAbility, crowAbility, crowAbility].map((card) => ({ ...card, removeAfterTurn: true })),
             type: ACTION_TYPES.EFFECT,
-            summon: [
-                { minion: [cloneDeep(crow)], tributePossible: true },
-                { minion: [cloneDeep(crow)], tributePossible: true },
-                { minion: [cloneDeep(crow)], tributePossible: true },
-            ],
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: BreadImage,
         },
     ],
     upgrades: [
