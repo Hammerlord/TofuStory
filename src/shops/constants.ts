@@ -7,7 +7,7 @@ export const NUM_SHOP_ITEMS = 3;
 export const NUM_TRADING_POST_ITEMS = 6;
 export const NUM_TRADING_POST_TRADES = 2;
 
-export const NUM_TRANSMUTATIONS = 2;
+export const NUM_TRANSMUTATIONS = 1;
 
 export const HAMMER_BASE_PRICE = 50;
 export const INCENSE_BASE_PRICE = 75;

@@ -62,7 +62,7 @@ export const workshopScene: EventScene = {
                     ],
                 },
                 {
-                    text: "Transmute. [Replace an ability with 1 of 3 options (up to 2 times)]",
+                    text: "Transmute. [Replace an ability with 1 of 3 options]",
                     transmutation: true,
                     next: [
                         {
