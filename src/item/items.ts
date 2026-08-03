@@ -56,6 +56,7 @@ import {
     GoldenPrideImage,
     GreenBambooHatImage,
     GreenJesterImage,
+    GreenMaskImage,
     GuidebookImage,
     HardwoodWandImage,
     HerbsImage,
@@ -2567,6 +2568,50 @@ export const telescope: Item = {
                     damage: 1,
                 },
             ],
+        },
+    ],
+};
+
+export const greenMask: Item = {
+    name: "Green Mask",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: GreenMaskImage,
+    description: "Once per turn, when you apply a Bleed, Freeze, or Stun, draw a card.",
+    effects: [
+        {
+            name: "Green Mask Item",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Green Mask",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: GreenMaskImage,
+                        disableDisplayIcon: true,
+                        description: "When you apply a Bleed, Freeze, or Stun, draw a card.",
+                        duration: 1,
+                        onApplyEffect: {
+                            conditions: [
+                                {
+                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                    sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                                    hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.BLEED, EFFECT_TYPES.FREEZE],
+                                    comparator: "includes",
+                                },
+                            ],
+                            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            drawCards: {
+                                amount: 1,
+                            },
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
         },
     ],
 };

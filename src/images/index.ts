@@ -278,6 +278,7 @@ export { default as GreenCheeseImage } from "./GreenCheese.png";
 export { default as GreenCrayonImage } from "./GreenCrayon.png";
 export { default as GreenFairiesImage } from "./GreenFairies.gif";
 export { default as GreenJesterImage } from "./GreenJester.png";
+export { default as GreenMaskImage } from "./GreenMask.png";
 export { default as GreenMushroomImage } from "./GreenMushroom.gif";
 export { default as GrendelIdleImage } from "./GrendelIdle.gif";
 export { default as GreyShieldImage } from "./GreyShield.png";
