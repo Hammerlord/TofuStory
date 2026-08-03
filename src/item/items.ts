@@ -983,7 +983,7 @@ export const redHeadband: Item = {
 export const workGloves: Item = {
     name: "Work Gloves",
     image: WorkGlovesImage,
-    description: "Every {{ effects.0.onAbility.triggerFrequencyFromSum }} cards played, gain +1 ATT. Max 3.",
+    description: "Every {{ effects.0.onPlayCard.triggerFrequencyFromSum }} cards played, gain +1 ATT. Max 2.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     effects: [
@@ -1002,7 +1002,7 @@ export const workGloves: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,
-                        maxApplications: 3,
+                        maxApplications: 2,
                     },
                 ],
             },
@@ -2504,7 +2504,7 @@ export const greenJester: Item = {
 
 export const monsterParadeBalloon: Item = {
     name: "Monster Parade Balloon",
-    description: "When you summon a minion, it gains +1 ATT. +1 with each summon.",
+    description: "Your summoned minions gain +1 ATT, +1 with each summon.",
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: PrettyPinkBeanBalloonImage,
@@ -2525,7 +2525,7 @@ export const monsterParadeBalloon: Item = {
 
 export const barrenDiorama: Item = {
     name: "Barren Diorama",
-    description: "While you have no allies, gain +1 ATT +1 Armor Up.",
+    description: "While you have no allies, gain +1 ATT / +1 Armor Up.",
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: DioramaImage,
