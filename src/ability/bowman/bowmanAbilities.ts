@@ -1,5 +1,6 @@
 import { attack } from "../../enemy/abilities";
 import {
+    ArcheryMasteryImage,
     ArrowBlowImage,
     ArrowBombImage,
     ArrowEruptionImage,
@@ -17,6 +18,7 @@ import {
     DogImage,
     DoubleJumpImage,
     DoubleShotImage,
+    DragonsBreathImage,
     DrainArrowImage,
     EvasionBoostImage,
     FinalAttackImage,
@@ -48,6 +50,7 @@ import {
     SoulArrowImage,
     SteelArrowImage,
     StrafeImage,
+    TargetLockImage,
     TortieShellImage,
     TragosImage,
     WeaponMasteryLGImage,
@@ -74,7 +77,9 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    CARD_PILE_TYPES,
     CONDITION_TARGETS,
+    Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Minion,
@@ -1265,7 +1270,7 @@ export const tragosAbility: Ability = {
 
 export const roar: Ability = {
     name: "Roar",
-    image: ConcentrateImage,
+    image: DragonsBreathImage,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     resourceCost: 0,
@@ -1284,7 +1289,7 @@ export const roar: Ability = {
             effects: [
                 {
                     name: "Critical Roar",
-                    icon: ConcentrateImage,
+                    icon: DragonsBreathImage,
                     drawCardsPerTurn: 1,
                     resourcesPerTurn: 1,
                     type: EFFECT_TYPES.NONE,
@@ -2186,6 +2191,100 @@ export const roastingShot: Ability = {
                     effects: [
                         {
                             stacks: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+const aimedShot: Ability = {
+    name: "Aimed Shot",
+    resourceCost: 1,
+    image: TargetLockImage,
+    rarity: RARITIES.RARE,
+    retain: true,
+    removeAfterTurn: true,
+    isUnique: true,
+    description: "Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            damage: 3,
+            animationOptions: bowmanAnimationOption,
+            secondaryAction: {
+                removeEffects: ["Aim"],
+            },
+        },
+    ],
+};
+
+const aimEffect: Effect = {
+    name: "Aim",
+    icon: TargetLockImage,
+    skillBonus: [{ skill: aimedShot.name, comparator: "eq", damage: 1 }],
+    maxApplications: 1,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+};
+
+export const takeAim: Ability = {
+    name: "Take Aim",
+    resourceCost: 1,
+    description: "Grants <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    overrideBodyText: true,
+    image: ArcheryMasteryImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [{ ...aimEffect, stacks: 8 }],
+            addCardsToDiscard: [aimedShot],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const concentrate: Ability = {
+    name: "Concentrate",
+    resourceCost: 1,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    image: ConcentrateImage,
+    overrideBodyText: true,
+    description: "Grants <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    preemptive: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [{ ...aimEffect, stacks: 12 }],
+            addCardsToDiscard: [aimedShot],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 4,
                         },
                     ],
                 },

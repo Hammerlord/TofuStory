@@ -427,7 +427,7 @@ const handleMoveCards = ({
             return;
         }
 
-        const battle = getState().battle;
+        const battle: BattleState = getState().battle;
         const fromPile: CombatAbility[] = battle[from]?.slice() || [];
         const toPile: CombatAbility[] = battle[to]?.slice() || [];
 
@@ -626,10 +626,18 @@ export const checkCardActions = ({
             });
         };
 
+        const { hand, deck, discard } = getState().battle as BattleState;
+
+        const ownedCards = [...hand, ...deck, ...discard].reduce((acc, card) => {
+            acc[card.name] = true;
+            return acc;
+        }, {});
+
         if (addCards) {
+            const cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
             let newHand = [
                 ...getState().battle.hand,
-                ...addCards.map((card: Ability) => ({
+                ...cardsToAdd.map((card: Ability) => ({
                     ...card,
                     instanceId: uuid.v4(),
                 })),
@@ -651,7 +659,8 @@ export const checkCardActions = ({
 
         if (addCardsToDeck) {
             const updatedDeck = [...getState().battle.deck];
-            addCardsToDeck.forEach((card: Ability) => {
+            const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
+            cardsToAdd.forEach((card: Ability) => {
                 const index = getRandomInt(1, updatedDeck.length - 1);
                 updatedDeck.splice(index, 0, {
                     ...card,
@@ -677,12 +686,14 @@ export const checkCardActions = ({
         }
 
         if (addCardsToDiscard) {
+            const cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
+
             dispatch(
                 pushEventQueue({
                     ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
-                    newCards: addCardsToDiscard,
+                    newCards: cardsToAdd,
                     cardsAddedTo: "discard",
                 } as Event)
             );
@@ -691,7 +702,7 @@ export const checkCardActions = ({
                 updateBattle({
                     discard: [
                         ...getState().battle.discard,
-                        ...addCardsToDiscard.map((card: Ability) => ({
+                        ...cardsToAdd.map((card: Ability) => ({
                             ...card,
                             instanceId: uuid.v4(),
                         })),
