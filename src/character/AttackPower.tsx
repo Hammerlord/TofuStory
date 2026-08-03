@@ -51,7 +51,14 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     }
 
     const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
-    const abilityToUse = isEnemy ? casting?.ability || targeting?.ability : combatant?.abilities?.[0];
+    let abilityToUse;
+    if (isEnemy) {
+        abilityToUse = casting?.ability || targeting?.ability;
+    } else if (!combatantInfo?.combatant.isPlayer) {
+        // This is for friendly minions only. Player characters can technically have an auto attack ability but it seems confusing since the cards
+        // in your hand do varying larger amounts of damage
+        abilityToUse = combatant?.abilities?.[0];
+    }
 
     const defaultActionStats = { damage: 0, timesToAttack: 0 };
     const { damage, timesToAttack } =
@@ -75,11 +82,12 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
         }
     );
     const totalAttackPower: number = attackPowerEffects.reduce(
-        (acc: number, { attackPower = 0, skillBonus, multiplier: multiplierConfig }) => {
+        (acc: number, { attackPower = 0, skillBonus, multiplier: multiplierConfig, stacks }) => {
             const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
             // Hand, deck and discard are NOT implemented in the actual damage calculation. Fix that before changing the display.
             const multiplier = getMultiplier({ actor: combatantInfo, multiplier: multiplierConfig, hand: [], deck: [], discard: [] });
-            return acc + attackPower * multiplier + skillBonusDamage;
+            // TODO Is there a reason skillBonusDamage isn't affected by multiplier?
+            return acc + (attackPower * multiplier + skillBonusDamage) * (stacks || 1);
         },
         0
     );
