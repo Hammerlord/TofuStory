@@ -16,7 +16,7 @@ import {
     WeaponMasteryImage,
     ZakumImage,
 } from "../images";
-import { zakumHelmet } from "../item/items";
+import { holyRelic, zakumHelmet } from "../item/items";
 import { SCENE_STYLES } from "./constants";
 import { EventScene, SCENE_CONDITION_TYPES, SceneEncounter, ScriptResponse } from "./types";
 
@@ -217,6 +217,12 @@ const tributeAmount = 35;
 const bloodTributeResponse: ScriptResponse = {
     text: `Pay the blood tribute. [Lose ${tributeAmount} HP]`,
     infamy: 3,
+    conditions: [
+        {
+            items: [holyRelic.name],
+            comparator: "not",
+        },
+    ],
     next: [
         { dialog: [`[You lost ${tributeAmount} HP.]`], loseHP: tributeAmount },
         { dialog: ["..."] },

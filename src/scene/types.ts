@@ -55,7 +55,7 @@ export interface ScriptConditions {
         totalKills?: number; // How many enemies were killed in the most recent battle. See perionDummies for an example of how this is used.
     };
     activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
-    comparator?: "lt" | "eq" | "gt";
+    comparator?: "lt" | "eq" | "gt" | "not";
     items?: string[];
     mesos?: number;
     chance?: number;

@@ -471,6 +471,9 @@ const ScenePlayer = ({
             }
 
             if (items.length) {
+                if (comparator === "not") {
+                    return items.every((itemName: string) => !player.items.some((i) => i.name === itemName));
+                }
                 return items.every((itemName: string) => player.items.some((i) => i.name === itemName));
             }
 
