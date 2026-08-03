@@ -29,8 +29,8 @@ import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
-import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { BattleState } from "./reducer";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 
 // TODO use UpdatedCombatantStats from the Event instead of diffing here.
 // However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
@@ -1213,6 +1213,11 @@ export const calculateBonus = ({
         }
     };
 
+    // This could be problematic since Item also has an .effects property, but consumables have a very narrow usage atm
+    let abilityEffectBonusDamage = ((actionParent as CombatAbility)?.effects || []).reduce((acc, e: AbilityEffect) => {
+        return (acc += e.bonus?.damage || 0);
+    }, 0);
+
     return bonuses.reduce(
         (acc: Action, bonus: Bonus) => {
             const { excludePrimaryTarget = false, effects: bonusEffects = [] } = bonus;
@@ -1230,7 +1235,7 @@ export const calculateBonus = ({
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
             if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
-                const bonusDamage = (bonus.damage || 0) * multiplier;
+                const bonusDamage = ((bonus.damage || 0) + abilityEffectBonusDamage) * multiplier;
                 const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards } = acc;
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
                 const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;

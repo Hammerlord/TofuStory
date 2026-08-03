@@ -870,8 +870,20 @@ export const chargedShot: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 0,
     image: DrainArrowImage,
-    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique card used this battle.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each unique card used this battle. <br/> <b>Critical: +1</b> {{{ _damage_ }}} more.",
     overrideBodyText: true,
+    onDraw: {
+        abilityEffects: [
+            {
+                bonus: {
+                    damage: 1,
+                },
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             damage: 1,
