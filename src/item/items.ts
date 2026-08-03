@@ -107,6 +107,7 @@ import {
     SwordImage,
     TauromacisHornImage,
     TaurospearHornImage,
+    TelescopeImage,
     ThunderSparkImage,
     TofuImage,
     TopazImage,
@@ -2537,6 +2538,33 @@ export const barrenDiorama: Item = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     comparator: "lt",
                     numFriendly: 2, // Includes itself
+                },
+            ],
+        },
+    ],
+};
+
+export const telescope: Item = {
+    name: "Telescope",
+    description: "Increases the damage of 'Shot' and 'Shoot' abilities by 1.",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: TelescopeImage,
+    effects: [
+        {
+            name: "Telescope",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            skillBonus: [
+                {
+                    comparator: "includes",
+                    skill: "shot",
+                    damage: 1,
+                },
+                {
+                    comparator: "includes",
+                    skill: "shoot",
+                    damage: 1,
                 },
             ],
         },

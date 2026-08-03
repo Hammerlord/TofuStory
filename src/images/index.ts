@@ -717,6 +717,7 @@ export { default as TaurospearLightningSpearImage } from "./TaurospearLightningS
 export { default as TeleportImage } from "./Teleport.png";
 export { default as TeleportMasteryImage } from "./TeleportMastery.png";
 export { default as TeleportMasteryFireImage } from "./TeleportMasteryFire.png";
+export { default as TelescopeImage } from "./Telescope.png";
 export { default as TeoImage } from "./Teo.png";
 export { default as TerracottaCrossbowmanImage } from "./TerracottaCrossbowman.gif";
 export { default as TerracottaDieImage } from "./TerracottaDie.png";
