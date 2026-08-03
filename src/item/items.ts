@@ -44,6 +44,7 @@ import {
     DiamondImage,
     DiamondOreImage,
     DioramaImage,
+    DragonLordPendantImage,
     DrakeBloodImage,
     EmeraldImage,
     EstherShieldImage,
@@ -60,6 +61,7 @@ import {
     GuidebookImage,
     HardwoodWandImage,
     HerbsImage,
+    HolyWaterImage,
     IcarusCapeImage,
     IronBallImage,
     IronMaceImage,
@@ -2346,6 +2348,7 @@ export const zakumHelmet: Item = {
             },
         },
     ],
+    exclusive: ["Holy Relic"],
 };
 
 export const goldenPride: Item = {
@@ -2614,4 +2617,38 @@ export const greenMask: Item = {
             },
         },
     ],
+};
+
+export const holyRelic: Item = {
+    name: "Holy Relic",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: DragonLordPendantImage,
+    description: "Wave start: gain +1 {{ resources }} and card draw. Repel the Exiled One's influences.",
+    effects: [
+        {
+            name: "Holy Relic Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onWaveStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        name: "Holy Relic",
+                        type: EFFECT_TYPES.NONE,
+                        class: EFFECT_CLASSES.BUFF,
+                        icon: DragonLordPendantImage,
+                        resourcesPerTurn: 1,
+                        drawCardsPerTurn: 1,
+                        duration: 0,
+                        onTurnInProgress: {
+                            removeEffect: true,
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+    disableCardsFromBeingFound: [firstExiledArm.name, secondExiledArm.name, thirdExiledArm.name, fourthExiledArm.name],
+    exclusive: [zakumHelmet.name],
 };

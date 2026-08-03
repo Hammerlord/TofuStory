@@ -39,6 +39,8 @@ export interface Item {
         amount: number;
         abilities?: Ability[]; // Specific abilities to grant. If amount < abilities.length, a random one is chosen.
     };
+    // Names of abilities that will no longer appear in shops, abilityChoices, etc.
+    disableCardsFromBeingFound?: string[];
     rarity?: RARITIES;
     stacks?: number;
     isStackable?: boolean;
@@ -74,4 +76,6 @@ export interface Item {
     pickUp?: {
         mesos?: number;
     };
+    // Names of items where if you own this, those items become unobtainable
+    exclusive?: string[];
 }

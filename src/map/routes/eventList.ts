@@ -108,6 +108,7 @@ import {
     barrenDiorama,
     telescope,
     greenMask,
+    holyRelic,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -220,6 +221,7 @@ export const ITEMS = [
     fruitKnife,
     monsterParadeBalloon,
     barrenDiorama,
+    holyRelic,
 ];
 
 export const CLASS_ITEMS = {

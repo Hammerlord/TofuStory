@@ -10,6 +10,7 @@ import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { Player } from "../character/types";
+import { filterUnobtainableItems } from "./utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -102,14 +103,7 @@ const ItemRewards = ({
     const [selectedItemIndices, setSelectedItemIndices] = useState([]);
 
     useEffect(() => {
-        const alreadyObtained = player.items.reduce((acc, item: Item) => {
-            if (item.type === ITEM_TYPES.EQUIPMENT) {
-                acc[item.name] = true;
-            }
-            return acc;
-        }, {});
-
-        const items = (overrideItemChoices || []).filter((item: Item) => !alreadyObtained[item.name]);
+        const items = filterUnobtainableItems(player.items, overrideItemChoices || []);
         if (!overrideItemChoices && items.length < numChoicesOffered) {
             let rareBonus = 0;
             let uncommonBonus = 0;

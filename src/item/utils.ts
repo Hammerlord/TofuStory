@@ -1,7 +1,8 @@
-import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
 import { Player } from "../character/types";
 import { RARE_ITEM_CHANCE, UNCOMMON_ITEM_CHANCE } from "../constants";
-import { ITEM_TYPES, Item, RARITIES } from "./types";
+import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
+import { filterUnobtainableItems } from "../Menu/utils";
+import { Item, RARITIES } from "./types";
 
 export const rollRarity = ({
     player,
@@ -82,14 +83,5 @@ export const rollItemPool = ({
 };
 
 export const getAllPossibleItems = ({ player, excludeItems = [] }) => {
-    // Exclude already-obtained equipment
-    const exclude = player.items.reduce((acc, item: Item) => {
-        if (item.type === ITEM_TYPES.EQUIPMENT) {
-            acc[item.name] = true;
-        }
-        return acc;
-    }, {});
-
-    excludeItems.forEach((item) => (exclude[item.name] = true));
-    return ITEMS.concat(CLASS_ITEMS[player.class] || []).filter((item: Item) => !exclude[item.name]);
+    return filterUnobtainableItems(player.items.concat(excludeItems), ITEMS.concat(CLASS_ITEMS[player.class] || []));
 };

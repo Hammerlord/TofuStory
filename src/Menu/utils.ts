@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
 import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
-import { Item } from "../item/types";
+import { Item, ITEM_TYPES } from "../item/types";
 import { AbilityUpgrade } from "./../ability/types";
 import { directDamageTakenTrigger } from "../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
@@ -163,6 +163,13 @@ export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: 
 export const getCardPool = (player: Player, deck: CombatAbility[]) => {
     const { starters, all } = JOB_CARD_MAP[player.class];
 
+    const disabledCards = player.items.reduce((acc, item) => {
+        if (Array.isArray(item.disableCardsFromBeingFound)) {
+            item.disableCardsFromBeingFound.forEach((itemName: string) => (acc[itemName] = true));
+        }
+        return acc;
+    }, {});
+
     const ownedUniqueCards = deck.reduce((acc, ability) => {
         if (ability.isUnique) {
             acc[ability.name] = true;
@@ -180,7 +187,7 @@ export const getCardPool = (player: Player, deck: CombatAbility[]) => {
         }),
     ]
         .concat(NEUTRAL_ABILITIES)
-        .filter((ability) => !ownedUniqueCards[ability.name]);
+        .filter((ability) => !ownedUniqueCards[ability.name] && !disabledCards[ability.name]);
 };
 
 export const getCardChoicesFromItems = ({
@@ -222,4 +229,18 @@ export const getCardChoicesFromItems = ({
     );
 
     return { choices, numChoices };
+};
+
+export const filterUnobtainableItems = (excludedItems: Item[], itemsToFilter: Item[]) => {
+    const filterOut = excludedItems.reduce((acc, item: Item) => {
+        if (item.type === ITEM_TYPES.EQUIPMENT) {
+            acc[item.name] = true;
+        }
+        if (Array.isArray(item.exclusive)) {
+            item.exclusive.forEach((itemName: string) => (acc[itemName] = true));
+        }
+        return acc;
+    }, {});
+
+    return itemsToFilter.filter((item) => !filterOut[item.name]);
 };

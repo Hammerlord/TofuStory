@@ -9,6 +9,7 @@ import ItemView from "./ItemView";
 import { Player } from "../character/types";
 import { rollItemPool } from "./utils";
 import { mesoItem } from "./items";
+import { filterUnobtainableItems } from "../Menu/utils";
 
 const useStyles = createUseStyles({
     inner: {
@@ -64,14 +65,7 @@ const ItemSelection = ({
      * for an unobtained item
      */
     const getInitItems = () => {
-        const alreadyObtained = player.items.reduce((acc, item: Item) => {
-            if (item.type === ITEM_TYPES.EQUIPMENT) {
-                acc[item.name] = true;
-            }
-            return acc;
-        }, {});
-
-        const itemSelection = items.filter((item: Item) => !alreadyObtained[item.name]);
+        const itemSelection = filterUnobtainableItems(player.items, items || []);
 
         if (!disableItemReplacements) {
             const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
