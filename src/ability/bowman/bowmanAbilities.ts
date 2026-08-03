@@ -11,6 +11,7 @@ import {
     BowExpertImage,
     BreadImage,
     BroilerShotImage,
+    ChestnutLeafImage,
     ChickenCouponImage,
     ConcentrateImage,
     CoveringFireImage,
@@ -2285,6 +2286,38 @@ export const concentrate: Ability = {
                     effects: [
                         {
                             stacks: 4,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const poise: Ability = {
+    name: "Poise",
+    overrideBodyText: true,
+    resourceCost: 1,
+    description: "Gain <b>{{ actions.0.armor }} {{{ _armor_ }}}</b> and <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    rarity: RARITIES.UNCOMMON,
+    image: ChestnutLeafImage,
+    actions: [
+        {
+            armor: 5,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [{ ...aimEffect, stacks: 5 }],
+            addCardsToDiscard: [aimedShot],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 2,
+                    effects: [
+                        {
+                            stacks: 2,
                         },
                     ],
                 },
