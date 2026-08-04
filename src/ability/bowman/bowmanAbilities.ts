@@ -46,6 +46,7 @@ import {
     SharpEyesImage,
     ShatteringArrowImage,
     ShieldImage,
+    SlowAndSteadyImage,
     SnapfreezeShotImage,
     SnipeImage,
     SoulArrowImage,
@@ -2215,7 +2216,7 @@ const aimedShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            damage: 3,
+            damage: 7,
             animationOptions: bowmanAnimationOption,
             secondaryAction: {
                 removeEffects: ["Aim"],
@@ -2243,7 +2244,7 @@ export const takeAim: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 8 }],
+            effects: [{ ...aimEffect, stacks: 7 }],
             addCardsToDiscard: [aimedShot],
         },
     ],
@@ -2322,6 +2323,46 @@ export const poise: Ability = {
                     ],
                 },
             ],
+        },
+    ],
+};
+
+export const steady: Ability = {
+    name: "Steady",
+    image: SlowAndSteadyImage,
+    rarity: RARITIES.COMMON,
+    description: "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b>",
+    unplayable: true,
+    onDraw: {
+        ability: {
+            name: "Steady",
+            image: SlowAndSteadyImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.SELF,
+                    effects: [{ ...aimEffect, stacks: 3 }],
+                    addCardsToDiscard: [aimedShot],
+                },
+            ],
+        },
+    },
+    actions: [],
+    upgrades: [
+        {
+            onDraw: {
+                ability: {
+                    actions: [
+                        {
+                            effects: [
+                                {
+                                    stacks: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
         },
     ],
 };
