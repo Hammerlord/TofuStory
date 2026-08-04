@@ -101,6 +101,7 @@ export { default as BricksImage } from "./Bricks.png";
 export { default as BroilerShotImage } from "./BroilerShot.png";
 export { default as BrokenHeartEmojiImage } from "./BrokenHeartEmoji.png";
 export { default as BrokenMirrorGlassImage } from "./BrokenMirrorGlass.png";
+export { default as BronzeCrossbowArrowImage } from "./BronzeCrossbowArrow.png";
 export { default as BronzeIncenseBurnerImage } from "./BronzeIncenseBurner.png";
 export { default as BroomImage } from "./Broom.png";
 export { default as BrownApprenticeHatImage } from "./BrownApprenticeHat.png";

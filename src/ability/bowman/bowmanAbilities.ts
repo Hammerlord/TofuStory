@@ -1,3 +1,4 @@
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
 import {
     ArcheryMasteryImage,
@@ -11,6 +12,7 @@ import {
     BowExpertImage,
     BreadImage,
     BroilerShotImage,
+    BronzeCrossbowArrowImage,
     ChestnutLeafImage,
     ChickenCouponImage,
     ConcentrateImage,
@@ -2410,7 +2412,7 @@ export const windupShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            damage: 7,
+            damage: 9,
             animationOptions: bowmanAnimationOption,
             addCardsToDiscard: [aimedShot],
             secondaryAction: {
@@ -2437,6 +2439,70 @@ export const windupShot: Ability = {
                                     stacks: 1,
                                 },
                             ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const sweepingArrows: Ability = {
+    name: "Sweeping Aim",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> Your next Aimed Shot gains <b>+1 Area</b>.",
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    image: BronzeCrossbowArrowImage,
+    overrideBodyText: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            addCardsToDiscard: [aimedShot],
+            effects: [
+                { ...aimEffect, stacks: 2 },
+                {
+                    name: "Sweeping Arrows",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    icon: BronzeCrossbowArrowImage,
+                    description: "Increases the area of your next Aimed Shot.",
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            notProc: true,
+                            property: "name",
+                            comparator: "eq",
+                            value: aimedShot.name,
+                        },
+                    ],
+                    attackAreaIncrease: 1,
+                    stacks: 1,
+                    onOffensiveAbility: {
+                        decrementStacks: 1,
+                        conditions: [
+                            {
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                                notProc: true,
+                                property: "name",
+                                comparator: "eq",
+                                value: aimedShot.name,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            stacks: 1,
                         },
                     ],
                 },
