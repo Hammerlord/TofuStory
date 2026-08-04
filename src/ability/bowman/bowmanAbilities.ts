@@ -2416,18 +2416,7 @@ export const windupShot: Ability = {
     overrideBodyText: true,
     image: HuntersBowImage,
     resourceCost: 1,
-    description:
-        "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ onDraw.abilityEffects.0.effects.0.stacks }} Aim</b>",
-    onDraw: {
-        chance: 0,
-        abilityEffects: [
-            {
-                effects: [{ ...aimEffect, stacks: 3 }],
-                maxApplications: 1,
-                highlightCard: true,
-            },
-        ],
-    },
+    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2441,7 +2430,7 @@ export const windupShot: Ability = {
                 moveType: "append",
             },
             secondaryAction: {
-                effects: [{ ...aimEffect, stacks: 3 }],
+                effects: [{ ...aimEffect, stacks: 4 }],
             },
         },
     ],
