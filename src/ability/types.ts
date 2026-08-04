@@ -601,6 +601,9 @@ export type Action = {
     /** Adds cards to your current hand */
     addCards?: Ability[];
     addCardsToDeck?: Ability[];
+    addCardsToDeckOptions?: {
+        moveType?: "prepend" | "append" | "random";
+    };
     /** Adds cards to your current discard pile */
     addCardsToDiscard?: Ability[];
     /** Add the player's last n played cards to the hand. Cannot copy `unique` cards. */

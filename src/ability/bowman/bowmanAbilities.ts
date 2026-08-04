@@ -2261,7 +2261,10 @@ export const takeAim: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [{ ...aimEffect, stacks: 8 }],
-            addCardsToDiscard: [aimedShot],
+            addCardsToDeck: [aimedShot],
+            addCardsToDeckOptions: {
+                moveType: "append",
+            },
         },
     ],
     upgrades: [
@@ -2300,7 +2303,10 @@ export const concentrate: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [{ ...aimEffect, stacks: 12 }],
-            addCardsToDiscard: [aimedShot],
+            addCardsToDeck: [aimedShot],
+            addCardsToDeckOptions: {
+                moveType: "append",
+            },
         },
     ],
     upgrades: [
@@ -2331,7 +2337,10 @@ export const poise: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             effects: [{ ...aimEffect, stacks: 5 }],
-            addCardsToDiscard: [aimedShot],
+            addCardsToDeck: [aimedShot],
+            addCardsToDeckOptions: {
+                moveType: "append",
+            },
         },
     ],
     upgrades: [
@@ -2365,7 +2374,10 @@ export const steady: Ability = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     effects: [{ ...aimEffect, stacks: 3 }],
-                    addCardsToDiscard: [aimedShot],
+                    addCardsToDeck: [aimedShot],
+                    addCardsToDeckOptions: {
+                        moveType: "append",
+                    },
                 },
             ],
         },
@@ -2424,7 +2436,10 @@ export const windupShot: Ability = {
             icon: AvengersArrowImage,
             damage: 9,
             animationOptions: bowmanAnimationOption,
-            addCardsToDiscard: [aimedShot],
+            addCardsToDeck: [aimedShot],
+            addCardsToDeckOptions: {
+                moveType: "append",
+            },
             secondaryAction: {
                 effects: [{ ...aimEffect, stacks: 3 }],
             },
@@ -2468,7 +2483,10 @@ export const sweepingArrows: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            addCardsToDiscard: [aimedShot],
+            addCardsToDeck: [aimedShot],
+            addCardsToDeckOptions: {
+                moveType: "append",
+            },
             effects: [
                 { ...aimEffect, stacks: 2 },
                 {

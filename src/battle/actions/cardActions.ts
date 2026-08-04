@@ -543,7 +543,6 @@ export const checkCardActions = ({
         const {
             drawCards: cardsToDraw,
             addCards,
-            addCardsToDeck,
             addCardsToDiscard,
             applyAbilityEffects,
             selectCards,
@@ -657,33 +656,7 @@ export const checkCardActions = ({
             triggerAddCardsToHandEvent(addCards.length);
         }
 
-        if (addCardsToDeck) {
-            const updatedDeck = [...getState().battle.deck];
-            const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
-            cardsToAdd.forEach((card: Ability) => {
-                const index = getRandomInt(1, updatedDeck.length - 1);
-                updatedDeck.splice(index, 0, {
-                    ...card,
-                    instanceId: uuid.v4(),
-                });
-            });
-
-            dispatch(
-                pushEventQueue({
-                    ...getState().battle,
-                    id: uuid.v4(),
-                    playbackTime: CARD_ADDED_PLAYBACK_SPEED,
-                    newCards: addCardsToDeck,
-                    cardsAddedTo: "deck",
-                } as Event)
-            );
-
-            dispatch(
-                updateBattle({
-                    deck: updatedDeck,
-                })
-            );
-        }
+        dispatch(checkAddCardsToDeck({ action, ownedCards }));
 
         if (addCardsToDiscard) {
             const cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
@@ -769,6 +742,56 @@ export const checkCardActions = ({
                 })
             );
         }
+    };
+};
+
+const checkAddCardsToDeck = ({ action, ownedCards }: { action: Action; ownedCards: { [abilityName: string]: true } }) => {
+    return (dispatch, getState) => {
+        const { addCardsToDeck, addCardsToDeckOptions } = action;
+        if (!addCardsToDeck) {
+            return;
+        }
+
+        const updatedDeck = [...getState().battle.deck];
+        const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        cardsToAdd.forEach((card: Ability) => {
+            const combatCard = {
+                ...card,
+                instanceId: uuid.v4(),
+            };
+
+            const moveType = addCardsToDeckOptions?.moveType || "random";
+            if (moveType === "random") {
+                const index = getRandomInt(1, updatedDeck.length - 1);
+                updatedDeck.splice(index, 0, combatCard);
+                return;
+            }
+
+            if (moveType === "append") {
+                updatedDeck.push(combatCard);
+                return;
+            }
+
+            if (moveType === "prepend") {
+                updatedDeck.unshift(combatCard);
+            }
+        });
+
+        dispatch(
+            pushEventQueue({
+                ...getState().battle,
+                id: uuid.v4(),
+                playbackTime: CARD_ADDED_PLAYBACK_SPEED,
+                newCards: cardsToAdd,
+                cardsAddedTo: "deck",
+            } as Event)
+        );
+
+        dispatch(
+            updateBattle({
+                deck: updatedDeck,
+            })
+        );
     };
 };
 
