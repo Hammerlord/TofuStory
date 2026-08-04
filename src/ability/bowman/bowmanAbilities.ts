@@ -2221,7 +2221,7 @@ const aimedShot: Ability = {
             icon: AvengersArrowImage,
             bypassStealth: true,
             bypassImmunity: true,
-            damage: 7,
+            damage: 10,
             animationOptions: bowmanAnimationOption,
             secondaryAction: {
                 removeEffects: ["Aim"],
@@ -2354,8 +2354,8 @@ export const steady: Ability = {
     name: "Steady",
     image: SlowAndSteadyImage,
     rarity: RARITIES.COMMON,
+    resourceCost: 0,
     description: "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b>",
-    unplayable: true,
     onDraw: {
         ability: {
             name: "Steady",
@@ -2370,7 +2370,15 @@ export const steady: Ability = {
             ],
         },
     },
-    actions: [],
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 1,
+            },
+        },
+    ],
     upgrades: [
         {
             onDraw: {
@@ -2379,7 +2387,7 @@ export const steady: Ability = {
                         {
                             effects: [
                                 {
-                                    stacks: 1,
+                                    stacks: 2,
                                 },
                             ],
                         },
