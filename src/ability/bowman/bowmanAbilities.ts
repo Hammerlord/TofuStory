@@ -28,6 +28,7 @@ import {
     FrozenArrowImage,
     HamstringImage,
     HerosWillImage,
+    HuntersBowImage,
     HurricaneImage,
     IllusionStepImage,
     IronArrowImage,
@@ -2299,7 +2300,7 @@ export const poise: Ability = {
     name: "Poise",
     overrideBodyText: true,
     resourceCost: 1,
-    description: "Gain <b>{{ actions.0.armor }} {{{ _armor_ }}}</b> and <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim</b>",
     rarity: RARITIES.UNCOMMON,
     image: ChestnutLeafImage,
     actions: [
@@ -2363,6 +2364,65 @@ export const steady: Ability = {
                     ],
                 },
             },
+        },
+    ],
+};
+
+export const windupShot: Ability = {
+    name: "Windup Shot",
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    image: HuntersBowImage,
+    resourceCost: 1,
+    description:
+        "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ onDraw.abilityEffects.0.effects.0.stacks }} Aim</b>",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                effects: [{ ...aimEffect, stacks: 3 }],
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            damage: 7,
+            animationOptions: bowmanAnimationOption,
+            addCardsToDiscard: [aimedShot],
+            secondaryAction: {
+                effects: [{ ...aimEffect, stacks: 3 }],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        stacks: 1,
+                    },
+                ],
+            },
+            actions: [
+                {
+                    damage: 3,
+                    secondaryAction: [
+                        {
+                            effects: [
+                                {
+                                    stacks: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };

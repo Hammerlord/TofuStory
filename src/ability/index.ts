@@ -50,6 +50,7 @@ import {
     turtleUp,
     volley,
     wayfind,
+    windupShot,
     wolfAbility,
 } from "./bowman/bowmanAbilities";
 import {
@@ -414,6 +415,7 @@ export const JOB_CARD_MAP = {
             concentrate,
             poise,
             steady,
+            windupShot,
         ],
         starters: [puppet, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },
