@@ -24,6 +24,7 @@ import {
     ArcStaffImage,
     ArwensGlassShoeImage,
     ASetOfMemoryCardsImage,
+    AvengersArrowImage,
     BackpackImage,
     BallerCaneImage,
     BattleShieldImage,
@@ -46,6 +47,7 @@ import {
     DioramaImage,
     DragonLordPendantImage,
     DrakeBloodImage,
+    DrakeSkullImage,
     EmeraldImage,
     EstherShieldImage,
     FairyWingImage,
@@ -1044,7 +1046,7 @@ export const unsignedLetter: Item = {
 export const snailStompers: Item = {
     name: "Snail Stompers",
     image: SnowshoesImage,
-    description: "+3 ATT against enemies with 15 or less HP.",
+    description: "+3 ATT against enemies with 20 or less HP.",
     applyEffectsToSummons: true,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
@@ -1057,7 +1059,7 @@ export const snailStompers: Item = {
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                    HP: 16,
+                    HP: 21,
                     comparator: "lt",
                 },
             ],
@@ -2651,4 +2653,43 @@ export const holyRelic: Item = {
     ],
     disableCardsFromBeingFound: [firstExiledArm.name, secondExiledArm.name, thirdExiledArm.name, fourthExiledArm.name],
     exclusive: [zakumHelmet.name],
+};
+
+export const drakeSkull: Item = {
+    name: "Drake Skull",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    image: DrakeSkullImage,
+    description: "Wave start: Shoot a target for {{ effects.0.onWaveStart.ability.actions.damage }}.",
+    effects: [
+        {
+            name: "Drake Skull",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            icon: DrakeSkullImage,
+            onWaveStart: {
+                ability: {
+                    name: "Shoot",
+                    resourceCost: 0,
+                    image: AvengersArrowImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            target: TARGET_TYPES.HOSTILE,
+                            animation: ANIMATION_TYPES.ONE_WAY,
+                            icon: AvengersArrowImage,
+                            damage: 7,
+                            animationOptions: {
+                                rotateToFaceTarget: true,
+                                rotate: 135,
+                                weapon: {
+                                    rotateToFaceTarget: true,
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    ],
 };

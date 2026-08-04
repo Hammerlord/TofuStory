@@ -192,6 +192,7 @@ export { default as DrainArrowImage } from "./DrainArrow.png";
 export { default as DrakeImage } from "./Drake.gif";
 export { default as DrakeBloodImage } from "./DrakeBlood.png";
 export { default as DrakeCardImage } from "./DrakeCard.png";
+export { default as DrakeSkullImage } from "./DrakeSkull.png";
 export { default as DueyImage } from "./Duey.png";
 export { default as DyleIdleImage } from "./DyleIdle.gif";
 export { default as EggImage } from "./Egg.png";

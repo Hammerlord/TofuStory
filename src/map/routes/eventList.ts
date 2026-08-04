@@ -109,6 +109,7 @@ import {
     telescope,
     greenMask,
     holyRelic,
+    drakeSkull,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -227,5 +228,5 @@ export const ITEMS = [
 export const CLASS_ITEMS = {
     [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride, polearm],
     [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester],
-    [PLAYER_CLASSES.BOWMAN]: [telescope, greenMask],
+    [PLAYER_CLASSES.BOWMAN]: [drakeSkull, telescope, greenMask],
 };
