@@ -2212,13 +2212,15 @@ const aimedShot: Ability = {
     retain: true,
     removeAfterTurn: true,
     isUnique: true,
-    description: "Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
+    description: "<b>Pierce.</b> Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
+            bypassStealth: true,
+            bypassImmunity: true,
             damage: 7,
             animationOptions: bowmanAnimationOption,
             secondaryAction: {
