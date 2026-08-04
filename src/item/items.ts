@@ -2671,7 +2671,7 @@ export const drakeSkull: Item = {
                 ability: {
                     name: "Shoot",
                     resourceCost: 0,
-                    image: AvengersArrowImage,
+                    image: DrakeSkullImage,
                     actions: [
                         {
                             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2689,6 +2689,9 @@ export const drakeSkull: Item = {
                         },
                     ],
                 },
+            },
+            onTurnInProgress: {
+                removeEffect: true,
             },
         },
     ],
