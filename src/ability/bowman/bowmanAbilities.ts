@@ -2238,19 +2238,37 @@ const aimEffect: Effect = {
 export const takeAim: Ability = {
     name: "Take Aim",
     resourceCost: 1,
-    description: "Grants <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    description:
+        "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ onDraw.abilityEffects.0.effects.0.stacks }} Aim</b>",
     overrideBodyText: true,
     image: ArcheryMasteryImage,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                effects: [{ ...aimEffect, stacks: 3 }],
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 7 }],
+            effects: [{ ...aimEffect, stacks: 8 }],
             addCardsToDiscard: [aimedShot],
         },
     ],
     upgrades: [
         {
+            onDraw: {
+                abilityEffects: [
+                    {
+                        stacks: 1,
+                    },
+                ],
+            },
             actions: [
                 {
                     effects: [
