@@ -232,7 +232,7 @@ export const shootAbility: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                damage: 3,
+                damage: 4,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -316,7 +316,7 @@ export const arrowBomb: Ability = {
     name: "Arrow Bomb",
     image: ArrowBombImage,
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     description: "Apply {{{ _stun_ }}}",
     overrideBodyText: true,
     actions: [
@@ -1967,7 +1967,7 @@ export const snapfreezeShot: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 3,
+            damage: 4,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -2310,7 +2310,7 @@ export const takeAim: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                effects: [{ ...aimEffect, stacks: 2 }],
+                effects: [{ ...aimEffect, stacks: 3 }],
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2320,7 +2320,7 @@ export const takeAim: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 5 }],
+            effects: [{ ...aimEffect, stacks: 8 }],
         },
     ],
     upgrades: [
@@ -2340,7 +2340,7 @@ export const takeAim: Ability = {
                 {
                     effects: [
                         {
-                            stacks: 2,
+                            stacks: 3,
                         },
                     ],
                 },
@@ -2361,7 +2361,7 @@ export const concentrate: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 10 }],
+            effects: [{ ...aimEffect, stacks: 15 }],
         },
     ],
     upgrades: [
@@ -2391,7 +2391,7 @@ export const poise: Ability = {
             armor: 5,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...aimEffect, stacks: 4 }],
+            effects: [{ ...aimEffect, stacks: 6 }],
         },
     ],
     upgrades: [
@@ -2474,7 +2474,7 @@ export const windupShot: Ability = {
             animationOptions: bowmanAnimationOption,
 
             secondaryAction: {
-                effects: [{ ...aimEffect, stacks: 3 }],
+                effects: [{ ...aimEffect, stacks: 4 }],
             },
         },
     ],
@@ -2507,9 +2507,8 @@ export const sweepingArrows: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-
             effects: [
-                { ...aimEffect, stacks: 2 },
+                { ...aimEffect, stacks: 3 },
                 {
                     name: "Sweeping Arrows",
                     type: EFFECT_TYPES.NONE,
