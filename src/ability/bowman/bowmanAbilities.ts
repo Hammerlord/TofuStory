@@ -59,6 +59,7 @@ import {
     SteelArrowImage,
     StrafeImage,
     TargetLockImage,
+    ThrustImage,
     TortieShellImage,
     TragosImage,
     WeaponMasteryLGImage,
@@ -104,6 +105,41 @@ const bowmanAnimationOption = {
     weapon: {
         rotateToFaceTarget: true,
     },
+};
+
+const aimedShot: Ability = {
+    name: "Aimed Shot",
+    resourceCost: 1,
+    image: TargetLockImage,
+    rarity: RARITIES.RARE,
+    retain: true,
+    removeAfterTurn: true,
+    isUnique: true,
+    description: "<b>Pierce.</b> Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            bypassStealth: true,
+            bypassImmunity: true,
+            damage: 10,
+            animationOptions: bowmanAnimationOption,
+            secondaryAction: {
+                removeEffects: ["Aim"],
+            },
+        },
+    ],
+};
+
+const aimEffect: Effect = {
+    name: "Aim",
+    icon: TargetLockImage,
+    skillBonus: [{ skill: aimedShot.name, comparator: "eq", damage: 1 }],
+    maxApplications: 1,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
 };
 
 export const bowmanDefaultAttack: Ability = {
@@ -2251,41 +2287,6 @@ export const roastingShot: Ability = {
     ],
 };
 
-const aimedShot: Ability = {
-    name: "Aimed Shot",
-    resourceCost: 1,
-    image: TargetLockImage,
-    rarity: RARITIES.RARE,
-    retain: true,
-    removeAfterTurn: true,
-    isUnique: true,
-    description: "<b>Pierce.</b> Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
-    actions: [
-        {
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            bypassStealth: true,
-            bypassImmunity: true,
-            damage: 10,
-            animationOptions: bowmanAnimationOption,
-            secondaryAction: {
-                removeEffects: ["Aim"],
-            },
-        },
-    ],
-};
-
-const aimEffect: Effect = {
-    name: "Aim",
-    icon: TargetLockImage,
-    skillBonus: [{ skill: aimedShot.name, comparator: "eq", damage: 1 }],
-    maxApplications: 1,
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-};
-
 export const takeAim: Ability = {
     name: "Take Aim",
     resourceCost: 1,
@@ -2682,6 +2683,45 @@ export const stimulant: Ability = {
             actions: [
                 {
                     resources: 1,
+                },
+            ],
+        },
+    ],
+};
+
+export const followThrough: Ability = {
+    name: "Follow Through",
+    image: ThrustImage,
+    description: "<b>+{{ actions.0.bonus.effects.0.stacks }} Aim</b> for each attack you made this turn.",
+    resourceCost: 0,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            bonus: {
+                effects: [{ ...aimEffect, stacks: 2 }],
+                multiplier: {
+                    type: MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN,
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    filterOutProcs: true,
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: {
+                        effects: [
+                            // @ts-ignore
+
+                            {
+                                stacks: 1,
+                            },
+                        ],
+                    },
                 },
             ],
         },

@@ -743,6 +743,7 @@ export { default as TheBookOfAncientImage } from "./TheBookOfAncient.png";
 export { default as TheRemembererImage } from "./TheRememberer.png";
 export { default as ThiefImage } from "./Thief.gif";
 export { default as ThreeSnailsImage } from "./ThreeSnails.png";
+export { default as ThrustImage } from "./Thrust.png";
 export { default as ThunderBoltImage } from "./ThunderBolt.png";
 export { default as ThunderBoltProjectileImage } from "./ThunderBoltProjectile.png";
 export { default as ThunderBreakImage } from "./ThunderBreak.png";
