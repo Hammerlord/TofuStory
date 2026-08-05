@@ -8,6 +8,7 @@ import {
     ArrowRainImage,
     AvengersArrowImage,
     BlazingExtinctionImage,
+    BlindImage,
     BlockImage,
     BowExpertImage,
     BreadImage,
@@ -70,6 +71,7 @@ import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import {
     armorUp,
+    attackDown,
     attackPower,
     avenger,
     bleed,
@@ -1717,6 +1719,8 @@ export const takeCover: Ability = {
     image: HerosWillImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Pristine</b>",
+    overrideBodyText: true,
     resourceCost: 1,
     actions: [
         {
@@ -2711,6 +2715,50 @@ export const followThrough: Ability = {
                             },
                         ],
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const blind: Ability = {
+    name: "Blind",
+    image: BlindImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description:
+        "Apply <b>{{ actions.0.effects.0.stacks }} ATT Down {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.</b> Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b> for each target.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            effects: [
+                {
+                    ...attackDown,
+                    stacks: 3,
+                    duration: 1,
+                },
+            ],
+            secondaryAction: {
+                effects: [
+                    {
+                        ...aimEffect,
+                        stacks: 2,
+                    },
+                ],
+                multiplier: {
+                    type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
+                },
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    area: 1,
                 },
             ],
         },
