@@ -97,14 +97,17 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     bleed,
     poison,
-    stealth,
+    {
+        ...stealth,
+        keys: ['"Stealth"'],
+    },
     {
         ...freeze,
         keys: ['"Freeze"'],
     },
     {
         ...immunity,
-        keys: ["Immunity"],
+        keys: ['"Immunity"'],
     },
     {
         ...silence,

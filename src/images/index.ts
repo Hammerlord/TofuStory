@@ -772,6 +772,7 @@ export { default as UnagiImage } from "./Unagi.png";
 export { default as UpMATTImage } from "./UpMATT.png";
 export { default as UrsusPawImage } from "./UrsusPaw.png";
 export { default as UrsusPawDefaultImage } from "./UrsusPawDefault.png";
+export { default as VengeanceImage } from "./Vengeance.png";
 export { default as VictoriaIslandImage } from "./VictoriaIsland.png";
 export { default as VikingHelmImage } from "./VikingHelm.png";
 export { default as VitalHunterImage } from "./VitalHunter.png";

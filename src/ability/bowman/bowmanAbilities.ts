@@ -63,6 +63,7 @@ import {
     ThrustImage,
     TortieShellImage,
     TragosImage,
+    VengeanceImage,
     WeaponMasteryLGImage,
     WoodenSlingshotImage,
     WuTienEagleImage,
@@ -2770,7 +2771,9 @@ export const surge: Ability = {
     name: "Surge",
     resourceCost: 1,
     rarity: RARITIES.RARE,
-    description: "Gain {{ actions.0.effects.0.stacks }} Aim. Move <b>Aimed Shot</b> to your hand, wherever it is.",
+    image: VengeanceImage,
+    overrideBodyText: true,
+    description: "Gain <b>{{ actions.1.effects.0.stacks }} Aim.</b> Move <b>Aimed Shot</b> to your hand, wherever it is.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
