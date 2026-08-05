@@ -1899,54 +1899,68 @@ export const fireStarter: Ability = {
 
 export const hurricaneAbility: Ability = {
     name: "Hurricane",
-    resourceCost: 1,
-    description: "Selects a random target x3.",
+    resourceCost: 2,
+    description: "Hits x3 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
     image: HurricaneImage,
-    depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                damage: 1,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
-            damage: 5,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
+            target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
             targetArea: 5,
-            area: 1,
+            area: 2,
         },
         {
-            damage: 5,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
+            target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
             targetArea: 5,
-            area: 1,
+            area: 2,
         },
         {
-            damage: 5,
+            damage: 3,
             type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.RANDOM_HOSTILE,
+            target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
             targetArea: 5,
-            area: 1,
+            area: 2,
         },
     ],
     upgrades: [
         {
+            onDraw: {
+                abilityEffects: {
+                    damage: 1,
+                },
+            },
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
                 },
             ],
         },
