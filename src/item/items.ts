@@ -36,6 +36,7 @@ import {
     BoneHelmImage,
     BouquetImage,
     BrickImage,
+    BrokenSpearImage,
     BronzeIncenseBurnerImage,
     BroomImage,
     CactusImage,
@@ -2693,6 +2694,22 @@ export const drakeSkull: Item = {
             onTurnInProgress: {
                 removeEffect: true,
             },
+        },
+    ],
+};
+
+export const brokenArrow: Item = {
+    name: "Broken Arrow",
+    image: BrokenSpearImage,
+    description: "+5% Crit",
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Broken Arrow",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            criticalChance: 0.05,
         },
     ],
 };

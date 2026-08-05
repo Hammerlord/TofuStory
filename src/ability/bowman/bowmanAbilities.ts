@@ -19,6 +19,7 @@ import {
     ConcentrateImage,
     CoveringFireImage,
     CrowImage,
+    CupOfCoffeeImage,
     DogImage,
     DoubleJumpImage,
     DoubleShotImage,
@@ -2656,6 +2657,31 @@ export const callCompanion: Ability = {
                             ],
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const stimulant: Ability = {
+    name: "Stimulant",
+    image: CupOfCoffeeImage,
+    rarity: RARITIES.UNCOMMON,
+    depletedOnUse: true,
+    actions: [
+        {
+            resources: 2,
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: CupOfCoffeeImage,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    resources: 1,
                 },
             ],
         },
