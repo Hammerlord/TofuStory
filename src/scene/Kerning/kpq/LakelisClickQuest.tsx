@@ -78,7 +78,7 @@ const useStyles = createUseStyles({
 });
 
 const MAX_BYSTANDERS = 8;
-const CLICKS_TO_COMPLETE = 10;
+const CLICKS_TO_COMPLETE = 7;
 
 const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);
@@ -88,7 +88,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const makeBystander = (left?: number) => {
         return {
             id: uuid.v4(),
-            left: left || 772 + getRandomArbitrary(-100, 100),
+            left: left || 700 + getRandomArbitrary(-300, 100),
             flip: Math.random() < 0.5,
             text: Math.random() < 0.7 ? getBystanderDialogue() : "",
             clicked: null,
