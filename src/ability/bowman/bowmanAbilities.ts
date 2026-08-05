@@ -1488,7 +1488,6 @@ const crow: Minion = {
     maxHP: 5,
     image: CrowImage,
     description: "<b>Avenger.</b>",
-
     abilities: [
         {
             ...attack,
@@ -1496,7 +1495,7 @@ const crow: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -1510,13 +1509,30 @@ const crowAbility: Ability = {
     minion: crow,
     resourceCost: 0,
     removeAfterTurn: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
 };
 
 export const murderOfCrows: Ability = {
     name: "Murder Of Crows",
-    rarity: RARITIES.UNCOMMON,
-    resourceCost: 3,
+    rarity: RARITIES.RARE,
+    resourceCost: 2,
     image: CrowImage,
     depletedOnUse: true,
     actions: [
@@ -1530,7 +1546,13 @@ export const murderOfCrows: Ability = {
     ],
     upgrades: [
         {
-            resourceCost: -1,
+            actions: [
+                {
+                    addCardOptions: {
+                        upgradeLevels: 1,
+                    },
+                },
+            ],
         },
     ],
 };
