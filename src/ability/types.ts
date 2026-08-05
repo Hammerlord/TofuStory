@@ -528,17 +528,25 @@ export type ActionSummon = {
     // If true, this can replace (destroy) minions that are on the board, if there is no room
     tributePossible?: boolean;
 };
+export const CARD_PILE_TYPES = {
+    HAND: "hand",
+    DECK: "deck",
+    DISCARD: "discard",
+    DEPLETED: "depleted",
+} as const;
 
-export enum CARD_PILE_TYPES {
-    HAND = "hand",
-    DECK = "deck",
-    DISCARD = "discard",
-    DEPLETED = "depleted",
-}
+export const FROM_CARD_PILE_TYPES = {
+    ...CARD_PILE_TYPES,
+    ANYWHERE: "anywhere",
+} as const;
+
+export type CardPileType = (typeof CARD_PILE_TYPES)[keyof typeof CARD_PILE_TYPES];
+
+export type FromCardPileType = (typeof FROM_CARD_PILE_TYPES)[keyof typeof FROM_CARD_PILE_TYPES];
 
 export type MoveCards = {
-    from: CARD_PILE_TYPES;
-    to: CARD_PILE_TYPES;
+    from: FromCardPileType;
+    to: CardPileType;
     amount: number;
     filters?: { property: string; comparator: Comparator; value: any }[];
     moveType?: "prepend" | "append"; // Should it be moved to the first or last position in the 'to' pile. Default behaviour is prepend.
@@ -593,7 +601,7 @@ export type Action = {
         // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
         // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
         amount?: number;
-        pile: CARD_PILE_TYPES;
+        pile: CardPileType;
         abilityEffects: AbilityEffect[];
         // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
         mode?: "random-pick";

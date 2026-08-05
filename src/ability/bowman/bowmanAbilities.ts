@@ -93,6 +93,7 @@ import {
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    FROM_CARD_PILE_TYPES,
     Minion,
     MULTIPLIER_TYPES,
     SELECT_CARD_TYPES,
@@ -2761,6 +2762,42 @@ export const blind: Ability = {
                     area: 1,
                 },
             ],
+        },
+    ],
+};
+
+export const surge: Ability = {
+    name: "Surge",
+    resourceCost: 1,
+    rarity: RARITIES.RARE,
+    description: "Gain {{ actions.0.effects.0.stacks }} Aim. Move <b>Aimed Shot</b> to your hand, wherever it is.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            addCards: [aimedShot],
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [{ ...aimEffect, stacks: 5 }],
+            moveCards: {
+                from: FROM_CARD_PILE_TYPES.ANYWHERE,
+                to: CARD_PILE_TYPES.HAND,
+                filters: [
+                    {
+                        property: "name",
+                        value: aimedShot.name,
+                        comparator: "eq",
+                    },
+                ],
+                amount: 1,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [{}, { effects: [{ stacks: 3 }] }],
         },
     ],
 };

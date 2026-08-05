@@ -39,7 +39,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Ephemeral",
-        description: "Ability disappears at the end of your turn.",
+        description: "Ability disappears after use or discard.",
         keys: ["removeAfterTurn", "Ephemeral"],
     },
     {

@@ -1,5 +1,5 @@
 import { Combatant, Player } from "./../character/types";
-import { Ability, Action, ActionOptionalProperties, CARD_PILE_TYPES, CombatEffect, Minion } from "./../ability/types";
+import { Ability, Action, ActionOptionalProperties, CARD_PILE_TYPES, CardPileType, CombatEffect, Minion } from "./../ability/types";
 import { Item } from "../item/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { ReactElement } from "react";
@@ -32,7 +32,7 @@ export interface Event {
     source?: TriggerSource;
     // Cards which have been added to hand/deck/discard/deplete, for animation purposes.
     newCards: Ability[];
-    cardsAddedTo: CARD_PILE_TYPES;
+    cardsAddedTo: CardPileType;
     newCombatants: Combatant[];
     displacements?: Displacement;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };

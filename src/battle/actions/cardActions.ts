@@ -15,6 +15,7 @@ import {
     Comparator,
     EFFECT_EVENT_KEYS,
     Effect,
+    FROM_CARD_PILE_TYPES,
     MoveCards,
     SELECT_CARD_TYPES,
     SelectCards,
@@ -422,49 +423,79 @@ const handleMoveCards = ({
 }) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1, moveType, filters } = moveCards;
-        const validKeys = Object.values(CARD_PILE_TYPES);
-        if (!validKeys.includes(from) || !validKeys.includes(to)) {
+        const battle: BattleState = getState().battle;
+        const toPile: CombatAbility[] = battle[to]?.slice() || [];
+        if (from === to) {
+            return;
+        }
+        const parentCardId = (source?.source as CombatAbility)?.instanceId;
+
+        const moveFromPile = (fromPile: CombatAbility[]): { updatedFromPile: CombatAbility[]; movedCards: CombatAbility[] } => {
+            // If there are not enough cards in the `from` pile, just whiff the rest
+            const cardsToMove = fromPile
+                .filter((card) => {
+                    // Card cannot move itself (eg. if it was played and went to discard, it cannot move itself from the discard pile)
+                    if (parentCardId === card.instanceId) {
+                        return false;
+                    }
+
+                    if (filters) {
+                        return filters.some((filter) => {
+                            const { value, property, comparator } = filter;
+                            const propertyVal = _.get(card, property);
+                            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                        });
+                    }
+
+                    return true;
+                })
+                .slice(0, amount);
+
+            const filteredCardsToMove = cardsToMove.filter((card) => {
+                // If we're moving an Ephemeral card to discard/deplete, treat it as a normal discard (the card vanishes).
+                if (card.removeAfterTurn && (to === CARD_PILE_TYPES.DISCARD || to === CARD_PILE_TYPES.DEPLETED)) {
+                    return false;
+                }
+                return true;
+            });
+
+            const filteredFromPile = fromPile.filter((card) => cardsToMove.every((movedCard) => movedCard.instanceId !== card.instanceId));
+            return { updatedFromPile: filteredFromPile, movedCards: filteredCardsToMove };
+        };
+
+        const cardsToMove = [];
+        const updatedCardPiles = {};
+
+        if (from === FROM_CARD_PILE_TYPES.ANYWHERE) {
+            ["hand", "deck", "discard", "depleted"].forEach((fromPileName: string) => {
+                if (fromPileName === to) {
+                    return;
+                }
+
+                const pile = battle[fromPileName];
+                const { updatedFromPile, movedCards } = moveFromPile(pile);
+                updatedCardPiles[fromPileName] = updatedFromPile;
+                cardsToMove.push(...movedCards);
+            });
+        } else {
+            const fromPile = battle[from];
+            const { updatedFromPile, movedCards } = moveFromPile(fromPile);
+            updatedCardPiles[from] = updatedFromPile;
+            cardsToMove.push(...movedCards);
+        }
+
+        console.log("from", from);
+        console.log("cards to move", cardsToMove);
+        console.log("updated card piles", updatedCardPiles);
+
+        if (!cardsToMove.length) {
             return;
         }
 
-        const battle: BattleState = getState().battle;
-        const fromPile: CombatAbility[] = battle[from]?.slice() || [];
-        const toPile: CombatAbility[] = battle[to]?.slice() || [];
-
-        const parentCardId = (source?.source as CombatAbility)?.instanceId;
-
-        // If there are not enough cards in the `from` pile, just whiff the rest
-        const cardsToMove = fromPile
-            .filter((card) => {
-                // Card cannot move itself (eg. if it was played and went to discard, it cannot move itself from the discard pile)
-                if (parentCardId === card.instanceId) {
-                    return false;
-                }
-
-                if (filters) {
-                    return filters.some((filter) => {
-                        const { value, property, comparator } = filter;
-                        const propertyVal = _.get(card, property);
-                        return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
-                    });
-                }
-
-                return true;
-            })
-            .slice(0, amount);
-
-        const filteredCardsToMove = cardsToMove.filter((card) => {
-            // If we're moving an Ephemeral card to discard, treat it as a normal discard (the card vanishes).
-            if (card.removeAfterTurn && to === CARD_PILE_TYPES.DISCARD) {
-                return false;
-            }
-            return true;
-        });
-
         if (moveType === "append") {
-            toPile.push(...filteredCardsToMove);
+            toPile.push(...cardsToMove);
         } else {
-            toPile.unshift(...filteredCardsToMove);
+            toPile.unshift(...cardsToMove);
         }
 
         dispatch(
@@ -479,7 +510,7 @@ const handleMoveCards = ({
 
         dispatch(
             updateBattle({
-                [from]: fromPile.filter((card) => cardsToMove.every((movedCard) => movedCard.instanceId !== card.instanceId)),
+                ...updatedCardPiles,
                 [to]: toPile,
             })
         );
