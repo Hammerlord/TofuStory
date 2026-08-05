@@ -339,6 +339,9 @@ export const initiatePlayerTurnInProgress = () => {
                 dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnInProgress }));
             }
         });
+
+        // Update the enemy's targeting after all the turn start stuff has played out (in case targeting might change due to deaths etc.)
+        dispatch(checkValidEnemyTargeting());
     };
 };
 

@@ -1,10 +1,10 @@
-import { isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
+import { isSupportAbility } from "../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
-import getAbilityPreviews, { previewAction } from "../../character/getAbilityPreviews";
+import { previewAction } from "../../character/getAbilityPreviews";
 import { Combatant } from "../../character/types";
 import { ITEM_TYPES, Item } from "../../item/types";
-import { getRandomInt, shuffle } from "../../utils";
+import { getRandomInt } from "../../utils";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
