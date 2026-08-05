@@ -13,6 +13,7 @@ import {
     BreadImage,
     BroilerShotImage,
     BronzeCrossbowArrowImage,
+    CatImage,
     ChestnutLeafImage,
     ChickenCouponImage,
     ConcentrateImage,
@@ -28,6 +29,7 @@ import {
     FireMarbleImage,
     FocusImage,
     FrozenArrowImage,
+    GuidesWhistleImage,
     HamstringImage,
     HerosWillImage,
     HuntersBowImage,
@@ -249,18 +251,20 @@ export const defend: Ability = {
     ],
 };
 
-export const puppet: Ability = {
+const puppetMinion = {
+    name: "Puppet",
+    image: ScarecrowImage,
+    maxHP: 8,
+    abilities: [],
+    effects: [taunt, thorns],
+};
+
+export const puppetAbility: Ability = {
     name: "Puppet",
     image: ScarecrowImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    minion: {
-        name: "Puppet",
-        image: ScarecrowImage,
-        maxHP: 8,
-        abilities: [],
-        effects: [taunt, thorns],
-    },
+    minion: puppetMinion,
     actions: [],
     upgrades: [
         {
@@ -408,41 +412,43 @@ export const soulArrow: Ability = {
     ],
 };
 
-export const eagle: Ability = {
+const eagleMinion = {
+    name: "Eagle",
+    image: WuTienEagleImage,
+    maxHP: 5,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 2,
+                    effects: [{ ...bleed, stacks: 1 }],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Critical Bonus",
+            description: "Granting Critical Chance.",
+            icon: BullseyeIcon,
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            criticalChance: 0.1,
+        },
+    ],
+};
+
+export const eagleAbility: Ability = {
     name: "Eagle",
     image: WuTienEagleImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description: "Grants <b>+{{ minion.effects.0.criticalChance }} Critical</b>",
-    minion: {
-        name: "Eagle",
-        image: WuTienEagleImage,
-        maxHP: 5,
-        abilities: [
-            {
-                ...attack,
-                actions: [
-                    {
-                        type: ACTION_TYPES.ATTACK,
-                        target: TARGET_TYPES.HOSTILE,
-                        damage: 2,
-                        effects: [{ ...bleed, stacks: 1 }],
-                    },
-                ],
-            },
-        ],
-        effects: [
-            {
-                name: "Critical Bonus",
-                description: "Granting Critical Chance.",
-                icon: BullseyeIcon,
-                type: EFFECT_TYPES.NONE,
-                class: EFFECT_CLASSES.BUFF,
-                criticalChance: 0.1,
-            },
-        ],
-    },
+    minion: eagleMinion,
     actions: [],
     upgrades: [
         {
@@ -1066,12 +1072,29 @@ export const wolfMinion: Minion = {
 
 export const wolfAbility: Ability = {
     name: "Wolf",
+    image: DogImage,
     minion: wolfMinion,
     rarity: RARITIES.COMMON,
     resourceCost: 1,
     description: "Gains <b>+1 {{{ _damage_}}}</b> for every other ally.",
     overrideBodyText: true,
     actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 1,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
 };
 
 export const callWolves: Ability = {
@@ -1483,7 +1506,7 @@ export const quickShot: Ability = {
     ],
 };
 
-const crow: Minion = {
+const crowMinion: Minion = {
     name: "Crow",
     maxHP: 5,
     image: CrowImage,
@@ -1506,7 +1529,7 @@ const crow: Minion = {
 const crowAbility: Ability = {
     name: "Crow",
     image: CrowImage,
-    minion: crow,
+    minion: crowMinion,
     resourceCost: 0,
     removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
@@ -2536,6 +2559,100 @@ export const sweepingArrows: Ability = {
                     effects: [
                         {
                             stacks: 1,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+const catMinion: Minion = {
+    name: "Cat",
+    description: "Attacks twice.",
+    maxHP: 5,
+    image: CatImage,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    ...attack.actions[0],
+                    damage: 2,
+                },
+                {
+                    ...attack.actions[0],
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const catAbility: Ability = {
+    name: "Cat",
+    resourceCost: 1,
+    image: CatImage,
+    rarity: RARITIES.UNCOMMON,
+    description: "Attacks twice.",
+    minion: catMinion,
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 1,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                damage: 1,
+                            },
+                            {
+                                damage: 1,
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const callCompanion: Ability = {
+    name: "Call Companion",
+    resourceCost: 1,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    image: GuidesWhistleImage,
+    description: "Summon a random common or uncommon minion.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: BreadImage,
+            summon: [
+                {
+                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion],
+                    tributePossible: true,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            description: "Summon a random common or uncommon minion. It is upgraded.",
+            actions: [
+                {
+                    summon: [
+                        {
+                            minion: [
+                                puppetAbility.upgrades[0].minion,
+                                wolfAbility.upgrades[0].minion,
+                                eagleAbility.upgrades[0].minion,
+                                crowAbility.upgrades[0].minion,
+                                catAbility.upgrades[0].minion,
+                            ],
                         },
                     ],
                 },
