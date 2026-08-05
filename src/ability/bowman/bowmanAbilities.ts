@@ -695,11 +695,22 @@ export const mortalBlow: Ability = {
 export const powerShot: Ability = {
     name: "Power Shot",
     resourceCost: 2,
-    description: "<b>+2</b> {{{ _damage_ }}} for every other 'Shot' or 'Shoot' card you own.",
+    description: "<b>+2</b> {{{ _damage_ }}} x every other 'Shot' / 'Shoot' card you own. <b>Critical: +1</b> {{{ _damage_ }}} more.",
     disableConditionGlow: true,
     overrideBodyText: true,
     image: PiercingArrowImage,
     rarity: RARITIES.RARE,
+    onDraw: {
+        abilityEffects: [
+            {
+                bonus: {
+                    damage: 1,
+                },
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             damage: 10,
@@ -919,27 +930,16 @@ export const focus: Ability = {
 
 export const chargedShot: Ability = {
     name: "Charged Shot",
-    removeAfterTurn: true,
+    depletedOnUse: true,
     rarity: RARITIES.RARE,
-    resourceCost: 0,
-    image: DrainArrowImage,
-    description:
-        "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each unique card used this battle. <br/> <b>Critical: +1</b> {{{ _damage_ }}} more.",
     overrideBodyText: true,
-    onDraw: {
-        abilityEffects: [
-            {
-                bonus: {
-                    damage: 1,
-                },
-                maxApplications: 1,
-                highlightCard: true,
-            },
-        ],
-    },
+    description:
+        "Gain {{ actions.0.secondaryAction.armor }} {{{ _armor_ }}} and <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b>",
+    resourceCost: 1,
+    image: DrainArrowImage,
     actions: [
         {
-            damage: 1,
+            damage: 20,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -954,15 +954,27 @@ export const chargedShot: Ability = {
                     glow: true,
                 },
             },
-            bonus: {
-                damage: 2,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.ABILITIES_USED,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    filterUnique: true,
-                    filterOutProcs: true,
-                },
+            secondaryAction: {
+                armor: 10,
+                effects: [{ ...aimEffect, stacks: 10 }],
             },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
+                    secondaryAction: {
+                        armor: 3,
+                        effects: [
+                            {
+                                stacks: 3,
+                            },
+                        ],
+                    },
+                },
+            ],
         },
     ],
 };
