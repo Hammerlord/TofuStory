@@ -2228,6 +2228,7 @@ export const roastingShot: Ability = {
                                 resourceCost: 0,
                             },
                         ],
+                        removeEffect: true,
                     },
                 },
             ],
@@ -2237,10 +2238,10 @@ export const roastingShot: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 2,
                     effects: [
                         {
-                            stacks: 1,
+                            stacks: 2,
                         },
                     ],
                 },
