@@ -17,6 +17,7 @@ import { getUpgradeCard } from "./../Menu/utils";
 import { furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, ITEM_TYPES, RARITIES } from "./types";
+import { aimedShot, aimEffect } from "../ability/bowman/bowmanAbilities";
 
 export const rageStone: Item = {
     name: "Rage Stone",
@@ -181,6 +182,20 @@ export const honestyStone: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             criticalChance: 0.3,
+            onReceiveEffect: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        name: aimEffect.name,
+                        comparator: "eq",
+                    },
+                ],
+                addCardsToDeck: [aimedShot],
+                addCardsToDeckOptions: {
+                    moveType: "append",
+                },
+            },
         },
     ],
 };

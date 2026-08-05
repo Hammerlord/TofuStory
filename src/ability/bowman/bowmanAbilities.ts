@@ -107,7 +107,7 @@ const bowmanAnimationOption = {
     },
 };
 
-const aimedShot: Ability = {
+export const aimedShot: Ability = {
     name: "Aimed Shot",
     resourceCost: 1,
     image: TargetLockImage,
@@ -133,7 +133,7 @@ const aimedShot: Ability = {
     ],
 };
 
-const aimEffect: Effect = {
+export const aimEffect: Effect = {
     name: "Aim",
     icon: TargetLockImage,
     skillBonus: [{ skill: aimedShot.name, comparator: "eq", damage: 1 }],
@@ -2321,10 +2321,6 @@ export const takeAim: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [{ ...aimEffect, stacks: 5 }],
-            addCardsToDeck: [aimedShot],
-            addCardsToDeckOptions: {
-                moveType: "append",
-            },
         },
     ],
     upgrades: [
@@ -2366,10 +2362,6 @@ export const concentrate: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [{ ...aimEffect, stacks: 10 }],
-            addCardsToDeck: [aimedShot],
-            addCardsToDeckOptions: {
-                moveType: "append",
-            },
         },
     ],
     upgrades: [
@@ -2400,10 +2392,6 @@ export const poise: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             effects: [{ ...aimEffect, stacks: 4 }],
-            addCardsToDeck: [aimedShot],
-            addCardsToDeckOptions: {
-                moveType: "append",
-            },
         },
     ],
     upgrades: [
@@ -2437,10 +2425,6 @@ export const steady: Ability = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     effects: [{ ...aimEffect, stacks: 3 }],
-                    addCardsToDeck: [aimedShot],
-                    addCardsToDeckOptions: {
-                        moveType: "append",
-                    },
                 },
             ],
         },
@@ -2488,10 +2472,7 @@ export const windupShot: Ability = {
             icon: AvengersArrowImage,
             damage: 9,
             animationOptions: bowmanAnimationOption,
-            addCardsToDeck: [aimedShot],
-            addCardsToDeckOptions: {
-                moveType: "append",
-            },
+
             secondaryAction: {
                 effects: [{ ...aimEffect, stacks: 3 }],
             },
@@ -2526,10 +2507,7 @@ export const sweepingArrows: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            addCardsToDeck: [aimedShot],
-            addCardsToDeckOptions: {
-                moveType: "append",
-            },
+
             effects: [
                 { ...aimEffect, stacks: 2 },
                 {

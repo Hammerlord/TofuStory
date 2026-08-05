@@ -143,7 +143,7 @@ export const passesConditions = ({
             }
 
             if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
-                const { type: effectType, class: effectClass }: Effect = sourcePayload as Effect;
+                const { type: effectType, class: effectClass, name: effectName }: Effect = sourcePayload as Effect;
 
                 if (hasEffectType !== undefined) {
                     if (comparator === "not") {
@@ -174,6 +174,13 @@ export const passesConditions = ({
                 if (property !== undefined) {
                     const propertyVal = _.get(sourcePayload, property);
                     return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                }
+
+                if (name) {
+                    const names = Array.isArray(name) ? name : [name];
+                    if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: effectName, comparator }))) {
+                        return false;
+                    }
                 }
 
                 return true;
