@@ -2250,7 +2250,7 @@ export const takeAim: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                effects: [{ ...aimEffect, stacks: 3 }],
+                effects: [{ ...aimEffect, stacks: 2 }],
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2260,7 +2260,7 @@ export const takeAim: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 8 }],
+            effects: [{ ...aimEffect, stacks: 5 }],
             addCardsToDeck: [aimedShot],
             addCardsToDeckOptions: {
                 moveType: "append",
@@ -2272,7 +2272,11 @@ export const takeAim: Ability = {
             onDraw: {
                 abilityEffects: [
                     {
-                        stacks: 1,
+                        effects: [
+                            {
+                                stacks: 1,
+                            },
+                        ],
                     },
                 ],
             },
@@ -2280,7 +2284,7 @@ export const takeAim: Ability = {
                 {
                     effects: [
                         {
-                            stacks: 3,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -2297,12 +2301,11 @@ export const concentrate: Ability = {
     image: ConcentrateImage,
     overrideBodyText: true,
     description: "Grants <b>{{ actions.0.effects.0.stacks }} Aim</b>",
-    preemptive: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 12 }],
+            effects: [{ ...aimEffect, stacks: 10 }],
             addCardsToDeck: [aimedShot],
             addCardsToDeckOptions: {
                 moveType: "append",
@@ -2336,7 +2339,7 @@ export const poise: Ability = {
             armor: 5,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...aimEffect, stacks: 5 }],
+            effects: [{ ...aimEffect, stacks: 4 }],
             addCardsToDeck: [aimedShot],
             addCardsToDeckOptions: {
                 moveType: "append",
@@ -2347,7 +2350,7 @@ export const poise: Ability = {
         {
             actions: [
                 {
-                    armor: 2,
+                    armor: 1,
                     effects: [
                         {
                             stacks: 2,
@@ -2430,31 +2433,22 @@ export const windupShot: Ability = {
                 moveType: "append",
             },
             secondaryAction: {
-                effects: [{ ...aimEffect, stacks: 4 }],
+                effects: [{ ...aimEffect, stacks: 3 }],
             },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        stacks: 1,
-                    },
-                ],
-            },
             actions: [
                 {
                     damage: 3,
-                    secondaryAction: [
-                        {
-                            effects: [
-                                {
-                                    stacks: 1,
-                                },
-                            ],
-                        },
-                    ],
+                    secondaryAction: {
+                        effects: [
+                            {
+                                stacks: 1,
+                            },
+                        ],
+                    },
                 },
             ],
         },
