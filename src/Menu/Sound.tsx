@@ -229,7 +229,7 @@ const Sound = ({
             }
             clearTimeout(timeout);
         };
-    }, [trackIndex, isPlaying, playTrack, overrideAudio]);
+    }, [trackIndex, isPlaying, playTrack, overrideAudio, volume]);
 
     useEffect(() => {
         // Handle tracklist/region change
@@ -239,6 +239,7 @@ const Sound = ({
 
         if (playlistAudio.src !== tracks[trackIndex]) {
             playlistAudio.src = tracks[trackIndex];
+            playlistAudio.loop = tracks.length === 1;
         }
 
         if (isPlaying && playlistAudio.paused) {
