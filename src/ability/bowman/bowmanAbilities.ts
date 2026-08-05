@@ -254,7 +254,7 @@ export const defend: Ability = {
 const puppetMinion = {
     name: "Puppet",
     image: ScarecrowImage,
-    maxHP: 8,
+    maxHP: 7,
     abilities: [],
     effects: [taunt, thorns],
 };
@@ -298,7 +298,7 @@ export const arrowBomb: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -2346,7 +2346,7 @@ export const concentrate: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: ConcentrateImage,
     overrideBodyText: true,
-    description: "Grants <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim</b>",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2465,7 +2465,7 @@ export const windupShot: Ability = {
     overrideBodyText: true,
     image: HuntersBowImage,
     resourceCost: 1,
-    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b>",
+    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2559,7 +2559,7 @@ export const sweepingArrows: Ability = {
                 {
                     effects: [
                         {
-                            stacks: 1,
+                            stacks: 2,
                         },
                     ],
                 },

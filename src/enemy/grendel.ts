@@ -119,7 +119,8 @@ const iceAge: Ability = {
     image: NimbleJewelCImage,
     actions: [
         {
-            damage: 30,
+            damage: 20,
+            secondaryDamage: 10,
             area: 2,
             target: TARGET_TYPES.PLAYER,
             type: ACTION_TYPES.RANGE_ATTACK,

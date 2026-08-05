@@ -2660,7 +2660,7 @@ export const drakeSkull: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: DrakeSkullImage,
-    description: "Wave start: Shoot a target for {{ effects.0.onWaveStart.ability.actions.damage }}.",
+    description: "Wave start: Shoot a target for {{ effects.0.onWaveStart.ability.actions.0.damage }}.",
     effects: [
         {
             name: "Drake Skull",

@@ -239,7 +239,7 @@ export const anger: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -249,7 +249,7 @@ export const anger: Ability = {
         {
             actions: [
                 {
-                    damage: -3,
+                    damage: -2,
                 },
             ],
         },
