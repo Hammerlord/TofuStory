@@ -51,6 +51,10 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         description: "Ability can only be used once per battle.",
     },
     {
+        name: "Retain",
+        description: "Ability does not get discarded at the end of your turn.",
+    },
+    {
         name: "Tribute",
         description: "Replacing an existing summon with another one grants the new summon +1 HP and ATT.",
         keys: ["Tribute"],

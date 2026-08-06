@@ -277,6 +277,7 @@ const AbilityView = forwardRef(
             unplayable,
             disableConditionGlow,
             effects = [],
+            retain,
         } = ability;
         const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets, addLastPlayedCards } = actions[0] || {};
         const cardImage = image || minion?.image;
@@ -550,6 +551,8 @@ const AbilityView = forwardRef(
                                 {depletedOnUse && <div className={classes.bold}>Deplete</div>}
                                 {ability.reusable && <div className={classes.bold}>Reusable</div>}
                                 {unplayable && <div className={classes.bold}>Unplayable</div>}
+                                {retain && <div className={classes.bold}>Retain</div>}
+
                                 <SelectCards ability={ability} />
                                 {!healingCornerIcon && healing > 0 && (
                                     <div>
