@@ -44,15 +44,16 @@ const DevItemViewer = () => {
             <p>{ITEM_MASTERLIST.length} Items</p>
             {listItems(ITEM_MASTERLIST)}
 
-            <p>
-                {PLAYER_CLASSES.WARRIOR} Items: {CLASS_ITEMS[PLAYER_CLASSES.WARRIOR].length}
-            </p>
-            {listItems(CLASS_ITEMS[PLAYER_CLASSES.WARRIOR])}
-
-            <p>
-                {PLAYER_CLASSES.MAGICIAN} Items: {CLASS_ITEMS[PLAYER_CLASSES.MAGICIAN].length}
-            </p>
-            {listItems(CLASS_ITEMS[PLAYER_CLASSES.MAGICIAN])}
+            {Object.values(PLAYER_CLASSES).map((playerClass) => {
+                return (
+                    <>
+                        <p>
+                            {playerClass} Items: {CLASS_ITEMS[playerClass].length}
+                        </p>
+                        {listItems(CLASS_ITEMS[playerClass])}
+                    </>
+                );
+            })}
         </div>
     );
 };
