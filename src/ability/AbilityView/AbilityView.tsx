@@ -551,53 +551,59 @@ const AbilityView = forwardRef(
                                 {ability.reusable && <div className={classes.bold}>Reusable</div>}
                                 {unplayable && <div className={classes.bold}>Unplayable</div>}
                                 <SelectCards ability={ability} />
-                                {!overrideBodyText && <DrawCards ability={ability} playerClass={player?.class} />}
-                                {!overrideBodyText && <Debuffs effects={getAllEffects(ability)} />}
-                                {!overrideBodyText && numTargets > 0 && (
-                                    <div>
-                                        Hits up to +{numTargets} targets{" "}
-                                        {secondaryDamage && (
-                                            <>
-                                                for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size={"sm"} />{" "}
-                                            </>
-                                        )}
-                                    </div>
-                                )}
                                 {!healingCornerIcon && healing > 0 && (
                                     <div>
                                         Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
                                     </div>
                                 )}
-                                {!overrideBodyText && !armorCornerIcon && armorTotal > 0 && (
-                                    <div>
-                                        Gain{" "}
-                                        <Icon
-                                            icon={<ShieldIcon />}
-                                            text={armorTotal}
-                                            size={"sm"}
-                                            highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
-                                        />
-                                    </div>
-                                )}
-                                {!overrideBodyText && resourceGain > 0 && (
-                                    <div>
-                                        Gain <ResourceIcon text={resourceGain} size={"sm"} playerClass={player?.class} />
-                                    </div>
-                                )}
-                                {!overrideBodyText && selfDamage > 0 && (
-                                    <div>
-                                        Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size={"sm"} />
-                                    </div>
-                                )}
-                                {!overrideBodyText && <Buffs ability={ability} player={player} />}
-                                {!overrideBodyText && <CardsToAdd ability={ability} player={player} />}
                                 {!overrideBodyText && (
-                                    <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
+                                    <>
+                                        {numTargets > 0 && (
+                                            <div>
+                                                Hits up to +{numTargets} targets{" "}
+                                                {secondaryDamage && (
+                                                    <>
+                                                        for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size="sm" />{" "}
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {!armorCornerIcon && armorTotal > 0 && (
+                                            <div>
+                                                Gain{" "}
+                                                <Icon
+                                                    icon={<ShieldIcon />}
+                                                    text={armorTotal}
+                                                    size="sm"
+                                                    highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
+                                                />
+                                            </div>
+                                        )}
+
+                                        {resourceGain > 0 && (
+                                            <div>
+                                                Gain <ResourceIcon text={resourceGain} size="sm" playerClass={player?.class} />
+                                            </div>
+                                        )}
+
+                                        {selfDamage > 0 && (
+                                            <div>
+                                                Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size="sm" />
+                                            </div>
+                                        )}
+
+                                        <Buffs ability={ability} player={player} />
+
+                                        <CardsToAdd ability={ability} player={player} />
+
+                                        <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
+
+                                        <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
+
+                                        {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
+                                    </>
                                 )}
-                                {!overrideBodyText && (
-                                    <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
-                                )}
-                                {!overrideBodyText && destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                                 {interpolatedDescription && showDescription && (
                                     <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
                                 )}
