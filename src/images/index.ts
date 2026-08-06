@@ -294,6 +294,7 @@ export { default as GreenMushroomImage } from "./GreenMushroom.gif";
 export { default as GrendelIdleImage } from "./GrendelIdle.gif";
 export { default as GreyShieldImage } from "./GreyShield.png";
 export { default as GrilledCheeseImage } from "./GrilledCheese.png";
+export { default as GrossJaegerImage } from "./GrossJaeger.png";
 export { default as GuardArcherImage } from "./GuardArcher.png";
 export { default as GuardBanditImage } from "./GuardBandit.png";
 export { default as GuardWarriorImage } from "./GuardWarrior.png";

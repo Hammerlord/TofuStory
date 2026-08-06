@@ -31,6 +31,7 @@ import {
     FireMarbleImage,
     FocusImage,
     FrozenArrowImage,
+    GrossJaegerImage,
     GuidesWhistleImage,
     HamstringImage,
     HerosWillImage,
@@ -2169,6 +2170,9 @@ const phoenix: Minion = {
             icon: BlazingExtinctionImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            onSummoned: {
+                ability: fireBurst,
+            },
             onDeath: {
                 ability: fireBurst,
                 usableWhileDead: true,
@@ -2815,6 +2819,45 @@ export const surge: Ability = {
     upgrades: [
         {
             actions: [{}, { effects: [{ stacks: 3 }] }],
+        },
+    ],
+};
+
+export const longShot: Ability = {
+    name: "Long Shot",
+    unplayable: true,
+    resourceCost: 0,
+    image: GrossJaegerImage,
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description: "<b>Critical: Playable.</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+    onDraw: {
+        chance: 0.2,
+        abilityEffects: [
+            {
+                bypassUnplayable: true,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 15,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
+                },
+            ],
         },
     ],
 };
