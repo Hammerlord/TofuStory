@@ -234,6 +234,7 @@ export const shootAbility: Ability = {
     name: "Shoot",
     resourceCost: 1,
     image: AvengersArrowImage,
+    overrideBodyText: true,
     description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
@@ -661,6 +662,7 @@ const strafeHit = {
 export const strafe: Ability = {
     name: "Strafe",
     resourceCost: 2,
+    overrideBodyText: true,
     description: "Hits x4 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     rarity: RARITIES.UNCOMMON,
     image: StrafeImage,
@@ -806,7 +808,8 @@ export const guard: Ability = {
     name: "Guard",
     resourceCost: 1,
     image: ShieldImage,
-    description: "<b>Critical:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
+    overrideBodyText: true,
+    description: "<b>Critical: +{{ actions.0.bonus.armor }} {{{ _armor_ }}}</b>",
     rarity: RARITIES.COMMON,
     onDraw: {
         chance: 0,
@@ -917,6 +920,7 @@ export const barbedArrows: Ability = {
     name: "Barbed Arrows",
     resourceCost: 0,
     image: ArrowEruptionImage,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}}",
     actions: [
         {
             damage: 0,
@@ -931,7 +935,7 @@ export const barbedArrows: Ability = {
     ],
     upgrades: [
         {
-            description: "<b>Critical: +{{{ _bleed_ }}}</b>",
+            description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}} <br/> <b>Critical: +{{{ _bleed_ }}}</b>",
             onDraw: {
                 chance: 0,
                 abilityEffects: [
@@ -1312,7 +1316,7 @@ export const doubleJump: Ability = {
     name: "Double Jump",
     resourceCost: 1,
     image: DoubleJumpImage,
-    description: "Draw {{ actions.0.drawCards.amount }} cards. <b>Critical:</b> +1 card.",
+    description: "Draw {{ actions.0.drawCards.amount }} cards. <br/> <b>Critical:</b> +1 card.",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
@@ -1431,7 +1435,7 @@ export const roar: Ability = {
     depletedOnUse: true,
     resourceCost: 0,
     description:
-        "Gain {{{ _stamina_ }}} and draw a card. For the next <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _stamina_ }}} and card draw.",
+        "Gain {{{ _stamina_ }}}. Draw a card. For <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _stamina_ }}} and card draw.",
     overrideBodyText: true,
     actions: [
         {
@@ -1594,7 +1598,8 @@ export const quickShot: Ability = {
     resourceCost: 1,
     image: MarksmanBoostImage,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
+    overrideBodyText: true,
+    description: "Draw a card. <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
         abilityEffects: [
@@ -1720,7 +1725,7 @@ export const arrowBlow: Ability = {
     name: "Arrow Blow",
     resourceCost: 1,
     overrideBodyText: true,
-    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}.</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
     image: ArrowBlowImage,
     onDraw: {
         chance: 0.2,
@@ -1898,7 +1903,7 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "<b>Pierce.</b> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
+        "<b>Pierce.</b> <br/> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <br/> <b>Critical: +{{ actions.0.bonus.1.damage }} {{{ _damage_ }}}</b>",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
@@ -2027,6 +2032,7 @@ const hurricaneHit = {
 export const hurricaneAbility: Ability = {
     name: "Hurricane",
     resourceCost: 2,
+    overrideBodyText: true,
     description: "Hits x3 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     image: HurricaneImage,
     rarity: RARITIES.UNCOMMON,
@@ -2122,7 +2128,8 @@ export const turtleUp: Ability = {
     name: "Turtle Up",
     image: TortieShellImage,
     resourceCost: 1,
-    description: "<b>Critical:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
+    overrideBodyText: true,
+    description: "<b>Critical: +{{ actions.0.bonus.armor }} {{{ _armor_ }}}</b>",
     rarity: RARITIES.UNCOMMON,
     onDraw: {
         chance: 0,
