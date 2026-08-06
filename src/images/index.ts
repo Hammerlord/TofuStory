@@ -167,6 +167,7 @@ export { default as DancesWithBalrogSittingImage } from "./DancesWithBalrogSitti
 export { default as DarkImpaleImage } from "./DarkImpale.png";
 export { default as DarkLordImage } from "./DarkLord.gif";
 export { default as DarkMarbleImage } from "./DarkMarble.png";
+export { default as DarkPoleFeatherHatImage } from "./DarkPoleFeatherHat.png";
 export { default as DarkShockImage } from "./DarkShock.png";
 export { default as DarkSightImage } from "./DarkSight.gif";
 export { default as DarkSpearImage } from "./DarkSpear.png";

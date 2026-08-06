@@ -1,3 +1,4 @@
+import { aimEffect } from "../ability/bowman/bowmanAbilities";
 import {
     attackDown,
     attackPower,
@@ -44,6 +45,7 @@ import {
     CoffeePotImage,
     CouponImage,
     CursedDollImage,
+    DarkPoleFeatherHatImage,
     DiamondImage,
     DiamondOreImage,
     DioramaImage,
@@ -2697,7 +2699,7 @@ export const drakeSkull: Item = {
 export const brokenArrow: Item = {
     name: "Broken Arrow",
     image: BrokenSpearImage,
-    description: "+5% Crit",
+    description: "+5% Critical",
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     effects: [
@@ -2706,6 +2708,31 @@ export const brokenArrow: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             criticalChance: 0.05,
+        },
+    ],
+};
+
+export const darkPoleFeatherHat: Item = {
+    name: "Dark Pole-Feather Hat",
+    description: "While you do not have Aim, gain +20% Critical.",
+    image: DarkPoleFeatherHatImage,
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Dark Pole-Feather Hat",
+            description: "+20% Critical if Aim is inactive.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: DarkPoleFeatherHatImage,
+            criticalChance: 0.2,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    hasEffect: aimEffect.name,
+                    comparator: "not",
+                },
+            ],
         },
     ],
 };
