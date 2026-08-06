@@ -390,6 +390,10 @@ export interface Condition {
     hasEffectType?: EFFECT_TYPES[];
     hasEffectClass?: EFFECT_CLASSES.BUFF | EFFECT_CLASSES.DEBUFF;
     hasEffect?: string; // Effect name
+
+    // For ability source types only
+    hasAbilityEffectName?: string;
+
     /** Unique effects, not stacks */
     numEffects?: number;
     /** This should be a decimal value up to 1 */
@@ -900,14 +904,10 @@ export interface AbilityEffect {
     applierId?: string;
     resourceCost?: number;
     drawCards?: number;
-    // A flat damage increase across all actions
+    // A flat damage increase or decrease across all actions
     damage?: number;
-    // A flat armor increase across all actions
+    // A flat armor increase or decrease across all actions
     armor?: number;
-    // Buffs bonus.damage across all actions; pretty hacky, only Charged Shot uses this
-    bonus?: {
-        damage: number;
-    };
     removeParentCardAfterTurn?: boolean; // Effectively adds the 'ephemeral' keyword on the parent ability
     upgradedByLevels?: number;
     maxApplications?: number;

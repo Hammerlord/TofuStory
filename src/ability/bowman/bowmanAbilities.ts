@@ -104,6 +104,8 @@ import {
 } from "../types";
 import { cloneDeep } from "lodash";
 
+const CRITICAL = "Critical";
+
 const bowmanAnimationOption = {
     rotateToFaceTarget: true,
     rotate: 135,
@@ -209,7 +211,7 @@ export const volley: Ability = {
     ],
     upgrades: [
         {
-            description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+            description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
             onDraw: {
                 abilityEffects: [
                     {
@@ -232,12 +234,12 @@ export const shootAbility: Ability = {
     name: "Shoot",
     resourceCost: 1,
     image: AvengersArrowImage,
-    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 4,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -251,20 +253,26 @@ export const shootAbility: Ability = {
             icon: AvengersArrowImage,
             damage: 7,
             animationOptions: bowmanAnimationOption,
+            bonus: {
+                damage: 4,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        damage: 1,
-                    },
-                ],
-            },
             actions: [
                 {
                     damage: 3,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -382,12 +390,12 @@ export const soulShot: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: MagicArrowImage,
     removeAfterTurn: true,
-    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 3,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -400,6 +408,16 @@ export const soulShot: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: MagicArrowImage,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
             animationOptions: {
                 ...bowmanAnimationOption,
                 width: 50,
@@ -412,16 +430,12 @@ export const soulShot: Ability = {
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        damage: 1,
-                    },
-                ],
-            },
             actions: [
                 {
                     damage: 3,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -554,13 +568,14 @@ export const darkArrow: Ability = {
 export const doubleShot: Ability = {
     name: "Double Shot",
     resourceCost: 1,
-    description: "Hits x2 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
+    overrideBodyText: true,
+    description: "Hits x2 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     image: DoubleShotImage,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 2,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -574,6 +589,16 @@ export const doubleShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
+            bonus: {
+                damage: 2,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
         {
             damage: 4,
@@ -582,23 +607,32 @@ export const doubleShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
+            bonus: {
+                damage: 2,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        damage: 2,
-                    },
-                ],
-            },
             actions: [
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 2,
+                    },
                 },
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 2,
+                    },
                 },
             ],
         },
@@ -612,19 +646,29 @@ const strafeHit = {
     animation: ANIMATION_TYPES.ONE_WAY,
     icon: AvengersArrowImage,
     animationOptions: bowmanAnimationOption,
+    bonus: {
+        damage: 1,
+        conditions: [
+            {
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                hasAbilityEffectName: CRITICAL,
+            },
+        ],
+    },
 };
 
 export const strafe: Ability = {
     name: "Strafe",
     resourceCost: 2,
-    description: "Hits x4 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
+    description: "Hits x4 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     rarity: RARITIES.UNCOMMON,
     image: StrafeImage,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 1,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -700,7 +744,8 @@ export const mortalBlow: Ability = {
 export const powerShot: Ability = {
     name: "Power Shot",
     resourceCost: 2,
-    description: "<b>+2</b> {{{ _damage_ }}} x every other 'Shot' / 'Shoot' card you own. <b>Critical: +1</b> {{{ _damage_ }}} more.",
+    description:
+        "<b>+{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} x every other 'Shot' / 'Shoot' card you own. <b>Critical: +1</b> {{{ _damage_ }}} more.",
     disableConditionGlow: true,
     overrideBodyText: true,
     image: PiercingArrowImage,
@@ -708,9 +753,7 @@ export const powerShot: Ability = {
     onDraw: {
         abilityEffects: [
             {
-                bonus: {
-                    damage: 1,
-                },
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -724,17 +767,28 @@ export const powerShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
-
-            bonus: {
-                damage: 2,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.ALL_CARDS,
-                    filters: [
-                        { property: "name", comparator: "includes", value: "shoot" },
-                        { property: "name", comparator: "includes", value: "shot" },
+            bonus: [
+                {
+                    damage: 2,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.ALL_CARDS,
+                        filters: [
+                            { property: "name", comparator: "includes", value: "shoot" },
+                            { property: "name", comparator: "includes", value: "shot" },
+                        ],
+                    },
+                },
+                {
+                    damage: 1,
+                    conditions: [
+                        {
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            hasAbilityEffectName: CRITICAL,
+                        },
                     ],
                 },
-            },
+            ],
         },
     ],
     upgrades: [
@@ -752,13 +806,13 @@ export const guard: Ability = {
     name: "Guard",
     resourceCost: 1,
     image: ShieldImage,
-    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.armor }} {{{ _armor_ }}}",
+    description: "<b>Critical:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
     rarity: RARITIES.COMMON,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                armor: 3,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -769,20 +823,26 @@ export const guard: Ability = {
             armor: 7,
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
+            bonus: {
+                armor: 3,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        armor: 2,
-                    },
-                ],
-            },
             actions: [
                 {
                     armor: 3,
+                    bonus: {
+                        armor: 2,
+                    },
                 },
             ],
         },
@@ -876,12 +936,26 @@ export const barbedArrows: Ability = {
                 chance: 0,
                 abilityEffects: [
                     {
-                        effects: [{ ...bleed, stacks: 1 }],
+                        name: CRITICAL,
                         maxApplications: 1,
                         highlightCard: true,
                     },
                 ],
             },
+            actions: [
+                {
+                    bonus: {
+                        effects: [{ ...bleed, stacks: 1 }],
+                        conditions: [
+                            {
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                hasAbilityEffectName: CRITICAL,
+                            },
+                        ],
+                    },
+                },
+            ],
         },
     ],
 };
@@ -1520,12 +1594,14 @@ export const quickShot: Ability = {
     resourceCost: 1,
     image: MarksmanBoostImage,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 3,
+                name: CRITICAL,
+                maxApplications: 1,
+                highlightCard: true,
             },
         ],
     },
@@ -1540,20 +1616,26 @@ export const quickShot: Ability = {
             drawCards: {
                 amount: 1,
             },
+            bonus: {
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+                damage: 4,
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        damage: 1,
-                    },
-                ],
-            },
             actions: [
                 {
                     damage: 3,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -1637,14 +1719,14 @@ export const murderOfCrows: Ability = {
 export const arrowBlow: Ability = {
     name: "Arrow Blow",
     resourceCost: 1,
-    description:
-        "<b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}.</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+    overrideBodyText: true,
+    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}.</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
     image: ArrowBlowImage,
     onDraw: {
         chance: 0.2,
         abilityEffects: [
             {
-                damage: 13,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1658,17 +1740,27 @@ export const arrowBlow: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
+            bonus: {
+                damage: 13,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
+            actions: [
+                {
+                    bonus: {
                         damage: 5,
                     },
-                ],
-            },
+                },
+            ],
         },
     ],
 };
@@ -1806,13 +1898,13 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "<b>Pierce.</b> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b>",
+        "<b>Pierce.</b> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 5,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1839,6 +1931,16 @@ export const shatteringArrow: Ability = {
                         },
                     ],
                 },
+                {
+                    damage: 5,
+                    conditions: [
+                        {
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            hasAbilityEffectName: CRITICAL,
+                        },
+                    ],
+                },
             ],
         },
     ],
@@ -1848,6 +1950,9 @@ export const shatteringArrow: Ability = {
                 {
                     damage: 2,
                     bonus: [
+                        {
+                            damage: 2,
+                        },
                         {
                             damage: 2,
                         },
@@ -1898,17 +2003,38 @@ export const fireStarter: Ability = {
     ],
 };
 
+const hurricaneHit = {
+    damage: 3,
+    type: ACTION_TYPES.RANGE_ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+    animation: ANIMATION_TYPES.ONE_WAY,
+    icon: AvengersArrowImage,
+    animationOptions: bowmanAnimationOption,
+    targetArea: 5,
+    area: 2,
+    bonus: {
+        damage: 1,
+        conditions: [
+            {
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                hasAbilityEffectName: CRITICAL,
+            },
+        ],
+    },
+};
+
 export const hurricaneAbility: Ability = {
     name: "Hurricane",
     resourceCost: 2,
-    description: "Hits x3 <br/> <b>Critical: +{{ onDraw.abilityEffects.0.damage }} {{{ _damage_ }}}</b> per hit",
+    description: "Hits x3 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     image: HurricaneImage,
     rarity: RARITIES.UNCOMMON,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                damage: 1,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1916,52 +2042,35 @@ export const hurricaneAbility: Ability = {
     },
     actions: [
         {
-            damage: 3,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-            targetArea: 5,
-            area: 2,
+            ...hurricaneHit,
         },
         {
-            damage: 3,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-            targetArea: 5,
-            area: 2,
+            ...hurricaneHit,
         },
         {
-            damage: 3,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
-            targetArea: 5,
-            area: 2,
+            ...hurricaneHit,
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: {
-                    damage: 1,
-                },
-            },
             actions: [
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -2013,13 +2122,13 @@ export const turtleUp: Ability = {
     name: "Turtle Up",
     image: TortieShellImage,
     resourceCost: 1,
-    description: "<b>Critical:</b> +{{ onDraw.abilityEffects.0.armor }} {{{ _armor_ }}}",
+    description: "<b>Critical:</b> +{{ actions.0.bonus.armor }} {{{ _armor_ }}}",
     rarity: RARITIES.UNCOMMON,
     onDraw: {
         chance: 0,
         abilityEffects: [
             {
-                armor: 2,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2036,20 +2145,26 @@ export const turtleUp: Ability = {
                 ricochet: true,
             },
             area: 1,
+            bonus: {
+                armor: 2,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
         {
-            onDraw: {
-                abilityEffects: [
-                    {
-                        armor: 1,
-                    },
-                ],
-            },
             actions: [
                 {
                     armor: 2,
+                    bonus: {
+                        armor: 1,
+                    },
                 },
             ],
         },

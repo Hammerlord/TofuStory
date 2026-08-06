@@ -95,12 +95,15 @@ export const passesConditions = ({
             value,
             notProc,
             filters,
+            hasAbilityEffectName,
         } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
             const { source: sourcePayload = {}, isProc } = source || {};
             if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
-                const { name: sourceName, resourceCost: sourceResourceCost }: Ability = sourcePayload as Ability;
+                const { name: sourceName, resourceCost: sourceResourceCost }: Ability | CombatAbility = sourcePayload as
+                    | Ability
+                    | CombatAbility;
 
                 if (name) {
                     const names = Array.isArray(name) ? name : [name];
@@ -128,6 +131,10 @@ export const passesConditions = ({
                 if (property !== undefined) {
                     const propertyVal = _.get(sourcePayload, property);
                     return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                }
+
+                if (hasAbilityEffectName !== undefined) {
+                    return ((sourcePayload as CombatAbility)?.effects || []).some((e) => e.name === hasAbilityEffectName);
                 }
 
                 return true;

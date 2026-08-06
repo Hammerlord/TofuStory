@@ -1213,11 +1213,6 @@ export const calculateBonus = ({
         }
     };
 
-    // This could be problematic since Item also has an .effects property, but consumables have a very narrow usage atm
-    let abilityEffectBonusDamage = ((actionParent as CombatAbility)?.effects || []).reduce((acc, e: AbilityEffect) => {
-        return (acc += e.bonus?.damage || 0);
-    }, 0);
-
     return bonuses.reduce(
         (acc: Action, bonus: Bonus) => {
             const { excludePrimaryTarget = false, effects: bonusEffects = [] } = bonus;
@@ -1234,8 +1229,8 @@ export const calculateBonus = ({
             });
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-            if (passesConditions({ getCalculationTarget, proc: bonus }) && isValidTarget) {
-                const bonusDamage = ((bonus.damage || 0) + abilityEffectBonusDamage) * multiplier;
+            if (passesConditions({ getCalculationTarget, proc: bonus, source }) && isValidTarget) {
+                const bonusDamage = (bonus.damage || 0) * multiplier;
                 const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards } = acc;
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
                 const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;
