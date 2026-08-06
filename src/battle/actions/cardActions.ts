@@ -484,10 +484,6 @@ const handleMoveCards = ({
             cardsToMove.push(...movedCards);
         }
 
-        console.log("from", from);
-        console.log("cards to move", cardsToMove);
-        console.log("updated card piles", updatedCardPiles);
-
         if (!cardsToMove.length) {
             return;
         }
@@ -905,7 +901,8 @@ export const applyAbilityEventEffects = ({
 
     const { abilityEffects = [], mode, chance } = event || {};
 
-    if (!passesChance(chance + (bonusChance || 0))) {
+    const totalChance = typeof chance === "number" ? chance + (bonusChance || 0) : undefined;
+    if (!passesChance(totalChance)) {
         return ability;
     }
 

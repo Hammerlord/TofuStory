@@ -3,6 +3,7 @@ import {
     attackPower,
     bleed,
     chill,
+    defDown,
     directDamageTaken,
     lupinCurse,
     poison,
@@ -348,8 +349,7 @@ export const leatherSandals: Item = {
 
 export const adventurerCape: Item = {
     name: "Adventurer Cape",
-    description:
-        "Every {{ effects.0.onFriendlyReceiveAttack.eventTriggerFrequency }} times you or an ally are attacked, gain 1 {{ resources }} next turn.",
+    description: "When you Deplete a card, a random card in hand costs 2 less until discarded.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: AdventurerCapeImage,
@@ -358,20 +358,17 @@ export const adventurerCape: Item = {
             name: "Adventurer Cape Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onFriendlyReceiveAttack: {
+            onDepleteAbility: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                eventTriggerFrequency: 7,
-                effects: [
-                    {
-                        name: "Adventurer Cape",
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        resourcesPerTurn: 1,
-                        onTurnInProgress: {
-                            removeEffect: true,
+                applyAbilityEffects: {
+                    pile: CARD_PILE_TYPES.HAND,
+                    amount: 1,
+                    abilityEffects: [
+                        {
+                            resourceCost: -2,
                         },
-                    },
-                ],
+                    ],
+                },
             },
         },
     ],
@@ -676,7 +673,6 @@ export const ironMace: Item = {
     description: "+1 ATT against elite enemies and bosses.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    applyEffectsToSummons: true,
     effects: [
         {
             name: "Iron Mace",
@@ -1185,6 +1181,7 @@ export const fairyWing: Item = {
     image: FairyWingImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
+    applyEffectsToSummons: true,
     description: "You are immune to Bleed, Burn, and Poison for 5 turns on wave start.",
     effects: [
         {
@@ -1235,8 +1232,20 @@ export const blueSaunaRobe: Item = {
     image: BlueSaunaRobeImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "+2 Armor Up.",
-    effects: [armorUp, armorUp],
+    description:
+        "Every {{ effects.0.onOffensiveAbility.triggerFrequencyFromSum }} offense cards you play, gain {{ effects.0.onOffensiveAbility.armor }} Armor.",
+    effects: [
+        {
+            name: "Blue Sauna Robe",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onOffensiveAbility: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                triggerFrequencyFromSum: 3,
+                armor: 2,
+            },
+        },
+    ],
 };
 
 export const steely: Item = {
@@ -2199,7 +2208,7 @@ export const blackCrystal: Item = {
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: BlackCrystalImage,
-    description: "The first time a target is hit by you, it is afflicted with 1 Bleed and 1 ATT Down.",
+    description: "The first time you hit a target, apply 1 DEF Down and 1 ATT Down for 3 turns.",
     effects: [
         {
             name: "Black Crystal Effect",
@@ -2208,7 +2217,7 @@ export const blackCrystal: Item = {
             onAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                 effects: [
-                    { ...bleed, stacks: 1 },
+                    { ...defDown, duration: 3 },
                     { ...attackDown, duration: 3 },
                     { name: "Black Crystal Triggered", type: EFFECT_TYPES.NONE, class: EFFECT_CLASSES.NONE },
                 ],
@@ -2449,8 +2458,7 @@ export const polearm: Item = {
 
 export const starRock: Item = {
     name: "Star Rock",
-    description:
-        "After playing {{ effects.0.onPlayCard.triggerFrequencyFromSum }} cards, draw a card. It costs 1 {{ resources }} less until discarded.",
+    description: "Every {{ effects.0.onPlayCard.triggerFrequencyFromSum }} cards you play, draw a card.",
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: StarRockImage,
@@ -2463,13 +2471,8 @@ export const starRock: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 drawCards: {
                     amount: 1,
-                    effects: [
-                        {
-                            resourceCost: -1,
-                        },
-                    ],
                 },
-                triggerFrequencyFromSum: 12,
+                triggerFrequencyFromSum: 5,
                 disableTriggerFromProcs: true,
             },
         },
