@@ -843,7 +843,7 @@ export const koreanFan: Item = {
 export const risingStar: Item = {
     name: "Rising Star",
     image: RisingStarImage,
-    description: "Once per battle, when your deck cycles, gain 1 ATT.",
+    description: "Once per battle, when your deck cycles, gain 1 {{ resources }} and draw a card.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
@@ -853,16 +853,10 @@ export const risingStar: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 removeEffect: true,
-                effects: [
-                    {
-                        name: "Rising Star",
-                        icon: RisingStarImage,
-                        disableDisplayIcon: true,
-                        type: EFFECT_TYPES.NONE,
-                        class: EFFECT_CLASSES.BUFF,
-                        attackPower: 1,
-                    },
-                ],
+                resources: 1,
+                drawCards: {
+                    amount: 1,
+                },
             },
         },
     ],
@@ -1137,7 +1131,6 @@ export const estherShield: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     description: "When your deck cycles, gain {{ effects.0.onDeckCycle.armor }} Armor.",
-    applyEffectsToSummons: true,
     effects: [
         {
             name: "Esther Shield",
@@ -1145,7 +1138,7 @@ export const estherShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 5,
+                armor: 4,
             },
         },
     ],
