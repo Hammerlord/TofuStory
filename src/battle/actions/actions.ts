@@ -46,6 +46,7 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, Event, TRIGGER_SOURCE_T
 import {
     applyVacuum,
     calculateActionArea,
+    calculateBonus,
     canTargetIfStealthed,
     getAbilityResourceCost,
     getEnabledEffects,
@@ -1496,28 +1497,46 @@ const onSummonTriggers =
  */
 const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Action; actorId: string; parentSource: TriggerSource }) => {
     return (dispatch, getState) => {
-        if (!action.summon) {
+        const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
+        const actorData = findCombatantData(getState().battle, actorId);
+        if (!actorData) {
+            return;
+        }
+
+        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
+            if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
+                return actorData;
+            }
+        };
+
+        const actionSummon = action.summon || [];
+        const potentialBonusSummons = bonuses.flatMap((b) => b?.summon || []);
+        const summons = actionSummon
+            .concat(potentialBonusSummons)
+            .filter((b) => passesConditions({ getCalculationTarget, proc: b, source: parentSource }));
+        if (!summons.length) {
             return;
         }
 
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
-        const {
-            friendly,
-            hostile,
-            friendlySide,
-            hostileSide,
-            index: actorIndex,
-            combatant: actor,
-        } = findCombatantData(getState().battle, actorId);
+        const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = actorData;
         const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
         const mutableHostile = hostile.slice();
-        let didTributeKill = false;
 
-        for (const summon of action.summon) {
-            const { minion, positionIndex, placement, noDuplicateMinions = false, tributePossible = false, side } = summon;
+        for (const summon of summons) {
+            const {
+                minion,
+                positionIndex,
+                placement,
+                noDuplicateMinions = false,
+                tributePossible = false,
+                tributeMinionByName: replaceMinionByName,
+                side,
+            } = summon;
             const mutableSide = side === hostileSide ? mutableHostile : mutableFriendly;
 
+            let isTributeKill = false;
             let pos: number;
             if (typeof positionIndex === "number" && !mutableSide[positionIndex]?.HP) {
                 pos = positionIndex;
@@ -1537,11 +1556,25 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 }
             } else if (placement === "on-top") {
                 pos = actorIndex;
+            } else if (Array.isArray(replaceMinionByName)) {
+                const indices = [];
+                friendly.forEach((f, i) => {
+                    if (replaceMinionByName.includes(f?.name)) {
+                        indices.push(i);
+                    }
+                });
+
+                if (indices.length > 0) {
+                    pos = getRandomItem(indices);
+                    if ((friendly[pos]?.HP || 0) > 0) {
+                        dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos }));
+                        isTributeKill = true;
+                    }
+                }
             } else {
                 pos = getRandomItem(getPossibleSummonIndices(mutableSide));
             }
 
-            let isTributeKill = false;
             if (typeof pos !== "number") {
                 if (!tributePossible) {
                     break;
@@ -1567,7 +1600,6 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
                 if (typeof pos === "number") {
                     dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos }));
                     isTributeKill = true;
-                    didTributeKill = true;
                 }
             }
 
@@ -2167,7 +2199,7 @@ export const calculateTargetIndices = ({
     }, []);
 };
 
-const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps }) => {
+const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps, isAutoCast }) => {
     return (dispatch, getState) => {
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             return;
@@ -2251,7 +2283,7 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
         );
 
         dispatch(checkInduce({ action: secondaryAction, affectedTargetIds: recipientIds, parentSource: source }));
-
+        dispatch(checkCardActions({ action: secondaryAction, source: parentSource, isAutoCast }));
         return updatedSecondary;
     };
 };
@@ -2327,7 +2359,15 @@ export const performAction = ({
         let updatedSecondary;
         const triggerSecondaryAction = () => {
             return dispatch(
-                handleSecondaryAction({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps })
+                handleSecondaryAction({
+                    secondaryAction,
+                    actorId,
+                    getCalculationTarget,
+                    source,
+                    parentSource,
+                    updatedStatsProps,
+                    isAutoCast,
+                })
             );
         };
 
@@ -2432,6 +2472,7 @@ export const performAction = ({
         dispatch(checkCastRadiate({ source: parentSource, action, selectedIndex, side, parent }));
 
         // If eg. a bonus card draw was applied during the stat update action, checkCardActions should consume it.
+        // Does secondaryAction need the same thing?
         const postUpdateAction = updated?.[0]?.action || action;
         dispatch(checkCardActions({ action: postUpdateAction, source: parentSource, isAutoCast }));
 

@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateBonus, calculateDamage, getAbilityResourceCost, getMultiplier } from "../../battle/utils";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../types";
+import { ACTION_TYPES, Action } from "../types";
 
 export const getDamageStatistics = ({
     ability,
@@ -93,10 +93,11 @@ export const getDamageStatistics = ({
     const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && firstActionDamage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
-    const hasUnfulfilledBonus = withBonus[0].damage === firstActionDamage && damageActions.some(({ bonus }) => bonus);
+    const hasUnfulfilledBonus = withBonus[0].damage === firstActionDamage && damageActions.some(({ bonus }) => bonus?.damage);
     const hasAdditiveDamage = withAttackPower.some(({ secondaryDamage, damage }) => {
         return secondaryDamage > 0 || (damage && damage !== withAttackPower[0].damage);
     });
+
     const isAdditive = hasAdditiveDamage || hasUnfulfilledBonus;
 
     return {
