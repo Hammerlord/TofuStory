@@ -150,7 +150,7 @@ export const interpolateAbilityDescription = ({
             if (typeof val === "object") {
                 traverseForNestedPercentages(val);
             } else if (typeof val === "number") {
-                if (val > 0 && val < 1) {
+                if ((val > 0 && val < 1) || (val > -1 && val < 0)) {
                     obj[key] = Math.floor(val * 100) + "%";
                 }
             } else if (Array.isArray(obj)) {

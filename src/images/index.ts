@@ -729,6 +729,7 @@ export { default as SwampKPQ2Image } from "./SwampKPQ2.png";
 export { default as SwampRegionBGImage } from "./SwampRegionBG.jpg";
 export { default as SwordImage } from "./Sword.png";
 export { default as TableclothImage } from "./Tablecloth.png";
+export { default as TakeAShotImage } from "./TakeAShot.png";
 export { default as TargetLockImage } from "./TargetLock.gif";
 export { default as TauromacisImage } from "./Tauromacis.gif";
 export { default as TauromacisHornImage } from "./TauromacisHorn.png";

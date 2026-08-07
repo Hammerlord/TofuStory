@@ -64,6 +64,7 @@ import {
     SoulArrowImage,
     SteelArrowImage,
     StrafeImage,
+    TakeAShotImage,
     TargetLockImage,
     ThrustImage,
     TortieShellImage,
@@ -770,7 +771,7 @@ export const powerShot: Ability = {
     },
     actions: [
         {
-            damage: 10,
+            damage: 12,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1025,12 +1026,12 @@ export const chargedShot: Ability = {
     rarity: RARITIES.RARE,
     overrideBodyText: true,
     description:
-        "Gain {{ actions.0.secondaryAction.armor }} {{{ _armor_ }}} and <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b>",
+        "Gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b> and <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b>",
     resourceCost: 1,
     image: DrainArrowImage,
     actions: [
         {
-            damage: 20,
+            damage: 15,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -2931,7 +2932,7 @@ export const surge: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 5 }],
+            effects: [{ ...aimEffect, stacks: 3 }],
             moveCards: {
                 from: FROM_CARD_PILE_TYPES.ANYWHERE,
                 to: CARD_PILE_TYPES.HAND,
@@ -2948,7 +2949,7 @@ export const surge: Ability = {
     ],
     upgrades: [
         {
-            actions: [{}, { effects: [{ stacks: 3 }] }],
+            actions: [{}, { effects: [{ stacks: 2 }] }],
         },
     ],
 };
@@ -3163,6 +3164,57 @@ export const bountyOrNothing: Ability = {
             onDraw: {
                 chance: 0.1,
             },
+        },
+    ],
+};
+
+export const takeAShot: Ability = {
+    name: "Take A Shot",
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    image: TakeAShotImage,
+    overrideBodyText: true,
+    description:
+        "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> <br/> but <b>critical chance</b> is <b>{{ onDraw.chance }}.</b>",
+    onDraw: {
+        chance: -0.1,
+        abilityEffects: [
+            {
+                bypassUnplayable: true,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 10,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            bonus: {
+                damage: 25,
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: {
+                        damage: 10,
+                    },
+                },
+            ],
         },
     ],
 };
