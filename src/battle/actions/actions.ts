@@ -317,7 +317,11 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                                 ...combatant,
                                 effects: combatant.effects.filter((e) => {
                                     const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
-                                    return !hasDuration || e.persistsWhenDead || e[EFFECT_EVENT_KEYS.onDeath]; // Still allow onDeath effects to play out
+                                    return (
+                                        (e.class !== EFFECT_CLASSES.DEBUFF && !hasDuration) ||
+                                        e.persistsWhenDead ||
+                                        e[EFFECT_EVENT_KEYS.onDeath]
+                                    ); // Still allow onDeath effects to play out
                                 }),
                                 casting: null,
                                 resources: 0,
