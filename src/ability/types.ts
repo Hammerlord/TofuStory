@@ -532,7 +532,7 @@ export type ActionSummon = {
     noDuplicateMinions?: boolean;
     // If true, this can replace (destroy) minions that are on the board, if there is no room
     tributePossible?: boolean;
-    // If a minion name is provided, it will try to replace an existing one with that name. If there are multiple, a random one is chosen.
+    // If a minion name is provided, it will try to tribute an active one with that name. If there are multiple active minions of that name, a random one is chosen.
     tributeMinionByName?: string[];
     conditions?: Condition[];
 };

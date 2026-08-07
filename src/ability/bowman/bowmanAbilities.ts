@@ -26,6 +26,7 @@ import {
     DoubleShotImage,
     DragonsBreathImage,
     DrainArrowImage,
+    ElitePuppetImage,
     EvasionBoostImage,
     FinalAttackImage,
     FireMarbleImage,
@@ -49,6 +50,7 @@ import {
     PhoenixImage,
     PiercingArrowImage,
     PowerKnockbackImage,
+    Puppetree3Image,
     RoastingShotImage,
     ScarecrowImage,
     SharpEyesImage,
@@ -307,12 +309,15 @@ const puppetMinion = {
     image: ScarecrowImage,
     maxHP: 7,
     abilities: [],
+    description: "<b>{{ effects.1.stacks }} Thorns</b>",
     effects: [taunt, thorns],
 };
 
 export const puppetAbility: Ability = {
     name: "Puppet",
     image: ScarecrowImage,
+    overrideBodyText: true,
+    description: "<b>{{ minion.effects.1.stacks }} Thorns</b>",
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     minion: puppetMinion,
@@ -2978,6 +2983,87 @@ export const longShot: Ability = {
             actions: [
                 {
                     damage: 5,
+                },
+            ],
+        },
+    ],
+};
+
+const greaterPuppetMinion: Minion = {
+    name: "Greater Puppet",
+    image: Puppetree3Image,
+    maxHP: 13,
+    description: "<b>{{ effects.1.stacks }} Thorns</b>",
+    effects: [
+        taunt,
+        {
+            ...thorns,
+            stacks: 3,
+        },
+    ],
+    abilities: [],
+};
+
+export const puppetShot: Ability = {
+    name: "Puppet Shot",
+    description: "Summon a Puppet. If one is active, replace it with a Greater Puppet.",
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    image: ElitePuppetImage,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            damage: 12,
+            animationOptions: bowmanAnimationOption,
+            summon: [
+                {
+                    minion: [puppetMinion],
+                    tributePossible: true,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                            numFriendly: 0,
+                            comparator: "eq",
+                            filters: [
+                                {
+                                    property: "name",
+                                    comparator: "eq",
+                                    value: puppetMinion.name,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    minion: [greaterPuppetMinion],
+                    tributePossible: true,
+                    tributeMinionByName: [puppetMinion.name],
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                            numFriendly: 0,
+                            comparator: "gt",
+                            filters: [
+                                {
+                                    property: "name",
+                                    comparator: "eq",
+                                    value: puppetMinion.name,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 4,
                 },
             ],
         },
