@@ -710,6 +710,7 @@ export { default as StoneGolemRubbleImage } from "./StoneGolemRubble.png";
 export { default as StoneShieldImage } from "./StoneShield.png";
 export { default as StrafeImage } from "./Strafe.png";
 export { default as StrangePigImage } from "./StrangePig.gif";
+export { default as StrawImage } from "./Straw.png";
 export { default as StrawHatSnowmanImage } from "./StrawHatSnowman.png";
 export { default as StumpImage } from "./Stump.png";
 export { default as StumpyImage } from "./Stumpy.gif";

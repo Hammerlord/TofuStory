@@ -111,6 +111,7 @@ import {
     StarRockImage,
     SteelyImage,
     StolenFenceImage,
+    StrawImage,
     SunflowerImage,
     SunshinePanImage,
     SwordImage,
@@ -2731,6 +2732,36 @@ export const darkPoleFeatherHat: Item = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     hasEffect: aimEffect.name,
                     comparator: "not",
+                },
+            ],
+        },
+    ],
+};
+
+export const bundleOfStraw: Item = {
+    name: "Bundle Of Straw",
+    description: "While a Puppet is active, you take 1 less damage.",
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: StrawImage,
+    effects: [
+        {
+            name: "Bundle Of Straw",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            attackDamageReceived: -1,
+            conditions: [
+                {
+                    comparator: "gt",
+                    numFriendly: 0,
+                    filters: [
+                        {
+                            property: "name",
+                            comparator: "includes",
+                            value: "Puppet",
+                        },
+                    ],
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
                 },
             ],
         },
