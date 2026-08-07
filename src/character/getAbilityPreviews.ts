@@ -4,7 +4,7 @@ import { checkSummonMinion, findCombatantData, performAction } from "../battle/a
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../battle/types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "../battle/types";
 import { getAbilityResourceCost } from "../battle/utils";
 import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
@@ -12,6 +12,8 @@ import { Combatant } from "./types";
 import { validate as uuidValidate } from "uuid";
 
 export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
+
+type BattleStateEventPayload = BattleState & Event;
 
 export const previewAction = ({
     actionFn,
@@ -22,13 +24,17 @@ export const previewAction = ({
 }): { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } } => {
     const statUpdates = {};
 
-    const dispatch = (arg) => {
-        if (typeof arg === "function") {
-            return arg(dispatch, getState);
+    const dispatch = (reduxAction) => {
+        if (typeof reduxAction === "function") {
+            return reduxAction(dispatch, getState);
         }
 
-        const payload = arg?.payload || {};
-        battle = { ...battle, ...payload };
+        const payload: BattleStateEventPayload = reduxAction?.payload || {};
+        battle = {
+            ...battle,
+            playerSide: payload.playerSide || battle.playerSide,
+            enemySide: payload.enemySide || battle.enemySide,
+        };
 
         // RIP issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
         if (!payload?.statUpdates || payload.newCards) {
@@ -38,12 +44,12 @@ export const previewAction = ({
         const { statUpdates: currentStatUpdates, selectedIndex, allTargetIndices, targetSide, action } = payload;
 
         if (currentStatUpdates) {
-            Object.entries(currentStatUpdates).forEach(([key, value]: [string, object]) => {
-                if (!statUpdates[key]) {
-                    statUpdates[key] = [];
+            Object.entries(currentStatUpdates).forEach(([combatantId, value]: [string, object]) => {
+                if (!statUpdates[combatantId]) {
+                    statUpdates[combatantId] = [];
                 }
 
-                statUpdates[key].push({ ...value, action: payload.action });
+                statUpdates[combatantId].push({ ...value, action: payload.action });
             });
         }
 
@@ -80,6 +86,7 @@ export const previewAction = ({
                     healthDamage: finalDamage,
                     armor,
                     resources,
+                    // @ts-ignore It's just a preview, not a CombatEffect; it doesn't need metadata like `id` etc.
                     effects,
                     healing,
                     overkill: 0,
