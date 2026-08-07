@@ -82,11 +82,27 @@ const disgusting: Effect = {
     },
 };
 
+const foodProperties = {
+    cantMove: true,
+    abilities: [
+        {
+            ...attack,
+            actions: [
+                {
+                    ...attack.actions[0],
+                    damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
 export const cake: Minion = {
     name: "Cake",
     image: CakeSliceImage,
     maxHP: 20,
     effects: [delicious],
+    ...foodProperties,
 };
 
 export const unagi: Minion = {
@@ -94,6 +110,7 @@ export const unagi: Minion = {
     image: UnagiImage,
     maxHP: 25,
     effects: [delicious],
+    ...foodProperties,
 };
 
 export const bananaGrahamPie: Minion = {
@@ -101,6 +118,7 @@ export const bananaGrahamPie: Minion = {
     image: BananaGrahamPieImage,
     maxHP: 50,
     effects: [delicious, delicious],
+    ...foodProperties,
 };
 
 export const hotdogSupremeMinion: Minion = {
@@ -108,6 +126,7 @@ export const hotdogSupremeMinion: Minion = {
     image: HotdogSupremeImage,
     maxHP: 50,
     effects: [delicious, delicious],
+    ...foodProperties,
 };
 
 export const tofuPlatter: Minion = {
@@ -115,6 +134,7 @@ export const tofuPlatter: Minion = {
     image: TofuImage,
     maxHP: 20,
     effects: [delicious],
+    ...foodProperties,
 };
 
 export const grilledCheese: Minion = {
@@ -122,6 +142,7 @@ export const grilledCheese: Minion = {
     image: GrilledCheeseImage,
     maxHP: 25,
     effects: [delicious],
+    ...foodProperties,
 };
 
 export const nastyKebab: Minion = {
@@ -129,6 +150,7 @@ export const nastyKebab: Minion = {
     image: ZingyKebabImage,
     maxHP: 12,
     effects: [disgusting],
+    ...foodProperties,
 };
 
 export const moldyCheese: Minion = {
@@ -136,6 +158,7 @@ export const moldyCheese: Minion = {
     image: GreenCheeseImage,
     maxHP: 10,
     effects: [disgusting],
+    ...foodProperties,
 };
 
 const suckIn: Ability = {
@@ -175,38 +198,6 @@ const throwFood: Ability = {
     name: "Throw Food",
     image: BananaGrahamPieImage,
     actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            excludePrimaryTarget: true,
-            area: 5,
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    comparator: "gt",
-                    numFriendly: 2,
-                },
-            ],
-            effects: [
-                {
-                    name: "Foodborne Projectile",
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 3,
-                    duration: 0,
-                    onAttack: {
-                        removeEffect: true,
-                        damage: 1,
-                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        multiplier: {
-                            type: MULTIPLIER_TYPES.HP,
-                            value: 0.5,
-                            calculationTarget: CONDITION_TARGETS.ACTOR,
-                        },
-                    },
-                },
-            ],
-        },
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
@@ -321,8 +312,8 @@ export const eat: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             animationOptions: {
                 weapon: {
-                    hide: true
-                }
+                    hide: true,
+                },
             },
             damage: 100,
             conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(

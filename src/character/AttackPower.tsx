@@ -42,11 +42,11 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
-    const { HP, effects = [], casting, targeting } = combatant || {};
+    const { HP, effects = [], casting, targeting, cantMove } = combatant || {};
     const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
     const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
 
-    if (!HP) {
+    if (!HP || cantMove) {
         return null;
     }
 
