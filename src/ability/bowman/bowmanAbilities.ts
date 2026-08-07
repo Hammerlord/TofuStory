@@ -219,6 +219,7 @@ export const volley: Ability = {
         {
             description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
             onDraw: {
+                chance: 0,
                 abilityEffects: [
                     {
                         maxApplications: 1,
@@ -231,6 +232,13 @@ export const volley: Ability = {
                     damage: 1,
                     bonus: {
                         damage: 2,
+                        conditions: [
+                            {
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                hasAbilityEffectName: CRITICAL,
+                            },
+                        ],
                     },
                 },
             ],
