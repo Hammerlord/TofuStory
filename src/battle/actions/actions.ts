@@ -1,8 +1,10 @@
 import { cloneDeep, uniq } from "lodash";
 import { partition } from "ramda";
 import * as uuid from "uuid";
+import { getUpgradeCard } from "../../Menu/utils";
 import { JOB_CARD_MAP } from "../../ability";
 import { getAbilityUpgradedFromEffects, isOffensiveAbility, isOffensiveAction, isSupportAbility } from "../../ability/AbilityView/utils";
+import { tributeSummonBuff } from "../../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -10,7 +12,6 @@ import {
     Ability,
     AbilityEffect,
     Action,
-    ActionOptionalProperties,
     AutoCastAbility,
     CONDITION_TARGETS,
     CombatAbility,
@@ -25,19 +26,21 @@ import {
     SELECT_CARD_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
+import { previewAction } from "../../character/getAbilityPreviews";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { abilityNameMap, enemyNameMap } from "../../enemy";
 import { Item } from "../../item/types";
 import { getRandomInt, getRandomItem, passesChance, shuffle } from "../../utils";
 import {
-    dotAbilityMap,
-    dotDamageMap,
     MULTI_ACTION_PLAYBACK_SPEED,
     NORMAL_ACTION_PLAYBACK_SPEED,
     RANGED_ACTION_PLAYBACK_SPEED,
     RICOCHET_ACTION_PLAYBACK_SPEED,
     SUMMON_DELAY,
+    dotAbilityMap,
+    dotDamageMap,
 } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
@@ -46,7 +49,6 @@ import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, Event, TRIGGER_SOURCE_T
 import {
     applyVacuum,
     calculateActionArea,
-    calculateBonus,
     canTargetIfStealthed,
     getAbilityResourceCost,
     getEnabledEffects,
@@ -55,7 +57,6 @@ import {
     getPossibleMoveIndices,
     getPossibleSummonIndices,
     getValidTargetIndices,
-    hasEffectType,
     hasTruesight,
     isSilenced,
     isStunnedOrFrozen,
@@ -67,15 +68,9 @@ import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
+import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { getUpgradeCard } from "../../Menu/utils";
-import { tributeSummonBuff } from "../../ability/Effects";
-import { BloodIcon, FireIcon } from "../../images/icons";
-import { PoisonImage } from "../../images";
-import { getNextTelegraphedAbility } from "../../character/Telegraph";
-import getAbilityPreviews, { previewAction } from "../../character/getAbilityPreviews";
-import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
