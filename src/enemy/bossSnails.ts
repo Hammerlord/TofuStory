@@ -11,10 +11,12 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { JapaneseOgreIcon } from "../images/icons";
-import { hardy, thorns, preventArmorDecay } from "./../ability/Effects";
+import { shuffle } from "../utils";
+import { hardy, thorns, preventArmorDecay, attackPower } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
+    Ability,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     MORPH_TYPES,
@@ -139,7 +141,7 @@ const whip = {
             type: ACTION_TYPES.EFFECT,
             area: 2,
             excludePrimaryTarget: true,
-            damage: 3,
+            damage: 1,
             icon: RedWhipImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             effects: [
@@ -153,6 +155,47 @@ const whip = {
                     disableAbilities: [ACTION_TYPES.EFFECT, ACTION_TYPES.NONE],
                 },
             ],
+        },
+    ],
+};
+
+const mutateAbility: Ability = {
+    name: "Mutate",
+    image: MutateImage,
+    resourceCost: 3,
+    description: "Transforms Snails into their stronger stage.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            excludePrimaryTarget: true,
+            area: 2,
+            morph: {
+                type: MORPH_TYPES.MAP,
+                minions: [
+                    {
+                        conditions: [
+                            {
+                                name: "Blue Snail",
+                                comparator: "eq",
+                                calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            },
+                        ],
+                        minion: redMinionSnail,
+                    },
+                    {
+                        conditions: [
+                            {
+                                name: "Snail",
+                                comparator: "eq",
+                                calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            },
+                        ],
+                        minion: blueMinionSnail,
+                    },
+                ],
+                setOriginalHealthPercentage: true,
+            },
         },
     ],
 };
@@ -190,30 +233,6 @@ export const mutantSnailEnemy: Minion = {
             image: SnailImage,
             actions: [
                 {
-                    // HACK: this is just for animation playback
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
-                },
-            ],
-        },
-        whip,
-        {
-            ...attack,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 5,
-                },
-            ],
-        },
-        {
-            name: "Call Snail",
-            image: SnailImage,
-            actions: [
-                {
-                    // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
@@ -232,84 +251,55 @@ export const mutantSnailEnemy: Minion = {
             ],
         },
         {
-            name: "Mutate",
-            image: MutateImage,
-            resourceCost: 3,
+            name: "Call Snail",
+            image: SnailImage,
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    excludePrimaryTarget: true,
-                    area: 2,
-                    morph: {
-                        type: MORPH_TYPES.MAP,
-                        minions: [
-                            {
-                                conditions: [
-                                    {
-                                        name: "Blue Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: redMinionSnail,
-                            },
-                            {
-                                conditions: [
-                                    {
-                                        name: "Snail",
-                                        comparator: "eq",
-                                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                                    },
-                                ],
-                                minion: blueMinionSnail,
-                            },
-                        ],
-                        setOriginalHealthPercentage: true,
-                    },
+                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
                 },
             ],
         },
+
         {
-            name: "Frenzied Tantrum",
-            image: JapaneseOgreIcon,
-            description: "Randomly hits a target 3 times.",
-            resourceCost: 3,
-            channelDuration: 2,
-            castTime: 1,
+            ...attack,
             actions: [
                 {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    damage: 4,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    effects: [
-                        {
-                            name: "Frenzy",
-                            description: "Entering a frenzy!",
-                            icon: WeaponMasteryImage,
-                            type: EFFECT_TYPES.NONE,
-                            class: EFFECT_CLASSES.BUFF,
-                            attackPower: 1,
-                            duration: 3,
-                        },
-                    ],
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 3,
                 },
             ],
         },
+        ...shuffle([
+            mutateAbility,
+            {
+                name: "Tantrum",
+                image: JapaneseOgreIcon,
+                description: "Hits 3 times.",
+                resourceCost: 3,
+                channelDuration: 2,
+                castTime: 1,
+                actions: [
+                    {
+                        damage: 3,
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.ATTACK,
+                    },
+                    {
+                        damage: 3,
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.ATTACK,
+                    },
+                    {
+                        damage: 3,
+                        target: TARGET_TYPES.HOSTILE,
+                        type: ACTION_TYPES.ATTACK,
+                    },
+                ],
+            },
+        ]),
     ],
 };
 
@@ -336,7 +326,6 @@ export const manoEnemy: Minion = {
             image: SnailImage,
             actions: [
                 {
-                    // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
@@ -349,7 +338,7 @@ export const manoEnemy: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },
@@ -358,7 +347,6 @@ export const manoEnemy: Minion = {
             image: RedSnailImage,
             actions: [
                 {
-                    // HACK: this is just for animation playback
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [redMinionSnail] }],
@@ -375,48 +363,49 @@ export const manoEnemy: Minion = {
                 },
             ],
         },
-        {
-            name: "Rollout",
-            image: RedSnailShellImage,
-            castTime: 1,
-            channelDuration: 2,
-            resourceCost: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.YOYO,
-                    animationOptions: {
-                        ricochet: true,
+        ...shuffle([
+            {
+                name: "Rollout",
+                image: RedSnailShellImage,
+                description: "Bounces to another nearby target for 1 damage.",
+                castTime: 1,
+                channelDuration: 2,
+                resourceCost: 3,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        animation: ANIMATION_TYPES.YOYO,
+                        animationOptions: {
+                            ricochet: true,
+                        },
+                        playbackTime: 750,
+                        damage: 7,
+                        secondaryDamage: 1,
+                        numTargets: 1,
+                        targetArea: 2,
                     },
-                    playbackTime: 750,
-                    description: "Bounces to another nearby target for 1 damage.",
-                    damage: 6,
-                    secondaryDamage: 1,
-                    numTargets: 1,
-                    targetArea: 2,
-                },
-            ],
-        },
-        {
-            name: "Withdraw",
-            image: BlueSnailShellImage,
-            resourceCost: 3,
-            description: "Sacrifices up to 10 HP to gain 20 Armor",
-            actions: [
-                {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    armor: 20,
-                    secondaryAction: {
-                        damage: 10,
-                        bypassArmor: true,
-                        isPriority: true,
-                        targetMinHP: 1,
+                ],
+            },
+            {
+                name: "Withdraw",
+                image: BlueSnailShellImage,
+                resourceCost: 3,
+                description: "Gain 5 Armor. Allies gain 1 ATT.",
+                actions: [
+                    {
+                        target: TARGET_TYPES.SELF,
+                        type: ACTION_TYPES.EFFECT,
+                        armor: 5,
+                        secondaryAction: {
+                            effects: [{ ...attackPower, stacks: 1 }],
+                            area: 2,
+                            excludePrimaryTarget: true,
+                        },
                     },
-                },
-            ],
-        },
+                ],
+            },
+        ]),
     ],
     effects: [
         {
