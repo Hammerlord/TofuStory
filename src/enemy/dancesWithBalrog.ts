@@ -246,7 +246,7 @@ export const dancesWithBalrog: Minion = {
     image: DancesWithBalrogImage,
     maxHP: 500,
     mesos: 75,
-    resources: 1,
+    resources: 3,
     abilities: [
         {
             name: "Snail Stance",
@@ -381,7 +381,7 @@ export const dancesWithBalrog: Minion = {
             resourceCost: 3,
             image: IntrepidSlashImage,
             castTime: 1,
-            description: "Deal {{damage}} damage to a random enemy within the targeted area, x3",
+            description: "Deal {{damage}} damage, x3",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -397,21 +397,18 @@ export const dancesWithBalrog: Minion = {
             actions: [
                 {
                     damage: 5,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
                 },
                 {
                     damage: 5,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
                 },
                 {
                     damage: 5,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
-                    targetArea: 1,
                     secondaryAction: {
                         removeEffects: [boarStanceEffect.name],
                     },
