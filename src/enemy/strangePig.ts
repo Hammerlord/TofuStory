@@ -9,11 +9,29 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, StrangePigImage } from "../images";
+import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsHeadImage, StrangePigImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
 import { Action, ANIMATION_TYPES } from "./../ability/types";
 import { attack } from "./abilities";
 import { armorDown, championsRibbon, counterEffect, resist } from "./effect";
+
+const mutate = {
+    name: "Mutate",
+    image: MutateImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.EXPLODE,
+            target: TARGET_TYPES.SELF,
+            summon: [
+                {
+                    minion: ["Mutant Ribbon Pig"],
+                    positionIndex: 2,
+                },
+            ],
+        },
+    ],
+};
 
 export const strangePig: Minion = {
     name: "Strange Pig",
@@ -28,7 +46,7 @@ export const strangePig: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -59,28 +77,19 @@ export const strangePig: Minion = {
     effects: [
         championsRibbon,
         {
-            name: "Mutate",
+            name: "Strange",
+            description: "Something strange is happening...",
+            icon: PigsHeadImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            duration: 3,
             onDeath: {
                 usableWhileStunned: true,
-                ability: {
-                    name: "Mutate",
-                    image: MutateImage,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            animation: ANIMATION_TYPES.EXPLODE,
-                            target: TARGET_TYPES.SELF,
-                            summon: [
-                                {
-                                    minion: ["Mutant Ribbon Pig"],
-                                    positionIndex: 2,
-                                },
-                            ],
-                        },
-                    ],
-                },
+                ability: mutate,
+            },
+            onEnd: {
+                usableWhileStunned: true,
+                ability: mutate,
             },
         },
     ],

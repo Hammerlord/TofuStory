@@ -1202,10 +1202,6 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
             if (!combatant?.HP) {
                 return;
             }
-            const unableToAct = isTurnActionPrevented(enemyInfo) || !combatant.abilities?.length || combatant.cantMove;
-            if (unableToAct) {
-                return;
-            }
 
             const currentTargeting = combatant.targeting;
             const ability = currentTargeting?.ability;
