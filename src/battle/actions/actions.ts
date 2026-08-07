@@ -1795,9 +1795,13 @@ const checkInduce = ({
                         return;
                     }
 
+                    const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
+
                     const { index, side } = autoSelectActionTarget({
                         action,
                         actorId: id,
+                        initialSelectedIndex: initialIndex,
+                        initialSelectedSide: initialSide,
                         battle: getState().battle,
                     });
 
@@ -1844,9 +1848,12 @@ const checkInduce = ({
                 }
 
                 const attackAction = getInducedAttack(combatant);
+                const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
                 const { index } = autoSelectActionTarget({
                     action: attackAction,
                     actorId: id,
+                    initialSelectedIndex: initialIndex,
+                    initialSelectedSide: initialSide,
                     battle: getState().battle,
                 });
 
