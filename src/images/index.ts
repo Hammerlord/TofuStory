@@ -454,6 +454,7 @@ export { default as MarksmanshipImage } from "./Marksmanship.png";
 export { default as MarrsForestImage } from "./MarrsForest.png";
 export { default as MarrsForestPreviewImage } from "./MarrsForestPreview.png";
 export { default as MasterDummyImage } from "./MasterDummy.gif";
+export { default as MatchaManLeafImage } from "./MatchaManLeaf.png";
 export { default as MattyImage } from "./Matty.png";
 export { default as MayaImage } from "./Maya.png";
 export { default as MeatImage } from "./Meat.png";

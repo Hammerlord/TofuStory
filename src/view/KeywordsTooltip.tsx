@@ -48,7 +48,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Deplete",
-        description: "Ability can only be used once per battle.",
+        description: "After use, ability will be removed for the rest of the battle.",
     },
     {
         name: "Retain",

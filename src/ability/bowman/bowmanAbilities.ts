@@ -46,6 +46,7 @@ import {
     MagicArrowImage,
     MarksmanBoostImage,
     MarksmanshipImage,
+    MatchaManLeafImage,
     MeatImage,
     MortalBlowImage,
     PhoenixEggImage,
@@ -3212,6 +3213,40 @@ export const takeAShot: Ability = {
                 {
                     bonus: {
                         damage: 10,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const scavenge: Ability = {
+    name: "Scavenge",
+    resourceCost: 0,
+    overrideBodyText: true,
+    description: "Gain {{{ _stamina_ }}} and draw 1 card.",
+    rarity: RARITIES.UNCOMMON,
+    image: MatchaManLeafImage,
+    selectCards: {
+        type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+    },
+    actions: [
+        {
+            resources: 1,
+            drawCards: {
+                amount: 1,
+            },
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    upgrades: [
+        {
+            description: "Gain {{{ _stamina_ }}} and draw {{ actions.0.drawCards.amount }} cards.",
+            actions: [
+                {
+                    drawCards: {
+                        amount: 1,
                     },
                 },
             ],
