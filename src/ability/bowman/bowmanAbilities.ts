@@ -32,6 +32,7 @@ import {
     FireMarbleImage,
     FocusImage,
     FrozenArrowImage,
+    GreenLeafShoesImage,
     GrossJaegerImage,
     GuidesWhistleImage,
     HamstringImage,
@@ -3066,6 +3067,63 @@ export const puppetShot: Ability = {
                     damage: 4,
                 },
             ],
+        },
+    ],
+};
+
+const fleetfootProc: Effect = {
+    name: "Fleet-Footed",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: GreenLeafShoesImage,
+    description: "When you play an active Critical, draw a card.",
+    duration: 1,
+    onPlayCard: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                property: "onDraw.chance",
+                comparator: "not",
+                value: undefined,
+            },
+        ],
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        drawCards: {
+            amount: 1,
+        },
+        removeEffect: true,
+    },
+};
+
+export const fleetFoot: Ability = {
+    name: "Fleet Foot",
+    description: "The first time you play an active Critical on your turn, draw a card.",
+    image: GreenLeafShoesImage,
+    depletedOnUse: true,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Fleet Foot",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [fleetfootProc],
+                    },
+                },
+                fleetfootProc,
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            preemptive: true,
         },
     ],
 };
