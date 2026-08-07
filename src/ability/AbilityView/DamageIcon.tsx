@@ -47,6 +47,7 @@ export const getDamageStatistics = ({
             deck,
             hand,
             discard,
+            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
         });
     });
 
