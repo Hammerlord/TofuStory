@@ -591,7 +591,9 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                         onClose={handleCloseCardRewards}
                         maxAmount={showAcquireAbility}
                         disableRarities={[RARITIES.RARE]}
+                        disableUpgradesForRarities={[RARITIES.UNCOMMON]}
                         disableIgnoreButton={true}
+                        rarityRollMode="individual"
                     />
                 )}
             </div>

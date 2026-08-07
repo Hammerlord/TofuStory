@@ -80,6 +80,8 @@ const CardRewards = ({
     maxAmount = 1,
     disableRarities,
     disableIgnoreButton,
+    disableUpgradesForRarities = [],
+    rarityRollMode,
 }: {
     deck: CombatAbility[];
     player: Player;
@@ -89,7 +91,10 @@ const CardRewards = ({
     rewardType?: BATTLE_TYPES;
     maxAmount?: number;
     disableRarities?: RARITIES[];
+    disableUpgradesForRarities?: RARITIES[];
     disableIgnoreButton?: boolean;
+    // Whether the rarity roll applies to all cards, or each card individually rolls its own rarity
+    rarityRollMode?: "all" | "individual";
 }) => {
     const rolledAbilities = useMemo(() => {
         const potentialAbilities = getCardPool(player, deck);
@@ -111,22 +116,30 @@ const CardRewards = ({
             bonuses = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         }
 
-        const selectedRarity = rollRarity({ player, bonuses, disableRarities });
-        let upgradeRate;
-        if (selectedRarity === RARITIES.RARE) {
-            upgradeRate = RARE_CARD_CHOICE_UPGRADE_RATE;
-        } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER && selectedRarity === RARITIES.COMMON) {
-            upgradeRate = 1;
-        } else {
-            upgradeRate = CARD_CHOICE_UPGRADE_RATE;
-        }
+        const overallRarity = rollRarity({ player, bonuses, disableRarities });
+
+        const getUpgradeRateForRarity = (rarity: RARITIES) => {
+            if (disableUpgradesForRarities.includes(rarity)) {
+                return 0;
+            } else if (rarity === RARITIES.RARE) {
+                return RARE_CARD_CHOICE_UPGRADE_RATE;
+            } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER && rarity === RARITIES.COMMON) {
+                return 1;
+            } else {
+                return CARD_CHOICE_UPGRADE_RATE;
+            }
+        };
 
         Array.from({ length: numChoices - choices.length }).forEach(() => {
+            const selectedRarity = rarityRollMode === "individual" ? rollRarity({ player, bonuses, disableRarities }) : overallRarity;
+            const upgradeRate = getUpgradeRateForRarity(selectedRarity);
+
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);
                 return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate && noExclusive;
             });
+
             if (filteredByRarity) {
                 const upgradeCard = Math.random() <= upgradeRate && getUpgradeCard(filteredByRarity);
                 choices.push(upgradeCard || filteredByRarity);
