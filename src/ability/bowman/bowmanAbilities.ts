@@ -2346,13 +2346,14 @@ export const phoenixEgg: Ability = {
     minion: phoenix,
     resourceCost: 1,
     unplayable: true,
-    description: "<b>Critical:</b> Playable. Summon a Phoenix. <b>+{{ onDraw.chance }}</b> chance to crit.",
+    description: "<b>Critical:</b> Playable. Summon a Phoenix.",
     actions: [],
     tooltip: {
         minion: phoenix,
     },
     upgrades: [
         {
+            description: "<b>Critical:</b> Playable. Summon a Phoenix. <b>+{{ onDraw.chance }}</b> chance to crit.",
             onDraw: {
                 chance: 0.2,
             },
