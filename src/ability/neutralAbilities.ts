@@ -215,7 +215,7 @@ export const stomp: Ability = {
                 from: CARD_PILE_TYPES.DISCARD,
                 to: CARD_PILE_TYPES.DECK,
                 amount: 1,
-                moveType: "append",
+                moveType: "prepend",
             },
         },
     ],
