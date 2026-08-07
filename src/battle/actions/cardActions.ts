@@ -212,7 +212,7 @@ export const drawCards = ({
     return (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
         let newDeck: Ability[] = deck.slice();
-        let newHand = hand.slice();
+        let newHand: Ability[] = hand.slice();
         let newDiscard = discard.slice();
         let cardsToDraw: CombatAbility[] = [];
         let deckCycled = false;
@@ -273,7 +273,7 @@ export const drawCards = ({
                 continue;
             }
 
-            newHand.push(card);
+            newHand.unshift(card);
         }
 
         if (handTooFull) {
@@ -491,6 +491,7 @@ const handleMoveCards = ({
         if (moveType === "append") {
             toPile.push(...cardsToMove);
         } else {
+            cardsToMove.reverse();
             toPile.unshift(...cardsToMove);
         }
 
@@ -660,18 +661,21 @@ export const checkCardActions = ({
         }, {});
 
         if (addCards) {
-            const cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
-            let newHand = [
-                ...getState().battle.hand,
-                ...cardsToAdd.map((card: Ability) => ({
+            let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
+            cardsToAdd = cardsToAdd
+                .map((card: Ability) => ({
                     ...card,
                     instanceId: uuid.v4(),
-                })),
-            ];
+                }))
+                .reverse();
+
+            let newHand = [...cardsToAdd, ...getState().battle.hand];
 
             if (newHand.length > MAX_HAND_SIZE) {
+                const toDiscard = newHand.slice(MAX_HAND_SIZE);
                 newHand = newHand.slice(0, MAX_HAND_SIZE);
                 dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
+                dispatch(prepareForDiscard(toDiscard));
             }
 
             dispatch(
