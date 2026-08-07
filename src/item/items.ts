@@ -1305,11 +1305,18 @@ export const taurospearHorn: Item = {
             onFriendlyKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 resources: 1,
+                conditionOperator: "and",
                 conditions: [
                     {
                         property: "abilities.0",
                         calculationTarget: CONDITION_TARGETS.TARGET,
                         value: undefined,
+                        comparator: "not",
+                    },
+                    {
+                        property: "cantMove",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        value: true,
                         comparator: "not",
                     },
                 ],

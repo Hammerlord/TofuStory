@@ -1293,11 +1293,18 @@ export const lycanthropeMinion: Minion = {
             onKill: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [{ ...attackPower, stacks: 2 }],
+                conditionOperator: "and",
                 conditions: [
                     {
                         property: "abilities.0",
                         calculationTarget: CONDITION_TARGETS.TARGET,
                         value: undefined,
+                        comparator: "not",
+                    },
+                    {
+                        property: "cantMove",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        value: true,
                         comparator: "not",
                     },
                 ],
