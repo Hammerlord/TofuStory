@@ -221,7 +221,6 @@ export const volley: Ability = {
             onDraw: {
                 abilityEffects: [
                     {
-                        damage: 2,
                         maxApplications: 1,
                         highlightCard: true,
                     },
@@ -230,6 +229,9 @@ export const volley: Ability = {
             actions: [
                 {
                     damage: 1,
+                    bonus: {
+                        damage: 2,
+                    },
                 },
             ],
         },
@@ -2294,7 +2296,7 @@ const phoenix: Minion = {
     armor: 30,
     abilities: [fireBurst],
     image: PhoenixImage,
-    description: "<b>On death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
+    description: "<b>On summon</b> and <b>death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
     effects: [
         {
             name: "Blazing Bird",
@@ -2329,22 +2331,15 @@ export const phoenixEgg: Ability = {
     minion: phoenix,
     resourceCost: 1,
     unplayable: true,
-    description: "<b>Critical:</b> Playable. Summon a Phoenix.",
+    description: "<b>Critical:</b> Playable. Summon a Phoenix. <b>+{{ onDraw.chance }}</b> chance to crit.",
     actions: [],
     tooltip: {
         minion: phoenix,
     },
     upgrades: [
         {
-            minion: {
-                description: "<b>On summon</b> and <b>death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
-                effects: [
-                    {
-                        onSummon: {
-                            ability: fireBurst,
-                        },
-                    },
-                ],
+            onDraw: {
+                chance: 0.2,
             },
         },
     ],
