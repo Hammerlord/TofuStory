@@ -68,7 +68,7 @@ import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
 import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
-import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
+import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 
@@ -1669,6 +1669,7 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
         });
 
         minionsSummoned.forEach((minion) => {
+            dispatch(requeueRecentlyUsedAbility({ combatantId: minion.id })) || {};
             dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: minion.id, effectsApplied: minion.effects }));
         });
     };
@@ -1747,6 +1748,8 @@ const checkHandleMorph = ({
                     parentSource,
                 })
             );
+
+            dispatch(requeueRecentlyUsedAbility({ combatantId: summon.id })) || {};
         });
     };
 };
