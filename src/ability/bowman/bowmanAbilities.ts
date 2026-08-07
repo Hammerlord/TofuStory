@@ -36,6 +36,7 @@ import {
     GrossJaegerImage,
     GuidesWhistleImage,
     HamstringImage,
+    HarvestDamageSkinImage,
     HerosWillImage,
     HuntersBowImage,
     HurricaneImage,
@@ -3126,6 +3127,42 @@ export const fleetFoot: Ability = {
     upgrades: [
         {
             preemptive: true,
+        },
+    ],
+};
+
+export const bountyOrNothing: Ability = {
+    name: "Bounty Or Nothing",
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    image: HarvestDamageSkinImage,
+    unplayable: true,
+    description:
+        "<b>Critical: Playable.</b>  <br/> Draw <b>{{ actions.0.drawCards.amount }}</b> cards. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+    onDraw: {
+        chance: 0.2,
+        abilityEffects: [
+            {
+                bypassUnplayable: true,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 5,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            onDraw: {
+                chance: 0.1,
+            },
         },
     ],
 };

@@ -309,6 +309,7 @@ export { default as HammerImage } from "./Hammer.png";
 export { default as HamstringImage } from "./Hamstring.png";
 export { default as HardwoodWandImage } from "./HardwoodWand.png";
 export { default as HarpoonGunImage } from "./HarpoonGun.png";
+export { default as HarvestDamageSkinImage } from "./HarvestDamageSkin.png";
 export { default as HasteImage } from "./Haste.png";
 export { default as HeartImage } from "./Heart.png";
 export { default as HeavenHammerImage } from "./HeavenHammer.png";
