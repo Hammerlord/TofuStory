@@ -1,6 +1,6 @@
 import { isOffensiveAction } from "../ability/AbilityView/utils";
 import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
-import { checkSummonMinion, findCombatantData, performAction } from "../battle/actions/actions";
+import { checkSummonMinion, checkValidEnemyTargeting, findCombatantData, performAction } from "../battle/actions/actions";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
@@ -105,6 +105,57 @@ export const previewAction = ({
         battle,
         statUpdates,
     };
+};
+
+const previewTargetChange = ({
+    targetChangeCheckFn,
+    battle,
+}: {
+    targetChangeCheckFn: (dispatch, getState) => void;
+    battle: BattleState;
+}) => {
+    const getState = () => ({
+        battle,
+    });
+
+    const dispatch = (reduxAction) => {
+        if (typeof reduxAction === "function") {
+            return reduxAction(dispatch, getState);
+        }
+
+        const { combatantId, newProperties } = reduxAction?.payload || {};
+        if (!combatantId) {
+            return;
+        }
+        battle = {
+            ...battle,
+            enemySide: battle.enemySide.map((c) => {
+                if (c?.id !== combatantId) {
+                    return c;
+                }
+
+                return {
+                    ...c,
+                    ...newProperties,
+                };
+            }),
+
+            playerSide: battle.playerSide.map((c) => {
+                if (c?.id !== combatantId) {
+                    return c;
+                }
+
+                return {
+                    ...c,
+                    ...newProperties,
+                };
+            }),
+        };
+    };
+
+    targetChangeCheckFn(dispatch, getState);
+
+    return battle;
 };
 
 const getAbilityPreviews = ({
@@ -309,6 +360,13 @@ const getAbilityPreviews = ({
 
         previousCombatantStates.playerSide = previews.battle.playerSide;
         previousCombatantStates.enemySide = previews.battle.enemySide;
+        const targetChangePreview = previewTargetChange({
+            targetChangeCheckFn: checkValidEnemyTargeting,
+            battle: { ...battle, ...previousCombatantStates },
+        });
+        previousCombatantStates.playerSide = targetChangePreview.playerSide;
+        previousCombatantStates.enemySide = targetChangePreview.enemySide;
+
         const targetsRandomly =
             !actorCurrentTarget &&
             (action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
