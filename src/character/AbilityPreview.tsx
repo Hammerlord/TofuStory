@@ -215,7 +215,6 @@ const AbilityPreview = ({
 
     const getPreviewElement = () => {
         let isDeathBlowShown = false;
-        let isDefiniteKill = false;
         const {
             rawDamage = 0,
             healthDamage,
@@ -227,6 +226,7 @@ const AbilityPreview = ({
             nondeterministic,
             actionDamage,
             actionArmor,
+            isDefiniteKill,
         } = previewStatUpdate.reduce(
             (acc, preview) => {
                 const { action, nondeterministic, statUpdate } = preview || {};
@@ -251,6 +251,7 @@ const AbilityPreview = ({
                     isDeathBlow: acc.isDeathBlow || isDeathBlow,
                     actionDamage: (acc.actionDamage || 0) + (action.damage || 0),
                     actionArmor: (acc.actionArmor || 0) + (action.armor || 0),
+                    isDefiniteKill: rawDamage === Infinity,
                 };
             },
             {} as {
@@ -264,6 +265,7 @@ const AbilityPreview = ({
                 isDeathBlow: boolean;
                 actionDamage: number;
                 actionArmor: number;
+                isDefiniteKill: boolean;
             }
         );
 
