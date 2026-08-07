@@ -397,7 +397,8 @@ export const soulShot: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: MagicArrowImage,
     removeAfterTurn: true,
-    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
+    overrideBodyText: true,
+    description: "Draw a card. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.drawCards.amount }}</b> more card.",
     onDraw: {
         chance: 0,
         abilityEffects: [
@@ -416,7 +417,9 @@ export const soulShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: MagicArrowImage,
             bonus: {
-                damage: 3,
+                drawCards: {
+                    amount: 1,
+                },
                 conditions: [
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
@@ -440,9 +443,6 @@ export const soulShot: Ability = {
             actions: [
                 {
                     damage: 3,
-                    bonus: {
-                        damage: 1,
-                    },
                 },
             ],
         },
@@ -926,6 +926,7 @@ export const barbedArrows: Ability = {
     name: "Barbed Arrows",
     resourceCost: 0,
     image: ArrowEruptionImage,
+    overrideBodyText: true,
     description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}}",
     actions: [
         {
@@ -941,7 +942,7 @@ export const barbedArrows: Ability = {
     ],
     upgrades: [
         {
-            description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}} <br/> <b>Critical: +{{{ _bleed_ }}}</b>",
+            description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}} <br/> <b>Critical: +1 {{{ _bleed_ }}}</b>",
             onDraw: {
                 chance: 0,
                 abilityEffects: [
@@ -2567,7 +2568,7 @@ export const steady: Ability = {
     image: SlowAndSteadyImage,
     rarity: RARITIES.COMMON,
     resourceCost: 0,
-    description: "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b>",
+    description: "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b> <br/> Draw a card.",
     onDraw: {
         ability: {
             name: "Steady",
@@ -3098,6 +3099,7 @@ const fleetfootProc: Effect = {
 
 export const fleetFoot: Ability = {
     name: "Fleet Foot",
+    overrideBodyText: true,
     description: "The first time you play an active Critical on your turn, draw a card.",
     image: GreenLeafShoesImage,
     depletedOnUse: true,
