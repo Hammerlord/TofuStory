@@ -2054,13 +2054,13 @@ export const hurricaneAbility: Ability = {
     },
     actions: [
         {
-            ...hurricaneHit,
+            ...cloneDeep(hurricaneHit),
         },
         {
-            ...hurricaneHit,
+            ...cloneDeep(hurricaneHit),
         },
         {
-            ...hurricaneHit,
+            ...cloneDeep(hurricaneHit),
         },
     ],
     upgrades: [
