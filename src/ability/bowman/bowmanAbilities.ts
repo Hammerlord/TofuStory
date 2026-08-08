@@ -172,10 +172,10 @@ export const bowmanDefaultAttack: Ability = {
     ],
 };
 
-export const spotWeakness: Ability = {
-    name: "Spot Weakness",
+export const sharpEyes: Ability = {
+    name: "Sharp Eyes",
     resourceCost: 1,
-    image: MarksmanshipImage,
+    image: SharpEyesImage,
     description: "Apply <b>{{ actions.0.effects.0.stacks }} DEF down {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
@@ -1549,22 +1549,21 @@ export const snipe: Ability = {
 
 export const lockOn: Ability = {
     name: "Lock On",
-    image: SharpEyesImage,
+    image: MarksmanshipImage,
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "<b>Pierce.</b> Applies <b>{{ actions.0.effects.0.stacks }} DEF down</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b> and commands a friendly unit to attack this target.",
+        "<b>Pierce.</b> Apply <b>{{ actions.0.effects.0.stacks }} DEF down</b> + <b>Priority</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>. Command a friendly unit to attack.</b>",
     actions: [
         {
-            damage: 0,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             bypassStealth: true,
             effects: [
                 {
                     ...defDown,
-                    duration: 2,
-                    stacks: 3,
+                    duration: 1,
+                    stacks: 2,
                 },
                 {
                     name: "Locked On",

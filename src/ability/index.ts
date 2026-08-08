@@ -49,7 +49,7 @@ import {
     snapfreezeShot,
     snipe,
     soulArrow,
-    spotWeakness,
+    sharpEyes,
     steady,
     stimulant,
     strafe,
@@ -378,7 +378,7 @@ export const JOB_CARD_MAP = {
     },
     [PLAYER_CLASSES.BOWMAN]: {
         all: [
-            spotWeakness,
+            sharpEyes,
             volley,
             shootAbility,
             defend,
