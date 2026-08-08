@@ -175,6 +175,7 @@ export { default as DarkStoneGolemImage } from "./DarkStoneGolem.gif";
 export { default as DarkStoneGolemRubbleImage } from "./DarkStoneGolemRubble.png";
 export { default as DarkThirstImage } from "./DarkThirst.png";
 export { default as DarkThunderBoltProjectileImage } from "./DarkThunderBoltProjectile.png";
+export { default as DeansBagImage } from "./DeansBag.png";
 export { default as DeepDungeonBGImage } from "./DeepDungeonBG.jpg";
 export { default as DeepeningForestImage } from "./DeepeningForest.png";
 export { default as DiamondImage } from "./Diamond.png";

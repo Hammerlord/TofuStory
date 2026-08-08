@@ -21,6 +21,7 @@ import {
     CoveringFireImage,
     CrowImage,
     CupOfCoffeeImage,
+    DeansBagImage,
     DogImage,
     DoubleJumpImage,
     DoubleShotImage,
@@ -3261,6 +3262,34 @@ export const scavenge: Ability = {
                     },
                 },
             ],
+        },
+    ],
+};
+
+export const sidepack: Ability = {
+    name: "Sidepack",
+    retain: true,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck.",
+    image: DeansBagImage,
+    selectCards: {
+        type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+        maxAmount: 2,
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            icon: DeansBagImage,
+            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+        },
+    ],
+    upgrades: [
+        {
+            selectCards: {
+                maxAmount: 1,
+            },
         },
     ],
 };
