@@ -122,10 +122,16 @@ export const getUpdatedStats = ({
             discard,
         });
 
-        let damage =
-            calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier, source }) +
-            Math.floor(targetCombatant.armor * destroyArmor) +
-            flatDamage * multiplier;
+        let damage = 0;
+        if (flatDamage) {
+            damage = flatDamage * multiplier;
+        } else {
+            damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier, source });
+        }
+
+        if (destroyArmor) {
+            damage += Math.floor(targetCombatant.armor * destroyArmor);
+        }
 
         if (damageDividedByTargets) {
             damage = Math.ceil(damage / (targets.length || 1));

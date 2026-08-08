@@ -500,7 +500,7 @@ export const handleDoTs =
                     selectedIndex: index,
                     action: {
                         type: ACTION_TYPES.EFFECT,
-                        damage,
+                        flatDamage: damage,
                     },
                     getCombatantById: (id) => findCombatantData(getState().battle, id),
                 });
