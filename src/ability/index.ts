@@ -66,6 +66,7 @@ import {
     wayfind,
     windupShot,
     wolfAbility,
+    preciseDefense,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -444,6 +445,7 @@ export const JOB_CARD_MAP = {
             takeAShot,
             scavenge,
             sidepack,
+            preciseDefense,
         ],
         starters: [puppetAbility, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

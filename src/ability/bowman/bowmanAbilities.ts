@@ -10,6 +10,7 @@ import {
     BlazingExtinctionImage,
     BlindImage,
     BlockImage,
+    BlueDirosImage,
     BowExpertImage,
     BreadImage,
     BroilerShotImage,
@@ -34,6 +35,7 @@ import {
     FocusImage,
     FrozenArrowImage,
     GreenLeafShoesImage,
+    GreenWinterHatImage,
     GrossJaegerImage,
     GuidesWhistleImage,
     HamstringImage,
@@ -827,7 +829,7 @@ export const powerShot: Ability = {
 export const guard: Ability = {
     name: "Guard",
     resourceCost: 1,
-    image: ShieldImage,
+    image: GreenWinterHatImage,
     overrideBodyText: true,
     description: "<b>Critical: +{{ actions.0.bonus.armor }} {{{ _armor_ }}}</b>",
     rarity: RARITIES.COMMON,
@@ -3294,6 +3296,44 @@ export const sidepack: Ability = {
             selectCards: {
                 maxAmount: 1,
             },
+        },
+    ],
+};
+
+export const preciseDefense: Ability = {
+    name: "Precise Defense",
+    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b>. Apply <b>{{{ _armor_ }}}</b> equal to your <b>Aim.</b>",
+    image: BlueDirosImage,
+    depletedOnUse: true,
+    resourceCost: 2,
+    rarity: RARITIES.RARE,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.FRIENDLY,
+            secondaryAction: {
+                isPriority: true,
+                effects: [{ ...aimEffect, stacks: 10 }],
+            },
+            bonus: {
+                armor: 1,
+                multiplier: {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    type: MULTIPLIER_TYPES.EFFECT_STACKS,
+                    filters: [{ property: "name", value: aimEffect.name, comparator: "eq" }],
+                },
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: aimEffect.name,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };
