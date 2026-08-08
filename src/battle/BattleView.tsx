@@ -749,15 +749,22 @@ const BattlefieldContainer = () => {
         }
     };
 
+    const playbackStartedAt = useRef<number | null>(null);
+
     useEffect(() => {
-        if (!events.length) {
+        const event = events[0];
+        if (!event) {
+            playbackStartedAt.current = null;
             return;
         }
 
-        const betweenActionDelay = 100;
-        setTimeout(() => {
+        playbackStartedAt.current = performance.now();
+
+        const timeout = setTimeout(() => {
             dispatch(popEventQueue());
-        }, events[0].playbackTime + betweenActionDelay);
+        }, event.playbackTime);
+
+        return () => clearTimeout(timeout);
     }, [events[0]?.id]);
 
     useEffect(() => {
