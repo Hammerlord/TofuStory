@@ -815,7 +815,9 @@ export const calculateDamage = ({
     });
 
     const damage = baseDamage * multiplier + totalSkillBonus;
-    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + totalDefDown });
+    const hasBleed = targetEnabledEffects.some((e) => e.type === EFFECT_TYPES.BLEED);
+    const bleedModifier = hasBleed ? 1 : 0;
+    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + totalDefDown + bleedModifier });
 
     let total = withDamageMods;
     // Between minimum and maximum damage, minimum damage wins (arbitrarily).
