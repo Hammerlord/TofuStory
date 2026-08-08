@@ -3,7 +3,7 @@ import { AbilityEffect, ActionOptionalProperties, SkillBonus } from "./../abilit
  * @file Helpers for various battle functions
  */
 import _ from "lodash";
-import { isAttackAbility, isAttackAction, isOffensiveAbility } from "../ability/AbilityView/utils";
+import { isAttackAbility, isAttackAction, isOffensiveAbility, isOffensiveAction } from "../ability/AbilityView/utils";
 import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
 import {
@@ -815,9 +815,14 @@ export const calculateDamage = ({
     });
 
     const damage = baseDamage * multiplier + totalSkillBonus;
-    const hasBleed = targetEnabledEffects.some((e) => e.type === EFFECT_TYPES.BLEED);
-    const bleedModifier = hasBleed ? 1 : 0;
-    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + totalDefDown + bleedModifier });
+    let debuffModifiers = 0;
+    if (isAttack || (isOffensiveAction(action) && typeof action.damage === "number")) {
+        const hasBleed = targetEnabledEffects.some((e) => e.type === EFFECT_TYPES.BLEED);
+        const bleedModifier = hasBleed ? 1 : 0;
+        debuffModifiers += bleedModifier + totalDefDown;
+    }
+
+    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + debuffModifiers });
 
     let total = withDamageMods;
     // Between minimum and maximum damage, minimum damage wins (arbitrarily).
