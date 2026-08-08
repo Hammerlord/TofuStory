@@ -1177,6 +1177,13 @@ export const tagShot: Ability = {
             target: TARGET_TYPES.RANDOM_FRIENDLY,
             excludeActor: true,
             induceCombatantAttack: true,
+            conditions: [
+                {
+                    numFriendly: 1, // Including the actor itself
+                    comparator: "gt",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            ],
         },
     ],
     upgrades: [
