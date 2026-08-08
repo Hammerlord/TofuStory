@@ -3105,9 +3105,7 @@ const fleetfootProc: Effect = {
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                property: "onDraw.chance",
-                comparator: "not",
-                value: undefined,
+                hasAbilityEffectName: CRITICAL,
             },
         ],
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
