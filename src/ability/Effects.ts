@@ -149,7 +149,7 @@ export const stun: Effect = {
     maxDuration: 1,
     persistsWhenDead: true,
     description: "Stunned targets are unable to act and take increased damage.",
-    attackDamageReceived: 3,
+    defenseDown: 3,
     icon: DizzyIcon,
 };
 
@@ -160,7 +160,7 @@ export const bleed: Effect = {
     duration: Infinity,
     stacks: 3,
     // Hack: the 001 is for Math.ceil so that 10 will increase damage taken by 2 instead of 1
-    attackDamageReceived: 0.1001,
+    defenseDown: 0.1001,
     maxApplications: 1,
     icon: BloodIcon,
     description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Increased damage received by +1 for every 10 stacks.",
@@ -203,7 +203,7 @@ export const freeze: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     description: "Frozen targets are unable to act and take increased damage.",
-    attackDamageReceived: 3,
+    defenseDown: 3,
     duration: 1,
     persistsWhenDead: true,
 };
@@ -632,33 +632,33 @@ export const preventArmorDecayPlayer: Effect = {
 
 export const defUp: Effect = {
     name: "DEF Up",
-    description: "Reduces damage taken from attacks by 1.",
+    description: "Reduces damage taken from attacks by 10% per stack, rounded up.",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    attackDamageReceived: -1,
+    defenseDown: -1,
 };
 
 export const defDown: Effect = {
     name: "DEF Down",
-    description: "Increases damage taken from attacks by 1.",
+    description: "Increases damage taken from attacks by 10% per stack, rounded up.",
     icon: BlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     canBeSilenced: true,
-    attackDamageReceived: 1,
+    defenseDown: 1,
 };
 
 export const pristineDefense: Effect = {
     name: "Pristine DEF Up",
-    description: "Prevents Armor decay and reduces damage taken from attacks by 1.",
+    description: "Prevents Armor decay and reduces damage taken from attacks by 10% per stack, rounded up.",
     icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
     preventArmorDecay: true,
-    attackDamageReceived: -1,
+    defenseDown: -1,
 };
 
 export const sentry: Effect = {

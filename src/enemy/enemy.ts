@@ -2338,7 +2338,7 @@ const vulnerablePig: Minion = {
             icon: IronHogHitImage,
             type: EFFECT_TYPES.FEAR,
             class: EFFECT_CLASSES.DEBUFF,
-            attackDamageReceived: 3,
+            defenseDown: 3,
         },
     ],
 };

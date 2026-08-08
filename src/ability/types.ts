@@ -213,8 +213,10 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     };
     preventArmorDecay?: boolean;
     armorReceived?: number; // Increased armor received, that is; ditto for below
-    attackDamageReceived?: number;
     healingReceived?: number;
+
+    // Increases damage taken by 10% per stack, rounded up.
+    defenseDown?: number;
     /** Healing received when hitting an enemy. Scales with the number of enemies hit */
     lifeOnHit?: number;
     /** Damage to reflect back to attackers */
@@ -222,7 +224,6 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     lifeOnKill?: number;
     /** Mesos received when hitting an enemy. Only works if the enemy has mesos to steal. */
     mesoSteal?: number;
-    abilityDamageReceived?: AbilityDamageReceived[];
     allowMoveCardFromHandToDeck?: boolean;
     conditions?: Condition[];
     canBeSilenced?: boolean;

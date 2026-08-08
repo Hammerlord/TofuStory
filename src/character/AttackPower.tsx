@@ -1,9 +1,15 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect } from "../ability/types";
-import { ATTACK_POWER_COEFF } from "../battle/constants";
+import { DAMAGE_COEFF } from "../battle/constants";
 import { CombatantInfo } from "../battle/types";
-import { calculateAttackPowerDamage, getEnabledEffects, getMultiplier, getSkillBonusDamage, isTurnActionPrevented } from "../battle/utils";
+import {
+    calculateDamageModifierCoeff,
+    getEnabledEffects,
+    getMultiplier,
+    getSkillBonusDamage,
+    isTurnActionPrevented,
+} from "../battle/utils";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
@@ -93,7 +99,7 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     );
 
     const totalDamage = (() => {
-        const total = calculateAttackPowerDamage({ totalAttackPower, damage: overrideDamage || damage });
+        const total = calculateDamageModifierCoeff({ totalDamageMod: totalAttackPower, damage: overrideDamage || damage });
         if (total < 0) {
             return 0;
         }
@@ -131,7 +137,7 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     const tooltip = (
         <div>
             {!combatant.isPlayer && "Estimated attack damage."}
-            {combatant.isPlayer && `Each +ATT increases attack damage by ${ATTACK_POWER_COEFF}%.`}
+            {combatant.isPlayer && `Each +ATT increases attack damage by ${DAMAGE_COEFF}%.`}
             {attackPowerEffects.length > 0 && (
                 <>
                     <hr />

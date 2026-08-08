@@ -3007,7 +3007,7 @@ export const suddenDeath: Ability = {
                             icon: SkullBalloonImage,
                             name: "Sudden Death!",
                             attackPower: 3,
-                            attackDamageReceived: 1,
+                            defenseDown: 1,
                             maxApplications: 1,
                             onTurnStart: {
                                 removeEffect: true,

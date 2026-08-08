@@ -33,7 +33,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const effects = getEnabledEffects({ combatantInfo });
     const damageModifiers: Effect[] = effects.filter((effect) => {
         return (
-            effect.attackDamageReceived &&
+            effect.defenseDown &&
             passesConditions({
                 getCalculationTarget: (targetType) => (targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? combatantInfo : undefined),
                 proc: effect,
@@ -42,14 +42,14 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     });
 
     let damageModifierTotal = damageModifiers.reduce((acc, effect) => {
-        return (acc += effect.attackDamageReceived || 0 * (effect.stacks || 1));
+        return (acc += effect.defenseDown || 0 * (effect.stacks || 1));
     }, 0);
 
     damageModifierTotal = Math.ceil(damageModifierTotal);
 
     const modifierMap = damageModifiers.reduce(
         (acc, effect) => {
-            const { name, attackDamageReceived, stacks = 1 } = effect;
+            const { name, defenseDown: attackDamageReceived, stacks = 1 } = effect;
             if (!acc[name]) {
                 acc[name] = {
                     count: 0,

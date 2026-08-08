@@ -10,7 +10,9 @@ export const CLASS_LEADER_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm14
 export const STRANGE_ENCOUNTER_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm08/PlotOfPixie";
 export const CAMPAIGN_BOSS_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm10/Eregos";
 export const MARCH_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm08/LetsMarch";
-export const ATTACK_POWER_COEFF = 10; // every attack power grants 1 damage for every 10 damage dealt, minimum 1
+// Every attack power grants 1 damage for every 10 damage dealt, minimum 1
+// Ditto for def down
+export const DAMAGE_COEFF = 10;
 export const MULTI_ACTION_PLAYBACK_SPEED = 550;
 export const NORMAL_ACTION_PLAYBACK_SPEED = 675;
 export const RANGED_ACTION_PLAYBACK_SPEED = 500;

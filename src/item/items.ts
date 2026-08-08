@@ -599,7 +599,7 @@ export const boneHelm: Item = {
             name: "Bone Helm",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -1,
+            defenseDown: -1,
             conditions: [
                 {
                     comparator: "eq",
@@ -1415,7 +1415,7 @@ export const adamantiumPlate: Item = {
             name: "Adamantium Plate",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -1,
+            defenseDown: -1,
             conditions: [
                 {
                     comparator: "eq",
@@ -2756,7 +2756,7 @@ export const bundleOfStraw: Item = {
             name: "Bundle Of Straw",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            attackDamageReceived: -1,
+            defenseDown: -1,
             conditions: [
                 {
                     comparator: "gt",

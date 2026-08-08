@@ -31,7 +31,7 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
         <div>
             Apply{" "}
             {debuffs.map((effect: Effect, i) => {
-                const { duration, attackPower, type, attackDamageReceived } = effect;
+                const { duration, attackPower, type, defenseDown: attackDamageReceived } = effect;
                 return (
                     <span key={i}>
                         {getDebuffIcon(type) && <Icon icon={getDebuffIcon(type)} size={"sm"} />}

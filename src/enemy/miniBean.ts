@@ -53,7 +53,7 @@ const yuck: Effect = {
     icon: YuckImage,
     disableDisplayIcon: true,
     attackPower: -1,
-    attackDamageReceived: 1,
+    defenseDown: 1,
     duration: 3,
 };
 

@@ -26,7 +26,7 @@ import {
 } from "./../ability/types";
 import { findCombatantData } from "./actions/actions";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
-import { ATTACK_POWER_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
+import { DAMAGE_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
@@ -679,11 +679,11 @@ export const getSkillBonusDamage = ({ ability, skillBonus }: { ability: Ability 
     return totalDamage;
 };
 
-export const calculateAttackPowerDamage = ({ damage, totalAttackPower }: { damage: number; totalAttackPower: number }): number => {
-    if (!totalAttackPower) {
+export const calculateDamageModifierCoeff = ({ damage, totalDamageMod }: { damage: number; totalDamageMod: number }): number => {
+    if (!totalDamageMod) {
         return damage;
     }
-    const withAttackPower = Math.ceil(damage + Math.max(1, damage / ATTACK_POWER_COEFF) * totalAttackPower);
+    const withAttackPower = Math.ceil(damage + Math.max(1, damage / DAMAGE_COEFF) * totalDamageMod);
     // Enemy damage cannot be reduced below 1 by ATT down modifiers
     if (damage && withAttackPower < 1) {
         return 1;
@@ -798,8 +798,11 @@ export const calculateDamage = ({
         );
     }
 
-    getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).forEach((effect: CombatEffect) => {
-        const { maxDamageTaken, excludeEffectOwner } = effect;
+    let totalDefDown = 0;
+    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, getCalculationTarget, source });
+
+    targetEnabledEffects.forEach((effect: CombatEffect) => {
+        const { maxDamageTaken, excludeEffectOwner, defenseDown: defDown = 0, stacks = 1 } = effect;
         if (excludeEffectOwner) {
             return;
         }
@@ -807,35 +810,14 @@ export const calculateDamage = ({
         if ((maxDamageTaken && isNaN(maximumDamage)) || maximumDamage < maxDamageTaken) {
             maximumDamage = maxDamageTaken;
         }
+
+        totalDefDown += defDown * stacks;
     });
 
-    const applyAbilityDamageReceived = (damage: number): number => {
-        const { multiplier, additionalDamageReceived } = getEnabledEffects({ combatantInfo: target, getCalculationTarget, source }).reduce(
-            (acc, { attackDamageReceived = 0, abilityDamageReceived, stacks = 1 }) => {
-                acc.additionalDamageReceived += isAttack ? attackDamageReceived * stacks : 0;
-
-                abilityDamageReceived?.forEach(({ abilityName, damage = 0, type }: AbilityDamageReceived) => {
-                    if (abilityName && abilityName.toLowerCase() === actionParent?.name.toLowerCase()) {
-                        if (type === SCALING_VALUE_TYPES.PERCENTAGE) {
-                            acc.multiplier += damage * stacks;
-                        } else {
-                            acc.additionalDamageReceived += damage * stacks;
-                        }
-                    }
-                });
-
-                return acc;
-            },
-            { multiplier: 0, additionalDamageReceived: 0 }
-        );
-
-        return (damage + Math.ceil(additionalDamageReceived)) * (multiplier || 1);
-    };
-
     const damage = baseDamage * multiplier + totalSkillBonus;
-    const withAbilityDamageReceived = applyAbilityDamageReceived(damage);
-    const withAttackPower = calculateAttackPowerDamage({ damage: withAbilityDamageReceived, totalAttackPower });
-    let total = withAttackPower;
+    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + totalDefDown });
+
+    let total = withDamageMods;
     // Between minimum and maximum damage, minimum damage wins (arbitrarily).
     if (typeof maximumDamage === "number") {
         total = Math.min(total, maximumDamage);

@@ -181,7 +181,7 @@ const EffectGroupTooltipContent = ({
         name,
         icon,
         attackPower = 0,
-        attackDamageReceived = 0,
+        defenseDown: attackDamageReceived = 0,
         skillBonus = [],
         description,
         duration = Infinity,
