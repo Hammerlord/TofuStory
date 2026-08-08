@@ -65,7 +65,7 @@ const ItemSelection = ({
      * for an unobtained item
      */
     const getInitItems = () => {
-        const itemSelection = filterUnobtainableItems(player.items, items || []);
+        const itemSelection = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: items || [] });
 
         if (!disableItemReplacements) {
             const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });

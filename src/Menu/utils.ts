@@ -231,16 +231,27 @@ export const getCardChoicesFromItems = ({
     return { choices, numChoices };
 };
 
-export const filterUnobtainableItems = (excludedItems: Item[], itemsToFilter: Item[]) => {
-    const filterOut = excludedItems.reduce((acc, item: Item) => {
-        if (item.type === ITEM_TYPES.EQUIPMENT) {
-            acc[item.name] = true;
-        }
+export const filterUnobtainableItems = ({
+    playerItems,
+    excludeItems,
+    itemsToFilter,
+}: {
+    playerItems: Item[];
+    excludeItems?: Item[];
+    itemsToFilter: Item[];
+}) => {
+    const filterOut = playerItems.reduce((acc, item: Item) => {
+        acc[item.name] = true;
+
         if (Array.isArray(item.exclusive)) {
             item.exclusive.forEach((itemName: string) => (acc[itemName] = true));
         }
         return acc;
     }, {});
+
+    (excludeItems || []).forEach((item) => {
+        filterOut[item.name] = true;
+    });
 
     return itemsToFilter.filter((item) => !filterOut[item.name]);
 };

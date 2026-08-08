@@ -103,7 +103,7 @@ const ItemRewards = ({
     const [selectedItemIndices, setSelectedItemIndices] = useState([]);
 
     useEffect(() => {
-        const items = filterUnobtainableItems(player.items, overrideItemChoices || []);
+        const items = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: overrideItemChoices || [] });
         if (!overrideItemChoices && items.length < numChoicesOffered) {
             let rareBonus = 0;
             let uncommonBonus = 0;
