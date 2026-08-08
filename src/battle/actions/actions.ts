@@ -1842,46 +1842,24 @@ const checkInduce = ({
 
         if (induceCombatantAttack) {
             shuffle(affectedTargetIds).forEach((id) => {
-                const { hostileSide, combatant } = findCombatantData(getState().battle, id) || {};
+                const { combatant } = findCombatantData(getState().battle, id) || {};
                 if (!combatant.HP || isStunnedOrFrozen(combatant)) {
                     return;
                 }
 
-                const attackAction = getInducedAttack(combatant);
+                const attackAbility: Ability = getInducedAttack(combatant);
                 const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
-                const { index } = autoSelectActionTarget({
-                    action: attackAction,
-                    actorId: id,
-                    initialSelectedIndex: initialIndex,
-                    initialSelectedSide: initialSide,
-                    battle: getState().battle,
-                });
 
-                if (typeof index === "number") {
-                    dispatch(
-                        performAction({
-                            action: attackAction,
-                            selectedIndex: index,
-                            side: hostileSide,
-                            actorId: id,
-                            parentSource,
-                        })
-                    );
-
-                    dispatch(
-                        onUseAbility({
-                            actorInfo: findCombatantData(getState().battle, id),
-                            source: {
-                                ...parentSource,
-                                actorId: id,
-                            },
-                            ability: {
-                                name: "Induced Attack",
-                                actions: [action],
-                            },
-                        })
-                    );
-                }
+                dispatch(
+                    useAbility({
+                        ability: attackAbility,
+                        actorId: id,
+                        selectedIndex: initialIndex,
+                        side: initialSide,
+                        isAutoCast: true,
+                        isProc: true,
+                    })
+                );
             });
         }
     };

@@ -31,6 +31,7 @@ import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { CrossedSwordsImage } from "../images";
 
 // TODO use UpdatedCombatantStats from the Event instead of diffing here.
 // However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
@@ -1080,16 +1081,17 @@ export const applyVacuum = ({
     };
 };
 
-export const getInducedAttack = (actor: Combatant): Action => {
-    let basicAttackDamage = 0;
+export const getInducedAttack = (actor: Combatant): Ability => {
     const abilities = actor.abilities || [];
     const attackAbility =
         abilities.find((ability) => !ability.resourceCost && isAttackAbility(ability)) ||
         abilities.find((ability) => !ability.resourceCost && isOffensiveAbility);
 
     if (attackAbility) {
-        return { ...attackAbility.actions[0], playbackTime: INDUCED_ACTION_PLAYBACK_SPEED };
+        return { ...attackAbility, actions: attackAbility.actions.map((a) => ({ ...a, playbackTime: INDUCED_ACTION_PLAYBACK_SPEED })) };
     }
+
+    let basicAttackDamage = 0;
 
     for (const ability of abilities) {
         if (!ability.resourceCost) {
@@ -1103,10 +1105,16 @@ export const getInducedAttack = (actor: Combatant): Action => {
     }
 
     return {
-        damage: basicAttackDamage || 1,
-        target: TARGET_TYPES.HOSTILE,
-        type: ACTION_TYPES.ATTACK,
-        playbackTime: INDUCED_ACTION_PLAYBACK_SPEED,
+        name: "Attack",
+        image: CrossedSwordsImage,
+        actions: [
+            {
+                damage: basicAttackDamage || 1,
+                target: TARGET_TYPES.HOSTILE,
+                type: ACTION_TYPES.ATTACK,
+                playbackTime: INDUCED_ACTION_PLAYBACK_SPEED,
+            },
+        ],
     };
 };
 
