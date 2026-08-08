@@ -1848,15 +1848,11 @@ const checkInduce = ({
                 }
 
                 const attackAbility: Ability = getInducedAttack(combatant);
-                const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
 
                 dispatch(
                     useAbility({
                         ability: attackAbility,
                         actorId: id,
-                        selectedIndex: initialIndex,
-                        side: initialSide,
-                        isAutoCast: true,
                         isProc: true,
                     })
                 );
@@ -2949,8 +2945,9 @@ export const useAbility = ({
 
             let selection;
 
+            const targetingAbility = actor.targeting?.ability;
             const selectedActionTargets = actor.targeting?.actionTargets?.[i];
-            if (typeof selectedActionTargets?.index === "number") {
+            if (targetingAbility?.name === ability.name && typeof selectedActionTargets?.index === "number") {
                 selection = selectedActionTargets;
             } else if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
                 selection = autoSelectActionTarget({
