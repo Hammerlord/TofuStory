@@ -229,6 +229,7 @@ export const volley: Ability = {
                 chance: 0,
                 abilityEffects: [
                     {
+                        name: CRITICAL,
                         maxApplications: 1,
                         highlightCard: true,
                     },
