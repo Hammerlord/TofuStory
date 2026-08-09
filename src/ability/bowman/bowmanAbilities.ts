@@ -18,6 +18,7 @@ import {
     CatImage,
     ChestnutLeafImage,
     ChickenCouponImage,
+    CocaFruitImage,
     ConcentrateImage,
     CoveringFireImage,
     CrossbowImage,
@@ -31,6 +32,7 @@ import {
     DrainArrowImage,
     ElitePuppetImage,
     EntrenchedFireImage,
+    EucalyptusLeavesImage,
     EvasionBoostImage,
     FinalAttackImage,
     FireMarbleImage,
@@ -3445,6 +3447,42 @@ export const twain: Ability = {
                 },
                 {
                     damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const berry: Ability = {
+    name: "Berry",
+    removeAfterTurn: true,
+    image: CocaFruitImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            resources: 1,
+        },
+    ],
+};
+
+export const forage: Ability = {
+    name: "Forage",
+    resourceCost: 1,
+    image: EucalyptusLeavesImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            addCardsToDeck: [berry],
+            addCardsToDiscard: [berry],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    addCardsToDeck: [berry],
                 },
             ],
         },
