@@ -40,7 +40,7 @@ const useStyles = createUseStyles({
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         position: "fixed",
-        top: 519,
+        top: 419,
         zIndex: -1,
         opacity: 0.2,
     },
@@ -76,7 +76,8 @@ const useStyles = createUseStyles({
         justifyContent: "space-around",
     },
     offerSection: {
-        minHeight: 275,
+        minHeight: 250,
+        marginTop: 25,
     },
     offerContainer: {
         margin: 8,
@@ -331,9 +332,6 @@ const TradingPostView = ({
     return (
         <div className={classes.tradingPostRoot}>
             <div className={classes.tradingPostBackdrop} />
-            <div className={classes.titleContainer}>
-                <h2>Trading Post</h2>
-            </div>
             <div className={classes.doneContainer}>
                 <LeaveButton onClick={handleClickExit} />
             </div>
