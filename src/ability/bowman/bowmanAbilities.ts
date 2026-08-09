@@ -20,6 +20,7 @@ import {
     ChickenCouponImage,
     ConcentrateImage,
     CoveringFireImage,
+    CrossbowImage,
     CrowImage,
     CupOfCoffeeImage,
     DeansBagImage,
@@ -29,6 +30,7 @@ import {
     DragonsBreathImage,
     DrainArrowImage,
     ElitePuppetImage,
+    EntrenchedFireImage,
     EvasionBoostImage,
     FinalAttackImage,
     FireMarbleImage,
@@ -3334,6 +3336,117 @@ export const preciseDefense: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+export const entrenchedFire: Ability = {
+    name: "Entrenched Fire",
+    description: "Hits an extra time if you have {{{ _armor_ }}}. <b>Critical:</b> + Another time.",
+    image: EntrenchedFireImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 1,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                bypassUnplayable: true,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+        },
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    armor: 0,
+                    comparator: "gt",
+                },
+            ],
+        },
+        {
+            damage: 7,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            conditions: [
+                {
+                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    hasAbilityEffectName: CRITICAL,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
+export const twain: Ability = {
+    name: "Twain",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 0,
+    image: CrossbowImage,
+    description: "Hits 2x",
+    actions: [
+        {
+            damage: 3,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+        },
+        {
+            damage: 3,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+                {
+                    damage: 2,
+                },
+            ],
         },
     ],
 };
