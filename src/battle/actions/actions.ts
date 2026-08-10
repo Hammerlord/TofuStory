@@ -501,6 +501,7 @@ export const handleDoTs =
                     action: {
                         type: ACTION_TYPES.EFFECT,
                         flatDamage: damage,
+                        bypassArmor: true,
                     },
                     getCombatantById: (id) => findCombatantData(getState().battle, id),
                 });

@@ -148,7 +148,7 @@ export const stun: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
-    description: "Stunned targets are unable to act and take increased damage.",
+    description: "Stunned targets are unable to act, and they take increased damage.",
     defenseDown: 3,
     icon: DizzyIcon,
 };
@@ -161,7 +161,8 @@ export const bleed: Effect = {
     stacks: 3,
     maxApplications: 1,
     icon: BloodIcon,
-    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. While active, take 10% increased damage.",
+    description:
+        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1. While active, take 10% increased damage from attacks.",
     onTurnStart: {
         decrementStacks: 1,
     },
@@ -173,7 +174,7 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: Infinity,
     icon: FireIcon,
-    description: "On turn start, take 2 damage per stack, and reduce stacks by 1.",
+    description: "On turn start, take 2 damage per stack (bypassing armor), and reduce stacks by 1.",
     maxApplications: 1,
     stacks: 2,
     onTurnStart: {
@@ -587,7 +588,8 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "On turn start, take 1 damage per stack, and reduce stacks by 1. Healing received reduced by 1 per stack.",
+    description:
+        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1. Healing received reduced by 1 per stack.",
     icon: PoisonImage,
     duration: Infinity,
     maxApplications: 1,

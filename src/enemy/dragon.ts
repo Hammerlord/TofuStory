@@ -95,7 +95,7 @@ export const lostDragon: Minion = {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     icon: FireMarbleImage,
-                    effects: [{ ...burn, stacks: 2 }],
+                    effects: [{ ...burn, stacks: 1 }],
                 },
             ],
         },
@@ -115,7 +115,7 @@ export const lostDragon: Minion = {
         },
         {
             name: "Toxic Claws",
-            description: "Damage dealt is split among targets. Inflicts 2 Poison and 2 Bleed.",
+            description: "Damage dealt is split among targets. Inflicts 1 Poison and Bleed.",
             image: RedMagicClawImage,
             actions: [
                 {
@@ -124,7 +124,7 @@ export const lostDragon: Minion = {
                     damageDividedByTargets: true,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    effects: [{ ...poison, stacks: 2 }],
+                    effects: [{ ...poison, stacks: 1 }],
                 },
                 {
                     area: 2,
@@ -132,7 +132,7 @@ export const lostDragon: Minion = {
                     damageDividedByTargets: true,
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.RANDOM_HOSTILE,
-                    effects: [{ ...bleed, stacks: 2 }],
+                    effects: [{ ...bleed, stacks: 1 }],
                 },
             ],
         },
