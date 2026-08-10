@@ -213,11 +213,13 @@ const useStyles = createUseStyles({
 const classesInterpolation = {
     [PLAYER_CLASSES.WARRIOR]: "warrior",
     [PLAYER_CLASSES.MAGICIAN]: "magician",
+    [PLAYER_CLASSES.BOWMAN]: "bowman",
 };
 
 const classesPluralInterpolation = {
     [PLAYER_CLASSES.WARRIOR]: "warriors",
     [PLAYER_CLASSES.MAGICIAN]: "magicians",
+    [PLAYER_CLASSES.BOWMAN]: "bowmen",
 };
 
 const { logVisitedEvent, addInfamy, acquireItems, updateMesos, pushActivityHistory, loseItems: loseItemsAction } = playerStateSlice.actions;
