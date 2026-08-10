@@ -1364,7 +1364,7 @@ export const doubleJump: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                drawCards: 1,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1376,6 +1376,18 @@ export const doubleJump: Ability = {
             target: TARGET_TYPES.SELF,
             drawCards: {
                 amount: 2,
+            },
+            bonus: {
+                drawCards: {
+                    amount: 1,
+                },
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
             },
         },
     ],
@@ -2134,7 +2146,7 @@ export const snapfreezeShot: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                effects: [freeze],
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2152,6 +2164,16 @@ export const snapfreezeShot: Ability = {
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
             effects: [{ ...chill, stacks: 1, duration: 2 }],
+            bonus: {
+                effects: [freeze],
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
@@ -2491,7 +2513,7 @@ export const takeAim: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                effects: [{ ...aimEffect, stacks: 3 }],
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2502,6 +2524,16 @@ export const takeAim: Ability = {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             effects: [{ ...aimEffect, stacks: 8 }],
+            bonus: {
+                effects: [{ ...aimEffect, stacks: 3 }],
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
@@ -2992,6 +3024,7 @@ export const longShot: Ability = {
         chance: 0.2,
         abilityEffects: [
             {
+                name: CRITICAL,
                 bypassUnplayable: true,
                 maxApplications: 1,
                 highlightCard: true,
@@ -3168,6 +3201,7 @@ export const bountyOrNothing: Ability = {
         chance: 0.2,
         abilityEffects: [
             {
+                name: CRITICAL,
                 bypassUnplayable: true,
                 maxApplications: 1,
                 highlightCard: true,
@@ -3204,7 +3238,7 @@ export const takeAShot: Ability = {
         chance: -0.1,
         abilityEffects: [
             {
-                bypassUnplayable: true,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -3353,7 +3387,7 @@ export const entrenchedFire: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                bypassUnplayable: true,
+                name: CRITICAL,
                 maxApplications: 1,
                 highlightCard: true,
             },
