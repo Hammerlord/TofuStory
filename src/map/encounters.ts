@@ -1,6 +1,6 @@
 import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
-import { sneaky, lifeLink, poisonous, taunting } from "../enemy/effect";
+import { sneaky, lifeLink, poisonous, taunting, restless } from "../enemy/effect";
 import {
     avenger,
     elite,
@@ -173,6 +173,10 @@ const generateEliteTriad = ({
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
+    if (baseEnemy.abilities.some((ability) => ability.actions.some((action) => action.type === ACTION_TYPES.NONE))) {
+        affixPool.push(restless);
+    }
+
     const affixes = shuffle(affixPool).slice(0, numAffixes);
     const hasRaging = affixes.some((a) => a.name === raging.name);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
@@ -321,6 +325,10 @@ const generateElite = ({
     const affixPool = [eliteThorns, { ...raging, turnsTriggerFrequency: 2 }, warding, eruptive, swarming, sneaky, poisonous];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
+    }
+
+    if (baseEnemy.abilities.some((ability) => ability.actions.some((action) => action.type === ACTION_TYPES.NONE))) {
+        affixPool.push(restless);
     }
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);

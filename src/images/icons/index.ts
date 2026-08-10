@@ -34,6 +34,7 @@ export { default as MuscleIcon } from "./Muscle.svg";
 export { default as MusicIcon } from "./Music.svg";
 export { default as NoEntryIcon } from "./NoEntry.svg";
 export { default as NoStunIcon } from "./NoStun.svg";
+export { default as NoZzzIcon } from "./NoZzz.svg";
 export { default as PristineBlackShieldIcon } from "./PristineBlackShield.svg";
 export { default as PristineRedShieldIcon } from "./PristineRedShield.svg";
 export { default as PristineShieldIcon } from "./PristineShield.svg";

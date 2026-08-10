@@ -35,6 +35,7 @@ import {
     LinkIcon,
     MountainIcon,
     MuscleIcon,
+    NoZzzIcon,
     PristineShieldIcon,
     RedShieldIcon,
     RockIcon,
@@ -375,6 +376,15 @@ export const resist: Effect = {
         type: "effect-class",
         value: [EFFECT_CLASSES.DEBUFF],
     },
+};
+
+export const restless: Effect = {
+    name: "Restless",
+    description: "This character does not take rest turns.",
+    icon: NoZzzIcon,
+    disableAbilities: [ACTION_TYPES.NONE],
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
 };
 
 export const temporaryResist: Effect = {
