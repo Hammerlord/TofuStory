@@ -68,6 +68,7 @@ export const strangePig: Minion = {
                             ...stun,
                             name: "Dazed",
                             duration: 2,
+                            bypassImmunity: true,
                         },
                     ],
                 },
