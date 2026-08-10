@@ -27,7 +27,8 @@ export interface Combatant extends Minion {
         castTime?: number;
     };
     turnHistory: TurnHistoryAction[];
-    abilityHistory: (Ability | CombatAbility)[];
+    abilities: CombatAbility[];
+    abilityHistory: CombatAbility[];
     maxResources?: number;
     resourcesPerTurn?: number;
     items: Item[];

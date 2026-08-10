@@ -71,6 +71,7 @@ const defaultCharacterProperties: Player = {
     maxResources: BASE_MAX_RESOURCES, // Maximum resources that resourcesPerTurn can grant up to
     resources: 0,
     armor: 0,
+    abilities: [],
     turnHistory: [],
     abilityHistory: [],
     mesos: 0,

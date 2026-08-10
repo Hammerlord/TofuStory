@@ -32,7 +32,7 @@ export const createCombatant = (combatant): Combatant => {
         abilities:
             combatant.abilities?.map((ability: Ability) => ({
                 ...cloneDeep(ability),
-                id: uuid.v4(),
+                instanceId: uuid.v4(),
             })) || [],
         turnHistory: [],
         abilityHistory: [],
