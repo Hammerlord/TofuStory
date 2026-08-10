@@ -19,6 +19,7 @@ import { ZzzIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import AbilityPreview, { PreviewStatUpdate } from "./AbilityPreview";
 import AttackPower from "./AttackPower";
+import Coin from "./Coin";
 import CombatantTooltip from "./CombatantTooltip";
 import Health from "./HealthView";
 import PlayerResources from "./PlayerResources";
@@ -584,6 +585,7 @@ const CombatantView = forwardRef(
                                         <BlockIcon statChanges={statChanges} />
                                         <HitIcon statChanges={statChanges} />
                                     </span>
+                                    <Coin action={action} />
                                 </>
                             )}
                         </div>
@@ -600,7 +602,7 @@ const CombatantView = forwardRef(
 
                                 <div className={classes.rightContainer}>
                                     {getExtraContainerIcons("right")}
-                                    <AttackPower combatantInfo={combatantInfo} isEnemy={isEnemy}/>
+                                    <AttackPower combatantInfo={combatantInfo} isEnemy={isEnemy} />
                                     {/** Update resources immediately as skills are used: UX issue where lagging resource feedback misleads people into thinking they have more/less resources */}
                                     {combatant?.isPlayer && (
                                         <PlayerResources player={findCombatantData(battle, oldState?.id)?.combatant as Player} />

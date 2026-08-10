@@ -1,10 +1,10 @@
-import { EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
+import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { Wave } from "../../battle/types";
 import { GachaponImage, MesoImage } from "../../images";
 import { EventScene } from "../types";
 import GachaponScene from "./GachaponScene";
 
-const gachaponMachine: Minion = {
+export const gachaponMachine: Minion = {
     name: "Gachapon Machine",
     image: GachaponImage,
     maxHP: 300,
@@ -17,8 +17,11 @@ const gachaponMachine: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             onReceiveDamage: {
+                usableWhileStunned: true,
                 mesos: 1,
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
+                targetType: TRIGGER_TARGET_TYPES.PLAYER,
+                pushEventQueue: true,
+                type: ACTION_TYPES.NONE,
             },
         },
     ],

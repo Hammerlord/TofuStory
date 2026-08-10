@@ -627,6 +627,7 @@ const onEffectEventTrigger = ({
             decrementStacks = 0,
             drawOriginalAbility = false,
             multiplier: multiplierConfig,
+            pushEventQueue,
             ...other
         } = effectEvent;
 
@@ -732,9 +733,9 @@ const onEffectEventTrigger = ({
             }
 
             const action = {
+                type: ACTION_TYPES.EFFECT,
                 ...other,
                 effects,
-                type: ACTION_TYPES.EFFECT,
             };
 
             const targetIds = [];
@@ -780,6 +781,18 @@ const onEffectEventTrigger = ({
             });
 
             dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+            if (pushEventQueue) {
+                dispatch(
+                    pushPlaybackQueue({
+                        action,
+                        actorId: ownerId,
+                        actionParent: procSource?.source,
+                        source: procSource,
+                        selectedIndex: owner.index,
+                        side: owner.friendlySide,
+                    })
+                );
+            }
             dispatch(
                 triggerStatChangeEvents(
                     updated.map(({ statUpdate }) => ({
@@ -1986,7 +1999,7 @@ const pushPlaybackQueue = ({
     actorId?: string;
     selectedIndex?: number;
     allTargetIndices?: number[];
-    actionParent?: Ability | Item;
+    actionParent?: Ability | Item | Effect;
     side: BATTLEFIELD_SIDES;
     source?: TriggerSource;
     displacements?: Displacement;
