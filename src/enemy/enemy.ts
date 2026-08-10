@@ -2592,12 +2592,13 @@ export const rockyMask: Minion = {
             name: "Rocky Wallop",
             image: RockyWallopImage,
             resourceCost: 3,
-            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
+                    area: 1,
+                    secondaryDamage: 1,
                 },
             ],
         },
