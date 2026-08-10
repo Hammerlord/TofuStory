@@ -1,3 +1,4 @@
+import { ancientMixedGolem } from "../../enemy/ancientMixedGolem";
 import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
 import { mushmom } from "../../enemy/mushmom";
 import { pillagingWildBoar } from "../../enemy/pillagingBoar";
@@ -76,11 +77,24 @@ export const pillagingBoarFight = {
     ],
 };
 
+export const ancientMixedGolemFight = {
+    id: ancientMixedGolem.name,
+    waves: [
+        {
+            enemies: [null, null, ancientMixedGolem, null, null],
+            winCondition: {
+                defeatBoss: true,
+            },
+        },
+    ],
+};
+
 export const OVERWORLD_BOSS_ID_MAP = {
     [mutantSnailFight.id]: mutantSnailFight,
     [strangePigFight.id]: strangePigFight,
     [manoFight.id]: manoFight,
     [stumpyFight.id]: stumpyFight,
     [mushmomFight.id]: mushmomFight,
+    [ancientMixedGolemFight.id]: ancientMixedGolemFight,
     [pillagingBoarFight.id]: pillagingBoarFight,
 };

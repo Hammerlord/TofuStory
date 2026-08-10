@@ -1,4 +1,4 @@
-import { manoEnemy, minionSnail, mutantSnailEnemy } from "../../enemy/bossSnails";
+import { manoEnemy } from "../../enemy/bossSnails";
 import {
     axeStump,
     blueMushroom,
@@ -33,11 +33,18 @@ import {
 import { jrBoogie } from "../../enemy/jrBoogie";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
-import { moveHeadToTail } from "../../utils";
+import { getRandomItem, moveHeadToTail } from "../../utils";
 import { REGIONS } from "../regions";
 import { NODE_TYPES, Route, RouteNode, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
-import { mushmomFight, mutantSnailFight, pillagingBoarFight, strangePigFight, stumpyFight } from "./overworldBosses";
+import {
+    ancientMixedGolemFight,
+    mushmomFight,
+    mutantSnailFight,
+    pillagingBoarFight,
+    strangePigFight,
+    stumpyFight,
+} from "./overworldBosses";
 
 const sleepywood: Route = {
     id: "to-sleepywood",
@@ -516,7 +523,7 @@ export const routeHenesysEllinia: Route = {
             x: 0.5734375,
             y: 0.6790011447789057,
             type: NODE_TYPES.BOSS,
-            encounter: Math.random() < 0.5 ? strangePigFight.id : mushmomFight.id,
+            encounter: getRandomItem([mushmomFight.id, strangePigFight.id, ancientMixedGolemFight.id]),
             region: REGIONS.HENESYS,
         },
         { x: 0.6104910714285714, y: 0.6504244232166863, region: REGIONS.ELLINIA },

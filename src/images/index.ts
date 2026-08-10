@@ -8,6 +8,7 @@ export { default as AltForestBGImage } from "./AltForestBG.png";
 export { default as AltForestBG2Image } from "./AltForestBG2.png";
 export { default as AmethystImage } from "./Amethyst.png";
 export { default as AncientFairyImage } from "./AncientFairy.png";
+export { default as AncientMixedGolemImage } from "./AncientMixedGolem.gif";
 export { default as AncientTreeSapImage } from "./AncientTreeSap.png";
 export { default as AnonymushroomImage } from "./Anonymushroom.png";
 export { default as AquamarineImage } from "./Aquamarine.png";
