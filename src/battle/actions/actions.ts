@@ -61,7 +61,7 @@ import {
     isSilenced,
     isStunnedOrFrozen,
     isTurnActionPrevented,
-    isTurnToTrigger,
+    isTurnToTrigger
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
@@ -297,7 +297,8 @@ const getHitEffects = ({
 
 const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string; triggerSource?: TriggerSource }) => {
     return (dispatch, getState) => {
-        const { friendly, hostile, combatant, friendlySide, index } = findCombatantData(getState().battle, combatantId) || {};
+        const deadCombatant = findCombatantData(getState().battle, combatantId);
+        const { friendly, hostile, combatant, friendlySide, index } = deadCombatant || {};
         if (isActorPlayerSide({ side: getState().battle.playerSide, source: triggerSource })) {
             dispatch(
                 updateBattle({
@@ -348,11 +349,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
         };
 
         dispatch(handleOnKill(triggerSource));
-        dispatch(
-            updateBattle({
-                mesosAccumulated: getState().battle.mesosAccumulated + (combatant.mesos || 0),
-            })
-        );
+        dispatch(checkUpdatePlayerMoneyOnKill({ deadCombatantInfo: deadCombatant, source: triggerSource }));
 
         friendly.forEach((combatant: Combatant | null) => {
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onFriendlyDeath);
@@ -370,6 +367,52 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
             dispatch(updatePlayer(player));
             return;
         }
+    };
+};
+
+const checkUpdatePlayerMoneyOnKill = ({
+    deadCombatantInfo: deadCombatantInfo,
+    source,
+}: {
+    deadCombatantInfo: CombatantInfo;
+    source: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        if (!deadCombatantInfo) {
+            return;
+        }
+
+        const combatant = deadCombatantInfo.combatant;
+        const isLifeLink = combatant.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK);
+        if (isLifeLink) {
+            // This should be handled at the end of the combat since we don't want to potentially retrigger multiple money drops from lifelink
+            return;
+        }
+
+        if (deadCombatantInfo.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            return;
+        }
+
+        const moneyAction = {
+            mesos: combatant.mesos || 0,
+            type: ACTION_TYPES.NONE,
+        };
+
+        const battle: BattleState = getState().battle;
+        const player = battle.playerSide.find((c) => c?.isPlayer);
+        if (!player) {
+            return;
+        }
+
+        const updated = getUpdatedStats({
+            ...getState().battle,
+            targetIds: [player.id],
+            actorId: deadCombatantInfo,
+            action: moneyAction,
+            source,
+            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
+        });
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
     };
 };
 
@@ -1124,7 +1167,8 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
         const combatantId = statUpdate.combatantId;
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState().battle, combatantId) || {};
+        const battle: BattleState = getState().battle;
+        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(battle, combatantId) || {};
         // Due to morph, the combatant may no longer exist
         if (!oldCombatant) {
             return;
@@ -1141,6 +1185,21 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
                 }),
             })
         );
+
+        // Updates player money and HP for the state outside of combat.
+        // TRICKY: all money operations on the player side affect the PLAYER, even if the minion got the kill, etc.
+        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE && !battle.isTutorial) {
+            const player = friendly.find((p) => p?.isPlayer);
+            const stats = stageStatChanges(statUpdate, player);
+            const updatePlayerStats = { mesos: stats.mesos || 0 };
+
+            if (oldCombatant.isPlayer) {
+                // @ts-ignore
+                updatePlayerStats.HP = stats.HP;
+            }
+
+            dispatch(updatePlayer(updatePlayerStats));
+        }
     });
 };
 

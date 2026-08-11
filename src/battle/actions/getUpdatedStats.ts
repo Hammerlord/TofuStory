@@ -19,14 +19,16 @@ import {
     calculateBonus,
     calculateDamage,
     calculateHealing,
+    calculateMesoMultiplier,
     getEnabledEffects,
     getMultiplier,
     hasEffectType,
 } from "../utils";
 import { effectNameMap } from "./../../enemy/effect";
-import { CombatantInfo, TriggerSource } from "./../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
+import { Player } from "../../character/types";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
@@ -80,7 +82,7 @@ export const getUpdatedStats = ({
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
 
     return (recipients || targets).map((target: CombatantInfo) => {
-        const { combatant: targetCombatant, index: targetIndex } = target;
+        const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants } = target;
         const action = calculateBonus({
             action: initialAction,
             target,
@@ -281,6 +283,22 @@ export const getUpdatedStats = ({
 
         const isDeathBlow = targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
 
+        let moneyDiff = mesos - stealMesos;
+        let targetMesos = targetCombatant?.mesos || 0;
+
+        // TRICKY: all money operations on the player side affect the PLAYER, even if minions were the ones who were hit
+        if (targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+            const player: Player = targetSideCombatants.find((c) => c?.isPlayer) as Player;
+            if (player && moneyDiff > 0) {
+                moneyDiff = calculateMesoMultiplier({ player, mesos: moneyDiff });
+            }
+            targetMesos = player.mesos;
+        }
+
+        if (targetMesos + moneyDiff < 0) {
+            moneyDiff = -targetMesos;
+        }
+
         const statUpdate: UpdatedCombatantStats = {
             id: uuid.v4(),
             combatantId: targetCombatant.id,
@@ -294,7 +312,7 @@ export const getUpdatedStats = ({
             effects,
             isDeathBlow,
             overkill: isDeathBlow ? targetCombatant.HP - healthDamage + healing : 0,
-            mesos: mesos - stealMesos,
+            mesos: moneyDiff,
             removedEffects,
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,

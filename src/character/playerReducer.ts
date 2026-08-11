@@ -6,7 +6,7 @@ import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
 import { BATTLE_TYPES, Wave } from "../battle/types";
-import { calculateMesoGain, getMaxHP, getMaxResources } from "../battle/utils";
+import { calculateMesoMultiplier, getMaxHP, getMaxResources } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
@@ -242,7 +242,7 @@ export const playerStateSlice = createSlice({
             }, 0);
             let updatedMesos = 0;
             if (incomingMesos > 0) {
-                updatedMesos = calculateMesoGain({ player: state.player, mesos: incomingMesos });
+                updatedMesos = calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
             } else {
                 updatedMesos = Math.max(0, state.player.mesos + incomingMesos);
             }
@@ -266,7 +266,7 @@ export const playerStateSlice = createSlice({
             const incomingMesos = action.payload || 0;
             let updated = 0;
             if (incomingMesos > 0) {
-                updated = calculateMesoGain({ player: state.player, mesos: incomingMesos });
+                updated = calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
             } else {
                 updated = Math.max(0, state.player.mesos + incomingMesos);
             }

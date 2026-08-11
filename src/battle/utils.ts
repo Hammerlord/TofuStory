@@ -1277,12 +1277,12 @@ export const isWithinAbilityArea = ({
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
 
-export const calculateMesoGain = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
+export const calculateMesoMultiplier = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
     const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
         return acc + mesosGained;
     }, 1);
 
-    return Math.max(0, player.mesos + Math.floor(mesos * mesosGainedMultiplier));
+    return Math.floor(mesos * mesosGainedMultiplier);
 };
 
 /** Returns a card with aura effects applied, if any. */

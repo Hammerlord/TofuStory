@@ -31,7 +31,6 @@ export interface BattleState {
     currentWaveIndex: number;
     /** When interacting with cards in your hand, or discovering a card */
     selectCardsPrompt: PlayerSelectCardsPrompt | null;
-    mesosAccumulated: number;
     state: BATTLE_STATES;
     backgroundImage?: string; // Path to background image
     backgroundMusic?: string; // 'boss' or path to music URL

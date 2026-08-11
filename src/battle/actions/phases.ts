@@ -1,7 +1,8 @@
 import * as uuid from "uuid";
 import { elite, eruptive, raging, thorns, warding } from "../../ability/Effects";
-import { Ability, EFFECT_EVENT_KEYS, Minion } from "../../ability/types";
+import { Ability, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../ability/types";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
+import getAbilityPreviews from "../../character/getAbilityPreviews";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
@@ -11,13 +12,11 @@ import { getRandomItem, shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
-import { calculateMesoGain } from "../utils";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions";
-import { isOffensiveAction } from "../../ability/AbilityView/utils";
-import getAbilityPreviews from "../../character/getAbilityPreviews";
+import { calculateMesoMultiplier } from "../utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
@@ -28,10 +27,8 @@ export const onBattleEnd = () => {
         if (!battle) {
             return;
         }
-        const { playerSide, mesosAccumulated, isTutorial, totalDamageDealt, totalKills, waves } = battle;
+        const { playerSide, enemySide, isTutorial, totalDamageDealt, totalKills, waves } = battle;
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
-
-        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
         dispatch(
             pushBattleHistory({
@@ -45,14 +42,16 @@ export const onBattleEnd = () => {
             return;
         }
 
+        const lifeLinkedEnemies = enemySide.filter((c: Combatant | null) => c?.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK));
+        const lifeLinkMesos = lifeLinkedEnemies.reduce((acc: number, combatant: Combatant) => {
+            return acc + combatant.mesos || 0;
+        }, 0);
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
         dispatch(
             updatePlayer({
-                armor: 0,
                 HP: player.HP,
-                turnHistory: [],
-                abilityHistory: [],
-                // Tricky: Player is the in-combat player who may have had its mesos value change over the course of battle
-                mesos: calculateMesoGain({ player, mesos: mesosAccumulated }),
+                mesos: player.mesos + calculateMesoMultiplier({ player, mesos: lifeLinkMesos }),
             })
         );
     };
@@ -166,7 +165,6 @@ export const startBattle = ({
             waves,
             round: 0,
             selectCardsPrompt: null,
-            mesosAccumulated: 0,
             isTutorial,
             state: BATTLE_STATES.BATTLE_START,
             backgroundImage,
