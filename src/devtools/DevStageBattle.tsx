@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import BattlefieldContainer from "../battle/BattleView";
 import { startBattle } from "../battle/actions/phases";
-import { wizardProperties } from "../character/defaultCharacterProperties";
+import { bowmanProperties, wizardProperties } from "../character/defaultCharacterProperties";
 import { playerStateSlice } from "../character/playerReducer";
 import { devDummy } from "../enemy/dummy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../enemy/faust";
@@ -10,18 +10,20 @@ import { deathLaser } from "./deathLaser";
 import { block, hammerang, outrage, shieldCharge } from "../ability/warrior/warriorAbilities";
 import { goutOfFlame, icyDraft, lesserBolt, whelp, zap } from "../ability/magician/magicianAbilities";
 import { manji } from "../enemy/Manji";
+import { gachaponMachine } from "../scene/gachapon/Gachapon";
+import { windupShot } from "../ability/bowman/bowmanAbilities";
 
 const { updatePlayer, updateDeck } = playerStateSlice?.actions || {};
 const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];
-const other = [null, null, manji, null, null];
+const other = [null, null, gachaponMachine, null, null];
 
 const DevStageBattle = () => {
-    const deck = useMemo(() => [whelp, whelp, shieldCharge, outrage, hammerang], []);
+    const deck = useMemo(() => [whelp, windupShot, windupShot], []);
     const enemies = useMemo(() => dummies, []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);
     useEffect(() => {
-        dispatch(updatePlayer(wizardProperties));
+        dispatch(updatePlayer(bowmanProperties));
         dispatch(updateDeck(deck));
         dispatch(startBattle({ deck, waves: [{ enemies }] }));
     }, []);

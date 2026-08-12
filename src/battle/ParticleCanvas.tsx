@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { ANIMATION_TYPES } from "../ability/types";
 import { getCenterCoords } from "../character/animations";
 import { Fireworks } from "../fireworks/fireworks";
-import { BATTLEFIELD_SIDES, Event } from "./types";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "./types";
 import { clamp } from "ramda";
 
 const useStyles = createUseStyles({
@@ -39,8 +39,18 @@ const defaultHitSettings = {
     decay: { min: 0.045, max: 0.05 },
 };
 
-const ParticleCanvas = ({ event, allyRefs = [], enemyRefs = [] }: { event?: Event; allyRefs?: any[]; enemyRefs?: any[] }) => {
-    const { targetSide, allTargetIndices = [], action, id: eventId, playbackTime, statUpdates, playerSide, enemySide } = event || {};
+const ParticleCanvas = ({
+    eventGroup,
+    allyRefs = [],
+    enemyRefs = [],
+}: {
+    eventGroup?: EventGroup;
+    allyRefs?: any[];
+    enemyRefs?: any[];
+}) => {
+    const { events = [], id: eventId, playbackTime, statUpdates } = eventGroup || {};
+    // For the EventGroup refactoring we're just taking the first event here, but we probably want to aggregate it similar to other Event/EventGroup properties
+    const { targetSide, allTargetIndices = [], action } = events[0] || {};
     const container = useRef<HTMLDivElement>(null);
     const particles = useRef<any>(null);
     const classes = useStyles();
@@ -72,7 +82,7 @@ const ParticleCanvas = ({ event, allyRefs = [], enemyRefs = [] }: { event?: Even
         }
 
         if (statUpdates) {
-            const sideCombatants = event[targetSide];
+            const sideCombatants = eventGroup[targetSide];
 
             setTimeout(() => {
                 sideCombatants.forEach((combatant, index) => {

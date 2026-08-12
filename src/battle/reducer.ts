@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Ability, CombatAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, TriggerSource, Wave } from "./types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, EventGroup, TriggerSource, Wave } from "./types";
 import { getMaxHP } from "./utils";
 import { ReactElement } from "react";
 
@@ -22,7 +22,7 @@ export interface BattleState {
     hand: CombatAbility[];
     depleted: CombatAbility[];
     isPlayerTurn: boolean | null;
-    eventQueue: Event[];
+    eventQueue: EventGroup[];
     playerActionQueue: object[];
     charactersAttackedThisTurn: string[];
     /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
@@ -103,8 +103,12 @@ export const battleStateSlice = createSlice({
                 ...action.payload,
             };
         },
-        pushEventQueue: (state, action: PayloadAction<Event>) => {
-            state.eventQueue.push(action.payload);
+        pushEventQueue: (state, action: PayloadAction<EventGroup | EventGroup[]>) => {
+            let payload = action.payload;
+            if (!Array.isArray(payload)) {
+                payload = [payload];
+            }
+            state.eventQueue.push(...payload);
         },
         popEventQueue: (state) => {
             if (state?.eventQueue) {

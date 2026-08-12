@@ -36,8 +36,8 @@ export const previewAction = ({
             enemySide: payload.enemySide || battle.enemySide,
         };
 
-        // RIP issue where newCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
-        if (!payload?.statUpdates || payload.newCards) {
+        // RIP issue where addCards actions were causing damage to display twice, because its event payload object reuses the same set of stat updates as the actual action
+        if (!payload?.statUpdates || payload.addCards?.length) {
             return;
         }
 

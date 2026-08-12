@@ -3,7 +3,7 @@ import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS, EFFEC
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, Event, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
 import {
     checkEventTrigger,
@@ -18,6 +18,7 @@ import {
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import { playbackCollector } from "./playbackCollector";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 
@@ -80,6 +81,7 @@ export const usePlayerAbility = ({
     return (dispatch, getState) => {
         const { playerSide } = getState().battle;
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const playbackCollectorInstance = playbackCollector();
 
         dispatch(
             useAbility({
@@ -88,6 +90,7 @@ export const usePlayerAbility = ({
                 side: selectedTargetSide,
                 actorId: actor?.id,
                 isProc,
+                playbackCollector: playbackCollectorInstance,
             })
         );
 
@@ -114,6 +117,7 @@ export const usePlayerAbility = ({
         dispatch(recalculateEffectsFromAbilities());
         dispatch(checkValidEnemyNextAbility());
         dispatch(checkValidEnemyTargeting());
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 
@@ -171,7 +175,8 @@ export const handleDiscard = (ability: CombatAbility) => {
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
                     cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-                } as Event)
+                    events: [],
+                } as EventGroup)
             );
         }
 

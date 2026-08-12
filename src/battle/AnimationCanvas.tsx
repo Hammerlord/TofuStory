@@ -1,8 +1,8 @@
 import classNames from "classnames";
-import { FC, useEffect, useMemo, useRef } from "react";
+import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CombatAbility } from "../ability/types";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { MapleLeavesImage } from "../images";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./constants";
 import { battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, Event } from "./types";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "./types";
 import { Combatant } from "../character/types";
 import { getRandomItem } from "../utils";
 
@@ -137,7 +137,7 @@ const { updateBattle } = battleStateSlice.actions;
  * Component that controls animations such as moving an attacker to its target, or a projectile
  */
 const AnimationCanvas = ({
-    event,
+    eventGroup: eventGroup,
     allyRefs = [],
     enemyRefs = [],
     battlefieldRef,
@@ -145,7 +145,7 @@ const AnimationCanvas = ({
     discardRef,
     depleteRef,
 }: {
-    event?: Event;
+    eventGroup?: EventGroup;
     allyRefs?: any[];
     enemyRefs?: any[];
     battlefieldRef;
@@ -153,18 +153,8 @@ const AnimationCanvas = ({
     discardRef;
     depleteRef;
 }) => {
-    const {
-        actorId,
-        targetSide,
-        selectedIndex,
-        allTargetIndices = [],
-        action,
-        id: eventId,
-        playbackTime,
-        playerSide = [],
-        enemySide = [],
-        displacements,
-    } = event || {};
+    const { id: eventId, playbackTime, playerSide = [], enemySide = [], displacements } = eventGroup || {};
+    const { actorId, targetSide, selectedIndex, allTargetIndices = [], action } = eventGroup?.events[0] || {};
 
     const deck = useAppSelector((state) => state.battle?.deck);
     const deckCycled = useAppSelector((state) => state.battle?.deckCycled);
@@ -356,8 +346,7 @@ const AnimationCanvas = ({
     }, [eventId, allyRefs, enemyRefs]);
 
     useEffect(() => {
-        const addedTo = event?.cardsAddedTo;
-        addCardRefs.forEach((ref) => {
+        const animateCardRef = (ref: RefObject<HTMLElement>, addedTo: CardPileType) => {
             let props;
             if (addedTo === CARD_PILE_TYPES.DEPLETED) {
                 props = {
@@ -383,6 +372,13 @@ const AnimationCanvas = ({
             if (ref.current && props) {
                 animationRefs.current.push(sendToPile({ object: ref.current, ...props }));
             }
+        };
+
+        eventGroup?.addCards?.forEach((value: { cards: Ability[]; cardsAddedTo: CardPileType }, i) => {
+            value.cards.forEach((card, j) => {
+                const ref = addCardRefs[i + j];
+                animateCardRef(ref, value.cardsAddedTo);
+            });
         });
     }, [eventId]);
 
@@ -473,11 +469,13 @@ const AnimationCanvas = ({
         <div className={classNames("animation-canvas", classes.root)}>
             {Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}
             <div className={classes.center}>
-                {event?.newCards?.map((ability: CombatAbility, i) => (
-                    <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
-                        <AbilityView ability={ability} disableGlow={true} />
-                    </div>
-                ))}
+                {eventGroup?.addCards?.map((addCards: { cards: CombatAbility[] }) =>
+                    addCards.cards.map((ability: CombatAbility, i) => (
+                        <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
+                            <AbilityView ability={ability} disableGlow={true} />
+                        </div>
+                    ))
+                )}
             </div>
             {deckCycled &&
                 deck.map((card, i) => (

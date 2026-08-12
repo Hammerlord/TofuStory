@@ -1,12 +1,12 @@
 import classNames from "classnames";
-import { FC, forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { FC, RefObject, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
 import { BATTLE_STATES } from "../battle/reducer";
-import { Event } from "../battle/types";
+import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
 import { StatChange, getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
@@ -301,18 +301,14 @@ const useStyles = createUseStyles({
     },
 });
 
-interface CurrentEvent extends Event {
-    targetRef?: HTMLElement;
-}
-
 const CombatantView = forwardRef(
     (
         {
             combatant,
             isEnemy,
             isTargeted,
-            event,
-            events,
+            currentEventGroup,
+            eventGroupQueue,
             isSelected,
             isHighlighted,
             showReticle,
@@ -320,6 +316,8 @@ const CombatantView = forwardRef(
             previewTargetedBy,
             selectedAbility,
             index,
+            enemySideRefs,
+            playerSideRefs,
             isHoveringCombatant,
             onMouseEnter,
             onMouseDown,
@@ -328,8 +326,8 @@ const CombatantView = forwardRef(
             combatant?: Combatant | Player;
             isEnemy: boolean;
             isTargeted: boolean;
-            event: CurrentEvent;
-            events: Event[]; // Current event queue
+            currentEventGroup: EventGroup;
+            eventGroupQueue: EventGroup[];
             isSelected: boolean;
             isHighlighted: boolean;
             showReticle: boolean;
@@ -337,6 +335,8 @@ const CombatantView = forwardRef(
             previewTargetedBy?: PreviewStatUpdate;
             selectedAbility?: Ability | CombatAbility;
             index: number;
+            enemySideRefs: RefObject<HTMLElement>[];
+            playerSideRefs: RefObject<HTMLElement>[];
             isHoveringCombatant?: boolean; // If any Combatant is being hovered, not just this one
             onMouseEnter?: (combatant: Combatant | null, index: number) => void;
             onMouseDown?: (event: React.MouseEvent, index: number) => void;
@@ -348,7 +348,9 @@ const CombatantView = forwardRef(
         const [statChanges, setStatChanges]: [StatChange, Function] = useState({} as StatChange);
         const [oldState, setOldState] = useState(combatant);
 
-        const willPerformActions = events.length > 1 && events.some(({ actorId }) => actorId === combatant?.id);
+        const willPerformActions =
+            eventGroupQueue.length > 1 &&
+            eventGroupQueue.some((eventGroup) => eventGroup.events.some(({ actorId }) => actorId === combatant?.id));
         const classes = useStyles(combatant);
         const isLifeLinked = combatant?.effects.some((effect: CombatEffect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
@@ -373,7 +375,7 @@ const CombatantView = forwardRef(
             });
 
             const callback = () => {
-                const eventStatChanges = event?.statUpdates?.[combatant?.id];
+                const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id];
                 setStatChanges({ ...eventStatChanges, ...statChanges });
                 setOldState(combatant);
 
@@ -391,13 +393,13 @@ const CombatantView = forwardRef(
                         playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
                     }
 
-                    if (event?.newCombatants?.some((c) => c.id === combatant?.id)) {
+                    if (currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id)) {
                         playFadeInAnimation({ object: characterImageRef.current, playbackTime: SUMMON_DELAY });
                     }
                 }
             };
 
-            const playbackTime = event?.playbackTime;
+            const playbackTime = currentEventGroup?.playbackTime;
 
             const timeout = setTimeout(
                 () => {
@@ -406,13 +408,24 @@ const CombatantView = forwardRef(
                 (playbackTime && playbackTime / 2) || 500
             );
             return () => clearTimeout(timeout);
-        }, [combatant, event?.id]);
+        }, [combatant, currentEventGroup?.id]);
 
         const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
             return oldState?.effects?.some((effect) => effect.type === type);
         };
 
-        const { action, actionParent, targetRef } = (event?.actorId === oldState?.id && event) || {};
+        const event = (currentEventGroup?.events || []).find((e) => e.actorId === oldState?.id);
+        const { action, actionParent, selectedIndex, targetSide } = event || {};
+
+        // This is for rotating the weapon to the correct target
+        let targetRef;
+        if (targetSide && typeof selectedIndex === "number") {
+            if (targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+                targetRef = playerSideRefs[selectedIndex]?.current;
+            } else {
+                targetRef = enemySideRefs[selectedIndex]?.current;
+            }
+        }
         const { animation, type: actionType, animationOptions } = action || {};
         const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
         const showResourceBar = oldState?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
@@ -424,7 +437,7 @@ const CombatantView = forwardRef(
         const imageProps = {
             key: typeof oldState?.image === "string" ? oldState.image : undefined,
             className: classNames("portrait", classes.portraitImage, {
-                [classes.invisible]: event?.newCombatants?.some((c) => c.id === combatant?.id),
+                [classes.invisible]: currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id),
                 [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && oldState?.HP > 0,
                 [classes.float]: portraitAnimation === "float",
                 [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
@@ -434,7 +447,7 @@ const CombatantView = forwardRef(
                 [classes.stasis]: oldState?.HP <= 0 && isLifeLinked,
             }),
             style: {
-                animationDuration: `${(event?.playbackTime || 1000) / 1000}s`,
+                animationDuration: `${(currentEventGroup?.playbackTime || 1000) / 1000}s`,
             },
         };
 
@@ -493,7 +506,7 @@ const CombatantView = forwardRef(
 
         const { isPlayerTurn, state: battleState } = battle || {};
         const showIncomingDamagePreview =
-            previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !events?.length;
+            previewTargetedBy && !isEnemy && isPlayerTurn && battleState === BATTLE_STATES.TURN_IN_PROGRESS && !eventGroupQueue?.length;
 
         const getPortraitEffectNode = () => {
             const image = animationOptions?.portraitEffectImage;
@@ -544,7 +557,7 @@ const CombatantView = forwardRef(
                             ref={ref as any}
                             className={classNames(classes.portrait, {
                                 // Bandaid for issue where displaced combatants would flicker into their new location before being animated
-                                [classes.invisible]: event.displacements?.[combatant?.id],
+                                [classes.invisible]: currentEventGroup?.displacements?.[combatant?.id],
                             })}
                         >
                             {oldState && (
@@ -591,7 +604,7 @@ const CombatantView = forwardRef(
                         </div>
                         {oldState?.HP > 0 && (
                             <>
-                                {!isTargeted && !selectedAbility && !event?.id && (
+                                {!isTargeted && !selectedAbility && !currentEventGroup?.id && (
                                     <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />
                                 )}
                                 <div className={classes.leftContainer}>

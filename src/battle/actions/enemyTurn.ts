@@ -25,8 +25,9 @@ import {
 } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import { PlaybackCollector, playbackCollector } from "./playbackCollector";
 
-const { updateBattle, updateBattleState } = battleStateSlice.actions;
+const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
 const handleCastTick = (combatantId: string) => {
     return (dispatch, getState) => {
@@ -77,7 +78,7 @@ const handleCastTick = (combatantId: string) => {
     };
 };
 
-const enemyAction = (combatantId: string) => {
+const enemyAction = (combatantId: string, playbackCollector: PlaybackCollector) => {
     return (dispatch, getState) => {
         const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData) {
@@ -89,7 +90,7 @@ const enemyAction = (combatantId: string) => {
             dispatch(useItem({ itemIndex, actorId: combatantId }));
         }
 
-        dispatch(enemyUseAbility(combatantId));
+        dispatch(enemyUseAbility(combatantId, playbackCollector));
     };
 };
 
@@ -237,7 +238,7 @@ export const getUpdatedBattleActionTargets = ({
     return { battle, targets };
 };
 
-const enemyUseAbility = (combatantId: string) => {
+const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollector) => {
     return (dispatch, getState) => {
         const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData?.combatant) {
@@ -254,7 +255,7 @@ const enemyUseAbility = (combatantId: string) => {
 
         const { castTime, channelDuration } = ability || {};
         if (!castTime && !channelDuration) {
-            dispatch(useAbility({ ability, actorId: combatantId }));
+            dispatch(useAbility({ ability, actorId: combatantId, playbackCollector }));
             return;
         }
 
@@ -274,7 +275,7 @@ const enemyUseAbility = (combatantId: string) => {
         );
 
         if (!castTime) {
-            dispatch(useAbility({ ability, actorId: combatantId }));
+            dispatch(useAbility({ ability, actorId: combatantId, playbackCollector }));
 
             const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId);
             const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
@@ -391,6 +392,8 @@ export const enemyMoves = () => {
             return char?.HP > 0 && (char.abilities.length > 0 || char.damage > 0);
         };
 
+        const playbackCollectorInstance = playbackCollector();
+
         const makeEnemyMove = (enemyId: string) => {
             const enemyInfo = findCombatantData(getState().battle, enemyId);
             const enemy = enemyInfo?.combatant;
@@ -410,13 +413,14 @@ export const enemyMoves = () => {
             if (casting) {
                 dispatch(handleCastTick(id));
             } else if (!unableToAct) {
-                dispatch(enemyAction(id));
+                dispatch(enemyAction(id, playbackCollectorInstance));
             }
         };
 
         const { enemySide, round } = getState().battle;
         const moveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round });
         moveOrderIds.forEach(makeEnemyMove);
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
         const { state } = getState().battle;
         if (state === BATTLE_STATES.DEFEAT || state === BATTLE_STATES.VICTORY) {

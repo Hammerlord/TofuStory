@@ -51,6 +51,7 @@ export const devDummy = {
     image: PuppetreeImage,
     maxHP: 50,
     resources: 3,
+    mesos: 3,
     abilities: [
         attack,
         {

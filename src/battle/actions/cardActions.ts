@@ -33,6 +33,7 @@ import { TriggerSource } from "./../types";
 import {
     applyStatChanges,
     checkEventTrigger,
+    enqueueEvent,
     findCombatantData,
     stageStatChanges,
     triggerStatChangeEvents,
@@ -496,13 +497,12 @@ const handleMoveCards = ({
         }
 
         dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                id: uuid.v4(),
+            enqueueEvent({
                 playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 newCards: cardsToMove,
                 cardsAddedTo: to,
-            } as Event)
+                source,
+            })
         );
 
         dispatch(
@@ -687,19 +687,18 @@ export const checkCardActions = ({
             triggerAddCardsToHandEvent(addCards.length);
         }
 
-        dispatch(checkAddCardsToDeck({ action, ownedCards }));
+        dispatch(checkAddCardsToDeck({ action, ownedCards, source }));
 
         if (addCardsToDiscard) {
             const cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
 
             dispatch(
-                pushEventQueue({
-                    ...getState().battle,
-                    id: uuid.v4(),
+                enqueueEvent({
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                     newCards: cardsToAdd,
                     cardsAddedTo: "discard",
-                } as Event)
+                    source,
+                })
             );
 
             dispatch(
@@ -776,7 +775,15 @@ export const checkCardActions = ({
     };
 };
 
-const checkAddCardsToDeck = ({ action, ownedCards }: { action: Action; ownedCards: { [abilityName: string]: true } }) => {
+const checkAddCardsToDeck = ({
+    action,
+    ownedCards,
+    source,
+}: {
+    action: Action;
+    ownedCards: { [abilityName: string]: true };
+    source?: TriggerSource;
+}) => {
     return (dispatch, getState) => {
         const { addCardsToDeck, addCardsToDeckOptions } = action;
         if (!addCardsToDeck) {
@@ -809,13 +816,12 @@ const checkAddCardsToDeck = ({ action, ownedCards }: { action: Action; ownedCard
         });
 
         dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                id: uuid.v4(),
+            enqueueEvent({
                 playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 newCards: cardsToAdd,
                 cardsAddedTo: "deck",
-            } as Event)
+                source,
+            })
         );
 
         dispatch(
@@ -855,17 +861,16 @@ export const recalculateEffectsFromAbilities = () => {
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
  */
 export const depleteAbilities =
-    ({ actorId, abilities = [] }: { actorId: string; abilities: CombatAbility[] }) =>
+    ({ actorId, abilities = [], source }: { actorId: string; abilities: CombatAbility[]; source?: TriggerSource }) =>
     (dispatch, getState) => {
         const { hand, depleted = [] } = getState().battle;
         dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                id: uuid.v4(),
+            enqueueEvent({
                 playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                 newCards: abilities,
                 cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-            } as Event)
+                source,
+            })
         );
 
         dispatch(

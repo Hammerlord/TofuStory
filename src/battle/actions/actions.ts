@@ -14,6 +14,7 @@ import {
     Action,
     AutoCastAbility,
     CONDITION_TARGETS,
+    CardPileType,
     CombatAbility,
     CombatEffect,
     EFFECT_CLASSES,
@@ -61,7 +62,7 @@ import {
     isSilenced,
     isStunnedOrFrozen,
     isTurnActionPrevented,
-    isTurnToTrigger
+    isTurnToTrigger,
 } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
@@ -71,6 +72,7 @@ import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilitie
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
+import { PlaybackCollector } from "./playbackCollector";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -382,14 +384,19 @@ const checkUpdatePlayerMoneyOnKill = ({
             return;
         }
 
-        const combatant = deadCombatantInfo.combatant;
-        const isLifeLink = combatant.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK);
-        if (isLifeLink) {
-            // This should be handled at the end of the combat since we don't want to potentially retrigger multiple money drops from lifelink
+        if (deadCombatantInfo.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
             return;
         }
 
-        if (deadCombatantInfo.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+        const combatant = deadCombatantInfo.combatant;
+
+        if (!combatant?.mesos) {
+            return;
+        }
+
+        const isLifeLink = combatant.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK);
+        if (isLifeLink) {
+            // This should be handled at the end of the combat since we don't want to potentially retrigger multiple money drops from lifelink
             return;
         }
 
@@ -562,9 +569,14 @@ export const handleDoTs =
                 return acc;
             }, {});
 
+            const source = {
+                type: TRIGGER_SOURCE_TYPES.EFFECT,
+                triggerHistory: [],
+            };
+
             dispatch(
-                pushPlaybackQueue({
-                    side,
+                enqueueEvent({
+                    targetSide: side,
                     statUpdates: aggregatedStatUpdates,
                     // Hack: this is for displaying the dot type in the ability notification banner
                     actionParent: dotAbilityMap[dotType],
@@ -826,13 +838,13 @@ const onEffectEventTrigger = ({
             dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
             if (pushEventQueue) {
                 dispatch(
-                    pushPlaybackQueue({
+                    enqueueEvent({
                         action,
                         actorId: ownerId,
                         actionParent: procSource?.source,
                         source: procSource,
                         selectedIndex: owner.index,
-                        side: owner.friendlySide,
+                        targetSide: owner.friendlySide,
                     })
                 );
             }
@@ -1719,11 +1731,11 @@ const checkHandleActionSummon = ({ action, actorId, parentSource }: { action: Ac
             // Give minions time to appear before triggering any minion-related effect events (or the next action).
             // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
             dispatch(
-                pushEventQueue({
-                    ...getState().battle,
+                enqueueEvent({
                     id: uuid.v4(),
                     playbackTime: SUMMON_DELAY,
                     newCombatants: minionsSummoned,
+                    source: parentSource,
                 } as Event)
             );
         }
@@ -1805,11 +1817,11 @@ const checkHandleMorph = ({
         // Give minions time to appear before triggering any minion-related effect events (or the next action).
         // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
         dispatch(
-            pushEventQueue({
-                ...getState().battle,
+            enqueueEvent({
                 id: uuid.v4(),
                 playbackTime: SUMMON_DELAY,
                 newCombatants: summons,
+                source: parentSource,
             } as Event)
         );
 
@@ -1964,19 +1976,6 @@ const checkHandleVacuum = ({
             })
         );
 
-        // Give the board a bit of time to update. Issue where Close Combat was causing the player character to fly off to (0, 0).
-        // FIX ME: Causes the sprite to flicker
-        /*
-        dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                id: uuid.v4(),
-                playbackTime: 10,
-                displacements,
-            } as Event)
-        );
-        */
-
         return displacements;
     };
 };
@@ -2043,14 +2042,18 @@ const checkHandleMovement = ({
     };
 };
 
-const pushPlaybackQueue = ({
+export const enqueueEvent = ({
     action,
     actorId,
     selectedIndex,
     allTargetIndices,
     actionParent,
-    side,
+    targetSide,
+    playbackTime,
+    newCombatants,
     source,
+    newCards,
+    cardsAddedTo,
     displacements,
     statUpdates,
 }: {
@@ -2059,13 +2062,17 @@ const pushPlaybackQueue = ({
     selectedIndex?: number;
     allTargetIndices?: number[];
     actionParent?: Ability | Item | Effect;
-    side: BATTLEFIELD_SIDES;
+    targetSide?: BATTLEFIELD_SIDES;
+    playbackTime?: number; // MS
     source?: TriggerSource;
+    newCombatants?: Combatant[];
     displacements?: Displacement;
+    newCards?: CombatAbility[];
+    cardsAddedTo?: CardPileType;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
 }) => {
     return (dispatch, getState) => {
-        let playbackTime = action?.playbackTime;
+        playbackTime = action?.playbackTime || playbackTime;
         if (!playbackTime) {
             if (!action) {
                 playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
@@ -2080,22 +2087,51 @@ const pushPlaybackQueue = ({
             }
         }
 
+        const collector: PlaybackCollector | undefined = source?.playbackCollector;
+        const addCards =
+            newCards?.length > 0
+                ? [
+                      {
+                          cards: newCards,
+                          cardsAddedTo,
+                      },
+                  ]
+                : [];
+
+        const battle: BattleState = getState().battle;
+        const event: Event = {
+            playerSide: battle.playerSide,
+            enemySide: battle.enemySide,
+            action,
+            actorId,
+            id: uuid.v4(),
+            selectedIndex,
+            // HACK: ensure that the selected index and "extra target indices" are hit first in playback
+            allTargetIndices,
+            targetSide: targetSide,
+            actionParent,
+            playbackTime,
+            newCombatants: newCombatants || [],
+            source,
+            displacements,
+            statUpdates,
+            addCards,
+        };
+
+        if (collector) {
+            collector.collect(event);
+            return;
+        }
+
         dispatch(
             pushEventQueue({
-                ...getState().battle,
-                action,
-                actorId,
-                id: uuid.v4(),
-                selectedIndex,
-                // HACK: ensure that the selected index and "extra target indices" are hit first in playback
-                allTargetIndices,
-                targetSide: side,
-                actionParent,
-                playbackTime,
-                source,
-                displacements,
-                statUpdates,
-            } as Event)
+                ...event,
+                name: event.actionParent?.name,
+                image: (event.actionParent as Ability)?.image,
+                playbackTime: event.action?.playbackTime || event.playbackTime,
+                events: [event],
+                addCards,
+            })
         );
     };
 };
@@ -2464,13 +2500,13 @@ export const performAction = ({
         }, {});
 
         dispatch(
-            pushPlaybackQueue({
+            enqueueEvent({
                 action,
                 actorId,
                 selectedIndex,
                 allTargetIndices,
                 actionParent: parent,
-                side,
+                targetSide: side,
                 source,
                 displacements,
                 statUpdates: aggregatedStatUpdates,
@@ -2947,12 +2983,11 @@ export const checkSummonMinion = ({
         // Give minions time to appear before triggering any minion-related effect events.
         // Issue where enemies who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
         dispatch(
-            pushEventQueue({
-                ...getState().battle,
-                id: uuid.v4(),
+            enqueueEvent({
                 playbackTime: SUMMON_DELAY,
                 newCombatants: [summonedMinion],
-            } as Event)
+                source: parentSource,
+            })
         );
 
         // Tribute summons count as a kill for the new minion
@@ -2972,6 +3007,7 @@ export const useAbility = ({
     actorId,
     isAutoCast,
     isProc,
+    playbackCollector,
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
@@ -2979,6 +3015,7 @@ export const useAbility = ({
     actorId: string;
     isAutoCast?: boolean;
     isProc?: boolean;
+    playbackCollector?: PlaybackCollector;
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
@@ -2991,7 +3028,7 @@ export const useAbility = ({
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier
         };
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [], isProc };
+        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, triggerHistory: [], isProc, playbackCollector };
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
 
         if (!isAutoCast) {

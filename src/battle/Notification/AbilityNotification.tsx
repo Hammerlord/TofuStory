@@ -12,14 +12,16 @@ const useStyles = makeStyles({
 });
 
 const AbilityNotification = ({
-    ability,
+    id,
+    image,
+    name,
     onClick,
 }: {
-    ability: { image?: string; name?: string };
+    id: string;
+    image?: string;
+    name?: string;
     onClick?: MouseEventHandler<HTMLDivElement>;
 }) => {
-    const { image, name } = ability;
-    const id = useMemo(() => uuid.v4(), [ability]);
     const classes = useStyles();
     if (!name) {
         return null;
