@@ -1,9 +1,8 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { BoomImage } from "../images";
-import Icon from "./Icon";
 import { getRandomInt } from "../utils";
-import { StatChange } from "../battle/utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -40,7 +39,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
+const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
     const baseline = 50;
     const maxOffset = 25;
     const [pos] = useState({
@@ -53,7 +52,7 @@ const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
     const iconRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
-        if (!statChanges.damage) {
+        if (!statChanges?.healthDamage) {
             return;
         }
 
@@ -111,18 +110,18 @@ const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
             }}
         >
             <img src={BoomImage} className={classes.icon} ref={iconRef} />
-            <span className={classes.text}>{statChanges.damage}</span>
+            <span className={classes.text}>{statChanges.healthDamage}</span>
         </span>
     );
 };
 
-const HitIcons = ({ statChanges }: { statChanges: StatChange }) => {
-    const [hits, setHits] = useState<{ id: number; statChanges: StatChange }[]>([]);
+const HitIcons = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
+    const [hits, setHits] = useState<{ id: number; statChanges: UpdatedCombatantStats }[]>([]);
 
     const nextId = useRef(0);
 
     useEffect(() => {
-        if (!statChanges.damage) {
+        if (!statChanges?.healthDamage) {
             return;
         }
 

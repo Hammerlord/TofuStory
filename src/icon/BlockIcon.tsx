@@ -1,6 +1,6 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { StatChange } from "../battle/utils";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { ShieldImage } from "../images";
 
 const useStyles = createUseStyles({
@@ -38,12 +38,12 @@ const useStyles = createUseStyles({
 /**
  * To display damage that was blocked by Armor.
  */
-const BlockIcon = ({ statChanges }: { statChanges: StatChange }) => {
+const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
     const [oldBlockedDamage, setOldBlockedDamage] = useState(0);
     const classes = useStyles();
-    const rootRef: MutableRefObject<HTMLSpanElement> = useRef(null);
-    const iconRef: MutableRefObject<HTMLImageElement> = useRef(null);
-    const animationRefs: MutableRefObject<any> = useRef([]);
+    const rootRef: RefObject<HTMLSpanElement> = useRef(null);
+    const iconRef: RefObject<HTMLImageElement> = useRef(null);
+    const animationRefs: RefObject<any> = useRef([]);
 
     useEffect(() => {
         const { armor = 0 } = statChanges || {};

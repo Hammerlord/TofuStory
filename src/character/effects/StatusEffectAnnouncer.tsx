@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
-import { StatChange } from "../../battle/utils";
+import { UpdatedCombatantStats } from "../../battle/actions/getUpdatedStats";
 import Icon from "../../icon/Icon";
 import { Combatant } from "../types";
 
@@ -74,7 +74,7 @@ type EffectQueued = {
 /**
  * A widget for announcing when status effects have been added or have faded
  */
-const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: StatChange; combatant: Combatant }) => {
+const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: UpdatedCombatantStats; combatant: Combatant }) => {
     const classes = useStyles();
     const ref = useRef({});
     const [queue, setQueue]: [EffectQueued[], Function] = useState([]);

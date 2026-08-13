@@ -50,7 +50,7 @@ const getParticles = () => {
     });
 };
 
-const Healing = ({ statChanges }: { statChanges: { healing: number } }) => {
+const Healing = ({ statChanges }: { statChanges?: { healing: number } }) => {
     const classes = useStyles();
     const [particles, setParticles] = useState(getParticles());
     const particleRefs = useRef([]);
@@ -59,7 +59,7 @@ const Healing = ({ statChanges }: { statChanges: { healing: number } }) => {
     const textAnimationRef: RefObject<Animation | null> = useRef(null);
 
     useEffect(() => {
-        if (statChanges.healing > 0) {
+        if (statChanges?.healing > 0) {
             textAnimationRef.current?.cancel();
             const textAnim = textRef.current?.animate(
                 [
@@ -106,9 +106,11 @@ const Healing = ({ statChanges }: { statChanges: { healing: number } }) => {
                 // @ts-ignore
                 <Icon key={i} icon={<SparklesIcon />} className={classes.icon} style={style} ref={(el) => (particleRefs.current[i] = el)} />
             ))}
-            <span className={classes.text} ref={textRef}>
-                {statChanges.healing}
-            </span>
+            {statChanges?.healing > 0 && (
+                <span className={classes.text} ref={textRef}>
+                    {statChanges.healing}
+                </span>
+            )}
         </div>
     );
 };

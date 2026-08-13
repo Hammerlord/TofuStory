@@ -7,7 +7,6 @@ import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
 import { BATTLE_STATES } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
-import { StatChange, getCharacterStatChanges } from "../battle/utils";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
 import BlockIcon from "../icon/BlockIcon";
@@ -32,6 +31,7 @@ import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -345,7 +345,7 @@ const CombatantView = forwardRef(
         ref
     ) => {
         const battle = useAppSelector((state) => state.battle);
-        const [statChanges, setStatChanges]: [StatChange, Function] = useState({} as StatChange);
+        const [statChanges, setStatChanges] = useState<UpdatedCombatantStats | null>(null);
         const [oldState, setOldState] = useState(combatant);
 
         const willPerformActions =
@@ -369,14 +369,9 @@ const CombatantView = forwardRef(
         const characterImageRef = useRef(null);
 
         useEffect(() => {
-            const statChanges = getCharacterStatChanges({
-                oldCharacter: oldState,
-                newCharacter: combatant,
-            });
-
             const callback = () => {
-                const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id];
-                setStatChanges({ ...eventStatChanges, ...statChanges });
+                const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id] || {};
+                setStatChanges(eventStatChanges);
                 setOldState(combatant);
 
                 if (characterImageRef.current) {
@@ -384,10 +379,10 @@ const CombatantView = forwardRef(
                     if (isKillingBlow && !willPerformActions) {
                         playDyingAnimation({ object: characterImageRef.current });
                     } else if (
-                        statChanges?.damage > 0 ||
+                        statChanges?.healthDamage > 0 ||
                         statChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
                     ) {
-                        const baseDelta = Math.min(100, statChanges.damage) || 1;
+                        const baseDelta = Math.min(100, statChanges.healthDamage) || 1;
                         // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
                         const delta = isEnemy ? baseDelta : -baseDelta;
                         playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });

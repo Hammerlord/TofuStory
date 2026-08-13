@@ -5,11 +5,11 @@ import { AbilityEffect, ActionOptionalProperties, SkillBonus } from "./../abilit
 import _ from "lodash";
 import { isAttackAbility, isAttackAction, isOffensiveAbility, isOffensiveAction } from "../ability/AbilityView/utils";
 import { Combatant, Player } from "../character/types";
+import { CrossedSwordsImage } from "../images";
 import { Item } from "../item/types";
 import {
     ACTION_TYPES,
     Ability,
-    AbilityDamageReceived,
     Action,
     Bonus,
     CONDITION_TARGETS,
@@ -20,73 +20,15 @@ import {
     Effect,
     MULTIPLIER_TYPES,
     Multiplier,
-    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { findCombatantData } from "./actions/actions";
-import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
-import { DAMAGE_COEFF, BASE_MAX_RESOURCES, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
+import { BASE_MAX_RESOURCES, DAMAGE_COEFF, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
-import { CrossedSwordsImage } from "../images";
-
-// TODO use UpdatedCombatantStats from the Event instead of diffing here.
-// However, the Event UpdatedCombatantStats has incomplete data, so it isn't a full replacement for this yet.
-export type StatChange = { [key in keyof UpdatedCombatantStats]?: UpdatedCombatantStats[key] } & {
-    damage: number;
-    healing: number;
-    armor: number;
-    effects: CombatEffect[];
-    removedEffects: CombatEffect[];
-};
-
-export const getCharacterStatChanges = ({
-    oldCharacter,
-    newCharacter,
-}: {
-    oldCharacter: Combatant;
-    newCharacter: Combatant;
-}): StatChange => {
-    const updatedStatChanges = {} as StatChange;
-    if (!oldCharacter || !newCharacter || oldCharacter.id !== newCharacter.id) {
-        return updatedStatChanges;
-    }
-
-    // Max HP check: do not show mutations that change character health as damage taken
-    if (newCharacter.HP < oldCharacter.HP && oldCharacter.maxHP === newCharacter.maxHP) {
-        updatedStatChanges.damage = oldCharacter.HP - newCharacter.HP;
-    }
-
-    if (newCharacter.HP > oldCharacter.HP) {
-        updatedStatChanges.healing = newCharacter.HP - oldCharacter.HP;
-    }
-
-    if (newCharacter.armor > oldCharacter.armor) {
-        updatedStatChanges.armor = newCharacter.armor - oldCharacter.armor;
-    }
-
-    const oldEffectIdMap = oldCharacter.effects.reduce((acc, effect: CombatEffect) => {
-        acc[effect.id] = effect;
-        return acc;
-    }, {});
-
-    const newEffectIdMap = newCharacter.effects.reduce((acc, effect: CombatEffect) => {
-        acc[effect.id] = effect;
-        return acc;
-    }, {});
-
-    const effects = newCharacter.effects.filter((e) => !oldEffectIdMap[e.id]);
-    // These are effects that are gone for any reason, dispelled or ended
-    const removedEffects = oldCharacter.effects.filter((e) => !newEffectIdMap[e.id]);
-
-    updatedStatChanges.effects = effects;
-    updatedStatChanges.removedEffects = removedEffects;
-
-    return updatedStatChanges;
-};
 
 export const getMaxHP = (character?: Combatant | null): number => {
     if (!character) {
