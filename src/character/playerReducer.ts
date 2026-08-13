@@ -242,7 +242,7 @@ export const playerStateSlice = createSlice({
             }, 0);
             let updatedMesos = 0;
             if (incomingMesos > 0) {
-                updatedMesos = calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
+                updatedMesos = state.player.mesos + calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
             } else {
                 updatedMesos = Math.max(0, state.player.mesos + incomingMesos);
             }
@@ -266,7 +266,7 @@ export const playerStateSlice = createSlice({
             const incomingMesos = action.payload || 0;
             let updated = 0;
             if (incomingMesos > 0) {
-                updated = calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
+                updated = state.player.mesos + calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
             } else {
                 updated = Math.max(0, state.player.mesos + incomingMesos);
             }
