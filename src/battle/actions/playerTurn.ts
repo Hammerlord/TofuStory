@@ -9,6 +9,7 @@ import {
     checkEventTrigger,
     checkValidEnemyNextAbility,
     checkValidEnemyTargeting,
+    enqueueEvent,
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
@@ -169,7 +170,7 @@ export const handleDiscard = (ability: CombatAbility) => {
 
         if (depletedOnUse) {
             dispatch(
-                pushEventQueue({
+                enqueueEvent({
                     ...getState().battle,
                     id: uuid.v4(),
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
