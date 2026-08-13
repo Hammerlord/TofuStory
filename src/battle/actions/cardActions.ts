@@ -498,7 +498,6 @@ const handleMoveCards = ({
 
         dispatch(
             enqueueEvent({
-                playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 newCards: cardsToMove,
                 cardsAddedTo: to,
                 source,
@@ -817,7 +816,6 @@ const checkAddCardsToDeck = ({
 
         dispatch(
             enqueueEvent({
-                playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                 newCards: cardsToAdd,
                 cardsAddedTo: "deck",
                 source,
@@ -866,7 +864,6 @@ export const depleteAbilities =
         const { hand, depleted = [] } = getState().battle;
         dispatch(
             enqueueEvent({
-                playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                 newCards: abilities,
                 cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
                 source,

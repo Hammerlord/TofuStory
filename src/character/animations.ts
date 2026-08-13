@@ -312,18 +312,46 @@ export const sendToPile = ({
     desaturate = false,
     darken = false,
 }: {
-    object;
+    object: HTMLElement;
     playbackTime: number;
-    to;
+    to: HTMLElement;
     desaturate?: boolean;
     darken?: boolean;
 }) => {
-    const { x, y } = getCenterCoords(object);
-    const { x: x2, y: y2 } = getCenterCoords(to);
-    const xDiff = (x2 - x) * 3; // *3 because of 0.3 scale
-    const yDiff = (y2 - y) * 3; // *3 because of 0.3 scale
+    const objectRect = object.getBoundingClientRect();
+    const toRect = to.getBoundingClientRect();
 
-    const rotation = getRotationToFaceTarget({ x, y, x2, y2 });
+    const x = objectRect.left + objectRect.width / 2;
+    const y = objectRect.top + objectRect.height / 2;
+
+    const x2 = toRect.left + toRect.width / 2;
+    const y2 = toRect.top + toRect.height / 2;
+
+    const xDiff = (x2 - x) * 3;
+    const yDiff = (y2 - y) * 3;
+
+    const rotation = getRotationToFaceTarget({
+        x,
+        y,
+        x2,
+        y2,
+    });
+
+    const clone = object.cloneNode(true) as HTMLElement;
+
+    Object.assign(clone.style, {
+        position: "fixed",
+        left: `${objectRect.left}px`,
+        top: `${objectRect.top}px`,
+        width: `${objectRect.width}px`,
+        height: `${objectRect.height}px`,
+        margin: "0",
+        zIndex: "9999",
+        pointerEvents: "none",
+    });
+
+    document.body.appendChild(clone);
+
     const animationFrames = [
         {
             transform: "translateY(0)",
@@ -360,9 +388,20 @@ export const sendToPile = ({
         },
     ];
 
-    return object.animate(animationFrames, {
+    const animation = clone.animate(animationFrames, {
         duration: playbackTime,
+        fill: "forwards",
     });
+
+    animation.finished
+        .then(() => {
+            clone.remove();
+        })
+        .catch(() => {
+            clone.remove();
+        });
+
+    return animation;
 };
 
 /**
