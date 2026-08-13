@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BoomImage } from "../images";
 import Icon from "./Icon";
@@ -11,7 +11,6 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        display: "none",
         filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
         width: "30px",
         height: "30px",
@@ -42,64 +41,110 @@ const useStyles = createUseStyles({
 });
 
 const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
-    const [oldStatChanges, setOldStatChanges] = useState({ damage: 0 });
-    const [pos, setPos] = useState({ x: 50, y: 50 });
+    const [pos] = useState({
+        x: getRandomInt(30, 70),
+        y: getRandomInt(30, 70),
+    });
+
     const classes = useStyles();
-    const rootRef: MutableRefObject<HTMLSpanElement> = useRef(null);
-    const iconRef: MutableRefObject<HTMLImageElement> = useRef(null);
-    const animationRefs: MutableRefObject<any> = useRef([]);
+    const rootRef = useRef<HTMLSpanElement>(null);
+    const iconRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
         if (!statChanges.damage) {
             return;
         }
 
-        if (rootRef.current) {
-            animationRefs.current?.forEach((animation) => animation.cancel());
-            animationRefs.current = [];
-            const rootAnimation = rootRef.current.animate(
-                [
-                    {
-                        opacity: 1,
-                        offset: 0.8,
-                        display: "block",
-                    },
+        const root = rootRef.current;
+        const icon = iconRef.current;
 
-                    { opacity: 0, display: "block" },
-                ],
-                1500
-            );
-
-            animationRefs.current.push(rootAnimation);
-
-            const iconAnimation = iconRef.current.animate(
-                [
-                    {
-                        scale: 0.5,
-                        transform: "translateX(-75%) translateY(-75%)",
-                    },
-                    {
-                        scale: 1,
-                    },
-                ],
-                {
-                    duration: 150,
-                    fill: "forwards",
-                }
-            );
-            animationRefs.current.push(iconAnimation);
-
-            setPos({ x: getRandomInt(30, 70), y: getRandomInt(30, 70) });
-            setOldStatChanges(statChanges);
+        if (!root || !icon) {
+            return;
         }
+
+        const rootAnimation = root.animate(
+            [
+                {
+                    opacity: 1,
+                    offset: 0.8,
+                },
+                {
+                    opacity: 0,
+                },
+            ],
+            {
+                duration: 1500,
+                fill: "forwards",
+            }
+        );
+
+        const iconAnimation = icon.animate(
+            [
+                {
+                    scale: 0.5,
+                    transform: "translateX(-75%) translateY(-75%)",
+                },
+                {
+                    scale: 1,
+                },
+            ],
+            {
+                duration: 150,
+                fill: "forwards",
+            }
+        );
+
+        return () => {};
     }, [statChanges]);
 
     return (
-        <span className={classes.root} ref={rootRef} style={{ transform: `translateX(-${pos.x}%) translateY(-${pos.y}%)` }}>
+        <span
+            className={classes.root}
+            ref={rootRef}
+            style={{
+                transform: `translateX(-${pos.x}%) translateY(-${pos.y}%)`,
+            }}
+        >
             <img src={BoomImage} className={classes.icon} ref={iconRef} />
-            <span className={classes.text}>{oldStatChanges.damage}</span>
+            <span className={classes.text}>{statChanges.damage}</span>
         </span>
     );
 };
 
-export default HitIcon;
+const HitIcons = ({ statChanges }: { statChanges: StatChange }) => {
+    const [hits, setHits] = useState<{ id: number; statChanges: StatChange }[]>([]);
+
+    const nextId = useRef(0);
+
+    useEffect(() => {
+        if (!statChanges.damage) {
+            return;
+        }
+
+        const id = nextId.current++;
+
+        setHits((prev) => [
+            ...prev,
+            {
+                id,
+                statChanges,
+            },
+        ]);
+
+        const timeout = setTimeout(() => {
+            setHits((prev) => prev.filter((hit) => hit.id !== id));
+        }, 1600);
+
+        return () => clearTimeout(timeout);
+    }, [statChanges]);
+
+    return (
+        <>
+            {hits.map((hit) => (
+                <HitIcon key={hit.id} statChanges={hit.statChanges} />
+            ))}
+        </>
+    );
+};
+
+export default HitIcons;
