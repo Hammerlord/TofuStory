@@ -38,7 +38,7 @@ const useStyles = createUseStyles({
 /**
  * To display damage that was blocked by Armor.
  */
-const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
+const BlockIcon = ({ statChanges, delay }: { statChanges: UpdatedCombatantStats; delay: number }) => {
     const [oldBlockedDamage, setOldBlockedDamage] = useState(0);
     const classes = useStyles();
     const rootRef: RefObject<HTMLSpanElement> = useRef(null);
@@ -64,7 +64,7 @@ const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
                     },
                     { opacity: 0, display: "block" },
                 ],
-                1500
+                { delay: delay, duration: 1500 }
             );
 
             animationRefs.current.push(rootAnimation);

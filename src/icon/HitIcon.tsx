@@ -115,7 +115,7 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
     );
 };
 
-const HitIcons = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
+const HitIcons = ({ statChanges, delay }: { statChanges?: UpdatedCombatantStats; delay: number }) => {
     const [hits, setHits] = useState<{ id: number; statChanges: UpdatedCombatantStats }[]>([]);
 
     const nextId = useRef(0);
@@ -127,20 +127,25 @@ const HitIcons = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
 
         const id = nextId.current++;
 
-        setHits((prev) => [
-            ...prev,
-            {
-                id,
-                statChanges,
-            },
-        ]);
+        const startTimeout = setTimeout(() => {
+            setHits((prev) => [
+                ...prev,
+                {
+                    id,
+                    statChanges,
+                },
+            ]);
+        }, delay);
 
-        const timeout = setTimeout(() => {
+        const endTimeout = setTimeout(() => {
             setHits((prev) => prev.filter((hit) => hit.id !== id));
-        }, 1600);
+        }, delay + 1600);
 
-        return () => clearTimeout(timeout);
-    }, [statChanges]);
+        return () => {
+            clearTimeout(startTimeout);
+            clearTimeout(endTimeout);
+        };
+    }, [statChanges, delay]);
 
     return (
         <>
