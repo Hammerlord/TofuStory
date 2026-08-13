@@ -6,11 +6,8 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
     if (!previousEvent) {
         return false;
     }
-    if (!event.action) {
-        return true;
-    }
 
-    const type = event.action.type;
+    const type = event.action?.type;
     const sameAbility = event.actionParent?.name === previousEvent.actionParent?.name;
     return (type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility;
 };
