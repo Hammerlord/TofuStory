@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import React, { MutableRefObject, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
@@ -47,7 +47,7 @@ import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "
 import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "./actions/playerTurn";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, EventGroup } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "./types";
 import {
     canTargetIfStealthed,
     canUseAbility,
@@ -273,13 +273,13 @@ const BattlefieldContainer = () => {
     } = battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
-    const allyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
-    const enemyRefs: React.RefObject<HTMLElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const allyRefs: RefObject<HTMLDivElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const enemyRefs: RefObject<HTMLDivElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
     const handRef = useRef({});
-    const battlefieldRef: React.RefObject<HTMLDivElement> = useRef(null);
-    const deckRef: React.RefObject<HTMLDivElement> = useRef(null);
-    const discardRef: React.RefObject<HTMLDivElement> = useRef(null);
-    const depleteRef: React.RefObject<HTMLDivElement> = useRef(null);
+    const battlefieldRef: RefObject<HTMLDivElement> = useRef(null);
+    const deckRef: RefObject<HTMLDivElement> = useRef(null);
+    const discardRef: RefObject<HTMLDivElement> = useRef(null);
+    const depleteRef: RefObject<HTMLDivElement> = useRef(null);
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
@@ -611,7 +611,7 @@ const BattlefieldContainer = () => {
         }, delay);
     };
 
-    const battleStateRef: MutableRefObject<BATTLE_STATES | undefined> = useRef(null);
+    const battleStateRef: RefObject<BATTLE_STATES | undefined> = useRef(null);
 
     useEffect(() => {
         // Preload character sprites, projectiles, etc. or they may be invisible
@@ -1146,7 +1146,7 @@ const BattlefieldContainer = () => {
                                         enemySideRefs={enemyRefs}
                                         playerSideRefs={allyRefs}
                                         selectedAbility={abilityToUse}
-                                        ref={enemyRefs[i]}
+                                        characterRef={enemyRefs[i]}
                                         index={i}
                                     />
                                 ))}
@@ -1197,7 +1197,7 @@ const BattlefieldContainer = () => {
                                                 isHighlighted={isPlayerTurn && selectedAllyId === null && isEligibleToAttack(ally)}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 selectedAbility={abilityToUse}
-                                                ref={allyRefs[i]}
+                                                characterRef={allyRefs[i]}
                                                 previewStatUpdate={abilityUsePreviews[ally?.id]}
                                                 enemySideRefs={enemyRefs}
                                                 playerSideRefs={allyRefs}
