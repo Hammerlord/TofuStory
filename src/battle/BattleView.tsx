@@ -749,7 +749,6 @@ const BattlefieldContainer = () => {
             }, 1000);
         }
     };
-
     const playbackStartedAt = useRef<number | null>(null);
 
     useEffect(() => {
@@ -758,11 +757,21 @@ const BattlefieldContainer = () => {
             return;
         }
 
-        playbackStartedAt.current = performance.now();
+        const now = performance.now();
+
+        if (playbackStartedAt.current === null) {
+            playbackStartedAt.current = now;
+        }
+
+        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime;
+
+        const delay = Math.max(0, deadline - now);
 
         const timeout = setTimeout(() => {
+            playbackStartedAt.current = deadline;
+
             dispatch(popEventQueue());
-        }, currentEventGroup.playbackTime);
+        }, delay);
 
         return () => clearTimeout(timeout);
     }, [currentEventGroup?.id]);
