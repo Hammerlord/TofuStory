@@ -8,8 +8,10 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
     }
 
     const type = event.action?.type;
-    const sameAbility = event.actionParent?.name === previousEvent.actionParent?.name;
-    return (type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility;
+    const sameAbility =
+        event.actionParent?.name === previousEvent.actionParent?.name ||
+        (event.source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name;
+    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility;
 };
 
 export const playbackCollector = (): PlaybackCollector => {
@@ -17,8 +19,6 @@ export const playbackCollector = (): PlaybackCollector => {
 
     const addToGroup = (event: Event, group: EventGroup) => {
         group.events.push(event);
-        group.playerSide = event.playerSide;
-        group.enemySide = event.enemySide;
 
         let eventPlayback = event.playbackTime || event.action?.playbackTime;
         group.playbackTime = group.playbackTime || eventPlayback;

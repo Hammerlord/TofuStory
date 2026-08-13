@@ -1808,12 +1808,6 @@ const checkHandleMorph = ({
             return;
         }
 
-        dispatch(
-            updateBattle({
-                [side]: combatants,
-            })
-        );
-
         // Give minions time to appear before triggering any minion-related effect events (or the next action).
         // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
         dispatch(
@@ -1823,6 +1817,12 @@ const checkHandleMorph = ({
                 newCombatants: summons,
                 source: parentSource,
             } as Event)
+        );
+
+        dispatch(
+            updateBattle({
+                [side]: combatants,
+            })
         );
 
         summons.forEach((summon) => {

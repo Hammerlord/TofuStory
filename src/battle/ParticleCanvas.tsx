@@ -83,6 +83,9 @@ const ParticleCanvas = ({
 
         if (statUpdates) {
             const sideCombatants = eventGroup[targetSide];
+            if (!sideCombatants) {
+                return;
+            }
 
             setTimeout(() => {
                 sideCombatants.forEach((combatant, index) => {
