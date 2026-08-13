@@ -525,7 +525,7 @@ export const playDyingAnimation = ({ object, playbackTime = 750 }) => {
     });
 };
 
-export const playHitAnimation = ({ object, playbackTime = 300, delta, delay }) => {
+export const playHitAnimation = ({ object, playbackTime = 300, delta, delay = 0 }) => {
     const inverse = (num) => -num;
 
     const animationFrames = [

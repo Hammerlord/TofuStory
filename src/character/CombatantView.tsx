@@ -370,28 +370,28 @@ const CombatantView = forwardRef(
 
         useEffect(() => {
             const callback = () => {
-                const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id] || {};
-                setStatChanges(eventStatChanges);
-                setOldState(combatant);
-
+                const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id];
                 if (characterImageRef.current) {
                     const isKillingBlow = eventStatChanges?.isDeathBlow && !isLifeLinked;
                     if (isKillingBlow && !willPerformActions) {
                         playDyingAnimation({ object: characterImageRef.current });
                     } else if (
-                        statChanges?.healthDamage > 0 ||
-                        statChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
+                        eventStatChanges?.healthDamage > 0 ||
+                        eventStatChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
                     ) {
-                        const baseDelta = Math.min(100, statChanges.healthDamage) || 1;
+                        const baseDelta = Math.min(100, eventStatChanges?.healthDamage) || 1;
                         // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
                         const delta = isEnemy ? baseDelta : -baseDelta;
-                        playHitAnimation({ object: characterImageRef.current, delay: 0.5, delta });
+                        playHitAnimation({ object: characterImageRef.current, delta });
                     }
 
                     if (currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id)) {
                         playFadeInAnimation({ object: characterImageRef.current, playbackTime: SUMMON_DELAY });
                     }
                 }
+
+                setStatChanges(eventStatChanges);
+                setOldState(combatant);
             };
 
             const playbackTime = currentEventGroup?.playbackTime;
