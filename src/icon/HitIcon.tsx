@@ -41,9 +41,11 @@ const useStyles = createUseStyles({
 });
 
 const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
+    const baseline = 50;
+    const maxOffset = 25;
     const [pos] = useState({
-        x: getRandomInt(30, 70),
-        y: getRandomInt(30, 70),
+        x: getRandomInt(baseline - maxOffset, baseline + maxOffset),
+        y: getRandomInt(baseline - maxOffset, baseline + maxOffset),
     });
 
     const classes = useStyles();
@@ -94,7 +96,10 @@ const HitIcon = ({ statChanges }: { statChanges: StatChange }) => {
             }
         );
 
-        return () => {};
+        return () => {
+            rootAnimation.cancel();
+            iconAnimation.cancel();
+        };
     }, [statChanges]);
 
     return (
