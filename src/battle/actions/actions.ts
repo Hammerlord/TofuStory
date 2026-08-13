@@ -1939,6 +1939,7 @@ const checkInduce = ({
                         ability: attackAbility,
                         actorId: id,
                         isProc: true,
+                        playbackCollector: parentSource?.playbackCollector,
                     })
                 );
             });
