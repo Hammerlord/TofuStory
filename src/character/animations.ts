@@ -302,6 +302,25 @@ export const playShakeAnimation = ({ object, delay, playbackTime }) => {
     });
 };
 
+const copyComputedStyles = (source: HTMLElement, target: HTMLElement) => {
+    const sourceStyle = window.getComputedStyle(source);
+
+    for (const property of sourceStyle) {
+        target.style.setProperty(property, sourceStyle.getPropertyValue(property), sourceStyle.getPropertyPriority(property));
+    }
+
+    const sourceChildren = Array.from(source.children);
+    const targetChildren = Array.from(target.children);
+
+    sourceChildren.forEach((sourceChild, i) => {
+        const targetChild = targetChildren[i];
+
+        if (sourceChild instanceof HTMLElement && targetChild instanceof HTMLElement) {
+            copyComputedStyles(sourceChild, targetChild);
+        }
+    });
+};
+
 /**
  * Animation when moving an `object` (almost certainly a card) to a card pile.
  */
@@ -338,6 +357,7 @@ export const sendToPile = ({
     });
 
     const clone = object.cloneNode(true) as HTMLElement;
+    copyComputedStyles(object, clone);
 
     Object.assign(clone.style, {
         position: "fixed",
