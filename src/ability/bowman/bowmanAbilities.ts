@@ -3491,6 +3491,7 @@ export const twain: Ability = {
 export const berry: Ability = {
     name: "Berry",
     removeAfterTurn: true,
+    retain: true,
     image: CocaFruitImage,
     actions: [
         {
@@ -3505,6 +3506,7 @@ export const forage: Ability = {
     name: "Forage",
     resourceCost: 1,
     image: EucalyptusLeavesImage,
+    depletedOnUse: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -3517,7 +3519,7 @@ export const forage: Ability = {
         {
             actions: [
                 {
-                    addCardsToDeck: [berry],
+                    addCardsToDeck: [{}, berry],
                 },
             ],
         },
