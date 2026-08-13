@@ -211,6 +211,7 @@ export const volley: Ability = {
     name: "Volley",
     resourceCost: 1,
     image: ArrowRainImage,
+    overrideBodyText: true,
     actions: [
         {
             damage: 4,
@@ -2505,8 +2506,7 @@ export const roastingShot: Ability = {
 export const takeAim: Ability = {
     name: "Take Aim",
     resourceCost: 1,
-    description:
-        "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ onDraw.abilityEffects.0.effects.0.stacks }} Aim</b>",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ actions.0.bonus.effects.0.stacks }} Aim</b>",
     overrideBodyText: true,
     image: ArcheryMasteryImage,
     onDraw: {
