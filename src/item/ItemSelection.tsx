@@ -69,12 +69,9 @@ const ItemSelection = ({
 
         if (!disableItemReplacements) {
             const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
-            for (let i = itemSelection.length; i < numChoices; ++i) {
-                const equipment = getRandomItem(itemPool);
-                if (equipment) {
-                    itemSelection.push(equipment);
-                }
-            }
+            const needed = numChoices - itemSelection.length;
+            const sliced = shuffle(itemPool).slice(0, needed);
+            itemSelection.push(...sliced);
         }
 
         if (itemSelection.length === 0) {

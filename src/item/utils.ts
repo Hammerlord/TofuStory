@@ -83,9 +83,13 @@ export const rollItemPool = ({
 };
 
 export const getAllPossibleItems = ({ player, excludeItems = [] }) => {
+    const items = ITEMS.concat(CLASS_ITEMS[player.class] || []);
+
+    const uniqueItems = Array.from(new Map(items.map((item) => [item.name, item])).values());
+
     return filterUnobtainableItems({
         playerItems: player.items,
         excludeItems,
-        itemsToFilter: ITEMS.concat(CLASS_ITEMS[player.class] || []),
+        itemsToFilter: uniqueItems,
     });
 };
