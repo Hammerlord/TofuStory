@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FC, forwardRef, ReactElement, useMemo } from "react";
+import { FC, forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
@@ -20,12 +20,10 @@ import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
-import Debuffs from "./Debuffs";
-import DrawCards from "./DrawCards";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import SelectCards from "./SelectCards";
-import { getAbilityColor, getAllEffects, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
+import { getAbilityColor, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
 
 const useStyles = createUseStyles({
     root: {
@@ -236,7 +234,7 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(0 0 4px #ff3a3a)",
         opacity: 0.75,
     },
-    cardLocked: {
+    unplayable: {
         filter: "saturate(0.25)",
     },
 });
@@ -484,6 +482,7 @@ const AbilityView = forwardRef(
 
         const shouldGlow =
             isAbilityUsable && !disableGlow && !disableConditionGlow && battle && (hasBonus || effects.some((e) => e.highlightCard));
+        const cannotBePlayed = isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable));
 
         return (
             <AbilityTooltip ability={ability}>
@@ -497,7 +496,7 @@ const AbilityView = forwardRef(
                 >
                     <div
                         className={classNames({
-                            [classes.cardLocked]: isLocked,
+                            [classes.unplayable]: cannotBePlayed,
                         })}
                     >
                         <div
