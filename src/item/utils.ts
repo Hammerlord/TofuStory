@@ -58,12 +58,14 @@ export const rollItemPool = ({
     player,
     excludeItems = [],
     bonuses = { uncommon: 0, rare: 0 },
+    disableRarities = [],
 }: {
     player;
     excludeItems?: Item[];
     bonuses?: { uncommon: number; rare: number };
+    disableRarities?: RARITIES[];
 }): Item[] => {
-    const selectedRarity = rollRarity({ player, bonuses });
+    const selectedRarity = rollRarity({ player, bonuses, disableRarities });
     const itemPool = getAllPossibleItems({ player, excludeItems });
     let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
     if (!filteredByRarity.length) {

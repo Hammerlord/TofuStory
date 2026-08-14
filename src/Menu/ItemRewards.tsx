@@ -4,7 +4,7 @@ import { BATTLE_TYPES } from "../battle/types";
 import { BOSS_RARE_RATE, BOSS_UNCOMMON_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
 import { goldenHammer, incense, mesoItem, tofu } from "../item/items";
-import { ITEM_TYPES, Item } from "../item/types";
+import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import { rollItemPool } from "../item/utils";
 import { getRandomItem } from "../utils";
 import Button from "../view/Button";
@@ -118,8 +118,9 @@ const ItemRewards = ({
                 player,
                 bonuses: {
                     rare: rareBonus,
-                    uncommon: ELITE_UNCOMMON_RATE,
+                    uncommon: uncommonBonus,
                 },
+                disableRarities: rewardType === BATTLE_TYPES.BOSS ? [RARITIES.COMMON] : [],
                 excludeItems: items,
             });
 
