@@ -419,7 +419,6 @@ const CombatantView = ({
     const { animation: portraitAnimation, fadeInOut } = combatant?.imageOptions || {};
 
     const imageProps = {
-        key: typeof combatant?.image === "string" ? combatant.image : undefined,
         className: classNames("portrait", classes.portraitImage, {
             [classes.invisible]: currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id),
             [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && combatant?.HP > 0,
@@ -452,12 +451,18 @@ const CombatantView = ({
                     style={{ ...customStyles, filter, ...props?.style }}
                     draggable="false"
                     ref={characterImageRef}
+                    key={typeof combatant?.image === "string" ? combatant.image : undefined}
                 />
             );
         } else if (typeof portrait === "function") {
             const ImageNode: FC<{ className?: string }> = portrait;
             return (
-                <div {...props} style={{ ...customStyles, filter, ...props?.style }} ref={characterImageRef}>
+                <div
+                    {...props}
+                    style={{ ...customStyles, filter, ...props?.style }}
+                    ref={characterImageRef}
+                    key={typeof combatant?.image === "string" ? combatant.image : undefined}
+                >
                     <ImageNode />
                 </div>
             );

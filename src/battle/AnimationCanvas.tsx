@@ -401,7 +401,6 @@ const AnimationCanvas = ({
     const getProjectileElement = (i: number) => {
         const projectileDimensions = { width: 70, height: 70 };
         const props = {
-            key: i,
             ref: projectileRefs[i],
             style: {
                 left: actorX - projectileDimensions.width / 2,
@@ -429,6 +428,7 @@ const AnimationCanvas = ({
                         [classes.fadeOut]: fadeOut,
                     })}
                     {...props}
+                    key={i}
                 >
                     <img
                         src={projectile}
@@ -450,6 +450,7 @@ const AnimationCanvas = ({
                         [classes.fadeOut]: fadeOut,
                     })}
                     {...props}
+                    key={i}
                 >
                     <Icon
                         className={classNames(classes.projectileInner, {
