@@ -482,7 +482,7 @@ const AbilityView = forwardRef(
 
         const shouldGlow =
             isAbilityUsable && !disableGlow && !disableConditionGlow && battle && (hasBonus || effects.some((e) => e.highlightCard));
-        const cannotBePlayed = isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable));
+        const cannotBePlayed = Boolean(battle) && (isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable)));
 
         return (
             <AbilityTooltip ability={ability}>
