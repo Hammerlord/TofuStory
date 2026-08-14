@@ -433,9 +433,10 @@ const CombatantView = ({
         style: {
             animationDuration: `${(currentEventGroup?.playbackTime || 1000) / 1000}s`,
         },
+        ref: characterImageRef,
     };
 
-    const getCharacterImageNode = (props) => {
+    const getCharacterImageNode = (props, key: string | number) => {
         const portrait = combatant?.effects?.find(({ override }) => override?.portrait)?.override?.portrait || combatant?.image;
         const { filter } =
             combatant?.imageOptions ||
@@ -445,32 +446,18 @@ const CombatantView = ({
         const customStyles = combatant?.imageOptions?.styles;
 
         if (typeof portrait === "string") {
-            return (
-                <img
-                    src={portrait}
-                    {...props}
-                    style={{ ...customStyles, filter, ...props?.style }}
-                    draggable="false"
-                    ref={characterImageRef}
-                    key={typeof combatant?.image === "string" ? combatant.image : undefined}
-                />
-            );
+            return <img src={portrait} {...props} style={{ ...customStyles, filter, ...props?.style }} draggable="false" key={key} />;
         } else if (typeof portrait === "function") {
             const ImageNode: FC<{ className?: string }> = portrait;
             return (
-                <div
-                    {...props}
-                    style={{ ...customStyles, filter, ...props?.style }}
-                    ref={characterImageRef}
-                    key={typeof combatant?.image === "string" ? combatant.image : undefined}
-                >
+                <div {...props} style={{ ...customStyles, filter, ...props?.style }} key={key}>
                     <ImageNode />
                 </div>
             );
         }
     };
 
-    const imageNode = getCharacterImageNode(imageProps);
+    const imageNode = getCharacterImageNode(imageProps, typeof combatant?.image === "string" ? combatant.image : undefined);
     const dialog = (actionParent as unknown as Ability)?.dialog || "";
     let reticleColor;
     if (isTargeted) {
@@ -560,11 +547,13 @@ const CombatantView = ({
 
                                 {animation === ANIMATION_TYPES.SHOUT &&
                                     Array.from({ length: 3 }).map((_, i) =>
-                                        getCharacterImageNode({
-                                            key: i,
-                                            className: classes.shouting,
-                                            style: { animationDelay: `${0.1 * i}s` },
-                                        })
+                                        getCharacterImageNode(
+                                            {
+                                                className: classes.shouting,
+                                                style: { animationDelay: `${0.1 * i}s` },
+                                            },
+                                            i
+                                        )
                                     )}
                                 {combatant.HP > 0 && (
                                     <div
