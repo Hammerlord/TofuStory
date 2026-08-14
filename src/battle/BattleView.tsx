@@ -58,6 +58,7 @@ import {
     isValidTarget,
     isWithinAbilityArea,
 } from "./utils";
+import { usePreloadImages } from "./hooks/usePreloadImage";
 
 const useStyles = createUseStyles({
     root: {
@@ -613,44 +614,7 @@ const BattlefieldContainer = () => {
 
     const battleStateRef: RefObject<BATTLE_STATES | undefined> = useRef(null);
 
-    useEffect(() => {
-        // Preload character sprites, projectiles, etc. or they may be invisible
-        // TODO this does not include minion/effect string references
-        // Also next wave?
-        const imagesMap = [...playerSide, ...enemySide, ...hand, ...deck, ...discard].reduce((acc, object) => {
-            const traverseObjForImages = (obj) => {
-                if (!obj) {
-                    return;
-                }
-                Object.entries(obj).forEach(([key, value]) => {
-                    // Image properties are typically named either icon or image.
-                    if (["image", "icon"].includes(key) && typeof value === "string") {
-                        acc[value] = true;
-                    } else if (typeof value === "object") {
-                        traverseObjForImages(value);
-                    }
-                });
-            };
-
-            traverseObjForImages(object);
-            return acc;
-        }, {});
-
-        const imageUrls = Object.keys(imagesMap);
-        imageUrls.push(ClearImage);
-
-        imageUrls.forEach((image) => {
-            const newImage = new Image();
-            newImage.src = image;
-            window[image] = newImage;
-        });
-
-        () => {
-            imageUrls.forEach((image) => {
-                delete window[image];
-            });
-        };
-    }, []);
+    usePreloadImages(playerSide, enemySide, hand, deck, discard);
 
     useEffect(() => {
         showWaveDescription({ description: waveDescription });
