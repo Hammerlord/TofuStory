@@ -1,15 +1,15 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { attackPower, hardy, ward } from "../ability/Effects";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { attack } from "../enemy/abilities";
 import { armorDown } from "../enemy/effect";
-import { martialArtist } from "../enemy/martialArtist";
 import {
     BrokenHeartEmojiImage,
     DoubleStabImage,
     EncroachingDarknessImage,
+    FrownyMaskImage,
     NefariousMonkBlueImage,
     NefariousMonkRedImage,
     TwilightPerionImage,
@@ -19,11 +19,62 @@ import {
 import { holyRelic, zakumHelmet } from "../item/items";
 import { SCENE_STYLES } from "./constants";
 import { EventScene, SCENE_CONDITION_TYPES, SceneEncounter, ScriptResponse } from "./types";
+import { ZzzIcon } from "../images/icons";
 
-const cultistA: Minion = {
+const antiHolyRelicA: Effect = {
+    name: "",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    onWaveStart: {
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.PLAYER,
+                hasEffect: "Holy Relic",
+                comparator: "includes",
+            },
+        ],
+        ability: {
+            name: "",
+            dialog: "That relic...!",
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.SELF,
+                    playbackTime: 2000,
+                    effects: [
+                        {
+                            name: "Such Sacrilege!",
+                            description: "Weakened by the presence of the Holy Relic. Afflicted with 1 ATT Down and 1 DEF Down.",
+                            icon: FrownyMaskImage,
+                            type: EFFECT_TYPES.NONE,
+                            class: EFFECT_CLASSES.DEBUFF,
+                            defenseDown: 1,
+                            attackPower: -1,
+                        },
+                    ],
+                },
+            ],
+        },
+        removeEffect: true,
+    },
+};
+
+const antiHolyRelicB: Effect = {
+    ...antiHolyRelicA,
+    onWaveStart: {
+        ...antiHolyRelicA.onWaveStart,
+        ability: {
+            // @ts-ignore
+            ...antiHolyRelicA.onWaveStart.ability,
+            dialog: "You heathen!",
+        },
+    },
+};
+
+export const cultistA: Minion = {
     name: "Cultist A",
     image: NefariousMonkRedImage,
-    maxHP: 300,
+    maxHP: 200,
     isElite: true,
     abilities: [
         {
@@ -33,12 +84,12 @@ const cultistA: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 6,
+                    damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 6,
+                    damage: 5,
                 },
             ],
         },
@@ -48,7 +99,18 @@ const cultistA: Minion = {
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    damage: 9,
+                    damage: 8,
+                },
+            ],
+        },
+        {
+            name: "Praise the Great One",
+            image: ZzzIcon,
+            dialog: "Praise be to the Exiled One!",
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.SELF,
                 },
             ],
         },
@@ -69,6 +131,7 @@ const cultistA: Minion = {
                             image: BrokenHeartEmojiImage,
                             description: "When drawn, you are afflicted by Armor Down and reduced healing for the turn.",
                             removeAfterTurn: true,
+                            unplayable: true,
                             onDraw: {
                                 ability: {
                                     name: "Broken Vitality",
@@ -103,13 +166,13 @@ const cultistA: Minion = {
             ],
         },
     ],
-    effects: [hardy],
+    effects: [hardy, antiHolyRelicA],
 };
 
-const cultistB: Minion = {
+export const cultistB: Minion = {
     name: "Cultist B",
     image: NefariousMonkBlueImage,
-    maxHP: 250,
+    maxHP: 150,
     abilities: [
         {
             name: "Rally",
@@ -141,7 +204,18 @@ const cultistB: Minion = {
                         width: 100,
                         height: 100,
                     },
-                    damage: 7,
+                    damage: 5,
+                },
+            ],
+        },
+        {
+            name: "Praise the Great One",
+            image: ZzzIcon,
+            dialog: "My life for the Great One!",
+            actions: [
+                {
+                    type: ACTION_TYPES.NONE,
+                    target: TARGET_TYPES.SELF,
                 },
             ],
         },
@@ -154,12 +228,12 @@ const cultistB: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.SELF,
                     area: 2,
-                    effects: [ward],
+                    effects: [{ ...ward, duration: 2 }],
                 },
             ],
         },
     ],
-    effects: [hardy],
+    effects: [hardy, antiHolyRelicB],
 };
 
 const useStyles = createUseStyles({
@@ -212,7 +286,7 @@ const CultistBackdrop = ({ player, showZakum }) => {
     );
 };
 
-const tributeAmount = 35;
+const tributeAmount = 30;
 
 const bloodTributeResponse: ScriptResponse = {
     text: `Pay the blood tribute. [Lose ${tributeAmount} HP]`,
