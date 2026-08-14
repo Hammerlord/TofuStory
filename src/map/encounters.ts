@@ -246,7 +246,7 @@ const generateEliteDuo = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6 + 20));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.5 + 20));
 
     const enemy = {
         ...baseEnemy,
@@ -334,7 +334,7 @@ const generateElite = ({
     const affixes = shuffle(affixPool).slice(0, numAffixes);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8 + 30));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6 + 30));
 
     const enemy = {
         ...baseEnemy,
@@ -345,7 +345,7 @@ const generateElite = ({
         effects: [...effects, { ...elite, attackPower: elite.attackPower + damageModifier * 2 }, ...affixes],
     };
 
-    return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
+    return [null, swarming ? getRandomItem(eliteMap.minions) : null, enemy, swarming ? getRandomItem(eliteMap.minions) : null, null];
 };
 
 export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] => {
