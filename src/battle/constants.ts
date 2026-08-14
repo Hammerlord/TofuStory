@@ -13,9 +13,9 @@ export const MARCH_MUSIC = "https://maplestory.io/api/GMS/93T/music/Bgm08/LetsMa
 // Every attack power grants 1 damage for every 10 damage dealt, minimum 1
 // Ditto for def down
 export const DAMAGE_COEFF = 10;
-export const MULTI_ACTION_PLAYBACK_SPEED = 550;
+export const MULTI_ACTION_PLAYBACK_SPEED = 500;
 export const NORMAL_ACTION_PLAYBACK_SPEED = 675;
-export const RANGED_ACTION_PLAYBACK_SPEED = 500;
+export const RANGED_ACTION_PLAYBACK_SPEED = 550;
 export const INDUCED_ACTION_PLAYBACK_SPEED = 450;
 export const RICOCHET_ACTION_PLAYBACK_SPEED = 550;
 export const CARD_ADDED_PLAYBACK_SPEED = 1500;
