@@ -197,6 +197,10 @@ const Sound = ({
     };
 
     useEffect(() => {
+        if (!playlistAudio) {
+            return;
+        }
+
         const onEnded = () => {
             setTrackIndex((index) => {
                 return (index + 1) % tracks.length;
