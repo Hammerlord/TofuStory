@@ -7,11 +7,11 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
         return false;
     }
 
-    const type = event.action?.type;
+    const { damage, armor, type } = event.action || {};
     const sameAbility =
         event.actionParent?.name === previousEvent.actionParent?.name ||
         (event.source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name;
-    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility;
+    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor;
 };
 
 export const playbackCollector = (): PlaybackCollector => {
