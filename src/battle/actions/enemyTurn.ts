@@ -157,7 +157,10 @@ export const requeueRecentlyUsedAbility =
         };
 
         if (!actorInfo.combatant.casting?.channelDuration) {
-            const abilityUsed = actor.abilityHistory[actor.abilityHistory.length - 1];
+            const validAbilityIds = actor.abilities.map((a) => a.instanceId);
+            // Exclude procs from being considered for requeuing
+            const history = actor.abilityHistory.filter((a) => validAbilityIds.includes(a.instanceId));
+            const abilityUsed = history[history.length - 1];
             let abilityIndex = -1;
             if (abilityUsed) {
                 abilityIndex = actor.abilities.findIndex((ability) => ability.instanceId === abilityUsed?.instanceId);
