@@ -72,7 +72,7 @@ import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilitie
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { PlaybackCollector } from "./playbackCollector";
+import { aggregateStatUpdates, PlaybackCollector } from "./playbackCollector";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -568,11 +568,6 @@ export const handleDoTs =
                 acc[statUpdate.combatantId] = statUpdate;
                 return acc;
             }, {});
-
-            const source = {
-                type: TRIGGER_SOURCE_TYPES.EFFECT,
-                triggerHistory: [],
-            };
 
             dispatch(
                 enqueueEvent({
@@ -2289,7 +2284,7 @@ export const calculateTargetIndices = ({
 };
 
 const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps, isAutoCast }) => {
-    return (dispatch, getState) => {
+    return (dispatch, getState): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             return;
         }
@@ -2445,7 +2440,7 @@ export const performAction = ({
             getCombatantById: (id: string) => findCombatantData(getState().battle, id),
         };
 
-        let updatedSecondary;
+        let updatedSecondary: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined;
         const triggerSecondaryAction = () => {
             return dispatch(
                 handleSecondaryAction({
@@ -2491,14 +2486,17 @@ export const performAction = ({
             dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
         });
 
+        let aggregated = {};
+        const allStatUpdates = [...hitEffects.flat(), ...updated, ...(updatedSecondary ?? [])];
+
+        allStatUpdates.forEach(({ statUpdate }) => {
+            const { combatantId } = statUpdate;
+
+            aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
+        });
+
         // HACK: ensure that the selected index is hit first in playback
         const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
-
-        // TODO: does not include hitEffects or secondaryAction, hence is incomplete info
-        const aggregatedStatUpdates = updated.reduce((acc, { statUpdate }) => {
-            acc[statUpdate.combatantId] = statUpdate;
-            return acc;
-        }, {});
 
         dispatch(
             enqueueEvent({
@@ -2510,7 +2508,7 @@ export const performAction = ({
                 targetSide: side,
                 source,
                 displacements,
-                statUpdates: aggregatedStatUpdates,
+                statUpdates: aggregated,
             })
         );
 
