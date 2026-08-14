@@ -11,6 +11,8 @@ import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons"
 import { NimbleJewelCImage } from "../../images";
 import classNames from "classnames";
 import { FC, ReactElement } from "react";
+import { UpdatedCombatantStats } from "../../battle/actions/getUpdatedStats";
+import { CombatantInfo } from "../../battle/types";
 
 const useStyles = createUseStyles({
     effectsRoot: {
@@ -198,7 +200,7 @@ const useStyles = createUseStyles({
 /**
  * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
  */
-const PortraitStatusEffects = ({ combatantInfo, statChanges }) => {
+const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: CombatantInfo; statChanges: UpdatedCombatantStats }) => {
     const classes = useStyles();
 
     if (!combatantInfo?.combatant) {

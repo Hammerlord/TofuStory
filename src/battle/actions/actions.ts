@@ -831,18 +831,25 @@ const onEffectEventTrigger = ({
             });
 
             dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+            let aggregated = {};
+
+            updated.forEach(({ statUpdate }) => {
+                const { combatantId } = statUpdate;
+                aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
+            });
+
             if (pushEventQueue) {
                 dispatch(
                     enqueueEvent({
-                        action,
                         actorId: ownerId,
-                        actionParent: procSource?.source,
                         source: procSource,
                         selectedIndex: owner.index,
                         targetSide: owner.friendlySide,
+                        statUpdates: aggregated,
                     })
                 );
             }
+
             dispatch(
                 triggerStatChangeEvents(
                     updated.map(({ statUpdate }) => ({

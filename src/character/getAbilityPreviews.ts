@@ -229,6 +229,10 @@ const getAbilityPreviews = ({
             statUpdates.forEach((statUpdate) => {
                 // @ts-ignore .action property appended by previewAction
                 const currentAction = statUpdate.action;
+                if (!currentAction) {
+                    return;
+                }
+
                 const id = statUpdate.combatantId;
 
                 if (!result[id]) {

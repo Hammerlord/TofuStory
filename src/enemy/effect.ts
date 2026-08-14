@@ -267,6 +267,7 @@ export const lifeLink: Effect = {
                 description: "When this effect ends, the character will revive and recover a portion of its HP.",
                 duration: 3,
                 onEnd: {
+                    pushEventQueue: true,
                     usableWhileStunned: true,
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                     healing: 1,

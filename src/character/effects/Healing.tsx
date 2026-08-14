@@ -50,7 +50,7 @@ const getParticles = () => {
     });
 };
 
-const Healing = ({ statChanges }: { statChanges?: { healing: number } }) => {
+const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
     const classes = useStyles();
     const [particles, setParticles] = useState(getParticles());
     const particleRefs = useRef([]);
