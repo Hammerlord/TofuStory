@@ -365,13 +365,14 @@ const CombatantView = ({
     const characterImageRef = useRef(null);
 
     const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id];
+    const isDeathBlow = eventStatChanges?.isDeathBlow;
     // We want the damage number etc. to appear only at the (approximate) time that character is hit by the attack
     const hitPlaybackDelay = currentEventGroup?.playbackTime ? currentEventGroup?.playbackTime / 2 : 500;
 
     useEffect(() => {
         const callback = () => {
             if (characterImageRef.current) {
-                const isKillingBlow = eventStatChanges?.isDeathBlow && !isLifeLinked;
+                const isKillingBlow = isDeathBlow && !isLifeLinked;
                 if (isKillingBlow && !willPerformActions) {
                     playDyingAnimation({ object: characterImageRef.current });
                 } else if (
@@ -424,7 +425,7 @@ const CombatantView = ({
             [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && combatant?.HP > 0,
             [classes.float]: portraitAnimation === "float",
             [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
-            [classes.dead]: !action && combatant?.HP === 0 && !willPerformActions,
+            [classes.dead]: !action && combatant?.HP === 0 && !willPerformActions && !isDeathBlow,
             [classes.applyingEffect]: isApplyingEffect,
             [classes.casting]: combatant?.casting && !(fadeInOut || fadeInOutFromEffect),
             [classes.stasis]: combatant?.HP <= 0 && isLifeLinked,
@@ -518,6 +519,8 @@ const CombatantView = ({
         [onMouseDown, index]
     );
 
+    const showCombatant = combatant?.HP > 0 || isLifeLinked || isDeathBlow;
+
     return (
         <div
             className={classNames(classes.root, {
@@ -591,7 +594,7 @@ const CombatantView = ({
                             </>
                         )}
                     </div>
-                    {combatant?.HP > 0 && (
+                    {showCombatant && (
                         <>
                             {!isTargeted && !selectedAbility && !currentEventGroup?.id && (
                                 <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />
@@ -614,7 +617,7 @@ const CombatantView = ({
                         </>
                     )}
                 </div>
-                {(combatant?.HP > 0 || isLifeLinked) && (
+                {showCombatant && (
                     <div className={classes.effectsContainer}>
                         <EffectIconsContainer isSilenced={isSilenced} combatant={combatant} event={event} />
                     </div>
