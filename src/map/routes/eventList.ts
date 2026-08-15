@@ -113,6 +113,7 @@ import {
     brokenArrow,
     darkPoleFeatherHat,
     bundleOfStraw,
+    steelOre,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -226,6 +227,7 @@ export const ITEMS = [
     monsterParadeBalloon,
     barrenDiorama,
     holyRelic,
+    steelOre,
 ];
 
 export const CLASS_ITEMS = {

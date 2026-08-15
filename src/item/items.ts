@@ -109,6 +109,8 @@ import {
     StarEarringsImage,
     StarfallMagicSquareImage,
     StarRockImage,
+    SteelOreImage,
+    SteelPlateImage,
     SteelyImage,
     StolenFenceImage,
     StrawImage,
@@ -2755,6 +2757,23 @@ export const bundleOfStraw: Item = {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
+        },
+    ],
+};
+
+export const steelOre: Item = {
+    name: "Steel Ore",
+    image: SteelOreImage,
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "You cannot take more than {{ effects.0.maxDamageTaken }} damage in one hit.",
+    effects: [
+        {
+            name: "Steel Ore",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            description: "Cannot take more than 15 damage in one hit.",
+            maxDamageTaken: 15,
         },
     ],
 };

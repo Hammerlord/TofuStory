@@ -709,6 +709,7 @@ export { default as StarRockImage } from "./StarRock.png";
 export { default as StealImage } from "./Steal.png";
 export { default as SteelArrowImage } from "./SteelArrow.png";
 export { default as SteelOreImage } from "./SteelOre.png";
+export { default as SteelPlateImage } from "./SteelPlate.png";
 export { default as SteelyImage } from "./Steely.png";
 export { default as StefaImage } from "./Stefa.png";
 export { default as StefaRopeImage } from "./StefaRope.png";

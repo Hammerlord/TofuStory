@@ -1,8 +1,7 @@
 import {
-    AvengersArrowImage,
     SirBlacksmithHammerImage,
     SirBlacksmithImage,
-    SteelOreImage,
+    SteelPlateImage,
     TerracottaCrossbowmanImage,
     TerracottaDieImage,
     TerracottaSwordsmanImage,
@@ -234,8 +233,8 @@ export const wanderingBlacksmith: Minion = {
             },
         },
         {
-            name: "Steel Ore",
-            icon: SteelOreImage,
+            name: "Steel Plate",
+            icon: SteelPlateImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "This character cannot take more than 20 damage in one hit.",
