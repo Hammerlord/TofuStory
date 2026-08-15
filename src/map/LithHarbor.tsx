@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import CardRewards from "../Menu/CardRewards";
 import ItemRewards from "../Menu/ItemRewards";
-import warriorTutorial, { magicianTutorial } from "../Menu/tutorial";
+import { bowmanTutorial, magicianTutorial, warriorTutorial } from "../Menu/tutorial";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { playerStateSlice } from "../character/playerReducer";
@@ -463,6 +463,11 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     };
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
+    const tutorialMap = {
+        [PLAYER_CLASSES.WARRIOR]: warriorTutorial,
+        [PLAYER_CLASSES.MAGICIAN]: magicianTutorial,
+        [PLAYER_CLASSES.BOWMAN]: bowmanTutorial,
+    };
 
     return (
         <div className={classes.root}>
@@ -473,8 +478,8 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                             <div className={classes.inner}>
                                 <TownNode
                                     icon={CrossedSwordsIcon}
-                                    isVisited={visited[LITH_PLACES.TUTORIAL_BASIC]}
-                                    label={"[Tutorial] Basic Combat"}
+                                    isVisited={visited[LITH_PLACES.TUTORIAL_BASIC] || !tutorialMap[player.class]}
+                                    label={tutorialMap[player.class] ? "[Tutorial] Basic Combat" : "Not Available"}
                                     nodeEl={
                                         <div>
                                             <img src={LithTutorialImage} alt="Balcony" />
@@ -484,10 +489,6 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                     }
                                     onClick={() => {
                                         if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
-                                            const tutorialMap = {
-                                                [PLAYER_CLASSES.WARRIOR]: warriorTutorial,
-                                                [PLAYER_CLASSES.MAGICIAN]: magicianTutorial,
-                                            };
                                             onBattle(
                                                 {
                                                     ...tutorialMap[player.class],

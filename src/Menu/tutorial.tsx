@@ -1,5 +1,6 @@
-import { energyBolt, lesserBolt, magicArmor, magicClaw, magicFang, manaGem } from "../ability/magician/magicianAbilities";
-import { block, slam, cleave } from "../ability/warrior/warriorAbilities";
+import { defend, puppetAbility, shootAbility, volley } from "../ability/bowman/bowmanAbilities";
+import { energyBolt, magicArmor, magicFang } from "../ability/magician/magicianAbilities";
+import { block, cleave, slam } from "../ability/warrior/warriorAbilities";
 import { Wave } from "../battle/types";
 import { basicAoeDummyMagician, basicDummy, basicDummy2, spikedDummy } from "../enemy/dummy";
 import Icon from "../icon/Icon";
@@ -7,15 +8,13 @@ import {
     AlchemistStoneImage,
     BlockImage,
     BlueRushImage,
-    EnergyBoltImage,
     MagicArmorOldImage,
-    MagicClawImage,
     OldEnergyBoltImage,
     SlashBlastImage,
     SpikedMaceImage,
 } from "../images";
 import { CactusIcon, ShieldIcon } from "../images/icons";
-import { Fury, Mana } from "../resource/ResourcesView";
+import { Fury, Mana, Stamina } from "../resource/ResourcesView";
 
 export interface Tutorial {
     isTutorial?: boolean;
@@ -147,4 +146,69 @@ export const magicianTutorial: Tutorial = {
     ] as Wave[],
 };
 
-export default warriorTutorial;
+export const bowmanTutorial: Tutorial = {
+    isTutorial: true,
+    disableItemRewards: true,
+    waves: [
+        {
+            description: [
+                <>
+                    Select <Icon icon={shootAbility.image} /> {shootAbility.name}, and attack the dummy.
+                </>,
+                <>
+                    Cards often cost <Stamina /> Stamina, limiting how many you can play per turn.
+                </>,
+            ],
+            enemies: [null, null, { ...basicDummy, maxHP: 21 }, null, null],
+            presetDeck: [shootAbility, shootAbility, shootAbility],
+        },
+        {
+            description: [
+                <>
+                    Target multiple enemies with <Icon icon={volley.image} /> {volley.name}.
+                </>,
+            ],
+            enemies: [{ ...basicDummy, maxHP: 12 }, null, { ...basicDummy, maxHP: 12 }, null, { ...basicDummy, maxHP: 12 }],
+            presetDeck: [volley, volley, volley],
+        },
+        {
+            description: [
+                <>
+                    Use <Icon icon={defend.image} /> {defend.name} to defend against attacks.
+                </>,
+                <>
+                    Unused <Icon icon={ShieldIcon} /> Armor will decay by half every turn.
+                </>,
+            ],
+            enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
+            presetDeck: [defend, defend],
+            winCondition: {
+                surviveRounds: 1,
+            },
+        },
+        {
+            description: [
+                <>
+                    The Bowman also has <Icon icon={puppetAbility.image} /> {puppetAbility.name}, a summoned minion that absorbs attacks for
+                    you.
+                </>,
+                <>Select and place it in one of the 4 available minion slots.</>,
+            ],
+            enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
+            presetDeck: [puppetAbility],
+            winCondition: {
+                surviveRounds: 1,
+            },
+        },
+        {
+            description: [
+                <>
+                    This dummy has <Icon icon={CactusIcon} /> Thorns. Hover over it for more info.
+                </>,
+                <>These effects can be dangerous, so try to pay attention to them.</>,
+            ],
+            enemies: [null, null, spikedDummy, null, null],
+            presetDeck: [shootAbility, shootAbility, defend],
+        },
+    ] as Wave[],
+};
