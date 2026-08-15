@@ -1,20 +1,18 @@
-import { taunt, vengeful } from "./../ability/Effects";
 import { avenger, bleed, hardy } from "../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
     AthenaAttackStanceImage,
     AvengersArrowImage,
-    CallOfTheWildImage,
     CoveringFireImage,
     FelineBerserkImage,
     GreyShieldImage,
-    HurricaneImage,
     MortalBlowImage,
     SoaringHawkImage,
-    VitalHunterImage,
+    StrafeImage,
     WolfImage,
 } from "../images";
 import { TornadoIcon } from "../images/icons";
+import { taunt, vengeful } from "./../ability/Effects";
 import { attack, shoot } from "./abilities";
 
 const weakerAvenger = {
@@ -40,7 +38,7 @@ export const guardWolf: Minion = {
         attack,
         {
             name: "Protective Howl",
-            description: "Grants 10 armor and dispels debuffs.",
+            description: "Dispels debuffs.",
             castTime: 1,
             resourceCost: 3,
             image: WolfImage,
@@ -50,14 +48,13 @@ export const guardWolf: Minion = {
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
                     area: 2,
-                    armor: 10,
                     removeDebuffs: true,
                 },
             ],
         },
         {
             name: "Taunting Howl",
-            description: "Taunts for 3 turns.",
+            description: "Taunts for the next turn.",
             resourceCost: 3,
             image: GreyShieldImage,
             actions: [
@@ -65,36 +62,12 @@ export const guardWolf: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
-                    effects: [{ ...taunt, duration: 2 }],
+                    effects: [{ ...taunt, duration: 1 }],
                 },
             ],
         },
     ],
-    effects: [
-        /**{
-            name: "Vital Hunter",
-            description: "Immediately attacks summoned enemy minions.",
-            icon: VitalHunterImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            canBeSilenced: true,
-            lifeOnHit: 1,
-            onHostileSummon: {
-                targetType: TRIGGER_TARGET_TYPES.TARGET,
-                ability: {
-                    name: "Bite",
-                    actions: [
-                        {
-                            target: TARGET_TYPES.HOSTILE,
-                            type: ACTION_TYPES.ATTACK,
-                            damage: 3,
-                        },
-                    ],
-                },
-            },
-        },**/
-        weakerAvenger,
-    ],
+    effects: [weakerAvenger],
 };
 
 export const athena: Minion = {
@@ -179,9 +152,9 @@ export const athena: Minion = {
             ],
         },
         {
-            name: "Hurricane",
+            name: "Strafe",
             description: "Fire consecutive arrows x4.",
-            image: HurricaneImage,
+            image: StrafeImage,
             resourceCost: 3,
             castTime: 1,
             actions: [
@@ -236,38 +209,7 @@ export const athena: Minion = {
             ],
         },
     ],
-    effects: [
-        hardy,
-        weakerAvenger,
-        /*{
-            name: "Companion Bond",
-            duration: Infinity,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            icon: CallOfTheWildImage,
-            disableDisplayIcon: true,
-            description: "Retaliating if an animal companion falls in combat.",
-            onFriendlyDeath: {
-                targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                ability: {
-                    name: "Revenge",
-                    image: AvengersArrowImage,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.RANGE_ATTACK,
-                            target: TARGET_TYPES.HOSTILE,
-                            icon: AvengersArrowImage,
-                            playbackTime: 400,
-                            damage: 1,
-                            animationOptions: {
-                                rotate: -45,
-                            },
-                        },
-                    ],
-                },
-            },
-        },*/
-    ],
+    effects: [hardy],
 };
 
 export const guardHawk: Minion = {
@@ -304,16 +246,5 @@ export const guardHawk: Minion = {
             ],
         },
     ],
-    effects: [
-        weakerAvenger,
-        /*{
-            name: "Sharp Eyes",
-            description: "This character can see through stealth.",
-            icon: SharpEyesImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            truesight: true,
-            canBeSilenced: true,
-        },*/
-    ],
+    effects: [weakerAvenger],
 };
