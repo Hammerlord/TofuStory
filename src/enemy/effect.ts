@@ -68,7 +68,7 @@ export const hardwood: Effect = {
                 description: "Effect is disabled by Burn.",
                 defenseDown: -1,
                 duration: 1,
-                maxApplications: 3,
+                maxStacks: 3,
                 maxDuration: 1,
                 conditions: [
                     {

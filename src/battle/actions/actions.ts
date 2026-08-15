@@ -1148,10 +1148,11 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
                 const incomingEffectDuration = isNaN(incomingEffect.duration) ? Infinity : incomingEffect.duration;
                 const newDuration = updatedEffectDuration + incomingEffectDuration;
                 const maxDuration = effect.maxDuration || Infinity;
+                const maxStacks = updatedEffects[i].maxStacks || incomingEffect.maxStacks || Infinity;
                 updatedEffects[i] = {
                     ...updatedEffects[i],
                     duration: Math.min(maxDuration, newDuration),
-                    stacks: (updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0),
+                    stacks: Math.min((updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0), maxStacks),
                     // The last character who applies the DoT gets the applier attribution, eg. for effects like Tauromacis Horn.
                     applierId: incomingEffect.applierId || effect.applierId,
                 };

@@ -200,6 +200,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     // Stacks is the number of this effect but stored on the same effect object, rather than the traditional "n" effect objects representing "n" stacks.
     // See Volatile Magic for usage.
     stacks?: number;
+    maxStacks?: number;
     /** When reapplied at the application maximum, the application with the lowest duration will pandemic, instead of adding another application */
     maxApplications?: number;
     attackAreaIncrease?: number;
