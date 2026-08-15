@@ -321,6 +321,7 @@ export { default as HarvestDamageSkinImage } from "./HarvestDamageSkin.png";
 export { default as HasteImage } from "./Haste.png";
 export { default as HeartImage } from "./Heart.png";
 export { default as HeavenHammerImage } from "./HeavenHammer.png";
+export { default as HekatonsFistRedImage } from "./HekatonsFistRed.png";
 export { default as HenesysArcherHallImage } from "./HenesysArcherHall.png";
 export { default as HenesysCenterImage } from "./HenesysCenter.png";
 export { default as HenesysExitImage } from "./HenesysExit.png";

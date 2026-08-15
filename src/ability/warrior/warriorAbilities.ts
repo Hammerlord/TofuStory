@@ -31,6 +31,7 @@ import {
     GiganticSledgeImage,
     GungnirImage,
     HammerImage,
+    HekatonsFistRedImage,
     HighPaladinImage,
     HyperBodyImage,
     InstinctualComboImage,
@@ -316,6 +317,8 @@ export const shout: Ability = {
     image: ShoutImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description: "Gain <b>{{ actions.0.resources }} Fury</b> and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     actions: [
         {
             resources: 1,
@@ -2259,7 +2262,7 @@ export const ironMaiden: Ability = {
 export const hurlBoulder: Ability = {
     name: "Hurl Boulder",
     image: RockImage,
-    resourceCost: 5,
+    resourceCost: 4,
     description: "Whenever this card leaves your hand, reduce its cost by 1.",
     onLeaveHand: {
         abilityEffects: [
@@ -3048,6 +3051,57 @@ export const zan: Ability = {
                         {
                             ...bleed,
                             stacks: 3,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const rupture: Ability = {
+    name: "Rupture",
+    rarity: RARITIES.RARE,
+    resourceCost: 2,
+    image: HekatonsFistRedImage,
+    description: "<b>+{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each {{{ _bleed_ }}} on the target.",
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 5,
+            bonus: [
+                {
+                    damage: 3,
+                    multiplier: {
+                        type: MULTIPLIER_TYPES.EFFECT_STACKS,
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        filters: [
+                            {
+                                property: "type",
+                                comparator: "eq",
+                                value: EFFECT_TYPES.BLEED,
+                            },
+                        ],
+                    },
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    bonus: [
+                        {
+                            damage: 1,
                         },
                     ],
                 },
