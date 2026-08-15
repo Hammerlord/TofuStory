@@ -1000,7 +1000,7 @@ export const focus: Ability = {
     resourceCost: 1,
     image: FocusImage,
     description:
-        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Critical</b> and <b>+{{ actions.0.effects.0.resourcesPerTurn }} {{{ _stamina_ }}}</b> per turn until the end of your next turn.",
+        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Crit {{ actions.0.effects.0.duration }}{{{ _duration_ }}}.</b> Next turn, gain <b>+{{ actions.0.effects.0.resourcesPerTurn }} {{{ _stamina_ }}}.</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1020,7 +1020,7 @@ export const focus: Ability = {
                     icon: BullseyeIcon,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
-                    criticalChance: 0.3,
+                    criticalChance: 0.2,
                     duration: 2,
                 },
             ],
@@ -1175,7 +1175,7 @@ export const tagShot: Ability = {
     image: HamstringImage,
     actions: [
         {
-            damage: 9,
+            damage: 10,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -2455,7 +2455,8 @@ export const potShot: Ability = {
 export const roastingShot: Ability = {
     name: "Roasting Shot",
     depletedOnUse: true,
-    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>. When the target dies, gain a <b>Treat</b>.",
+    description:
+        "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>. After <b>{{ actions.0.effects.1.duration }}{{{ _duration_ }}}</b> or the target dies, gain a <b>Treat</b>.",
     overrideBodyText: true,
     image: RoastingShotImage,
     rarity: RARITIES.UNCOMMON,
@@ -2478,7 +2479,18 @@ export const roastingShot: Ability = {
                     icon: MeatImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.DEBUFF,
+                    duration: 3,
                     onDeath: {
+                        usableWhileDead: true,
+                        usableWhileStunned: true,
+                        addCards: [
+                            {
+                                ...treat,
+                            },
+                        ],
+                        removeEffect: true,
+                    },
+                    onEnd: {
                         usableWhileDead: true,
                         usableWhileStunned: true,
                         addCards: [
@@ -3496,13 +3508,37 @@ export const twain: Ability = {
 export const berry: Ability = {
     name: "Berry",
     removeAfterTurn: true,
-    retain: true,
     image: CocaFruitImage,
+    description: "<b>Critical:</b> Draw a card.",
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                name: CRITICAL,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             resources: 1,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: CocaFruitImage,
+            bonus: {
+                drawCards: {
+                    amount: 1,
+                },
+                conditions: [
+                    {
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        hasAbilityEffectName: CRITICAL,
+                    },
+                ],
+            },
         },
     ],
 };
@@ -3512,6 +3548,7 @@ export const forage: Ability = {
     resourceCost: 1,
     image: EucalyptusLeavesImage,
     depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -3524,7 +3561,18 @@ export const forage: Ability = {
         {
             actions: [
                 {
-                    addCardsToDeck: [{}, berry],
+                    addCardsToDeck: [
+                        {
+                            description: "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+                            onDraw: { chance: 0.2 },
+                        },
+                    ],
+                    addCardsToDiscard: [
+                        {
+                            description: "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+                            onDraw: { chance: 0.2 },
+                        },
+                    ],
                 },
             ],
         },

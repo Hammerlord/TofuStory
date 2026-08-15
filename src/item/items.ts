@@ -192,19 +192,19 @@ export const battleShield: Item = {
 
 export const safetyCharm: Item = {
     name: "Safety Charm",
-    description: "On wave clear, heal {{ effects.0.onWaveClear.healing }} HP.",
+    description: "On battle end, heal {{ effects.0.onBattleEnd.healing }} HP.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SafetyCharmImage,
     effects: [
         {
             name: "Safety Charm",
-            description: "Healing 3 HP on wave clear.",
+            description: "Healing 3 HP on battle end.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SafetyCharmImage,
             disableDisplayIcon: true,
-            onWaveClear: {
+            onBattleEnd: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 healing: 3,
             },
@@ -580,7 +580,7 @@ export const aquamarine: Item = {
             name: "Aquamarine",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [{ ...preventArmorDecayPlayer, stacks: 2 }],
             },
@@ -729,17 +729,7 @@ const pigsRibbonCounter: Effect = {
         usableWhileStunned: false,
         removeEffect: true,
         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-        ability: {
-            name: "Counter",
-            image: NamelessSwordImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 1,
-                },
-            ],
-        },
+        induceCombatantAttack: true,
     },
     onTurnStart: {
         removeEffect: true,
@@ -749,7 +739,7 @@ const pigsRibbonCounter: Effect = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, gain Counter for 1 damage.",
+    description: "Once per turn, gain Counterattack.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
@@ -918,7 +908,7 @@ export const starfallMagicSquare: Item = {
 export const cursedDoll: Item = {
     name: "Cursed Doll",
     image: CursedDollImage,
-    description: "Curse a random enemy to take damage when its allies are attacked.",
+    description: "Curse a random enemy to take 1 damage when its allies are attacked.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -1185,20 +1175,20 @@ export const fairyWing: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
-    description: "You are immune to Bleed, Burn, and Poison for 5 turns on wave start.",
+    description: "Battle start: You are immune to Bleed, Burn, and Poison for {{ effects.0.onBattleStart.effects.0.duration }} turns.",
     effects: [
         {
             name: "Fairy Wing Item",
             description: "Immune to Bleed, Burn, and Poison.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
                         name: "Fairy Wing",
                         icon: FairyWingImage,
-                        duration: 5,
+                        duration: 4,
                         immunities: {
                             type: "effect-type",
                             value: [EFFECT_TYPES.BLEED, EFFECT_TYPES.BURN, EFFECT_TYPES.POISON],
@@ -1330,7 +1320,7 @@ export const tauromacisHorn: Item = {
     image: TauromacisHornImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "+2 HP on kill.",
+    description: "+{{ effects.0.lifeOnKill }} HP on kill.",
     applyEffectsToSummons: true,
     effects: [
         {
@@ -2333,7 +2323,7 @@ export const zakumHelmet: Item = {
         description: "Assemble the Four Arms to tap into a forbidden power.",
     },
     overrideTooltip: true,
-    description: "Wave start: gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
+    description: "Battle start: gain +1 {{ resources }} and card draw. Elites always offer an Arm of the Exiled One.",
     abilityChoices: {
         battleTypes: [BATTLE_TYPES.BOSS, BATTLE_TYPES.ELITE_ENCOUNTER],
         amount: 1,
@@ -2344,7 +2334,7 @@ export const zakumHelmet: Item = {
             name: "Zakum Helmet Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -2633,13 +2623,13 @@ export const holyRelic: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: DragonLordPendantImage,
-    description: "Wave start: gain +1 {{ resources }} and card draw. Repel the Exiled One's influences.",
+    description: "Battle start: gain +1 {{ resources }} and card draw. Repel the Exiled One's influences.",
     effects: [
         {
             name: "Holy Relic Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onWaveStart: {
+            onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -2667,14 +2657,14 @@ export const drakeSkull: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: DrakeSkullImage,
-    description: "Wave start: Shoot a target for {{ effects.0.onWaveStart.ability.actions.0.damage }}.",
+    description: "Battle start: Shoot a target for {{ effects.0.onBattleStart.ability.actions.0.damage }}.",
     effects: [
         {
             name: "Drake Skull",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             icon: DrakeSkullImage,
-            onWaveStart: {
+            onBattleStart: {
                 ability: {
                     name: "Shoot",
                     resourceCost: 0,
