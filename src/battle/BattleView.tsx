@@ -443,6 +443,12 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             }
         }
 
+        // Wayfind does not require a discard to benefit from the +1 extra card draw, so don't show an empty overlay in that case
+        if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand.length === 1) {
+            handleAbilityUse({ selectedIndex, side });
+            return;
+        }
+
         dispatch(
             promptPlayerSelectCards({
                 selectCards: selectedAbilityFromHand.selectCards,
