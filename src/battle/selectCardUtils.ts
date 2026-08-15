@@ -118,6 +118,7 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
             if ((hasMinion && card.minion) || (!hasMinion && !card.minion)) {
                 return comparator !== "not";
             }
+            return false;
         }
 
         return true;
