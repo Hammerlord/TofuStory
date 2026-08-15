@@ -611,6 +611,7 @@ export const hyperBody: Ability = {
     name: "Hyper Body",
     resourceCost: 1,
     image: HyperBodyImage,
+    description: "Draw a card.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -724,22 +725,14 @@ export const rush: Ability = {
     resourceCost: 1,
     image: RushImage,
     rarity: RARITIES.UNCOMMON,
+    description: "Draw a card.",
     actions: [
         {
-            damage: 7,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
             drawCards: {
                 amount: 1,
-                effects: [
-                    {
-                        resourceCost: -1,
-                    },
-                ],
             },
         },
     ],
@@ -863,13 +856,16 @@ export const disrupt: Ability = {
     resourceCost: 1,
     image: MagicCrashImage,
     depletedOnUse: true,
-    description: "Apply {{{ _silence_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _stun_ }}}",
+    description:
+        "<b>Pierce.</b> <br/> Apply {{{ _silence_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _stun_ }}}",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
+            bypassImmunity: true,
+            bypassStealth: true,
             area: 1,
             effects: [{ ...silence }, stun],
         },
@@ -888,6 +884,7 @@ export const disrupt: Ability = {
 export const dash: Ability = {
     name: "Dash",
     resourceCost: 1,
+    description: "Draw {{ actions.0.drawCards.amount }} cards.",
     image: WarriorMasteryImage,
     actions: [
         {
@@ -2990,7 +2987,7 @@ export const suddenDeath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SkullBalloonImage,
     description:
-        "When drawn, you gain +{{ onDraw.ability.actions.0.effects.0.attackPower }} ATT but {{ onDraw.ability.actions.0.effects.0.attackDamageReceived }} DEF down. Playing this removes the effect.",
+        "When drawn, you gain <b>+{{ onDraw.ability.actions.0.effects.0.attackPower }} ATT but {{ onDraw.ability.actions.0.effects.0.defenseDown }} DEF Down.</b> Playing this removes the effect.",
     onDraw: {
         ability: {
             name: "Sudden Death!",

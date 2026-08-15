@@ -503,6 +503,7 @@ export const teleport: Ability = {
     resourceCost: 1,
     image: TeleportImage,
     rarity: RARITIES.COMMON,
+    description: "Draw {{ actions.0.drawCards.amount }} cards.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -2329,9 +2330,10 @@ export const moonlight: Ability = {
     resourceCost: 1,
     image: LunarPiecesImage,
     rarity: RARITIES.COMMON,
+    description: "Draw a card.",
     actions: [
         {
-            healing: 3,
+            armor: 5,
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             animation: ANIMATION_TYPES.CONSUMABLE,
@@ -2345,7 +2347,7 @@ export const moonlight: Ability = {
         {
             actions: [
                 {
-                    healing: 2,
+                    armor: 3,
                 },
             ],
         },
