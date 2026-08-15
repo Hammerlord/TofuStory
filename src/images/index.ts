@@ -784,6 +784,7 @@ export { default as TwilitForestImage } from "./TwilitForest.png";
 export { default as TwilitForest2Image } from "./TwilitForest2.png";
 export { default as TwilitForest3Image } from "./TwilitForest3.png";
 export { default as TwinklingOrbImage } from "./TwinklingOrb.png";
+export { default as UltimateStrafeImage } from "./UltimateStrafe.png";
 export { default as UnagiImage } from "./Unagi.png";
 export { default as UpMATTImage } from "./UpMATT.png";
 export { default as UrsusPawImage } from "./UrsusPaw.png";

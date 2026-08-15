@@ -70,6 +70,7 @@ import {
     entrenchedFire,
     twain,
     forage,
+    ultimateStrafe,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -452,6 +453,7 @@ export const JOB_CARD_MAP = {
             entrenchedFire,
             twain,
             forage,
+            ultimateStrafe,
         ],
         starters: [puppetAbility, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

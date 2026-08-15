@@ -77,6 +77,7 @@ import {
     ThrustImage,
     TortieShellImage,
     TragosImage,
+    UltimateStrafeImage,
     VengeanceImage,
     WeaponMasteryLGImage,
     WoodenSlingshotImage,
@@ -952,7 +953,7 @@ export const barbedArrows: Ability = {
     description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}}",
     actions: [
         {
-            damage: 0,
+            damage: 1,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -977,6 +978,7 @@ export const barbedArrows: Ability = {
             },
             actions: [
                 {
+                    damage: 1,
                     bonus: {
                         effects: [{ ...bleed, stacks: 1 }],
                         conditions: [
@@ -1277,6 +1279,11 @@ export const callWolves: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [{ minion: [cloneDeep(wolfMinion)] }, { minion: [cloneDeep(wolfMinion)] }],
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };
@@ -2154,10 +2161,10 @@ export const snapfreezeShot: Ability = {
         ],
     },
     overrideBodyText: true,
-    resourceCost: 1,
+    resourceCost: 0,
     actions: [
         {
-            damage: 4,
+            damage: 2,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -2296,7 +2303,7 @@ export const peckingOrder: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            damage: 6,
+            damage: 5,
             drawCards: {
                 amount: 3,
             },
@@ -2306,7 +2313,6 @@ export const peckingOrder: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
                     drawCards: {
                         amount: 1,
                     },
@@ -2990,7 +2996,7 @@ export const surge: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 3 }],
+            effects: [{ ...aimEffect, stacks: 4 }],
             moveCards: {
                 from: FROM_CARD_PILE_TYPES.ANYWHERE,
                 to: CARD_PILE_TYPES.HAND,
@@ -3520,6 +3526,76 @@ export const forage: Ability = {
             actions: [
                 {
                     addCardsToDeck: [{}, berry],
+                },
+            ],
+        },
+    ],
+};
+
+const ultimateStrafeHit = {
+    damage: 4,
+    type: ACTION_TYPES.RANGE_ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+    animation: ANIMATION_TYPES.ONE_WAY,
+    icon: AvengersArrowImage,
+    animationOptions: bowmanAnimationOption,
+    bonus: {
+        damage: 2,
+        conditions: [
+            {
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                hasAbilityEffectName: CRITICAL,
+            },
+        ],
+    },
+};
+
+export const ultimateStrafe: Ability = {
+    name: "Ultimate Strafe",
+    resourceCost: 3,
+    overrideBodyText: true,
+    description: "Hits x6 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
+    rarity: RARITIES.RARE,
+    image: UltimateStrafeImage,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                name: CRITICAL,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+        ],
+    },
+    actions: [
+        { ...ultimateStrafeHit },
+        { ...ultimateStrafeHit },
+        { ...ultimateStrafeHit },
+        { ...ultimateStrafeHit },
+        { ...ultimateStrafeHit },
+        { ...ultimateStrafeHit },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
+                },
+                {
+                    damage: 1,
+                },
+                {
+                    damage: 1,
+                },
+                {
+                    damage: 1,
+                },
+                {
+                    damage: 1,
+                },
+                {
+                    damage: 1,
                 },
             ],
         },
