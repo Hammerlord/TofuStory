@@ -1,6 +1,7 @@
-import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { AyanImage, BattleStatueImage, BrandishImage, SpiritVikingFlagImage } from "../images";
 import { CrossedSwordsIcon } from "../images/icons";
+import { shuffle } from "../utils";
 import { hardy } from "./../ability/Effects";
 import { attack, shoot } from "./abilities";
 import { battleTrance, counterEffect } from "./effect";
@@ -67,67 +68,70 @@ export const ayanEnemy: Minion = {
                 },
             ],
         },
-        {
-            name: "Clash",
-            description: "Ayan clashes with a chosen target for two blows, dealing 7 damage per hit.",
-            resourceCost: 3,
-            castTime: 1,
-            image: SpiritVikingFlagImage,
-            actions: [
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.SHOUT,
-                    effects: [
-                        {
-                            ...counterEffect,
-                            name: "It's Time To Duel!",
-                            icon: CrossedSwordsIcon,
-                        },
-                    ],
-                },
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                },
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 7,
-                },
-                {
-                    type: ACTION_TYPES.EFFECT,
-                    target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.SHOUT,
-                    removeEffects: ["It's Time To Duel!"],
-                },
-            ],
-        },
-        {
-            name: "Call Phalanx",
-            resourceCost: 3,
-            castTime: 1,
-            channelDuration: 2,
-            image: BattleStatueImage,
-            conditions: [
-                {
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
-                    comparator: "lt",
-                    numFriendly: 5,
-                },
-            ],
-            actions: [
-                {
-                    type: ACTION_TYPES.NONE,
-                    target: TARGET_TYPES.SELF,
-                    summon: [
-                        { minion: [phalanx], placement: "adjacent" },
-                        { minion: [phalanx], placement: "adjacent" },
-                    ],
-                },
-            ],
-        },
+        ...shuffle([
+            {
+                name: "Clash",
+                description: "Ayan clashes with a chosen target for two blows, dealing 7 damage per hit.",
+                resourceCost: 3,
+                castTime: 1,
+                image: SpiritVikingFlagImage,
+                actions: [
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        target: TARGET_TYPES.HOSTILE,
+                        animation: ANIMATION_TYPES.SHOUT,
+                        effects: [
+                            {
+                                ...counterEffect,
+                                name: "It's Time To Duel!",
+                                icon: CrossedSwordsIcon,
+                                type: EFFECT_TYPES.PRIORITY_TARGET,
+                            },
+                        ],
+                    },
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 7,
+                    },
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 7,
+                    },
+                    {
+                        type: ACTION_TYPES.EFFECT,
+                        target: TARGET_TYPES.HOSTILE,
+                        animation: ANIMATION_TYPES.SHOUT,
+                        removeEffects: ["It's Time To Duel!"],
+                    },
+                ],
+            },
+            {
+                name: "Call Phalanx",
+                resourceCost: 3,
+                castTime: 1,
+                channelDuration: 2,
+                image: BattleStatueImage,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                        comparator: "lt",
+                        numFriendly: 5,
+                    },
+                ],
+                actions: [
+                    {
+                        type: ACTION_TYPES.NONE,
+                        target: TARGET_TYPES.SELF,
+                        summon: [
+                            { minion: [phalanx], placement: "adjacent" },
+                            { minion: [phalanx], placement: "adjacent" },
+                        ],
+                    },
+                ],
+            },
+        ]),
     ],
     effects: [hardy, battleTrance],
 };
