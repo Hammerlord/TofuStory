@@ -18,6 +18,7 @@ import {
     MagicArrow4Image,
     MagicArrow5Image,
     MagicArrowImage,
+    MelonPopsicleImage,
     OldGladiusImage,
     OldWoodenStaffImage,
     OlympusImage,
@@ -27,12 +28,14 @@ import {
     RainbowBowImage,
     RedCrayonImage,
     StarCandyPopsicleImage,
+    StrawberryPopsicleImage,
     ToyMachineGunImage,
     ToyRifleImage,
     WarBowImage,
     WarMushImage,
     WaterBombImage,
     WaterGunImage,
+    WatermelonPopsicleImage,
     WhiteNeschereImage,
     WizMushImage,
     WoodenStaffImage,
@@ -50,7 +53,12 @@ const bowImageOptions: WeaponImageOptions = {
 
 const sharedSkins = [
     { name: "Golden Chick", image: GoldenChickImage },
-    { name: "Pink Flower Tube", image: PinkFlowerTubeImage, weaponImageOptions: bowImageOptions },
+    {
+        name: "Pink Flower Tube",
+        image: PinkFlowerTubeImage,
+        weaponImageOptions: bowImageOptions,
+        projectileOverride: [MelonPopsicleImage, StrawberryPopsicleImage, WatermelonPopsicleImage],
+    },
     {
         name: "Chicken Smackaroo",
         image: ChickenSmackarooImage,
