@@ -39,7 +39,7 @@ export const battleWarnings = {
 export const dotDamageMap = {
     [EFFECT_TYPES.BLEED]: 1,
     [EFFECT_TYPES.POISON]: 1,
-    [EFFECT_TYPES.BURN]: 2,
+    [EFFECT_TYPES.BURN]: 1,
 };
 
 export const dotAbilityMap = {

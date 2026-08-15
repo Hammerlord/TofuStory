@@ -2471,7 +2471,7 @@ export const roastingShot: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 4,
+                    stacks: 5,
                 },
                 {
                     name: "Roasting Alive",
@@ -2484,7 +2484,6 @@ export const roastingShot: Ability = {
                         addCards: [
                             {
                                 ...treat,
-                                resourceCost: 0,
                             },
                         ],
                         removeEffect: true,
