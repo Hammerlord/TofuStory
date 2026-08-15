@@ -291,7 +291,7 @@ export const taunting: Effect = {
     turnsTriggerFrequency: 3,
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        effects: [{ ...taunt, duration: 2 }],
+        effects: [{ ...taunt, duration: 3 }],
     },
 };
 

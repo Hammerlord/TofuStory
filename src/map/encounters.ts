@@ -178,8 +178,8 @@ const generateEliteTriad = ({
     }
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);
-    const hasRaging = affixes.some((a) => a.name === raging.name);
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
+    const hasRagingOrPoison = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRagingOrPoison ? 2 : 3)]);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.4 + 15));
@@ -242,8 +242,8 @@ const generateEliteDuo = ({
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);
 
-    const hasRaging = affixes.some((a) => a.name === raging.name);
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRaging ? 2 : 3)]);
+    const hasRagingOrPoison = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy, hasRagingOrPoison ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.5 + 20));
@@ -333,7 +333,8 @@ const generateElite = ({
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy)]);
+    const hasRagingOrPoison = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy), hasRagingOrPoison ? 2 : 3]);
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6 + 30));
 
     const enemy = {
