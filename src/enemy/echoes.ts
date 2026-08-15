@@ -97,6 +97,7 @@ export const lostNobleEcho: Minion = {
                     damage: 4,
                     animationOptions: {
                         rotate: -45,
+                        rotateToFaceTarget: true,
                     },
                 },
             ],

@@ -2780,7 +2780,10 @@ export const ballista: Ability = {
                         effects: [{ ...bleed, stacks: 1 }],
                         animationOptions: {
                             rotateToFaceTarget: true,
-                            rotate: -45,
+                            rotate: 135,
+                            weapon: {
+                                rotateToFaceTarget: true,
+                            },
                         },
                     },
                 ],
