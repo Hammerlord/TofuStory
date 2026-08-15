@@ -2084,7 +2084,8 @@ export const enqueueEvent = ({
             if (!action) {
                 playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
             } else if (action.animationOptions?.ricochet) {
-                playbackTime = RICOCHET_ACTION_PLAYBACK_SPEED + (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length;
+                const playbackMultiple = allTargetIndices.length > 1 ? (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length : 0;
+                playbackTime = RICOCHET_ACTION_PLAYBACK_SPEED + playbackMultiple;
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
             } else if (action.type === ACTION_TYPES.RANGE_ATTACK) {
@@ -2135,7 +2136,7 @@ export const enqueueEvent = ({
                 ...event,
                 name: event.actionParent?.name,
                 image: (event.actionParent as Ability)?.image,
-                playbackTime: event.action?.playbackTime || event.playbackTime,
+                playbackTime: event.playbackTime || event.action?.playbackTime,
                 events: [event],
                 addCards,
             })
