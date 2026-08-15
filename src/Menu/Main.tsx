@@ -6,7 +6,7 @@ import BattlefieldContainer from "../battle/BattleView";
 import { updateCombatant } from "../battle/actions/actions";
 import { startBattle } from "../battle/actions/phases";
 import { passesValueComparison } from "../battle/passesConditions";
-import { BATTLE_STATES, battleStateSlice } from "../battle/reducer";
+import { BATTLE_STATES, BattleState, battleStateSlice } from "../battle/reducer";
 import { BATTLE_TYPES } from "../battle/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { INTRO_PAN_TIME, REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
@@ -197,17 +197,13 @@ const Main = () => {
         }
     }, [player, battle?.eventQueue]);
 
-    useEffect(() => {
-        if (battle?.state !== BATTLE_STATES.VICTORY) {
-            return;
-        }
-
+    const onBattleWin = (battle: BattleState) => {
         if (battle?.disableCardRewards) {
             handleExitBattle();
         } else {
             setCardRewardsOpen(true);
         }
-    }, [battle?.state]);
+    };
 
     const handleEventNode = (node) => {
         const passesConditions = (event: EventScene) => {
@@ -404,7 +400,12 @@ const Main = () => {
 
     const handleSceneBattle = (encounter, onVictory: Function) => {
         const callback = () => {
-            dispatch(startBattle({ ...encounter, backgroundImage: encounter.backgroundImage || BG_MAP[currentLocation?.region] }));
+            dispatch(
+                startBattle({
+                    ...encounter,
+                    backgroundImage: encounter.backgroundImage || BG_MAP[currentLocation?.region],
+                })
+            );
             setEncounterVictoryCallback(() => onVictory);
         };
 
@@ -614,7 +615,7 @@ const Main = () => {
                             player={player}
                         />
                     )}
-                    {battle && <BattlefieldContainer />}
+                    {battle && <BattlefieldContainer onWin={onBattleWin} />}
                     {usingItem?.upgradeCard && (
                         <Overlay>
                             <CardUpgradeGrid

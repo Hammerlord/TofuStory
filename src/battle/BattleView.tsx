@@ -249,7 +249,7 @@ const movementAbility: Ability = {
     ],
 };
 
-const BattlefieldContainer = () => {
+const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void }) => {
     const dispatch = useAppDispatch();
     const battle: BattleState = useAppSelector((state) => state.battle);
     const {
@@ -697,6 +697,7 @@ const BattlefieldContainer = () => {
                         dispatch(nextWave());
                         dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
                     } else {
+                        onWin && onWin(battle);
                         dispatch(onBattleEnd());
                     }
                 }, TURN_ANNOUNCEMENT_TIME);
