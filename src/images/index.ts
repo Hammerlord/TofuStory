@@ -633,6 +633,7 @@ export { default as SapOfNependeathImage } from "./SapOfNependeath.png";
 export { default as SavageBlowImage } from "./SavageBlow.png";
 export { default as ScarecrowImage } from "./Scarecrow.gif";
 export { default as ScarfSnowmanImage } from "./ScarfSnowman.png";
+export { default as ScimitarImage } from "./Scimitar.png";
 export { default as ScrollImage } from "./Scroll.gif";
 export { default as SealImage } from "./Seal.png";
 export { default as SeaweedImage } from "./Seaweed.png";

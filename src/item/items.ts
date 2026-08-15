@@ -14,7 +14,7 @@ import {
     thorns,
 } from "../ability/Effects";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
-import { dustDevilsActiveAbility } from "../ability/warrior/warriorAbilities";
+import { dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -103,6 +103,7 @@ import {
     RisingStarImage,
     SafetyCharmImage,
     SapOfNependeathImage,
+    ScimitarImage,
     ScrollImage,
     SnowshoesImage,
     SpectrumGogglesImage,
@@ -2774,6 +2775,34 @@ export const steelOre: Item = {
             class: EFFECT_CLASSES.BUFF,
             description: "Cannot take more than 15 damage in one hit.",
             maxDamageTaken: 15,
+        },
+    ],
+};
+
+export const scimitar: Item = {
+    name: "Scimitar",
+    image: ScimitarImage,
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "Furious Strike applies Bleed.",
+    effects: [
+        {
+            name: "Scimitar",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAttack: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                        property: "name",
+                        comparator: "eq",
+                        value: furiousStrikeCard.name,
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [{ ...bleed, stacks: 1 }],
+            },
         },
     ],
 };
