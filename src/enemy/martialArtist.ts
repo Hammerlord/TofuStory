@@ -353,7 +353,7 @@ export const martialArtist: Minion = {
         {
             name: "Battle Flow",
             icon: MuscleIcon,
-            description: "When attacked, character gains +1 DEF for the turn.",
+            description: "When attacked, gains +1 DEF for the turn, up to 5.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             canBeSilenced: true,
@@ -363,7 +363,8 @@ export const martialArtist: Minion = {
                     {
                         ...defUp,
                         duration: 1,
-                        maxStacks: 5,
+                        maxStacks: 1,
+                        maxApplications: 5,
                         maxDuration: 1,
                     },
                 ],

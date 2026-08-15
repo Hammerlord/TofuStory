@@ -621,9 +621,11 @@ const checkUpdateEffectLifecycle =
             return;
         }
 
+        const maxStacks = effect.maxStacks || Infinity;
+        const updatedStacks = (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0);
         const updatedEffect = {
             ...effect,
-            stacks: (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0),
+            stacks: Math.min(maxStacks, updatedStacks),
             duration: resetDuration ? effect.originalDuration : effect.duration,
         };
 
@@ -778,7 +780,8 @@ const onEffectEventTrigger = ({
                     }
 
                     const totalStacks = (e.stacks || 1) * (stacks || 1);
-                    return { ...e, stacks: totalStacks };
+                    const maxStacks = e.maxStacks || Infinity;
+                    return { ...e, stacks: Math.min(maxStacks, totalStacks) };
                 });
             }
 

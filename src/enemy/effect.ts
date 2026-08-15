@@ -65,10 +65,11 @@ export const hardwood: Effect = {
             {
                 ...defUp,
                 name: "Barricade",
-                description: "Effect is disabled by Burn.",
+                description: "+1 DEF per stack, up to 3. Effect is disabled by Burn.",
                 defenseDown: -1,
                 duration: 1,
-                maxStacks: 3,
+                maxStacks: 1,
+                maxApplications: 3,
                 maxDuration: 1,
                 conditions: [
                     {
