@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
-import { battleStateSlice } from "../reducer";
+import { BATTLE_STATES, BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Event, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
 import {
@@ -20,6 +20,7 @@ import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } 
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { playbackCollector } from "./playbackCollector";
+import { checkWinCondition } from "../checkWinCondition";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 
@@ -292,6 +293,10 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 playerSide: updateCharacters(playerSide, clearTurnHistory),
             })
         );
+
+        if (checkWinCondition({ battle: getState().battle })) {
+            return;
+        }
 
         const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));

@@ -59,6 +59,7 @@ import {
     isWithinAbilityArea,
 } from "./utils";
 import { usePreloadImages } from "./hooks/usePreloadImage";
+import { checkWinCondition } from "./checkWinCondition";
 
 const useStyles = createUseStyles({
     root: {
@@ -286,7 +287,7 @@ const BattlefieldContainer = () => {
     const [showWaveClear, setShowWaveClear] = useState(false);
     const [hoveredCombatant, setHoveredCombatant]: [{ side: BATTLEFIELD_SIDES; index: number; id: string }, Function] = useState(null);
     const classes = useStyles({ backgroundImage } as any);
-    const { winCondition = {}, description: waveDescription } = waves[currentWaveIndex] || {};
+    const { description: waveDescription } = waves[currentWaveIndex] || {};
 
     const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
 
@@ -310,18 +311,7 @@ const BattlefieldContainer = () => {
 
     const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
 
-    const isWinConditionTriggered = (() => {
-        if (winCondition.defeatBoss) {
-            return enemySide.every((enemy) => !enemy?.isBoss || enemy?.HP <= 0);
-        }
-
-        // +1 to account for 0 based start
-        if (winCondition.surviveRounds && round === winCondition.surviveRounds + 1) {
-            return true;
-        }
-
-        return enemySide.every((enemy) => !enemy || enemy.HP <= 0);
-    })();
+    const isWinConditionTriggered = checkWinCondition({ battle });
 
     const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
     const selectedMinion = playerSide.find((combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId);
