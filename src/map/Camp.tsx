@@ -247,7 +247,7 @@ const Camp = ({
                                     <img src={PersonalAnvilImage} />
                                 </div>
                                 <div className={classes.activityName}>TRANSMUTE</div>
-                                Replace an ability with 1 of 3 options. (Up to 2 times.)
+                                Replace an ability with 1 of 3 options.
                             </div>
                         )}
                         {hasMeditateItem && (

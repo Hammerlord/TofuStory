@@ -149,11 +149,13 @@ export const kingSlimeEnemy: Minion = {
             name: "Earthquake",
             resourceCost: 3,
             image: MountainIcon,
+            description: "Deals 2 damage to secondary targets.",
             actions: [
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
+                    secondaryDamage: 2,
                     area: 5,
                     animation: ANIMATION_TYPES.STOMP,
                 },

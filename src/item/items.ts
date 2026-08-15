@@ -590,7 +590,7 @@ export const aquamarine: Item = {
 
 export const boneHelm: Item = {
     name: "Bone Helm",
-    description: "Take 1 less damage when attacked by the enemy directly in front of you.",
+    description: "Gain 1 DEF Up against the enemy directly in front of you.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: BoneHelmImage,
@@ -2747,28 +2747,22 @@ export const darkPoleFeatherHat: Item = {
 
 export const bundleOfStraw: Item = {
     name: "Bundle Of Straw",
-    description: "While a Puppet is active, you take 1 less damage.",
+    description: "While an ally is active, you gain 1 DEF Up.",
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: StrawImage,
     effects: [
         {
             name: "Bundle Of Straw",
+            icon: StrawImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             defenseDown: -1,
             conditions: [
                 {
                     comparator: "gt",
-                    numFriendly: 0,
-                    filters: [
-                        {
-                            property: "name",
-                            comparator: "includes",
-                            value: "Puppet",
-                        },
-                    ],
-                    calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                    numFriendly: 1, // Includes the player
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 },
             ],
         },
