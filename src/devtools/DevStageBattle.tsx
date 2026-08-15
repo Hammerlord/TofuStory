@@ -7,7 +7,7 @@ import { devDummy } from "../enemy/dummy";
 import { faust, ghostlyPuppeteerL, ghostlyPuppeteerR } from "../enemy/faust";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { deathLaser } from "./deathLaser";
-import { block, hammerang, outrage, shieldCharge } from "../ability/warrior/warriorAbilities";
+import { block, hammerang, shieldCharge } from "../ability/warrior/warriorAbilities";
 import { goutOfFlame, icyDraft, lesserBolt, whelp, zap } from "../ability/magician/magicianAbilities";
 import { manji } from "../enemy/Manji";
 import { gachaponMachine } from "../scene/gachapon/Gachapon";

@@ -7,6 +7,7 @@ import {
     CynicalOrangeMushroomJumpImage,
     EncroachingDarknessImage,
     EvilCupImage,
+    MushmomAngryImage,
     RedSnailShellImage,
     SkeletonOfHorrorImage,
     SnailShellImage,
@@ -35,6 +36,7 @@ import {
 } from "./types";
 import { attackPower, stealth, taunt } from "./Effects";
 import { incorporeal } from "../enemy/effect";
+import { AngerIcon } from "../images/icons";
 
 export const shellThrowRed: Ability = {
     name: "Shell Throw",
@@ -532,6 +534,39 @@ export const vault: Ability = {
     ],
 };
 
+export const outrage: Ability = {
+    name: "Outrage",
+    resourceCost: 2,
+    description: "Cards in your hand cost <b>+1</b> or <b>-1 Resource</b>, randomly chosen.",
+    image: MushmomAngryImage,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            damage: 15,
+            animationOptions: {
+                portraitEffectImage: AngerIcon,
+                weapon: { hide: true },
+            },
+            applyAbilityEffects: {
+                pile: CARD_PILE_TYPES.HAND,
+                abilityEffects: [{ resourceCost: 1 }, { resourceCost: -1 }],
+                mode: "random-pick",
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
+                },
+            ],
+        },
+    ],
+};
+
 export const NEUTRAL_ABILITIES = [
     shellThrow,
     bounce,
@@ -544,4 +579,5 @@ export const NEUTRAL_ABILITIES = [
     stomp,
     combatOrders,
     vault,
+    outrage,
 ];
