@@ -68,11 +68,20 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { TriggerSource } from "./../types";
-import { applyAbilityEventEffects, checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions";
+import {
+    applyAbilityEffectsOnDraw,
+    applyAbilityEventEffects,
+    checkCardActions,
+    deleteCard,
+    depleteAbilities,
+    drawCards,
+    handleDrawOriginalAbility,
+} from "./cardActions";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { aggregateStatUpdates, PlaybackCollector } from "./playbackCollector";
+import { PlaybackCollector, aggregateStatUpdates } from "./playbackCollector";
+import { handleDiscard } from "./playerTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -745,7 +754,7 @@ const onEffectEventTrigger = ({
                 actor: owner,
                 ...getState().battle,
             });
-            dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any, multiplier }));
+            dispatch(checkHandleAutoCast({ autoCastAbilities, actor: owner.combatant, parentAbility: parent as any, multiplier, source }));
         }
 
         const initialTargetIds = getCalculationTargetIds(targetType).filter((id) => {
@@ -2149,11 +2158,13 @@ const checkHandleAutoCast = ({
     actor,
     parentAbility,
     multiplier = 1,
+    source,
 }: {
     autoCastAbilities: AutoCastAbility;
     actor: any; // This is expected to be the player
     parentAbility?: CombatAbility;
     multiplier?: number;
+    source: TriggerSource;
 }) => {
     return (dispatch, getState) => {
         if (!autoCastAbilities || !actor.class) {
@@ -2168,6 +2179,8 @@ const checkHandleAutoCast = ({
             cards = presetCards;
         } else if (type === AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS) {
             cards = (JOB_CARD_MAP[actor.class]?.all || []).filter(isOffensiveAbility);
+        } else if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
+            cards = getState().battle.deck.slice();
         }
 
         if (filters) {
@@ -2183,7 +2196,20 @@ const checkHandleAutoCast = ({
         }
 
         Array.from({ length: amount * multiplier }).forEach(() => {
-            let abilityToCast: CombatAbility = getRandomItem(cards);
+            let unmodifiedAbility: CombatAbility;
+
+            if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
+                unmodifiedAbility = cards.shift();
+            } else {
+                unmodifiedAbility = getRandomItem(cards);
+            }
+
+            if (!unmodifiedAbility) {
+                return;
+            }
+
+            let abilityToCast: CombatAbility = unmodifiedAbility;
+
             Array.from({ length: upgradeLevels }).forEach(() => {
                 const upgrade = getUpgradeCard(abilityToCast, { ignoreMaxLevel: true });
                 if (upgrade) {
@@ -2191,6 +2217,12 @@ const checkHandleAutoCast = ({
                 }
             });
             const { resourceCost: abilityCost, selectCards } = abilityToCast;
+
+            const drawAbilityEffects = abilityToCast.onDraw?.abilityEffects;
+            if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK && drawAbilityEffects) {
+                const playerSide = getState().battle.playerSide;
+                abilityToCast = applyAbilityEffectsOnDraw({ drawnCard: abilityToCast, source, playerSide, effects: drawAbilityEffects });
+            }
 
             // selectCards on ability is currently always deplete as a prerequisite to using the ability. So deplete an ability here.
             if (selectCards) {
@@ -2219,13 +2251,33 @@ const checkHandleAutoCast = ({
                 }
             }
 
+            // Order matters: if Vault draws another Vault, the upgrades could cause an infinite loop if the card is not
+            // removed from the deck before using the ability
+            if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
+                const newDeck = getState().battle.deck.filter((card: CombatAbility) => card.instanceId !== unmodifiedAbility.instanceId);
+                dispatch(
+                    updateBattle({
+                        deck: newDeck,
+                    })
+                );
+                dispatch(handleDiscard(unmodifiedAbility));
+            }
             // Auto-casted ability costs 0 unless it is a variable cost ability
             const resourceCost = abilityCost !== "x" ? 0 : abilityCost;
 
             // instanceId: undefined -- only "cards" should have ids, not auto casted abilities.
             // Issue where Astral Rewind was grabbing abilities casted from Metronome.
             dispatch(
-                useAbility({ ability: { ...abilityToCast, resourceCost, instanceId: undefined }, actorId: actor.id, isAutoCast: true })
+                useAbility({
+                    ability: {
+                        ...abilityToCast,
+                        resourceCost,
+                        instanceId: type === AUTO_CAST_ABILITY_TYPES.FROM_DECK ? abilityToCast.instanceId : undefined,
+                    },
+                    actorId: actor.id,
+                    isAutoCast: true,
+                    playbackCollector: source?.playbackCollector,
+                })
             );
         });
     };
@@ -2580,7 +2632,7 @@ export const performAction = ({
             actor: actorData,
             ...getState().battle,
         });
-        dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any, multiplier }));
+        dispatch(checkHandleAutoCast({ autoCastAbilities, actor: actorData.combatant, parentAbility: parent as any, multiplier, source }));
         dispatch(
             onAction({
                 action,

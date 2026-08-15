@@ -948,6 +948,7 @@ export enum AUTO_CAST_ABILITY_TYPES {
     OFFENSE_FROM_CLASS = "offense-from-class",
     FROM_CLASS = "from-class",
     PRESET_CARDS = "preset-cards",
+    FROM_DECK = "from-deck",
 }
 
 export interface AutoCastAbility {

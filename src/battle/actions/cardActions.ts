@@ -197,6 +197,28 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
     };
 };
 
+export const applyAbilityEffectsOnDraw = ({
+    drawnCard,
+    source,
+    effects,
+    playerSide,
+}: {
+    drawnCard: CombatAbility;
+    source: TriggerSource;
+    effects: AbilityEffect[];
+    playerSide: (Combatant | null)[];
+}) => {
+    const onDrawEffects = drawnCard.onDraw?.abilityEffects;
+    if (onDrawEffects) {
+        const totalCritChance = getTotalCritChance(playerSide);
+        drawnCard = applyAbilityEventEffects({ event: drawnCard.onDraw, source, ability: drawnCard, bonusChance: totalCritChance });
+    }
+    return {
+        ...drawnCard,
+        effects: [...(drawnCard.effects || []), ...effects],
+    };
+};
+
 export const drawCards = ({
     effects = [],
     filters = [],
@@ -255,17 +277,7 @@ export const drawCards = ({
         }
 
         let handTooFull = false;
-        cardsToDraw = cardsToDraw.map((card) => {
-            const onDrawEffects = card.onDraw?.abilityEffects;
-            if (onDrawEffects) {
-                const totalCritChance = getTotalCritChance(playerSide);
-                card = applyAbilityEventEffects({ event: card.onDraw, source, ability: card, bonusChance: totalCritChance });
-            }
-            return {
-                ...card,
-                effects: [...(card.effects || []), ...effects],
-            };
-        });
+        cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, source, effects, playerSide }));
 
         for (let card of cardsToDraw) {
             if (newHand.length > MAX_HAND_SIZE) {

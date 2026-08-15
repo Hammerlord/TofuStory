@@ -11,6 +11,7 @@ import {
     SkeletonOfHorrorImage,
     SnailShellImage,
     StompImage,
+    VaultImage,
     ZakumArmLeft2Image,
     ZakumArmLeftImage,
     ZakumArmRight2Image,
@@ -23,6 +24,7 @@ import {
     Ability,
     ACTION_TYPES,
     ANIMATION_TYPES,
+    AUTO_CAST_ABILITY_TYPES,
     CARD_PILE_TYPES,
     Effect,
     EFFECT_CLASSES,
@@ -498,6 +500,38 @@ export const combatOrders: Ability = {
     ],
 };
 
+export const vault: Ability = {
+    name: "Vault",
+    description: "Play the top card of your deck. It is Upgraded.",
+    rarity: RARITIES.COMMON,
+    image: VaultImage,
+    resourceCost: 1,
+    overrideBodyText: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            autoCastAbilities: {
+                type: AUTO_CAST_ABILITY_TYPES.FROM_DECK,
+                amount: 1,
+                upgradeLevels: 1,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            description: "Play the top card of your deck. It is Upgraded x{{ actions.0.autoCastAbilities.upgradeLevels }}.",
+            actions: [
+                {
+                    autoCastAbilities: {
+                        upgradeLevels: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 export const NEUTRAL_ABILITIES = [
     shellThrow,
     bounce,
@@ -509,4 +543,5 @@ export const NEUTRAL_ABILITIES = [
     provoke,
     stomp,
     combatOrders,
+    vault,
 ];
