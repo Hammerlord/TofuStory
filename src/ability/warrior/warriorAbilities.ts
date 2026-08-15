@@ -120,12 +120,14 @@ export const furiousStrikeCard: Ability = {
     name: "Furious Strike",
     resourceCost: 0,
     removeAfterTurn: true,
+    retain: true,
+    isUnique: true,
     image: FlameChargeImage,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 2,
+            area: 1,
             damage: 2,
         },
     ],
@@ -133,7 +135,8 @@ export const furiousStrikeCard: Ability = {
         {
             actions: [
                 {
-                    damage: 1,
+                    damage: 3,
+                    area: 1,
                 },
             ],
         },

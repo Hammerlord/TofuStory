@@ -476,6 +476,7 @@ export type CardFilterCondition = {
     actionTypes?: ACTION_TYPES[];
     abilityType?: "support" | "offense";
     comparator?: Comparator; // Mostly meant to be used for "not" cases
+    name?: string;
 };
 
 export interface SelectCards {
@@ -618,6 +619,7 @@ export type Action = {
         abilityEffects: AbilityEffect[];
         // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
         mode?: "random-pick";
+        filters?: CardFilterCondition[];
     };
     /** Adds cards to your current hand */
     addCards?: Ability[];

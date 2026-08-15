@@ -48,6 +48,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const maxArea = 5;
+
 const Area = ({
     ability,
     playerInfo,
@@ -62,7 +64,7 @@ const Area = ({
     discard?: Ability[];
 }) => {
     const { actions = [] } = ability || {};
-    const area =
+    let area =
         calculateActionArea({
             action: actions[0],
             actor: playerInfo,
@@ -70,6 +72,8 @@ const Area = ({
         }) ||
         actions[0]?.area ||
         0;
+
+    area = Math.min(maxArea, area);
 
     if (!area) {
         return null;

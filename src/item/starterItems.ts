@@ -2,26 +2,18 @@ import { JOB_CARD_MAP } from "../ability";
 import { AlchemistStoneImage, HonestyStoneImage, HumilityStoneImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
-import {
-    ACTION_TYPES,
-    CONDITION_TARGETS,
-    Effect,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    MULTIPLIER_TYPES,
-    TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
-} from "./../ability/types";
+import { CARD_PILE_TYPES, CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import { getUpgradeCard } from "./../Menu/utils";
 
+import { aimedShot, aimEffect } from "../ability/bowman/bowmanAbilities";
 import { furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, ITEM_TYPES, RARITIES } from "./types";
-import { aimedShot, aimEffect } from "../ability/bowman/bowmanAbilities";
 
 export const rageStone: Item = {
     name: "Rage Stone",
-    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, add Furious Strike to your hand.",
+    description:
+        "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury spent, add Furious Strike to your hand. If it's already in your hand, Upgrade it instead.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -31,18 +23,38 @@ export const rageStone: Item = {
             name: "Rage Stone Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onResourcesSpent: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 7,
-                addCards: [furiousStrikeCard],
-            },
+            onResourcesSpent: [
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    triggerFrequencyFromSum: 6,
+                    applyAbilityEffects: {
+                        pile: CARD_PILE_TYPES.HAND,
+                        filters: [
+                            {
+                                name: "Furious Strike",
+                                comparator: "eq",
+                            },
+                        ],
+                        abilityEffects: [
+                            {
+                                upgradedByLevels: 1,
+                            },
+                        ],
+                    },
+                },
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    triggerFrequencyFromSum: 6,
+                    addCards: [furiousStrikeCard],
+                },
+            ],
         },
     ],
 };
 
 export const rampageStone: Item = {
+    ...rageStone,
     name: "Rampage Stone",
-    description: "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury you spend, add Furious Strike to your hand.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
@@ -51,11 +63,31 @@ export const rampageStone: Item = {
             name: "Rage Stone Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onResourcesSpent: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                triggerFrequencyFromSum: 5,
-                addCards: [furiousStrikeCard],
-            },
+            onResourcesSpent: [
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    triggerFrequencyFromSum: 4,
+                    applyAbilityEffects: {
+                        pile: CARD_PILE_TYPES.HAND,
+                        filters: [
+                            {
+                                name: "Furious Strike",
+                                comparator: "eq",
+                            },
+                        ],
+                        abilityEffects: [
+                            {
+                                upgradedByLevels: 1,
+                            },
+                        ],
+                    },
+                },
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    triggerFrequencyFromSum: 4,
+                    addCards: [furiousStrikeCard],
+                },
+            ],
         },
     ],
 };
@@ -200,9 +232,9 @@ export const honestyStone: Item = {
     ],
 };
 
-export const greaterHonestyStone: Item = {
+export const integrityStone: Item = {
     ...honestyStone,
-    name: "Greater Honesty Stone",
+    name: "Integrity Stone",
     description: "+40% chance to activate a bonus when drawing cards with the Critical effect.",
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -216,5 +248,5 @@ export const greaterHonestyStone: Item = {
 export const STARTER_ITEM_UPGRADE_MAP = {
     [PLAYER_CLASSES.WARRIOR]: rampageStone,
     [PLAYER_CLASSES.MAGICIAN]: greaterChargingStone,
-    [PLAYER_CLASSES.BOWMAN]: greaterHonestyStone,
+    [PLAYER_CLASSES.BOWMAN]: integrityStone,
 };
