@@ -69,4 +69,4 @@ export const TOWN_STYLES = {
     },
 };
 
-export const CHANCE_TO_SPAWN_SPECIAL_ENEMY = 1;
+export const CHANCE_TO_SPAWN_SPECIAL_ENEMY = 0.075;
