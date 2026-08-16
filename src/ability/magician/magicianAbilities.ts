@@ -675,7 +675,7 @@ export const ignite: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 2,
+                    stacks: 4,
                 },
             ],
         },
@@ -902,7 +902,7 @@ export const fireArrow: Ability = {
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> <b>Charged:</b> <b>+ {{ actions.0.bonus.0.effects.0.stacks }}</b> {{{ _burn_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> <b>Charged:</b> <b>+{{ actions.0.bonus.0.effects.0.stacks }}</b> {{{ _burn_ }}}",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -916,7 +916,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 1,
+                    stacks: 3,
                 },
             ],
             bonus: [
@@ -941,7 +941,22 @@ export const fireArrow: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 3,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
+                    bonus: [
+                        {
+                            effects: [
+                                //@ts-ignore
+                                {
+                                    stacks: 1,
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         },
@@ -1564,7 +1579,8 @@ export const polymorph: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
-    description: "Apply {{{ _silence_ }}} and <b>2 ATT Down.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description:
+        "<b>Pierce.</b> Apply {{{ _silence_ }}} and <b>2 ATT Down.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     depletedOnUse: true,
     actions: [
@@ -1576,6 +1592,7 @@ export const polymorph: Ability = {
                 {
                     name: "Polymorph",
                     icon: ScarfSnowmanImage,
+                    bypassImmunity: true,
                     description: "Disables certain buffs. ATT reduced.",
                     duration: 2,
                     attackPower: -2,
@@ -1618,7 +1635,7 @@ export const goutOfFlame: Ability = {
                     effects: [
                         {
                             ...burn,
-                            stacks: 1,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -1634,13 +1651,26 @@ export const goutOfFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 2,
+                    stacks: 3,
                 },
             ],
         },
     ],
     upgrades: [
         {
+            onDraw: {
+                ability: {
+                    actions: [
+                        {
+                            effects: [
+                                {
+                                    stacks: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
             actions: [
                 {
                     effects: [
@@ -1763,7 +1793,7 @@ export const moltenLaser: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "Destroy all armor and apply {{ actions.0.effects.0.stacks }} {{{ _burn_ }}}",
+    description: "Destroy all armor and apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1775,7 +1805,7 @@ export const moltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 3,
+                    stacks: 10,
                 },
             ],
         },
@@ -2358,6 +2388,7 @@ export const zap: Ability = {
     name: "Zap",
     resourceCost: 1,
     image: ThunderSparkImage,
+    overrideBodyText: true,
     description: "When drawn, {{{ _stun_ }}} a random enemy.",
     rarity: RARITIES.COMMON,
     onDraw: {
@@ -2392,15 +2423,6 @@ export const zap: Ability = {
                 flash: 200,
             },
             damage: 5,
-            bonus: {
-                damage: 3,
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.TARGET,
-                        hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                    },
-                ],
-            },
         },
     ],
     upgrades: [
@@ -2427,7 +2449,7 @@ export const frostfireBlast: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 5,
+            damage: 6,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
@@ -2438,7 +2460,7 @@ export const frostfireBlast: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 1,
+                    stacks: 2,
                 },
                 {
                     ...chill,
@@ -2655,7 +2677,7 @@ export const ifrit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                stacks: 1,
+                                stacks: 2,
                             },
                         ],
                     },
@@ -2683,7 +2705,7 @@ export const ifrit: Ability = {
                                     effects: [
                                         {
                                             ...burn,
-                                            stacks: 2,
+                                            stacks: 3,
                                         },
                                     ],
                                 },
@@ -2914,7 +2936,6 @@ export const fireSpirit: Ability = {
     minion: {
         name: "Fire Spirit",
         image: FireSpiritImage,
-
         maxHP: 6,
         abilities: [
             {
@@ -2929,7 +2950,7 @@ export const fireSpirit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                stacks: 1,
+                                stacks: 2,
                             },
                         ],
                     },
@@ -3102,7 +3123,7 @@ export const fireworks: Ability = {
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
-            effects: [{ ...burn, stacks: 1 }],
+            effects: [{ ...burn, stacks: 2 }],
         },
     ],
     upgrades: [
@@ -3413,7 +3434,8 @@ export const chargedBlast: Ability = {
 
 export const flameWall: Ability = {
     name: "Flame Wall",
-    description: "Attackers are afflicted with {{{ _burn_ }}}. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description:
+        "Attackers are afflicted with <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.stacks }} {{{ _burn_ }}}</b>. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     image: ExplosionImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
@@ -3435,7 +3457,7 @@ export const flameWall: Ability = {
                     maxApplications: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                        effects: [{ ...burn, stacks: 1 }],
+                        effects: [{ ...burn, stacks: 2 }],
                     },
                 },
             ],

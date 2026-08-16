@@ -52,7 +52,7 @@ const Burn = ({ amount }) => {
 
     useEffect(() => {
         if (amount > 0) {
-            const numParticles = clamp(3, 5, amount + 2);
+            const numParticles = clamp(2, 6, Math.ceil(amount / 2));
             setParticles(
                 Array.from({ length: numParticles }).map((_, i) => {
                     const min = 10;
