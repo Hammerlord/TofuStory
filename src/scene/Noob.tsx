@@ -8,13 +8,24 @@ import { SCENE_STYLES } from "./constants";
 import { RightAroundLith2Image, RightAroundLithImage } from "../images";
 import classNames from "classnames";
 
+const resourceRoll = Math.random() <= 0.5;
 const noobEncounter1 = {
-    waves: [{ enemies: [null, noobA, null, noobB, null] }],
+    waves: [{ enemies: [null, { ...noobA, resources: resourceRoll ? 1 : 0 }, null, { ...noobB, resources: resourceRoll ? 0 : 1 }, null] }],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
 const noobEncounter2 = {
-    waves: [{ enemies: [null, noobAWarrior, null, noobBWarrior, null] }],
+    waves: [
+        {
+            enemies: [
+                null,
+                { ...noobAWarrior, resources: resourceRoll ? 0 : 1 },
+                null,
+                { ...noobBWarrior, resources: resourceRoll ? 1 : 0 },
+                null,
+            ],
+        },
+    ],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 

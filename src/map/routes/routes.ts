@@ -110,7 +110,7 @@ const routePerionSleepywood: Route = {
 
 export const routeKerningToPerion: Route = {
     id: "kerning-perion",
-    specialEnemies: [goldenPig],
+    specialEnemies: [{ ...goldenPig, maxHP: 28 }],
     elites: {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask, jrBoogie],
@@ -461,7 +461,7 @@ export const routeElliniaPerion: Route = {
 
 export const routeHenesysEllinia: Route = {
     id: "henesys-ellinia",
-    specialEnemies: [goldenPig],
+    specialEnemies: [{ ...goldenPig, maxHP: 28 }],
     enemies: [
         [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
         [null, null, curseEye, null, null],

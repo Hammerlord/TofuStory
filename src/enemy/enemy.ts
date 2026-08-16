@@ -588,7 +588,6 @@ export const noobB: Minion = {
             name: "Flurry",
             image: WoodenClubImage,
             resourceCost: 3,
-            castTime: 1,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
