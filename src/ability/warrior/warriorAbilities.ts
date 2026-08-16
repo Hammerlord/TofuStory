@@ -42,7 +42,6 @@ import {
     LordOfDarknessImage,
     MagicCrashImage,
     MetalAxeImage,
-    MushmomAngryImage,
     NamelessSwordImage,
     NightShadeExplosionImage,
     PanicImage,
@@ -115,7 +114,6 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
-import { AngerIcon, ShieldIcon } from "../../images/icons";
 
 export const furiousStrikeCard: Ability = {
     name: "Furious Strike",
@@ -128,8 +126,7 @@ export const furiousStrikeCard: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            area: 1,
-            damage: 2,
+            damage: 5,
         },
     ],
     upgrades: [

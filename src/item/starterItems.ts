@@ -26,7 +26,7 @@ export const rageStone: Item = {
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 6,
+                    triggerFrequencyFromSum: 3,
                     applyAbilityEffects: {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
@@ -45,7 +45,7 @@ export const rageStone: Item = {
                 },
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 6,
+                    triggerFrequencyFromSum: 3,
                     addCards: [furiousStrikeCard],
                 },
             ],
@@ -67,7 +67,7 @@ export const rampageStone: Item = {
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 4,
+                    triggerFrequencyFromSum: 2,
                     applyAbilityEffects: {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
@@ -86,7 +86,7 @@ export const rampageStone: Item = {
                 },
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 4,
+                    triggerFrequencyFromSum: 2,
                     addCards: [furiousStrikeCard],
                 },
             ],
