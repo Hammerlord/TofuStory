@@ -28,6 +28,7 @@ import {
     FireMarbleImage,
     FrownyMaskImage,
     GiantCentipedeMarbleImage,
+    GoldenPigImage,
     GreenMushroomImage,
     GuardBanditImage,
     HornyMushroomImage,
@@ -42,6 +43,7 @@ import {
     LupinImage,
     MaladyImage,
     MegaphoneImage,
+    MesoCoinImage,
     MesoImage,
     MiniKargoImage,
     MonkeyBananaImage,
@@ -622,7 +624,7 @@ export const noobAWarrior = {
     name: "Beginner A",
     maxHP: 100,
     image: NoobWarriorAImage,
-    mesos: 30,
+    mesos: 15,
     abilities: [
         bash,
         {
@@ -644,7 +646,7 @@ export const noobBWarrior = {
     name: "Beginner B",
     maxHP: 100,
     image: NoobWarriorBImage,
-    mesos: 30,
+    mesos: 15,
     abilities: [
         {
             ...slam,
@@ -736,7 +738,6 @@ export const olaf: Minion = {
     maxHP: 60,
     isElite: true,
     effects: [elite],
-    mesos: 10,
     abilities: [
         attack,
         {
@@ -787,7 +788,7 @@ export const octopus: Minion = {
     name: "Octopus",
     image: OctopusIdleImage,
     maxHP: 60,
-    mesos: 10,
+    mesos: 8,
     abilities: [
         {
             ...attack,
@@ -936,7 +937,7 @@ export const axeStump: Minion = {
     image: AxeStumpImage,
     maxHP: 60,
     armor: 30,
-    mesos: 25,
+    mesos: 12,
     abilities: [
         loaf,
         {
@@ -976,7 +977,7 @@ export const fireBoar: Minion = {
     name: "Fire Boar",
     image: FireBoarImage,
     maxHP: 120,
-    mesos: 25,
+    mesos: 20,
     abilities: [
         {
             ...attack,
@@ -2079,7 +2080,7 @@ export const owlTower: Minion = {
     maxHP: 150,
     isElite: true,
     effects: [sentry],
-    mesos: 40,
+    mesos: 20,
     abilities: [
         {
             ...loaf,
@@ -2173,7 +2174,7 @@ export const wildKargo: Minion = {
     name: "Wild Kargo",
     image: WildKargoImage,
     maxHP: 250,
-    mesos: 30,
+    mesos: 25,
     isElite: true,
     abilities: [
         {
@@ -2509,7 +2510,6 @@ export const copperDrake: Minion = {
 export const egg: Minion = {
     name: "Mysterious Egg",
     maxHP: 15,
-    mesos: 20,
     image: EggImage,
     isElite: true,
     abilities: [{ ...loaf, name: "Zzz" }],
@@ -2747,7 +2747,7 @@ const neckiIncorporeal: Effect = {
 export const jrNecki: Minion = {
     name: "Jr. Necki",
     image: JrNeckiImage,
-    mesos: 20,
+    mesos: 10,
     maxHP: 30,
     abilities: [
         {
@@ -2836,6 +2836,7 @@ export const wraith: Minion = {
     name: "Wraith",
     maxHP: 15,
     image: WraithImage,
+    mesos: 15,
     abilities: [
         {
             name: "Swathe",
@@ -2876,4 +2877,50 @@ export const wraith: Minion = {
         loaf,
     ],
     effects: [{ ...incorporeal, duration: 5 }],
+};
+
+export const goldenPig: Minion = {
+    name: "Golden Pig",
+    maxHP: 14,
+    image: GoldenPigImage,
+    resources: 0,
+    mesos: 50,
+    abilities: [
+        {
+            name: "Fly",
+            image: NimbleFeetImage,
+            description: "Moves around.",
+            actions: [
+                {
+                    movement: 1,
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.MOVEMENT,
+                },
+            ],
+        },
+        {
+            name: "Flee",
+            image: TeleportImage,
+            resourceCost: 3,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.NONE,
+                    retreat: true,
+                    animationOptions: {
+                        fadeOut: true, // TODO does nothing on combatant portraits
+                    },
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            name: "Golden",
+            description: "Drops 50 mesos upon death.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: MesoCoinImage,
+        },
+    ],
 };

@@ -68,3 +68,5 @@ export const TOWN_STYLES = {
         transform: "translateX(-50%)",
     },
 };
+
+export const CHANCE_TO_SPAWN_SPECIAL_ENEMY = 1;

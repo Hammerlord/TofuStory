@@ -73,6 +73,7 @@ export interface Route {
         x: number;
         y: number;
     };
+    specialEnemies?: Minion[];
     /** If not provided, it will attempt to fallback on enemies from the preceding route */
     enemies?: (Minion | null)[][];
     /** Pool of preset enemies when generating a fight with multiple waves, expected to be easier than the single-wave `enemies` bucket. */

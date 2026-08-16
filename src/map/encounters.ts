@@ -16,6 +16,7 @@ import {
 } from "./../ability/Effects";
 import { attack, tantrum, shoot } from "./../enemy/abilities";
 import { getRandomItem, moveHeadToTail, shuffle } from "./../utils";
+import { CHANCE_TO_SPAWN_SPECIAL_ENEMY } from "./constants";
 import { EliteMap, EliteOptions, Route } from "./types";
 
 const findAttackDamage = (minion: Minion): number => {
@@ -411,7 +412,7 @@ export const generateWaves = ({
     for (let i = 0; i < numWaves; ++i) {
         let retries = 3;
         const generateEnemies = () => {
-            const candidates = enemyPool.shift();
+            let candidates = enemyPool.shift().slice();
             const numSameEnemies = waves.length && candidates.map((c, j) => c && c?.name === waves[i - 1][j]?.name).filter((v) => v).length;
             const isTooSimilarToPrev = numSameEnemies >= 3;
             if (isTooSimilarToPrev && retries) {
@@ -419,6 +420,22 @@ export const generateWaves = ({
                 generateEnemies();
                 --retries;
             } else {
+                if (Math.random() <= CHANCE_TO_SPAWN_SPECIAL_ENEMY && route.specialEnemies?.length) {
+                    const specialEnemy = getRandomItem(route.specialEnemies);
+                    const numSpecial = getRandomItem([1, 2, 3, 5]);
+                    Array.from({ length: numSpecial }).forEach((_, i) => {
+                        const isEven = i % 2 === 0;
+
+                        const emptySlot = candidates.findIndex((c) => !c);
+                        if (emptySlot > -1) {
+                            candidates[emptySlot] = { ...specialEnemy, resources: isEven ? 0 : 1 };
+                            return;
+                        }
+
+                        const occupiedSlot = candidates.findIndex((c) => c?.name !== specialEnemy.name);
+                        candidates[occupiedSlot] = { ...specialEnemy, resources: isEven ? 0 : 1 };
+                    });
+                }
                 waves.push({ enemies: candidates });
             }
         };

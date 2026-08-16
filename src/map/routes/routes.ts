@@ -7,6 +7,7 @@ import {
     darkStoneGolem,
     egg,
     fireBoar,
+    goldenPig,
     golem,
     greenMushroom,
     ironHog,
@@ -109,6 +110,7 @@ const routePerionSleepywood: Route = {
 
 export const routeKerningToPerion: Route = {
     id: "kerning-perion",
+    specialEnemies: [goldenPig],
     elites: {
         minions: [shroom, redSnail, stump],
         single: [fireBoar, rockyMask, jrBoogie],
@@ -213,6 +215,7 @@ export const routeKerningToPerion: Route = {
 
 const toKerning: Route = {
     id: "to-kerning",
+    specialEnemies: [goldenPig],
     elites: {
         minions: [snail, blueSnail],
         single: [orangeMushroom, octopus, bubbling],
@@ -458,6 +461,7 @@ export const routeElliniaPerion: Route = {
 
 export const routeHenesysEllinia: Route = {
     id: "henesys-ellinia",
+    specialEnemies: [goldenPig],
     enemies: [
         [stump, redSnail, elliniaGreenMushroom, redSnail, stump],
         [null, null, curseEye, null, null],
@@ -543,6 +547,7 @@ export const routeHenesysEllinia: Route = {
 
 export const toHenesys: Route = {
     id: "to-henesys",
+    specialEnemies: [goldenPig],
     elites: {
         minions: [snail, blueSnail],
         single: [orangeMushroom, ribbonPig],
@@ -580,6 +585,7 @@ export const toHenesys: Route = {
 
 export const toHenesysForest: Route = {
     id: "henesys-forest",
+    specialEnemies: [goldenPig],
     enemies: [
         [blueSnail, null, ribbonPig, null, blueSnail],
         [null, orangeMushroom, null, orangeMushroom, null],
@@ -627,6 +633,7 @@ export const routeLith: Route = {
         x: 0.15716753022452504,
         y: 0.7956483387239047,
     },
+    specialEnemies: [goldenPig],
     enemies: [
         [snail, blueSnail, redSnail, blueSnail, snail],
         [snail, redSnail, snail, redSnail, snail],

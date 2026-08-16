@@ -292,6 +292,7 @@ export { default as GlowingOrbImage } from "./GlowingOrb.png";
 export { default as GoldBarImage } from "./GoldBar.png";
 export { default as GoldenChickImage } from "./GoldenChick.png";
 export { default as GoldenHammerImage } from "./GoldenHammer.png";
+export { default as GoldenPigImage } from "./GoldenPig.gif";
 export { default as GoldenPrideImage } from "./GoldenPride.png";
 export { default as GoldRichieImage } from "./GoldRichie.png";
 export { default as GreenBambooHatImage } from "./GreenBambooHat.png";
