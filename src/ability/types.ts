@@ -477,7 +477,8 @@ export type CardFilterCondition = {
     actionTypes?: ACTION_TYPES[];
     abilityType?: "support" | "offense";
     comparator?: Comparator; // Mostly meant to be used for "not" cases
-    name?: string;
+    value?: any; // For comparing property values
+    property?: string;
 };
 
 export interface SelectCards {

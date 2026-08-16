@@ -31,7 +31,8 @@ export const rageStone: Item = {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
                             {
-                                name: "Furious Strike",
+                                property: "name",
+                                value: "Furious Strike",
                                 comparator: "eq",
                             },
                         ],
@@ -71,7 +72,8 @@ export const rampageStone: Item = {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
                             {
-                                name: "Furious Strike",
+                                property: "name",
+                                value: "Furious Strike",
                                 comparator: "eq",
                             },
                         ],

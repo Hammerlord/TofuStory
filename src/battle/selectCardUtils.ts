@@ -6,6 +6,8 @@ import { AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/ty
 import { Player } from "../character/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
+import { passesValueComparison } from "./passesConditions";
+import _ from "lodash";
 
 const DEFAULT_NUM_OPTIONS = 3;
 
@@ -88,7 +90,7 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
     }
     // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
     return filters.some((filter) => {
-        const { actionTypes, hasMinion, comparator, abilityType, name } = filter;
+        const { actionTypes, hasMinion, comparator, abilityType, property, value } = filter;
         const primaryAction = card.actions?.[0];
         if (abilityType === "support") {
             if (primaryAction && isSupportAction(primaryAction)) {
@@ -115,17 +117,13 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
         }
 
         if (hasMinion !== undefined) {
-            if ((hasMinion && card.minion) || (!hasMinion && !card.minion)) {
-                return comparator !== "not";
-            }
-            return false;
+            const matches = hasMinion === !!card.minion;
+            return comparator === "not" ? !matches : matches;
         }
 
-        if (name !== undefined) {
-            if (card.name === name) {
-                return comparator !== "not";
-            }
-            return false;
+        if (property !== undefined) {
+            const propertyVal = _.get(card, property);
+            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
         }
 
         return true;
