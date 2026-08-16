@@ -1392,7 +1392,7 @@ export const brick: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Brick",
-            minimumAttackDamage: 3,
+            minimumAttackDamage: 4,
         },
     ],
 };
