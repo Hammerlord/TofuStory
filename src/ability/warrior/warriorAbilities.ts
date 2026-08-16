@@ -126,14 +126,14 @@ export const furiousStrikeCard: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 5,
+            damage: 4,
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                     area: 1,
                 },
             ],
