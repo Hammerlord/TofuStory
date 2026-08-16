@@ -23,7 +23,7 @@ import {
 } from "../ability/Effects";
 import { armorDown, incorporeal } from "../enemy/effect";
 import Icon from "../icon/Icon";
-import { NamelessSwordImage } from "../images";
+import { AshesImage, CriticalShotImage, NamelessSwordImage, TargetLockImage } from "../images";
 import Handlebars from "handlebars";
 
 const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
@@ -48,6 +48,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Deplete",
+        icon: AshesImage,
         description: "After use, ability will be removed for the rest of the battle.",
     },
     {
@@ -120,6 +121,22 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         ...avenger,
         keys: ['"Avenger"'],
+    },
+    {
+        name: "Critical",
+        icon: CriticalShotImage,
+        description: "When drawn, the card has a chance to activate a bonus, based on your Critical chance.",
+        keys: ["Critical"],
+    },
+    {
+        name: "Aim",
+        icon: TargetLockImage,
+        description: "When you first gain Aim, Aimed Shot is added to the bottom of your deck. Aim stacks empower your Aimed Shot damage.",
+        keys: ["Aimed Shot"],
+    },
+    {
+        name: "Pierce",
+        description: "Bypasses Stealth and Immune.",
     },
 ];
 

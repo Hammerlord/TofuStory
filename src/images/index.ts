@@ -154,6 +154,7 @@ export { default as CopperScreechImage } from "./CopperScreech.png";
 export { default as CouponImage } from "./Coupon.png";
 export { default as CoveringFireImage } from "./CoveringFire.png";
 export { default as CrabCardImage } from "./CrabCard.png";
+export { default as CriticalShotImage } from "./CriticalShot.png";
 export { default as CrocoImage } from "./Croco.gif";
 export { default as CrossbowImage } from "./Crossbow.png";
 export { default as CrossedSwordsImage } from "./CrossedSwords.png";
