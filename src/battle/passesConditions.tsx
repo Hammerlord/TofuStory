@@ -315,7 +315,7 @@ export const passesConditions = ({
 
             if (name) {
                 const names = Array.isArray(name) ? name : [name];
-                if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: combatant.name, comparator }))) {
+                if (names.every((n: string) => !passesValueComparison({ val: combatant.name, otherVal: n, comparator }))) {
                     return false;
                 }
             }

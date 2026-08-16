@@ -1,11 +1,12 @@
 import { counterEffect } from "./effect";
-import { ManjiImage, NamelessSwordImage, SwordImage } from "../images";
+import { GlitteringMirrorImage, ManjiImage, NamelessSwordImage, SwordImage, TeleportImage } from "../images";
 import { EyeIcon } from "../images/icons";
-import { attackPower } from "./../ability/Effects";
+import { attackPower, hardy } from "./../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Effect,
@@ -14,6 +15,55 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { attack } from "./abilities";
+
+const dissipate = {
+    name: "Dissipate",
+    image: GlitteringMirrorImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            retreat: true,
+            animationOptions: {
+                fadeOut: true, // TODO does nothing on combatant portraits
+            },
+        },
+    ],
+};
+
+const disappear: Effect = {
+    name: "Apparition",
+    icon: GlitteringMirrorImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    description: "Disappears if stunned, frozen, silenced, or if Manji is defeated.",
+    onFriendlyDeath: {
+        usableWhileStunned: true,
+        usableWhileDead: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TARGET,
+                name: "Manji",
+                comparator: "includes",
+            },
+        ],
+        ability: dissipate,
+    },
+    onReceiveEffect: {
+        usableWhileStunned: true,
+        removeEffect: true, // onDeath removeEffect is insufficient for some reason
+        ability: dissipate,
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                comparator: "eq",
+            },
+        ],
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+    },
+};
 
 const counter: Ability = {
     name: "Counter",
@@ -50,7 +100,8 @@ export const manjiMirrorCounter: Minion = {
     name: "Mirror Image",
     isElite: true,
     image: ManjiImage,
-    maxHP: 27,
+    armor: 45,
+    maxHP: 5,
     abilities: [
         {
             ...attack,
@@ -63,14 +114,15 @@ export const manjiMirrorCounter: Minion = {
             ],
         },
     ],
-    effects: [{ ...counterEffect }],
+    effects: [disappear, { ...counterEffect }],
 };
 
 export const manjiMirrorSpotWeakness: Minion = {
     name: "Mirror Image",
     isElite: true,
     image: ManjiImage,
-    maxHP: 27,
+    armor: 45,
+    maxHP: 5,
     abilities: [
         {
             ...attack,
@@ -83,7 +135,7 @@ export const manjiMirrorSpotWeakness: Minion = {
             ],
         },
     ],
-    effects: [{ ...spotWeaknessEffect }],
+    effects: [disappear, { ...spotWeaknessEffect }],
 };
 
 const spotWeakness: Ability = {
@@ -150,6 +202,7 @@ export const manji: Minion = {
         },
     ],
     effects: [
+        hardy,
         {
             name: "Perfect Counter Effect",
             type: EFFECT_TYPES.NONE,
