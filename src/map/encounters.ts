@@ -337,7 +337,7 @@ const generateElite = ({
         effects: [...effects, { ...elite, attackPower: elite.attackPower + damageModifier * 2 }, ...affixes],
     };
 
-    return [null, swarming ? getRandomItem(eliteMap.minions) : null, enemy, swarming ? getRandomItem(eliteMap.minions) : null, null];
+    return [null, null, enemy, null, null];
 };
 
 export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] => {
