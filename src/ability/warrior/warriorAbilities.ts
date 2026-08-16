@@ -3091,7 +3091,7 @@ export const rupture: Ability = {
                     conditions: [
                         {
                             calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
+                            hasEffectType: [EFFECT_TYPES.BLEED],
                         },
                     ],
                 },

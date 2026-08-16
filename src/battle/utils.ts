@@ -342,6 +342,10 @@ export const getMultiplier = ({
         return (source?.statUpdate?.healing || 1) * numValue;
     }
 
+    if (type === MULTIPLIER_TYPES.DAMAGE) {
+        return (source?.statUpdate?.rawDamage || 1) * numValue;
+    }
+
     if (type === MULTIPLIER_TYPES.ALL_CARDS) {
         const allCards = [...deck, ...hand, ...discard];
         const multValue = typeof value === "number" ? value : 1;
@@ -374,7 +378,7 @@ export const getMultiplier = ({
             return 0;
         }
 
-        return combatant.effects.reduce((acc, effect) => {
+        return combatant.effects.reduce((acc, effect: CombatEffect) => {
             if (
                 filters &&
                 !filters.some(({ property, value, comparator }) =>

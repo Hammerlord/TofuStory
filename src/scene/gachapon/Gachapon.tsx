@@ -1,8 +1,30 @@
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    MULTIPLIER_TYPES,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../../ability/types";
 import { Wave } from "../../battle/types";
-import { GachaponImage, MesoImage } from "../../images";
+import { GachaponImage, MesoCoinImage, MesoImage } from "../../images";
 import { EventScene } from "../types";
 import GachaponScene from "./GachaponScene";
+
+const coin: Minion = {
+    name: "Meso",
+    image: MesoImage,
+    maxHP: 1,
+    mesos: 2,
+};
+
+const goldCoin: Minion = {
+    name: "Meso",
+    image: MesoCoinImage,
+    maxHP: 1,
+    mesos: 5,
+};
 
 export const gachaponMachine: Minion = {
     name: "Gachapon Machine",
@@ -13,15 +35,38 @@ export const gachaponMachine: Minion = {
         {
             name: "Loose Change",
             icon: MesoImage,
-            description: "Gives you 1 meso each time you hit it.",
+            description: "Chance to drop mesos when you hit it.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onReceiveDamage: {
+            onReceiveAttack: {
                 usableWhileStunned: true,
-                mesos: 1,
+                chance: 0.05,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.DAMAGE,
+                    value: 1,
+                },
                 targetType: TRIGGER_TARGET_TYPES.PLAYER,
-                pushEventQueue: true,
                 type: ACTION_TYPES.NONE,
+                ability: {
+                    name: "Loose Change",
+                    image: MesoCoinImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            summon: [
+                                {
+                                    minion: [coin, goldCoin],
+                                    tributePossible: true,
+                                },
+                                {
+                                    minion: [coin, goldCoin],
+                                    tributePossible: true,
+                                },
+                            ],
+                        },
+                    ],
+                },
             },
         },
     ],

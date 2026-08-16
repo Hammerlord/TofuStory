@@ -28,14 +28,14 @@ const coin: Minion = {
     name: "Meso",
     image: MesoImage,
     maxHP: 1,
-    mesos: 1,
+    mesos: 2,
 };
 
 const goldCoin: Minion = {
     name: "Meso",
     image: MesoCoinImage,
     maxHP: 1,
-    mesos: 3,
+    mesos: 5,
 };
 
 const richyRich: Effect = {

@@ -452,7 +452,7 @@ const handleOnReceiveAction = ({
                 checkEventTrigger({
                     combatantId: statUpdate.combatantId,
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack,
-                    source: { ...source, targetId: statUpdate.combatantId },
+                    source: { ...source, targetId: statUpdate.combatantId, statUpdate },
                 })
             );
         });
@@ -471,7 +471,7 @@ const handleOnReceiveAction = ({
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onFriendlyReceiveAttack,
-                        source: { ...source, targetId: statUpdate.combatantId },
+                        source: { ...source, targetId: statUpdate.combatantId, statUpdate },
                     })
                 );
             });
@@ -2614,7 +2614,7 @@ export const performAction = ({
                 triggerStatChangeEvents(
                     updatedSecondary.map(({ statUpdate, action }) => ({
                         statUpdate,
-                        source: { ...source, source: action },
+                        source: { ...source, source: action, statUpdate },
                     }))
                 )
             );

@@ -462,6 +462,7 @@ export enum MULTIPLIER_TYPES {
     NUM_SOURCE_TARGETS = "numSourceCharactersAffected",
     RESOURCES_SPENT = "resourcesSpent",
     HEALING = "healing",
+    DAMAGE = "damage",
     OVERHEALING = "overhealing",
     ALL_CARDS = "all-cards",
     EFFECT_STACKS = "effect-stacks",
