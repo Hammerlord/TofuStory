@@ -88,7 +88,7 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
     }
     // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
     return filters.some((filter) => {
-        const { actionTypes, hasMinion, comparator, abilityType } = filter;
+        const { actionTypes, hasMinion, comparator, abilityType, name } = filter;
         const primaryAction = card.actions?.[0];
         if (abilityType === "support") {
             if (primaryAction && isSupportAction(primaryAction)) {
@@ -116,6 +116,13 @@ export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFil
 
         if (hasMinion !== undefined) {
             if ((hasMinion && card.minion) || (!hasMinion && !card.minion)) {
+                return comparator !== "not";
+            }
+            return false;
+        }
+
+        if (name !== undefined) {
+            if (card.name === name) {
                 return comparator !== "not";
             }
             return false;

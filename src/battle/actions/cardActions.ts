@@ -26,7 +26,7 @@ import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../util
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
-import getCardSelection from "../selectCardUtils";
+import getCardSelection, { cardPassesFilterCondition } from "../selectCardUtils";
 import { Event, TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
@@ -45,16 +45,7 @@ import { getUpdatedStats } from "./getUpdatedStats";
 
 const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
-const sumCardDrawAmount = ({
-    effects,
-    source,
-    amount,
-}: {
-    effects?: AbilityEffect[];
-    filters?: ACTION_TYPES[];
-    amount: number;
-    source?: TriggerSource;
-}) => {
+const sumCardDrawAmount = ({ effects, source, amount }: { effects?: AbilityEffect[]; amount: number; source?: TriggerSource }) => {
     if (effects?.length) {
         amount += effects.reduce((acc, cur) => {
             return (acc += cur?.drawCards || 0);
@@ -731,9 +722,12 @@ export const checkCardActions = ({
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
         if (applyAbilityEffects) {
-            const { amount = Infinity, pile: pileKey } = applyAbilityEffects;
+            const { amount = Infinity, pile: pileKey, filters } = applyAbilityEffects;
             const pile = getState().battle[pileKey];
             const affectedCards = shuffle(pile)
+                .filter((card) => {
+                    return cardPassesFilterCondition(card, filters);
+                })
                 .slice(0, amount)
                 .reduce((acc, ability: CombatAbility) => {
                     acc[ability.instanceId] = true;
