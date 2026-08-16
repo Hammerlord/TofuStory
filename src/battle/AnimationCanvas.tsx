@@ -309,6 +309,7 @@ const AnimationCanvas = ({
                 from: actorElement,
                 to: ricochet ? allTargets : targetElement,
                 returnToOrigin: true,
+                windup: type === ACTION_TYPES.ATTACK ? 30 : 0,
                 ...options,
             });
         }

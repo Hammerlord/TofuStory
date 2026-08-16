@@ -50,6 +50,7 @@ export const playTravelAnimation = ({
     rotateToFaceTarget = false,
     returnToOrigin = false,
     sidewinder = false,
+    windup = 0,
     freezeAxis,
     fadeIn = false,
     fill,
@@ -63,6 +64,7 @@ export const playTravelAnimation = ({
     rotateToFaceTarget?: boolean;
     returnToOrigin?: boolean;
     sidewinder?: boolean;
+    windup?: number;
     freezeAxis?: "x" | "y";
     fadeIn?: boolean | "fast";
     fill?: "forwards";
@@ -86,6 +88,7 @@ export const playTravelAnimation = ({
     const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
     const { x, y } = getCenterCoords(from);
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+
     if (!elementsToAnimate[0]) {
         return;
     }
@@ -104,10 +107,12 @@ export const playTravelAnimation = ({
         if (toX === 0 && toY === 0) {
             return acc;
         }
+
         const x2 = freezeAxis === "x" ? x : toX;
         const y2 = freezeAxis === "y" ? y : toY;
         const xDiff = x2 - x + originOffsetX;
         const yDiff = y2 - y + originOffsetY;
+
         if (sidewinder) {
             const jitterX = getRandomArbitrary(50, 50);
             const jitterY = getRandomArbitrary(2, 3);
@@ -130,11 +135,21 @@ export const playTravelAnimation = ({
 
         return acc;
     }, []);
-    const totalTravelDistance = getTotalTravelDistance({ travelCoordinates, returnToOrigin });
+
+    const totalTravelDistance = getTotalTravelDistance({
+        travelCoordinates,
+        returnToOrigin,
+    });
 
     let rotation = initialRotation;
+
     if (rotateToFaceTarget) {
-        rotation += getRotationToFaceTarget({ x, y, x2: travelCoordinates[0]?.x2, y2: travelCoordinates[0]?.y2 });
+        rotation += getRotationToFaceTarget({
+            x,
+            y,
+            x2: travelCoordinates[0]?.x2,
+            y2: travelCoordinates[0]?.y2,
+        });
     }
 
     const frame = {
@@ -145,16 +160,52 @@ export const playTravelAnimation = ({
     if (fadeIn === "fast") {
         (frame as any).opacity = 1;
     }
+
     animationFrames.push(frame);
+
+    if (windup > 0 && travelCoordinates[0]) {
+        const { x2, y2 } = travelCoordinates[0];
+
+        const dx = x2 - x;
+        const dy = y2 - y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0) {
+            const windupX = (-dx / distance) * windup;
+            const windupY = (-dy / distance) * windup;
+
+            animationFrames.push({
+                transform: `
+                    translateX(${originOffsetX + windupX}px)
+                    translateY(${originOffsetY + windupY}px)
+                    rotate(${rotation}deg)
+                `,
+                opacity: 1,
+                offset: 0.15,
+            });
+
+            animationFrames.push({
+                transform: `
+                    translateX(${originOffsetX}px)
+                    translateY(${originOffsetY}px)
+                    rotate(${rotation}deg)
+                `,
+                opacity: 1,
+                offset: 0.2,
+            });
+        }
+    }
 
     travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
         let rotation = initialRotation;
+
         if (spin) {
             const isEven = i % 2 === 0;
             rotation = spin * (isEven ? -1 : 1);
         } else if (rotateToFaceTarget) {
             rotation += getRotationToFaceTarget({ x, y, x2, y2 });
         }
+
         const travelDist = travelCoordinates
             .slice(0, i + 1)
             .reduce((acc, { xDiff, yDiff }) => acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)), 0);
