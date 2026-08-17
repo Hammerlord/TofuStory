@@ -1,10 +1,13 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Action, Effect, WeaponImageOptions } from "../ability/types";
+import { ACTION_TYPES, Ability, Action, Effect, WeaponImageOptions } from "../ability/types";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
 import { Combatant } from "./types";
-import { Event } from "../battle/types";
+import { Event, TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { calculateActionArea } from "../battle/utils";
+import { findCombatantData } from "../battle/actions/actions";
+import { useAppSelector } from "../hooks";
 
 const WEAPON_DEFAULT_ROTATION = 45; // This is a MapleStory thing where weapon sprites are at 45 degree angles
 
@@ -169,13 +172,23 @@ const Weapon = ({
 }) => {
     const options = wielder?.weaponImageOptions;
     const classes = useStyles(options as any);
-    const { action } = (event?.actorId === wielder?.id && event) || {};
+    const { action, actionParent } = (event?.actorId === wielder?.id && event) || {};
     const { type, area } = action || {};
     const weaponRef = useRef(null);
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef(null));
     const animationRefs = useRef([]);
     const weaponAnimationOptions = action?.animationOptions?.weapon || {};
-    const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !area;
+
+    const battle = useAppSelector((state) => state?.battle);
+    const wielderInfo = findCombatantData(battle, wielder?.id);
+    const totalArea = battle
+        ? calculateActionArea({
+              action: action,
+              actor: wielderInfo,
+              source: { source: actionParent as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+          })
+        : area;
+    const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !totalArea;
     const isRotateWeaponToFaceTarget = weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
 
     const rotation = useMemo(() => {
@@ -195,14 +208,14 @@ const Weapon = ({
             return;
         }
         animationRefs.current?.forEach((a) => a.cancel());
-        if (area === 1) {
+        if (totalArea === 1) {
             animationRefs.current = [
                 swing({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
                     return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 110 });
                 }),
             ];
-        } else if (area >= 2) {
+        } else if (totalArea >= 2) {
             animationRefs.current = [
                 whirl({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
