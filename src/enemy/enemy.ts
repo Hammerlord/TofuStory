@@ -1865,14 +1865,22 @@ export const darkStoneGolem: Minion = {
         },
         {
             name: "Crushing Blow",
+            description: "Damage split between targets.",
             resourceCost: 3,
             castTime: 1,
             image: DarkStoneGolemRubbleImage,
             actions: [
                 {
                     damage: 20,
+                    area: 1,
+                    damageDividedByTargets: true,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    effects: [attackPower],
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
                 },
             ],
         },
@@ -2628,6 +2636,19 @@ export const rockyMask: Minion = {
     ],
 };
 
+export const strength: Effect = {
+    name: "Strength",
+    description: "Attacks apply Armor Down.",
+    icon: StoneGolemRubbleImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: false,
+    onAttack: {
+        targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+        effects: [armorDown],
+    },
+};
+
 export const golem: Minion = {
     name: "Stone Golem",
     image: StoneGolemImage,
@@ -2648,35 +2669,22 @@ export const golem: Minion = {
         },
         {
             name: "Crushing Blow",
+            description: "Damage split between targets.",
             resourceCost: 3,
             castTime: 1,
             image: StoneGolemRubbleImage,
             actions: [
                 {
                     damage: 15,
+                    damageDividedByTargets: true,
+                    area: 1,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
                 },
             ],
         },
     ],
-    effects: [
-        temporaryResist,
-        hardy,
-        preventArmorDecay,
-        {
-            name: "Strength",
-            description: "Attacks apply Armor Down.",
-            icon: StoneGolemRubbleImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            canBeSilenced: false,
-            onAttack: {
-                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [armorDown],
-            },
-        },
-    ],
+    effects: [temporaryResist, hardy, preventArmorDecay, strength],
 };
 
 export const bubbling: Minion = {

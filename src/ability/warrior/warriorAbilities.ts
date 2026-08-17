@@ -147,7 +147,7 @@ export const furiousStrikeCard: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 3,
+            damage: 4,
         },
     ],
     upgrades: [
@@ -168,7 +168,7 @@ export const bash: Ability = {
     image: BrickImage,
     actions: [
         {
-            damage: 4,
+            damage: 5,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
         },
@@ -724,7 +724,7 @@ export const sharpen: Ability = {
             effects: [
                 {
                     ...attackPower,
-                    duration: 4,
+                    duration: 3,
                 },
             ],
         },
@@ -735,7 +735,7 @@ export const sharpen: Ability = {
                 {
                     effects: [
                         {
-                            attackPower: 1,
+                            duration: 1,
                         },
                     ],
                 },
@@ -1727,19 +1727,16 @@ export const ragingBlow: Ability = {
     resourceCost: 2,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Hit twice. <b>Infuriate.</b>",
+    description: "Hit twice.",
     overrideBodyText: true,
     actions: [
         {
-            damage: 9,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            secondaryAction: {
-                effects: [infuriateEffect],
-            },
         },
         {
-            damage: 9,
+            damage: 8,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -2335,7 +2332,7 @@ export const forgehammer: Ability = {
     resourceCost: 1,
     actions: [
         {
-            damage: 7,
+            damage: 9,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
         },
@@ -2670,7 +2667,7 @@ export const bluntForce: Ability = {
             damage: 1,
             multiplier: {
                 type: MULTIPLIER_TYPES.HP,
-                value: 0.5,
+                value: 0.45,
                 calculationTarget: CONDITION_TARGETS.ACTOR,
             },
         },
@@ -2680,7 +2677,7 @@ export const bluntForce: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.1,
+                        value: 0.15,
                     },
                 },
             ],
@@ -3072,7 +3069,7 @@ export const zan: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 7,
+                    stacks: 6,
                 },
             ],
         },
@@ -3084,7 +3081,7 @@ export const zan: Ability = {
                     effects: [
                         {
                             ...bleed,
-                            stacks: 3,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -3104,7 +3101,7 @@ export const rupture: Ability = {
         {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            damage: 5,
+            damage: 1,
             bonus: [
                 {
                     damage: 3,

@@ -1239,6 +1239,7 @@ export const blueSaunaRobe: Item = {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 triggerFrequencyFromSum: 3,
                 armor: 2,
+                disableTriggerFromProcs: true,
             },
         },
     ],

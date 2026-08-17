@@ -1,9 +1,10 @@
-import { hardy, preventArmorDecay } from "../ability/Effects";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
-import { AncientMixedGolemImage, DarkStoneGolemRubbleImage, StoneGolemRubbleImage } from "../images";
+import { attackPower, hardy, preventArmorDecay } from "../ability/Effects";
+import { ACTION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import { AncientMixedGolemImage, DarkStoneGolemRubbleImage } from "../images";
 import { ShieldIcon } from "../images/icons";
 import { attack } from "./abilities";
-import { armorDown, temporaryResist } from "./effect";
+import { temporaryResist } from "./effect";
+import { strength } from "./enemy";
 
 export const ancientMixedGolem: Minion = {
     name: "Ancient Mixed Golem",
@@ -24,7 +25,7 @@ export const ancientMixedGolem: Minion = {
             ],
         },
         {
-            name: "Stone Skin",
+            name: "Harden",
             image: ShieldIcon,
             actions: [
                 {
@@ -38,44 +39,22 @@ export const ancientMixedGolem: Minion = {
             name: "Crushing Blow",
             resourceCost: 3,
             castTime: 1,
-            image: StoneGolemRubbleImage,
-            actions: [
-                {
-                    damage: 15,
-                    target: TARGET_TYPES.HOSTILE,
-                    type: ACTION_TYPES.ATTACK,
-                },
-            ],
-        },
-        {
-            name: "Crushing Blow",
-            resourceCost: 3,
-            castTime: 1,
             image: DarkStoneGolemRubbleImage,
             actions: [
                 {
                     damage: 15,
+                    area: 1,
+                    damageDividedByTargets: true,
                     target: TARGET_TYPES.HOSTILE,
                     type: ACTION_TYPES.ATTACK,
+                },
+                {
+                    effects: [attackPower],
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
                 },
             ],
         },
     ],
-    effects: [
-        temporaryResist,
-        hardy,
-        preventArmorDecay,
-        {
-            name: "Strength",
-            description: "Attacks apply Armor Down.",
-            icon: StoneGolemRubbleImage,
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            canBeSilenced: false,
-            onAttack: {
-                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [armorDown],
-            },
-        },
-    ],
+    effects: [temporaryResist, hardy, preventArmorDecay, strength],
 };
