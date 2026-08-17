@@ -32,6 +32,7 @@ export const createCombatant = (combatant): Combatant => {
         abilities:
             combatant.abilities?.map((ability: Ability) => ({
                 ...cloneDeep(ability),
+                actions: ability.actions.map(cloneDeep),
                 instanceId: uuid.v4(),
             })) || [],
         turnHistory: [],

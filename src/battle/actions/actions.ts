@@ -3453,6 +3453,11 @@ export const checkValidEnemyNextAbility = () => {
                 return;
             }
 
+            if (!ability.actions) {
+                console.error("Something bad happened to the actions of the ability:", ability.name, ability);
+                return;
+            }
+
             if (currentlyChosenAbility.name !== ability.name) {
                 const { battle: updatedBattle, targets } = getUpdatedBattleActionTargets({ ability, battle, actorInfo });
                 battle = updatedBattle;
