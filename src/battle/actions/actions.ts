@@ -338,6 +338,7 @@ const onCombatantDeath = ({ combatantId, triggerSource }: { combatantId: string;
                                 }),
                                 casting: null,
                                 resources: 0,
+                                armor: 0,
                             };
                         }
 
