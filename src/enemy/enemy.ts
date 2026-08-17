@@ -254,8 +254,8 @@ export const shroom: Minion = {
 
 export const redSnail: Minion = {
     name: "Red Snail",
-    maxHP: 7,
-    armor: 25,
+    maxHP: 5,
+    armor: 27,
     image: RedSnailImage,
     mesos: 5,
     abilities: [
@@ -308,8 +308,8 @@ export const redSnail: Minion = {
 
 export const slime: Minion = {
     name: "Slime",
-    maxHP: 15,
-    armor: 25,
+    maxHP: 12,
+    armor: 28,
     image: SlimeIdleImage,
     mesos: 10,
     abilities: [
@@ -1846,14 +1846,14 @@ export const malady: Minion = {
 
 export const darkStoneGolem: Minion = {
     name: "Dark Stone Golem",
-    maxHP: 150,
+    maxHP: 50,
     mesos: 25,
-    armor: 100,
+    armor: 200,
     isElite: true,
     image: DarkStoneGolemImage,
     abilities: [
         {
-            name: "Stone Skin",
+            name: "Harden",
             image: ShieldIcon,
             actions: [
                 {

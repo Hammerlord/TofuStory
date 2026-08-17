@@ -121,11 +121,13 @@ const dyleRealGarbage2: Minion = {
 export const harpoonCard: Ability = {
     name: "Harpoon",
     resourceCost: 0,
+    description: "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> against {{{ _armor_ }}} targets.",
+    isUnique: true,
     image: HarpoonGunImage,
     depletedOnUse: true,
     actions: [
         {
-            damage: 3,
+            damage: 15,
             effects: [bleed],
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -136,6 +138,16 @@ export const harpoonCard: Ability = {
                 height: 75,
                 rotate: 135,
                 rotateToFaceTarget: true,
+            },
+            bonus: {
+                damage: 15,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        armor: 0,
+                        comparator: "gt",
+                    },
+                ],
             },
         },
     ],
@@ -242,10 +254,10 @@ const flotsamWaveAttackAction = {
 };
 
 const dyleDredgeSummons = [
-    { minion: [dyleUsefulGarbage, dyleGarbage2, dyleUsefulGarbage2] },
+    { minion: [dyleEmptyGarbage2, dyleUsefulGarbage, dyleGarbage2, dyleUsefulGarbage2] },
     { minion: [dyleEmptyGarbage, dyleRealGarbage2] },
-    { minion: [dyleRealGarbage, dyleGarbage2, dyleBubbleFish] },
-    { minion: [dyleEmptyGarbage2, dyleGarbage2, dyleBubbleFish] },
+    { minion: [dyleEmptyGarbage, dyleRealGarbage, dyleGarbage2, dyleBubbleFish] },
+    { minion: [dyleEmptyGarbage2, dyleEmptyGarbage, dyleBubbleFish] },
 ];
 
 const submergeReady: Effect = {

@@ -998,7 +998,7 @@ export const applyVacuum = ({
                     characters[index - j] = characters[index - i];
                     characters[index - i] = null;
 
-                    const id = characters[index - j].id;
+                    const id = characters[index - j]?.id;
                     if (id) {
                         displacements[id] = {
                             from: index - i,

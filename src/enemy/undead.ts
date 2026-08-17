@@ -1,4 +1,4 @@
-import { eliteThorns, taunt } from "../ability/Effects";
+import { eliteThorns, hardy, taunt } from "../ability/Effects";
 import {
     ACTION_TYPES,
     ANIMATION_TYPES,
@@ -141,7 +141,7 @@ export const agonyCard: Ability = {
 
 export const undeadMage: Minion = {
     name: "Riche, the Undead Mage",
-    maxHP: 350,
+    maxHP: 500,
     mesos: 100,
     isBoss: true,
     image: RicheImage,
@@ -286,5 +286,6 @@ export const undeadMage: Minion = {
                 ],
             },
         },
+        hardy,
     ],
 };

@@ -13,7 +13,7 @@ import { Item, ITEM_TYPES, RARITIES } from "./types";
 export const rageStone: Item = {
     name: "Rage Stone",
     description:
-        "Every {{ effects.0.onResourcesSpent.triggerFrequencyFromSum }} Fury spent, add Furious Strike to your hand. If it's already in your hand, Upgrade it instead.",
+        "Every {{ effects.0.onResourcesSpent.0.triggerFrequencyFromSum }} Fury spent, add Furious Strike to your hand. If already active, Upgrade it instead.",
     flavourText: "A mysterious keepsake you found on your person.",
     image: HumilityStoneImage,
     type: ITEM_TYPES.EQUIPMENT,
@@ -26,7 +26,7 @@ export const rageStone: Item = {
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 3,
+                    triggerFrequencyFromSum: 4,
                     applyAbilityEffects: {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
@@ -45,7 +45,7 @@ export const rageStone: Item = {
                 },
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 3,
+                    triggerFrequencyFromSum: 4,
                     addCards: [furiousStrikeCard],
                 },
             ],
@@ -67,7 +67,7 @@ export const rampageStone: Item = {
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 2,
+                    triggerFrequencyFromSum: 3,
                     applyAbilityEffects: {
                         pile: CARD_PILE_TYPES.HAND,
                         filters: [
@@ -86,7 +86,7 @@ export const rampageStone: Item = {
                 },
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                    triggerFrequencyFromSum: 2,
+                    triggerFrequencyFromSum: 3,
                     addCards: [furiousStrikeCard],
                 },
             ],

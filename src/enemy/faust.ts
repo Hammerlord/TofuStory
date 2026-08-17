@@ -189,8 +189,8 @@ export const ghostlyPuppeteerL: Minion = {
     imageOptions: {
         animation: "float",
     },
-    maxHP: 15,
-    armor: 60,
+    maxHP: 10,
+    armor: 65,
     abilities: [
         {
             name: "Ghostly Mending",
@@ -240,7 +240,7 @@ export const ghostlyPuppeteerL: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: SmilingImpIcon,
-            turnsTriggerFrequency: 2,
+            turnsTriggerFrequency: 3,
             onTurnStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [

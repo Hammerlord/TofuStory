@@ -126,7 +126,7 @@ export const furiousStrikeCard: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 4,
+            damage: 3,
         },
     ],
     upgrades: [
@@ -998,6 +998,11 @@ export const whirlwind: Ability = {
             actions: [
                 {
                     damage: 2,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -1107,7 +1112,7 @@ export const dustDevilsActiveAbility = {
             animationOptions: {
                 sidewinder: true,
             },
-            damage: 1,
+            damage: 2,
             icon: TornadoImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
@@ -1273,7 +1278,7 @@ export const sledge: Ability = {
         {
             actions: [
                 {
-                    damage: 7,
+                    damage: 5,
                 },
             ],
         },
@@ -1351,7 +1356,7 @@ export const guillotine: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 12,
+            damage: 13,
             secondaryAction: {
                 returnParentCardToHand: true,
                 resources: 1,
@@ -1589,6 +1594,11 @@ export const puncture: Ability = {
             actions: [
                 {
                     damage: 2,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -1731,7 +1741,7 @@ export const worldReaver: Ability = {
     actions: [
         {
             area: 1,
-            damage: 25,
+            damage: 20,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -1753,7 +1763,7 @@ export const worldReaver: Ability = {
         {
             actions: [
                 {
-                    damage: 7,
+                    damage: 5,
                 },
             ],
         },
@@ -1882,7 +1892,7 @@ export const divineCharge: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 6,
+            damage: 7,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             area: 1,
@@ -1898,7 +1908,10 @@ export const divineCharge: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
+                    secondaryAction: {
+                        armor: 1,
+                    },
                 },
             ],
         },
@@ -2668,7 +2681,7 @@ export const retribute: Ability = {
             damage: 9,
             area: 2,
             bonus: {
-                damage: 5,
+                damage: 6,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -3062,7 +3075,7 @@ export const zan: Ability = {
 export const rupture: Ability = {
     name: "Rupture",
     rarity: RARITIES.RARE,
-    resourceCost: 2,
+    resourceCost: 3,
     image: HekatonsFistRedImage,
     description: "<b>+{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each {{{ _bleed_ }}} on the target.",
     overrideBodyText: true,
