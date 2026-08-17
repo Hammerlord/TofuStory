@@ -1190,6 +1190,7 @@ export const calculateBonus = ({
                     secondaryDamage: secondaryDamage && secondaryDamage + bonusDamage,
                     healing: healing + (bonus.healing || 0) * multiplier,
                     armor: armor + (bonus.armor || 0) * multiplier,
+                    destroyArmor: (bonus.destroyArmor || 0) + (acc.destroyArmor || 0),
                     effects: [...effects, ...totalBonusEffects],
                     drawCards: drawCardsObj,
                 } as Action;

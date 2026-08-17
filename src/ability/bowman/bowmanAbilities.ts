@@ -1972,7 +1972,7 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "<b>Pierce.</b> <br/> <b>+{{ actions.0.bonus.0.damage }} {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets. <br/> <b>Critical: +{{ actions.0.bonus.1.damage }} {{{ _damage_ }}}</b>",
+        "<b>Pierce.</b> <br/> Destroy <b>{{ actions.0.destroyArmor }}</b> Armor. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.0.destroyArmor }}</b> more.",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
@@ -1994,19 +1994,10 @@ export const shatteringArrow: Ability = {
             animationOptions: bowmanAnimationOption,
             bypassImmunity: true,
             bypassStealth: true,
+            destroyArmor: 0.2,
             bonus: [
                 {
-                    damage: 5,
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            armor: 0,
-                            comparator: "gt",
-                        },
-                    ],
-                },
-                {
-                    damage: 5,
+                    destroyArmor: 0.2,
                     conditions: [
                         {
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
@@ -2022,15 +2013,7 @@ export const shatteringArrow: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
-                    bonus: [
-                        {
-                            damage: 2,
-                        },
-                        {
-                            damage: 2,
-                        },
-                    ],
+                    damage: 3,
                 },
             ],
         },
