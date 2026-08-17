@@ -288,6 +288,7 @@ export const taunting: Effect = {
     name: "Taunting",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
+    canBeSilenced: true,
     description: "Periodically gaining Taunt. Attackers must target Taunting characters.",
     turnsTriggerFrequency: 3,
     onTurnEnd: {
@@ -362,6 +363,7 @@ export const poisonous = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: SapOfNependeathImage,
+    canBeSilenced: true,
     onAttack: {
         targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
         effects: [{ ...poison, stacks: 1 }],
@@ -385,6 +387,7 @@ export const restless: Effect = {
     description: "This character does not take rest turns.",
     icon: NoZzzIcon,
     disableAbilities: [ACTION_TYPES.NONE],
+    canBeSilenced: true,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
 };
