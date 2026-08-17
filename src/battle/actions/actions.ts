@@ -853,23 +853,21 @@ const onEffectEventTrigger = ({
                 aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
             });
 
-            if (procSource?.playbackCollector) {
-                dispatch(
-                    enqueueEvent({
-                        actorId: ownerId,
-                        source: procSource,
-                        selectedIndex: owner.index,
-                        targetSide: owner.friendlySide,
-                        statUpdates: aggregated,
-                        // We need to push to event queue for stat changes to show up visually, but since these don't have an action
-                        // attached to them, append them to the previous group/have minimal playback
-                        playbackTime: 1,
-                        options: {
-                            alwaysGroup: true,
-                        },
-                    })
-                );
-            }
+            dispatch(
+                enqueueEvent({
+                    actorId: ownerId,
+                    source: procSource,
+                    selectedIndex: owner.index,
+                    targetSide: owner.friendlySide,
+                    statUpdates: aggregated,
+                    // We need to push to event queue for stat changes to show up visually, but since these don't have an action
+                    // attached to them, append them to the previous group/have minimal playback
+                    playbackTime: 1,
+                    options: {
+                        alwaysGroup: true,
+                    },
+                })
+            );
 
             dispatch(
                 triggerStatChangeEvents(
