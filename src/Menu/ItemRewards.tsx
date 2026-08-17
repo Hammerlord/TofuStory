@@ -124,7 +124,7 @@ const ItemRewards = ({
                 excludeItems: items,
             });
 
-            for (let i = 0; i < numChoicesOffered - items.length; i++) {
+            for (let i = 0; i < numChoicesOffered; i++) {
                 const index = Math.floor(Math.random() * itemPool.length);
 
                 if (index === undefined || itemPool.length === 0) {
