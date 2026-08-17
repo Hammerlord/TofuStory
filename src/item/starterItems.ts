@@ -20,9 +20,17 @@ export const rageStone: Item = {
     rarity: RARITIES.STARTER,
     effects: [
         {
-            name: "Rage Stone Effect",
+            name: "Furious Strike",
+            description: "Remaining resource spend needed to gain or upgrade Furious Strike.",
+            icon: HumilityStoneImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            disableDisplayIcon: true, // It is displayed above the attack power instead
+            extraDisplayOptions: {
+                container: "right",
+                property: "onResourcesSpent.0.eventTriggeredTimes",
+                modulo: "onResourcesSpent.0.triggerFrequencyFromSum",
+            },
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -61,9 +69,17 @@ export const rampageStone: Item = {
     rarity: RARITIES.UNCOMMON,
     effects: [
         {
-            name: "Rage Stone Effect",
+            name: "Furious Strike",
+            description: "Remaining resource spend needed to gain or upgrade Furious Strike.",
+            icon: HumilityStoneImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
+            disableDisplayIcon: true, // It is displayed above the attack power instead
+            extraDisplayOptions: {
+                container: "right",
+                property: "onResourcesSpent.0.eventTriggeredTimes",
+                modulo: "onResourcesSpent.0.triggerFrequencyFromSum",
+            },
             onResourcesSpent: [
                 {
                     targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

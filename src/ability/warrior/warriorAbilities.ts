@@ -154,7 +154,7 @@ export const furiousStrikeCard: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                     area: 1,
                 },
             ],
