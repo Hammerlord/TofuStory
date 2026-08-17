@@ -1,10 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
 import { cardPassesFilterCondition } from "./selectCardUtils";
+import { useMemo } from "react";
 
-const handPlaybackDuration = 300; // As much as I'd like it to be a bit slower, it causes cards to get stuck/some responsiveness problems
 const CARD_WIDTH = 168; // From AbilityView
 
 export const getHandAuraEffects = (hand: CombatAbility[]) => {
@@ -57,6 +56,11 @@ const Hand = ({
 
         event.stopPropagation(); // Block the click event from going to the battlefield or it will deselect the card
     };
+
+    hand = useMemo(() => {
+        const auraEffects = getHandAuraEffects(hand);
+        return hand.map((ability, i) => ({ ...ability, effects: [...(ability.effects || []), ...(auraEffects[i] || [])] }));
+    }, [hand]);
 
     return (
         <div className={className}>
