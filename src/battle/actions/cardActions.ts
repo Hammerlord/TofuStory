@@ -23,11 +23,11 @@ import {
 } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { getRandomItem, getRandomItems, passesChance, shuffle } from "../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
+import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection, { cardPassesFilterCondition } from "../selectCardUtils";
-import { Event, TRIGGER_SOURCE_TYPES } from "../types";
+import { TRIGGER_SOURCE_TYPES } from "../types";
 import { getRandomInt } from "./../../utils";
 import { TriggerSource } from "./../types";
 import {
@@ -35,15 +35,14 @@ import {
     checkEventTrigger,
     enqueueEvent,
     findCombatantData,
-    stageStatChanges,
     triggerStatChangeEvents,
     updateCombatant,
     useAbility,
 } from "./actions";
-import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
 import { getUpdatedStats } from "./getUpdatedStats";
+import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
 
-const { updateBattle, pushEventQueue, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
 
 const sumCardDrawAmount = ({ effects, source, amount }: { effects?: AbilityEffect[]; amount: number; source?: TriggerSource }) => {
     if (effects?.length) {
@@ -225,6 +224,15 @@ export const drawCards = ({
 }) => {
     return (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        const player = playerSide?.find((c) => c?.isPlayer);
+        const hasViewDeckInOrder = player?.effects.some((e) => e.viewDeckInOrder);
+
+        // Deck cards are mostly hidden. Eg. don't give away the fact that Sudden Death is going to be drawn
+        // unless we have Spectrum Goggles
+        if (source?.isPreviewMode && !hasViewDeckInOrder) {
+            return;
+        }
+
         let newDeck: Ability[] = deck.slice();
         let newHand: Ability[] = hand.slice();
         let newDiscard = discard.slice();
