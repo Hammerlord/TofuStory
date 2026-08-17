@@ -1,9 +1,9 @@
 import { Combatant } from "../../character/types";
-import { CombatantInfo } from "../types";
+import { CombatantInfo, TriggerSource } from "../types";
 import { getEnabledEffects } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
-export const checkHalveArmor = (side: (CombatantInfo | null)[]) => (dispatch) => {
+export const checkHalveArmor = (side: (CombatantInfo | null)[], source: TriggerSource) => (dispatch) => {
     const statChanges = side
         .map((combatantInfo: CombatantInfo) => {
             if (!combatantInfo?.combatant) {
@@ -22,7 +22,7 @@ export const checkHalveArmor = (side: (CombatantInfo | null)[]) => (dispatch) =>
      * @see preventArmorDecayPlayer the player "Pristine Armor" needs this event to know when to tick down.
      */
     dispatch(applyStatChanges(statChanges));
-    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate }))));
+    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, source }))));
 };
 
 export const getHalveArmorAmount = (target: CombatantInfo): number => {

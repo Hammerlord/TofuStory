@@ -66,11 +66,11 @@ export const playbackCollector = (): PlaybackCollector => {
     };
 
     return {
-        collect: (event: Event) => {
+        collect: (event: Event, alwaysGroup: boolean = false) => {
             if (queue.length) {
                 const prevGroup = queue.at(-1);
                 const prevEvent = prevGroup.events?.at(-1);
-                if (isGroupableEvent(event, prevEvent)) {
+                if (isGroupableEvent(event, prevEvent) || (prevEvent && alwaysGroup)) {
                     addToGroup(event, prevGroup);
                     return;
                 }
@@ -94,6 +94,6 @@ export const playbackCollector = (): PlaybackCollector => {
 };
 
 export interface PlaybackCollector {
-    collect: (event: Event) => void;
+    collect: (event: Event, alwaysGroup?: boolean) => void;
     get: () => EventGroup[];
 }

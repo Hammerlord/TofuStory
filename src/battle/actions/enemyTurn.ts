@@ -360,8 +360,12 @@ export const startEnemyTurn = () => {
             })
         );
 
+        // The "source" acts as a context object just to pass in a playbackCollector.
+        // The effect events at turn start technically don't have a `trigger source`.
+        const playbackCollectorInstance = playbackCollector();
+        const source = { playbackCollector: playbackCollectorInstance };
         const combatantIds = enemySide.map((combatant) => combatant?.id).filter((v) => v);
-        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE, source }));
 
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {
@@ -370,7 +374,7 @@ export const startEnemyTurn = () => {
         };
 
         if (round > 0) {
-            dispatch(checkHalveArmor(getEnemySideInfo()));
+            dispatch(checkHalveArmor(getEnemySideInfo(), source));
         }
 
         enemySide.forEach((combatant: Combatant | null) => {
@@ -378,8 +382,10 @@ export const startEnemyTurn = () => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source: null }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source }));
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 
@@ -430,6 +436,7 @@ export const enemyMoves = () => {
             return;
         }
 
+        // Not having a playbackCollector (in the source object) probably doesn't matter here ATM?
         dispatch(checkTurnResourceGain(getEnemySideInfo()));
         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
     };

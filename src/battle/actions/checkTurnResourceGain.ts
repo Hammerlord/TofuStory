@@ -1,9 +1,9 @@
 import { Combatant } from "../../character/types";
-import { CombatantInfo } from "../types";
+import { CombatantInfo, TriggerSource } from "../types";
 import { getEnabledEffects, getMaxResources, isSilenced, isStunnedOrFrozen } from "./../utils";
 import { applyStatChanges, triggerStatChangeEvents } from "./actions";
 
-export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispatch) => {
+export const checkTurnResourceGain = (side: (CombatantInfo | null)[], source?: TriggerSource) => (dispatch) => {
     const statChanges = side
         .map((combatantInfo) => {
             if (!combatantInfo?.combatant) {
@@ -20,7 +20,7 @@ export const checkTurnResourceGain = (side: (CombatantInfo | null)[]) => (dispat
         .filter((v) => v);
 
     dispatch(applyStatChanges(statChanges));
-    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate }))));
+    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, source }))));
 };
 
 const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: number; resources: number } => {

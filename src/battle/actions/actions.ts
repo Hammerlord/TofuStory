@@ -81,7 +81,7 @@ import {
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
-import { PlaybackCollector, aggregateStatUpdates } from "./playbackCollector";
+import { PlaybackCollector, aggregateStatUpdates, playbackCollector } from "./playbackCollector";
 import { handleDiscard } from "./playerTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
@@ -528,7 +528,7 @@ const onAction = ({ action, source }: { action: Action; source?: TriggerSource }
  * @param combatantId - Combatant UUID
  */
 export const handleDoTs =
-    ({ combatantIds, side }: { combatantIds: string[]; side: BATTLEFIELD_SIDES }) =>
+    ({ combatantIds, side, source }: { combatantIds: string[]; side: BATTLEFIELD_SIDES; source: TriggerSource }) =>
     (dispatch, getState) => {
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
             const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] = [];
@@ -585,6 +585,7 @@ export const handleDoTs =
                     statUpdates: aggregatedStatUpdates,
                     // Hack: this is for displaying the dot type in the ability notification banner
                     actionParent: dotAbilityMap[dotType],
+                    source,
                 })
             );
 
@@ -851,7 +852,7 @@ const onEffectEventTrigger = ({
                 aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
             });
 
-            if (pushEventQueue) {
+            if (procSource?.playbackCollector) {
                 dispatch(
                     enqueueEvent({
                         actorId: ownerId,
@@ -859,6 +860,12 @@ const onEffectEventTrigger = ({
                         selectedIndex: owner.index,
                         targetSide: owner.friendlySide,
                         statUpdates: aggregated,
+                        // We need to push to event queue for stat changes to show up visually, but since these don't have an action
+                        // attached to them, append them to the previous group/have minimal playback
+                        playbackTime: 1,
+                        options: {
+                            alwaysGroup: true,
+                        },
                     })
                 );
             }
@@ -1567,9 +1574,16 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
 
 export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant | null)[]; side: BATTLEFIELD_SIDES }) => {
     return (dispatch) => {
+        const playbackCollectorInstance = playbackCollector();
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd,
+                        source: { playbackCollector: playbackCollectorInstance },
+                    })
+                );
             }
         });
 
@@ -2090,6 +2104,7 @@ export const enqueueEvent = ({
     cardsAddedTo,
     displacements,
     statUpdates,
+    options,
 }: {
     action?: Action;
     actorId?: string;
@@ -2104,6 +2119,7 @@ export const enqueueEvent = ({
     newCards?: CombatAbility[];
     cardsAddedTo?: CardPileType;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
+    options?: { alwaysGroup: boolean };
 }) => {
     return (dispatch, getState) => {
         playbackTime = action?.playbackTime || playbackTime;
@@ -2154,7 +2170,7 @@ export const enqueueEvent = ({
         };
 
         if (collector) {
-            collector.collect(event);
+            collector.collect(event, options?.alwaysGroup);
             return;
         }
 

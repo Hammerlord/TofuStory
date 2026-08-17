@@ -19,7 +19,7 @@ import {
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { playbackCollector } from "./playbackCollector";
+import { PlaybackCollector, playbackCollector } from "./playbackCollector";
 import { checkWinCondition } from "../checkWinCondition";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
@@ -219,6 +219,8 @@ const minionAutoAttack = () => {
     return (dispatch, getState) => {
         const { playerSide } = getState().battle;
 
+        const playbackCollectorInstance = playbackCollector();
+
         playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
                 return;
@@ -229,7 +231,7 @@ const minionAutoAttack = () => {
                 return;
             }
 
-            dispatch(useAbility({ ability: abilityToUse, actorId: combatant.id }));
+            dispatch(useAbility({ ability: abilityToUse, actorId: combatant.id, playbackCollector: playbackCollectorInstance }));
         });
     };
 };
@@ -299,20 +301,23 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         }
 
         const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
-        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
+
+        const playbackCollectorInstance = playbackCollector();
+        const source = { playbackCollector: playbackCollectorInstance };
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, source }));
 
         const getPlayerSideInfo = () =>
             getState().battle.playerSide.map((combatant) => findCombatantData(getState().battle, combatant?.id));
 
         if (round > 0) {
-            dispatch(checkHalveArmor(getPlayerSideInfo()));
+            dispatch(checkHalveArmor(getPlayerSideInfo(), source));
         }
 
-        dispatch(checkTurnResourceGain(getPlayerSideInfo()));
+        dispatch(checkTurnResourceGain(getPlayerSideInfo(), source));
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart }));
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source }));
             }
         });
 
@@ -330,14 +335,17 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         dispatch(
             drawCards({
                 amount: drawCardsAmount,
+                source,
             })
         );
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw }));
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw, source }));
             }
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 

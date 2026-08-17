@@ -79,7 +79,7 @@ export interface TriggerSource {
     source?: Action | CombatEffect | Ability | Item;
     // The amount of, eg. block, healing, overhealing done by the source
     statUpdate?: UpdatedCombatantStats;
-    type: TRIGGER_SOURCE_TYPES;
+    type?: TRIGGER_SOURCE_TYPES;
     actorId?: string;
     // The selected target during the action (or the summoned minion)
     targetId?: string;
