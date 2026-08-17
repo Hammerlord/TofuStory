@@ -26,6 +26,7 @@ import {
 } from "./../ability/types";
 import { lifeLink } from "./effect";
 import { bananaPeelCard } from "./enemy";
+import { shuffle } from "../utils";
 
 export const faust: Minion = {
     name: "Faust",
@@ -60,46 +61,48 @@ export const faust: Minion = {
                 },
             ],
         },
-        {
-            name: "Infected Bite",
-            image: PoisonImage,
-            resourceCost: 3,
-            castTime: 1,
-            actions: [
-                {
-                    type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    damage: 10,
-                    animationOptions: {
-                        sidewinder: true,
+        ...shuffle([
+            {
+                name: "Infected Bite",
+                image: PoisonImage,
+                resourceCost: 3,
+                castTime: 1,
+                actions: [
+                    {
+                        type: ACTION_TYPES.ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        damage: 10,
+                        animationOptions: {
+                            sidewinder: true,
+                        },
+                        effects: [{ ...poison, stacks: 2 }],
                     },
-                    effects: [{ ...poison, stacks: 2 }],
-                },
-            ],
-        },
-        {
-            name: "Going Bananas",
-            image: MonkeyBananaImage,
-            resourceCost: 3,
-            castTime: 1,
-            channelDuration: 3,
-            actions: [
-                {
-                    type: ACTION_TYPES.RANGE_ATTACK,
-                    target: TARGET_TYPES.HOSTILE,
-                    icon: MonkeyBananaImage,
-                    area: 2,
-                    animationOptions: {
-                        width: 100,
-                        height: 100,
+                ],
+            },
+            {
+                name: "Going Bananas",
+                image: MonkeyBananaImage,
+                resourceCost: 3,
+                castTime: 1,
+                channelDuration: 3,
+                actions: [
+                    {
+                        type: ACTION_TYPES.RANGE_ATTACK,
+                        target: TARGET_TYPES.HOSTILE,
+                        icon: MonkeyBananaImage,
+                        area: 2,
+                        animationOptions: {
+                            width: 100,
+                            height: 100,
+                        },
+                        damage: 7,
+                        secondaryDamage: 3,
+                        animation: ANIMATION_TYPES.ONE_WAY_SPIN,
+                        addCardsToDeck: [bananaPeelCard],
                     },
-                    damage: 7,
-                    secondaryDamage: 3,
-                    animation: ANIMATION_TYPES.ONE_WAY_SPIN,
-                    addCardsToDeck: [bananaPeelCard],
-                },
-            ],
-        },
+                ],
+            },
+        ]),
     ],
     effects: [
         hardy,
@@ -112,7 +115,6 @@ export const faust: Minion = {
             canBeSilenced: false,
             onFriendlyDeath: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                damage: 30,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -120,13 +122,25 @@ export const faust: Minion = {
                         numFriendly: 1, // This is assuming Faust is the only one alive
                     },
                 ],
-                effects: [
-                    {
-                        ...stun,
-                        bypassImmunity: true,
-                        duration: 2,
-                    },
-                ],
+                usableWhileStunned: true,
+                ability: {
+                    name: "Broken Link",
+                    image: ShackledHandImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.SELF,
+                            type: ACTION_TYPES.EFFECT,
+                            damage: 30,
+                            effects: [
+                                {
+                                    ...stun,
+                                    bypassImmunity: true,
+                                    duration: 2,
+                                },
+                            ],
+                        },
+                    ],
+                },
             },
         },
     ],
