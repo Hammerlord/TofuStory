@@ -731,7 +731,7 @@ const pigsRibbonCounter: Effect = {
         disableTriggerFromProcs: true,
         usableWhileStunned: false,
         removeEffect: true,
-        targetType: TRIGGER_TARGET_TYPES.ACTOR,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         induceCombatantAttack: true,
     },
     onTurnStart: {
