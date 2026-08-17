@@ -1035,8 +1035,8 @@ export const checkEventTrigger = ({
             );
 
             const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
-            // TODO this is causing an insidious bug where if the effect name is the same as its parent/source name, it doesn't proc
-            const notTriggeringSameEffect = effect.name !== (source?.source as any)?.name;
+            const parentSource: Action | CombatEffect | Ability | Item = source?.source;
+            const notTriggeringSameEffect = effect.id !== (parentSource as CombatEffect)?.id;
             const historyKey = [effectEventKey, id].join("-");
             const history = source?.triggerHistory || [];
             const alreadyTriggered = history.includes(historyKey);
