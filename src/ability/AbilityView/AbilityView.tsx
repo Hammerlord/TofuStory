@@ -24,6 +24,7 @@ import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import SelectCards from "./SelectCards";
 import { getAbilityColor, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
+import { BATTLE_STATES } from "../../battle/reducer";
 
 const useStyles = createUseStyles({
     root: {
@@ -185,6 +186,9 @@ const useStyles = createUseStyles({
     },
     glow: {
         filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
+    },
+    glowOrange: {
+        filter: "drop-shadow(0px 0px 4px rgb(255, 170, 0)) drop-shadow(0px 0px 4px rgb(255, 170, 0))",
     },
     abilityLevel: {
         color: "#25b814",
@@ -480,9 +484,13 @@ const AbilityView = forwardRef(
             }
         };
 
-        const shouldGlow =
-            isAbilityUsable && !disableGlow && !disableConditionGlow && battle && (hasBonus || effects.some((e) => e.highlightCard));
-        const cannotBePlayed = Boolean(battle) && (isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable)));
+        const inBattle = battle && battle.state !== BATTLE_STATES.VICTORY;
+        const shouldGlow = isAbilityUsable && !disableGlow && !disableConditionGlow && inBattle;
+        const glowStacks = [hasBonus, ...effects.map((e) => e.highlightCard)].reduce((acc, cur: boolean) => {
+            const stacks = cur ? 1 : 0;
+            return acc + stacks;
+        }, 0);
+        const cannotBePlayed = inBattle && (isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable)));
 
         return (
             <AbilityTooltip ability={ability}>
@@ -490,7 +498,8 @@ const AbilityView = forwardRef(
                     className={classNames(classes.root, className, {
                         [classes.cursed]: type === ACTION_TYPES.HINDER,
                         "-selected": isSelected,
-                        [classes.glow]: shouldGlow,
+                        [classes.glow]: shouldGlow && glowStacks === 1,
+                        [classes.glowOrange]: shouldGlow && glowStacks > 1,
                     })}
                     {...other}
                 >
