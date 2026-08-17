@@ -1407,6 +1407,18 @@ export const elliniaHornyMushroom: Minion = {
     effects: [thorns],
 };
 
+const dissipate: Ability = {
+    name: "Vanish",
+    image: TeleportImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.NONE,
+            retreat: true,
+        },
+    ],
+};
+
 const curseEyeDouble: Minion = {
     name: "Mirage",
     image: CurseEyeImage,
@@ -1416,38 +1428,19 @@ const curseEyeDouble: Minion = {
     effects: [
         {
             ...incorporeal,
-            description: "Cannot take more than 1 damage per hit. Vanishes when crowd controlled or this effect ends.",
+            description:
+                "Cannot take more than 1 damage per hit. Dissipates if crowd controlled, if the Curse Eye is defeated, or this effect ends.",
             duration: 3,
             canBeSilenced: false,
             onEnd: {
                 usableWhileStunned: true,
-                removeEffect: true, // onDeath removeEffect is insufficient for some reason
-                ability: {
-                    name: "Vanish",
-                    image: TeleportImage,
-                    actions: [
-                        {
-                            target: TARGET_TYPES.SELF,
-                            type: ACTION_TYPES.NONE,
-                            retreat: true,
-                        },
-                    ],
-                },
+                removeEffect: true,
+                ability: dissipate,
             },
             onReceiveEffect: {
                 usableWhileStunned: true,
-                removeEffect: true, // onDeath removeEffect is insufficient for some reason
-                ability: {
-                    name: "Vanish",
-                    image: TeleportImage,
-                    actions: [
-                        {
-                            target: TARGET_TYPES.SELF,
-                            type: ACTION_TYPES.NONE,
-                            retreat: true,
-                        },
-                    ],
-                },
+                removeEffect: true,
+                ability: dissipate,
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -1456,6 +1449,20 @@ const curseEyeDouble: Minion = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            },
+            // This works so as long as we only spawn one Curse Eye; otherwise we would need a "summoner ID"-based lookup
+            onFriendlyDeath: {
+                usableWhileStunned: true,
+                usableWhileDead: true,
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                        name: "Curse Eye",
+                        comparator: "includes",
+                    },
+                ],
+                ability: dissipate,
             },
         },
     ],
@@ -1502,6 +1509,7 @@ export const curseEye: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     icon: EyeIcon,
                     animation: ANIMATION_TYPES.BEAM,
+                    area: 5,
                     effects: [
                         {
                             name: "Dizzy",
