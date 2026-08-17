@@ -172,7 +172,7 @@ const Weapon = ({
 }) => {
     const options = wielder?.weaponImageOptions;
     const classes = useStyles(options as any);
-    const { action, actionParent } = (event?.actorId === wielder?.id && event) || {};
+    const { action, source } = (event?.actorId === wielder?.id && event) || {};
     const { type, area } = action || {};
     const weaponRef = useRef(null);
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef(null));
@@ -185,7 +185,7 @@ const Weapon = ({
         ? calculateActionArea({
               action: action,
               actor: wielderInfo,
-              source: { source: actionParent as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+              source,
           })
         : area;
     const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !totalArea;
