@@ -115,6 +115,27 @@ import { MULTIPLIER_TYPES } from "./../types";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
 
+export const warriorDefaultAttack: Ability = {
+    name: "Attack",
+    resourceCost: 0,
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 2,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
 export const furiousStrikeCard: Ability = {
     name: "Furious Strike",
     resourceCost: 0,

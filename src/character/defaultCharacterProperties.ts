@@ -44,6 +44,8 @@ import {
 } from "../images";
 import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
 import { Player } from "./types";
+import { lesserBolt } from "../ability/magician/magicianAbilities";
+import { warriorDefaultAttack } from "../ability/warrior/warriorAbilities";
 
 // Bows/oblong weapons have a different shape compared to swords and need to be positioned closer to the character
 const bowImageOptions: WeaponImageOptions = {
@@ -79,7 +81,6 @@ const defaultCharacterProperties: Player = {
     maxResources: BASE_MAX_RESOURCES, // Maximum resources that resourcesPerTurn can grant up to
     resources: 0,
     armor: 0,
-    abilities: [],
     turnHistory: [],
     abilityHistory: [],
     mesos: 0,
@@ -96,6 +97,7 @@ const defaultCharacterProperties: Player = {
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
         ...sharedSkins,
     ],
+    abilities: [warriorDefaultAttack],
 };
 
 export const wizardProperties: Player = {
@@ -114,6 +116,7 @@ export const wizardProperties: Player = {
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
         ...sharedSkins,
     ],
+    abilities: [lesserBolt],
 };
 
 export const bowmanProperties: Player = {

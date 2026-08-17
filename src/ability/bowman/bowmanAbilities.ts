@@ -177,6 +177,15 @@ export const bowmanDefaultAttack: Ability = {
             animationOptions: bowmanAnimationOption,
         },
     ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
 };
 
 export const sharpEyes: Ability = {
