@@ -1,6 +1,7 @@
 import { avenger, bleed, hardy } from "../ability/Effects";
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import {
+    ArrowRainImage,
     AthenaAttackStanceImage,
     AvengersArrowImage,
     CoveringFireImage,
@@ -62,7 +63,15 @@ export const guardWolf: Minion = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
-                    effects: [{ ...taunt, duration: 1 }],
+                    effects: [
+                        {
+                            ...taunt,
+                            duration: 2,
+                            onTurnStart: {
+                                removeEffect: true,
+                            },
+                        },
+                    ],
                 },
             ],
         },
@@ -82,7 +91,7 @@ export const athena: Minion = {
         {
             name: "Multishot",
             description: "Damage dealt is split among targets.",
-            image: CoveringFireImage,
+            image: ArrowRainImage,
             resourceCost: 0,
             actions: [
                 {
@@ -103,7 +112,7 @@ export const athena: Minion = {
         {
             name: "Combined Assault",
             image: FelineBerserkImage,
-            description: "Commands all allies to attack.",
+            description: "Commands nearby allies to attack.",
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
@@ -123,7 +132,7 @@ export const athena: Minion = {
         },
         {
             name: "Pierce",
-            description: "Destroys the target's armor. If the target has no armor, deals 5 damage.",
+            description: "Destroys the target's armor. If the target has no armor, deals 8 damage.",
             image: MortalBlowImage,
             resourceCost: 3,
             castTime: 1,
@@ -135,7 +144,7 @@ export const athena: Minion = {
                     icon: AvengersArrowImage,
                     destroyArmor: 1,
                     bonus: {
-                        damage: 5,
+                        damage: 8,
                         conditions: [
                             {
                                 calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
