@@ -85,6 +85,7 @@ import {
 } from "../../images";
 import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
+import { CRITICAL_KEYWORD } from "../AbilityView/constants";
 import {
     armorUp,
     attackDown,
@@ -117,8 +118,6 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../types";
 import { cloneDeep } from "lodash";
-
-const CRITICAL = "Critical";
 
 const bowmanAnimationOption = {
     rotateToFaceTarget: true,
@@ -240,7 +239,7 @@ export const volley: Ability = {
                 chance: 0,
                 abilityEffects: [
                     {
-                        name: CRITICAL,
+                        name: CRITICAL_KEYWORD,
                         maxApplications: 1,
                         highlightCard: true,
                     },
@@ -255,7 +254,7 @@ export const volley: Ability = {
                             {
                                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                hasAbilityEffectName: CRITICAL,
+                                hasAbilityEffectName: CRITICAL_KEYWORD,
                             },
                         ],
                     },
@@ -275,7 +274,7 @@ export const shootAbility: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -295,7 +294,7 @@ export const shootAbility: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -435,7 +434,7 @@ export const soulShot: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -456,7 +455,7 @@ export const soulShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -614,7 +613,7 @@ export const doubleShot: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -634,7 +633,7 @@ export const doubleShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -652,7 +651,7 @@ export const doubleShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -691,7 +690,7 @@ const strafeHit = {
             {
                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                hasAbilityEffectName: CRITICAL,
+                hasAbilityEffectName: CRITICAL_KEYWORD,
             },
         ],
     },
@@ -708,7 +707,7 @@ export const strafe: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -793,7 +792,7 @@ export const powerShot: Ability = {
     onDraw: {
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -824,7 +823,7 @@ export const powerShot: Ability = {
                         {
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                            hasAbilityEffectName: CRITICAL,
+                            hasAbilityEffectName: CRITICAL_KEYWORD,
                         },
                     ],
                 },
@@ -853,7 +852,7 @@ export const guard: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -870,7 +869,7 @@ export const guard: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -979,7 +978,7 @@ export const barbedArrows: Ability = {
                 chance: 0,
                 abilityEffects: [
                     {
-                        name: CRITICAL,
+                        name: CRITICAL_KEYWORD,
                         maxApplications: 1,
                         highlightCard: true,
                     },
@@ -994,7 +993,7 @@ export const barbedArrows: Ability = {
                             {
                                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                hasAbilityEffectName: CRITICAL,
+                                hasAbilityEffectName: CRITICAL_KEYWORD,
                             },
                         ],
                     },
@@ -1381,7 +1380,7 @@ export const doubleJump: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1402,7 +1401,7 @@ export const doubleJump: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -1674,7 +1673,7 @@ export const quickShot: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1696,7 +1695,7 @@ export const quickShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
                 damage: 4,
@@ -1801,7 +1800,7 @@ export const arrowBlow: Ability = {
         chance: 0.2,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -1821,7 +1820,7 @@ export const arrowBlow: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -1979,7 +1978,7 @@ export const shatteringArrow: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2012,7 +2011,7 @@ export const shatteringArrow: Ability = {
                         {
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                            hasAbilityEffectName: CRITICAL,
+                            hasAbilityEffectName: CRITICAL_KEYWORD,
                         },
                     ],
                 },
@@ -2093,7 +2092,7 @@ const hurricaneHit = {
             {
                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                hasAbilityEffectName: CRITICAL,
+                hasAbilityEffectName: CRITICAL_KEYWORD,
             },
         ],
     },
@@ -2110,7 +2109,7 @@ export const hurricaneAbility: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2163,7 +2162,7 @@ export const snapfreezeShot: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2187,7 +2186,7 @@ export const snapfreezeShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -2215,7 +2214,7 @@ export const turtleUp: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2238,7 +2237,7 @@ export const turtleUp: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -2539,7 +2538,7 @@ export const takeAim: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -2556,7 +2555,7 @@ export const takeAim: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -3050,7 +3049,7 @@ export const longShot: Ability = {
         chance: 0.2,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 bypassUnplayable: true,
                 maxApplications: 1,
                 highlightCard: true,
@@ -3171,7 +3170,7 @@ const fleetfootProc: Effect = {
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                hasAbilityEffectName: CRITICAL,
+                hasAbilityEffectName: CRITICAL_KEYWORD,
             },
         ],
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -3227,7 +3226,7 @@ export const bountyOrNothing: Ability = {
         chance: 0.2,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 bypassUnplayable: true,
                 maxApplications: 1,
                 highlightCard: true,
@@ -3264,7 +3263,7 @@ export const takeAShot: Ability = {
         chance: -0.1,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -3284,7 +3283,7 @@ export const takeAShot: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -3413,7 +3412,7 @@ export const entrenchedFire: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -3454,7 +3453,7 @@ export const entrenchedFire: Ability = {
                 {
                     sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                    hasAbilityEffectName: CRITICAL,
+                    hasAbilityEffectName: CRITICAL_KEYWORD,
                 },
             ],
         },
@@ -3523,7 +3522,7 @@ export const berry: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },
@@ -3544,7 +3543,7 @@ export const berry: Ability = {
                     {
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        hasAbilityEffectName: CRITICAL,
+                        hasAbilityEffectName: CRITICAL_KEYWORD,
                     },
                 ],
             },
@@ -3601,7 +3600,7 @@ const ultimateStrafeHit = {
             {
                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                hasAbilityEffectName: CRITICAL,
+                hasAbilityEffectName: CRITICAL_KEYWORD,
             },
         ],
     },
@@ -3618,7 +3617,7 @@ export const ultimateStrafe: Ability = {
         chance: 0,
         abilityEffects: [
             {
-                name: CRITICAL,
+                name: CRITICAL_KEYWORD,
                 maxApplications: 1,
                 highlightCard: true,
             },

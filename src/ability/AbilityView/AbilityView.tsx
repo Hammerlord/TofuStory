@@ -3,12 +3,13 @@ import { FC, forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
+import { BATTLE_STATES } from "../../battle/reducer";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { canUseAbility, getMultiplier } from "../../battle/utils";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { MapleLeavesImage } from "../../images";
+import { CriticalShotImage, MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import { ACTION_TYPES, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
@@ -19,12 +20,13 @@ import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
+import { CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import SelectCards from "./SelectCards";
 import { getAbilityColor, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
-import { BATTLE_STATES } from "../../battle/reducer";
+import { Box } from "@mui/material";
 
 const useStyles = createUseStyles({
     root: {
@@ -426,19 +428,22 @@ const AbilityView = forwardRef(
                 };
             }, {}) as any;
 
-        const cornerIcon = (() => {
+        const showCritical = effects.some((e) => e.name === CRITICAL_KEYWORD);
+
+        const cornerIcons = (() => {
+            const icons = [];
             if (baseDamage !== undefined) {
-                return <DamageIcon damageStatistics={damageStatistics} />;
+                icons.push(<DamageIcon damageStatistics={damageStatistics} />);
             }
 
             if (armorTotal > 0) {
                 armorCornerIcon = true;
-                return <ArmorIcon armorStatistics={armorStatistics} />;
+                icons.push(<ArmorIcon armorStatistics={armorStatistics} />);
             }
 
             if (healing > 0) {
                 healingCornerIcon = true;
-                return (
+                icons.push(
                     <Icon
                         icon={<HeartIcon />}
                         text={healing}
@@ -449,7 +454,13 @@ const AbilityView = forwardRef(
                 );
             }
 
-            return <div className={classes.iconPlaceholder} />;
+            if (showCritical) {
+                const CriticalIcon = <Icon icon={CriticalShotImage} highlightIcon size="sm" />;
+                icons.push(CriticalIcon);
+            } else {
+                icons.push(<div className={classes.iconPlaceholder} />);
+            }
+            return icons;
         })();
 
         const hasBonus = hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
@@ -524,7 +535,9 @@ const AbilityView = forwardRef(
                             style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                         >
                             <span className={classes.header}>
-                                {cornerIcon}
+                                <Box sx={{ display: "flex", flexDirection: "column" }} component="span">
+                                    {cornerIcons}
+                                </Box>
                                 <span
                                     className={classNames(classes.name, {
                                         rare: ability.rarity === RARITIES.RARE,
@@ -539,7 +552,7 @@ const AbilityView = forwardRef(
                                                 .join("")}
                                         </span>
                                     )}
-                                </span>{" "}
+                                </span>
                                 <AbilityResourceIcon
                                     ability={ability}
                                     player={player}

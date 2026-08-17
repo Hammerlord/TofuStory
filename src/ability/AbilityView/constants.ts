@@ -55,3 +55,5 @@ export const resourceClassNameMap = {
 
 export const DEFAULT_CARD_MAX_LEVEL = 2;
 export const STARTER_CARD_MAX_LEVEL = 3;
+
+export const CRITICAL_KEYWORD = "Critical";

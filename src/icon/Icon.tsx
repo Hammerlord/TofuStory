@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { forwardRef, ReactElement } from "react";
 import { createUseStyles } from "react-jss";
+import { GREEN } from "../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -92,6 +93,9 @@ const useStyles = createUseStyles({
     negative: {
         color: "#ff9b94",
     },
+    highlightIcon: {
+        filter: `drop-shadow(0px 0px 2px ${GREEN}) drop-shadow(0px 0px 2px ${GREEN})`,
+    },
 });
 
 interface IconInterface {
@@ -103,11 +107,15 @@ interface IconInterface {
     style?: any;
     children?: ReactElement;
     highlightText?: "positive" | "negative";
+    highlightIcon?: boolean;
     [x: string]: any;
 }
 
 const Icon = forwardRef(
-    ({ text, icon, background, size = "md", className, style, children, highlightText, ...other }: IconInterface, ref: any) => {
+    (
+        { text, icon, background, size = "md", className, style, children, highlightText, highlightIcon, ...other }: IconInterface,
+        ref: any
+    ) => {
         const classes = useStyles();
         size = ["min", "xs", "sm", "md", "lg", "xl"].includes(size) ? size : undefined;
         let iconNode;
@@ -126,7 +134,12 @@ const Icon = forwardRef(
         }
 
         return (
-            <span className={classNames("icon-root", classes.root, className, size)} style={{ background, ...style }} {...other} ref={ref}>
+            <span
+                className={classNames("icon-root", classes.root, className, size, { [classes.highlightIcon]: highlightIcon })}
+                style={{ background, ...style }}
+                {...other}
+                ref={ref}
+            >
                 <span className={classNames(classes.inner)}>
                     {iconNode}
                     {children ? (
