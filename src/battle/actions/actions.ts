@@ -12,6 +12,7 @@ import {
     Ability,
     AbilityEffect,
     Action,
+    ActionOptionalProperties,
     AutoCastAbility,
     CONDITION_TARGETS,
     CardPileType,
@@ -2364,7 +2365,25 @@ export const calculateTargetIndices = ({
     }, []);
 };
 
-const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget, source, parentSource, updatedStatsProps, isAutoCast }) => {
+const handleSecondaryAction = ({
+    secondaryAction,
+    actorId,
+    getCalculationTarget,
+    source,
+    parentSource,
+    updatedStatsProps,
+    isAutoCast,
+}: {
+    secondaryAction: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
+    actorId: string;
+    getCalculationTarget: (
+        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | CombatEffect | undefined;
+    source: TriggerSource;
+    parentSource: TriggerSource;
+    updatedStatsProps: any;
+    isAutoCast: boolean;
+}) => {
     return (dispatch, getState): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             return;
@@ -2405,11 +2424,12 @@ const handleSecondaryAction = ({ secondaryAction, actorId, getCalculationTarget,
             battle,
             source,
         });
+
         const recipientIds = recipientIndices.map((i: number) => targetData.friendly[i]?.id).filter((v) => v);
         const updatedSecondary = getUpdatedStats({
             ...updatedStatsProps,
             actorId,
-            targetIds: recipientIds,
+            targetIds: source.allTargetIds,
             recipientIds,
             selectedIndex: target.index,
             action: secondaryAction,
