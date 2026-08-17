@@ -703,8 +703,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         dispatch(nextWave());
                         dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
                     } else {
-                        onWin && onWin(battle);
                         dispatch(onBattleEnd());
+                        onWin && onWin(battle);
                     }
                 }, TURN_ANNOUNCEMENT_TIME);
             }, 1000);

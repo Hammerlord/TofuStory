@@ -4,7 +4,7 @@ import { Ability, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../ability/
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews from "../../character/getAbilityPreviews";
 import { playerStateSlice } from "../../character/playerReducer";
-import { Combatant } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { createCombatant } from "../../enemy/createEnemy";
 import { poisonous, sneaky } from "../../enemy/effect";
 import { Item } from "../../item/types";
@@ -19,21 +19,20 @@ import { checkCardActions } from "./cardActions";
 import { calculateMesoMultiplier } from "../utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
-const { updatePlayer, pushBattleHistory, updateMesos } = playerStateSlice.actions;
+const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch, getState) => {
-        const battle = getState().battle;
+        const battle: BattleState = getState().battle;
         if (!battle) {
             return;
         }
-        const { playerSide, enemySide, isTutorial, totalDamageDealt, totalKills, waves } = battle;
+        const { playerSide, enemySide, isTutorial, statistics, waves } = battle;
         dispatch(updateBattleState(BATTLE_STATES.VICTORY));
 
         dispatch(
             pushBattleHistory({
-                totalDamageDealt,
-                totalKills,
+                statistics,
                 waves,
             })
         );
@@ -46,7 +45,8 @@ export const onBattleEnd = () => {
         const lifeLinkMesos = lifeLinkedEnemies.reduce((acc: number, combatant: Combatant) => {
             return acc + combatant.mesos || 0;
         }, 0);
-        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+
+        const player: Player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
         dispatch(
             updatePlayer({
@@ -175,8 +175,11 @@ export const startBattle = ({
             cardRewards,
             disableCardRewards,
             disableItemRewards,
-            totalDamageDealt: 0,
-            totalKills: 0,
+            statistics: {
+                totalDamage: 0,
+                totalKills: 0,
+                damageByEnemyName: {},
+            },
             charactersAttackedThisTurn: [],
             addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4() })),
         };

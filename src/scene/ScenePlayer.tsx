@@ -461,11 +461,19 @@ const ScenePlayer = ({
             }
 
             if (typeof battle.totalDamage === "number") {
-                return passesValueComparison({ val: recentBattle?.totalDamageDealt, otherVal: battle.totalDamage, comparator });
+                const totalDamageDealt = recentBattle?.statistics?.totalDamage || 0;
+                return passesValueComparison({ val: totalDamageDealt, otherVal: battle.totalDamage, comparator });
             }
 
             if (typeof battle.totalKills === "number") {
-                return passesValueComparison({ val: recentBattle?.totalKills, otherVal: battle.totalKills, comparator });
+                const totalKills = recentBattle?.statistics?.totalKills || 0;
+                return passesValueComparison({ val: totalKills, otherVal: battle.totalKills, comparator });
+            }
+
+            if (battle.damageToEnemy) {
+                const { enemyName, amount = 0 } = battle.damageToEnemy;
+                const damageToEnemy = recentBattle?.statistics?.damageByEnemyName?.[enemyName] || 0;
+                return passesValueComparison({ val: damageToEnemy, otherVal: amount, comparator });
             }
 
             if (typeof activityScore === "number") {
@@ -657,12 +665,15 @@ const ScenePlayer = ({
     };
 
     const interpolateDialog = (text: string) => {
-        return Handlebars.compile(text)({
+        const { totalKills = 0, totalDamage = 0, damageByEnemyName } = recentBattle?.statistics || {};
+        const template = {
             class: classesInterpolation[player.class],
             classPlural: classesPluralInterpolation[player.class],
-            totalKills: recentBattle?.totalKills || 0,
-            totalDamage: recentBattle?.totalDamageDealt || 0,
-        });
+            totalKills,
+            totalDamage,
+            damageByEnemyName,
+        };
+        return Handlebars.compile(text)(template);
     };
 
     const handleRemoveAbility = (updatedDeck: CombatAbility[]) => {

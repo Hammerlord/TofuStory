@@ -44,7 +44,7 @@ import {
     dotDamageMap,
 } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
-import { BattleState, battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, Event, TRIGGER_SOURCE_TYPES } from "../types";
 import {
@@ -1251,9 +1251,23 @@ const isActorPlayerSide = ({ side, source }: { side: (Combatant | Player | null)
 const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
     const battle: BattleState = getState().battle;
     if (isActorPlayerSide({ side: battle.playerSide, source })) {
+        const statistics: BattleStatistics = {
+            ...battle.statistics,
+            totalDamage: (battle.statistics.totalDamage || 0) + (damage || 0),
+            damageByEnemyName: {
+                ...battle.statistics.damageByEnemyName,
+            },
+        };
+
+        const target = findCombatantData(battle, source.targetId);
+        const targetName = target?.combatant?.name;
+        if (targetName) {
+            statistics.damageByEnemyName[targetName] = (statistics.damageByEnemyName[targetName] || 0) + (damage || 0);
+        }
+
         dispatch(
             updateBattle({
-                totalDamageDealt: (battle.totalDamageDealt || 0) + (damage || 0),
+                statistics,
             })
         );
     }
@@ -1431,7 +1445,10 @@ export const triggerStatChangeEvents =
 
             if (rawDamage > 0) {
                 dispatchEvent(EFFECT_EVENT_KEYS.onReceiveDamage, { trackSumAmount: Math.abs(rawDamage) });
-                dispatch(updateDamageStatistics(rawDamage, source));
+            }
+
+            if (healthDamage > 0) {
+                dispatch(updateDamageStatistics(healthDamage, source));
             }
 
             effects.forEach((e: CombatEffect) => {

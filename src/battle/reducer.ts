@@ -14,6 +14,14 @@ interface Notification {
     id: string; // UUID
 }
 
+export interface BattleStatistics {
+    totalDamage: number;
+    damageByEnemyName: {
+        [enemyName: string]: number;
+    };
+    totalKills: number;
+}
+
 export interface BattleState {
     enemySide: (Combatant | null)[];
     playerSide: (Combatant | null)[];
@@ -41,8 +49,7 @@ export interface BattleState {
     disableCardRewards?: boolean;
     disableItemRewards?: boolean;
     notification?: Notification;
-    totalDamageDealt: number; // Should include DoTs, etc.
-    totalKills?: number;
+    statistics: BattleStatistics;
     isTutorial?: boolean;
     addAbilities: CombatAbility[];
     deckCycled?: boolean;

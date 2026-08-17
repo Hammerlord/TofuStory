@@ -19,6 +19,7 @@ import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 import { RANDOM_BOSSES } from "../map/randomBosses";
+import { BattleStatistics } from "../battle/reducer";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -38,7 +39,7 @@ export type TownShops = {
     };
 };
 
-export type BattleHistory = { totalDamageDealt: number; totalKills: number; waves: Wave[] };
+export type BattleHistory = { statistics: BattleStatistics; waves: Wave[] };
 
 export type CharacterState = {
     player: null | Player;

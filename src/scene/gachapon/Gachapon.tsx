@@ -111,7 +111,10 @@ export const gachaponEvents: EventScene = {
                                     conditions: [
                                         {
                                             battle: {
-                                                totalDamage: 200,
+                                                damageToEnemy: {
+                                                    amount: 200,
+                                                    enemyName: gachaponMachine.name,
+                                                },
                                             },
                                             comparator: "gt",
                                         },
@@ -120,7 +123,7 @@ export const gachaponEvents: EventScene = {
                                         {
                                             speaker: gachaponMachine,
                                             dialog: [
-                                                "You dealt {{ totalDamage }} damage to the gachapon machine. It makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
+                                                "You dealt {{ damageByEnemyName.Gachapon Machine }} damage to the gachapon machine. It makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
                                             ],
                                         },
                                         {
@@ -149,7 +152,10 @@ export const gachaponEvents: EventScene = {
                                     conditions: [
                                         {
                                             battle: {
-                                                totalDamage: 100,
+                                                damageToEnemy: {
+                                                    amount: 100,
+                                                    enemyName: gachaponMachine.name,
+                                                },
                                             },
                                             comparator: "gt",
                                         },
@@ -187,7 +193,10 @@ export const gachaponEvents: EventScene = {
                                     conditions: [
                                         {
                                             battle: {
-                                                totalDamage: 49,
+                                                damageToEnemy: {
+                                                    amount: 49,
+                                                    enemyName: gachaponMachine.name,
+                                                },
                                             },
                                             comparator: "gt",
                                         },

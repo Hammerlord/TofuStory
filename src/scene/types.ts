@@ -51,7 +51,11 @@ export interface Shop {
 
 export interface ScriptConditions {
     battle?: {
-        totalDamage?: number; // How much damage was dealt in the most recent battle. See Gachapon for an example of how this is used.
+        totalDamage?: number; // How much damage was dealt in the most recent battle.
+        damageToEnemy?: {
+            enemyName: string;
+            amount: number;
+        };
         totalKills?: number; // How many enemies were killed in the most recent battle. See perionDummies for an example of how this is used.
     };
     activityScore?: number; // A numeric score tracking how "well" the player did in the recent puzzle/activity. Depends on the activity.
