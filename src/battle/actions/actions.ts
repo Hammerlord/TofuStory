@@ -45,7 +45,7 @@ import {
     dotDamageMap,
 } from "../constants";
 import { passesConditions, passesValueComparison } from "../passesConditions";
-import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
+import { BattleState, BattleStatistics, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import {
@@ -75,8 +75,7 @@ import {
     checkCardActions,
     deleteCard,
     depleteAbilities,
-    drawCards,
-    handleDrawOriginalAbility,
+    handleDrawOriginalAbility
 } from "./cardActions";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";

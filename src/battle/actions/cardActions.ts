@@ -41,8 +41,9 @@ import {
 } from "./actions";
 import { getUpdatedStats } from "./getUpdatedStats";
 import { handleDiscard, prepareForDiscard, usePlayerAbility } from "./playerTurn";
+import { playbackCollector } from "./playbackCollector";
 
-const { updateBattle, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, promptPlayerSelectCards, setNotification, pushEventQueue } = battleStateSlice?.actions || {};
 
 const sumCardDrawAmount = ({ effects, source, amount }: { effects?: AbilityEffect[]; amount: number; source?: TriggerSource }) => {
     if (effects?.length) {
@@ -228,6 +229,58 @@ export const applyAbilityEffectsOnDraw = ({
     };
 };
 
+const handleOnDrawEvents = ({
+    cardsToDraw,
+    bonus,
+    context,
+}: {
+    cardsToDraw: CombatAbility[];
+    bonus?: CardBonus[];
+    context: ActionContext;
+}) => {
+    return (dispatch, getState) => {
+        const { playerSide, enemySide } = getState().battle;
+
+        cardsToDraw.forEach((card: CombatAbility) => {
+            const onDraw = card.onDraw;
+            if (onDraw) {
+                const { chance = 1, ability, effects } = onDraw;
+
+                if (!passesChance(chance)) {
+                    return;
+                }
+
+                if (ability) {
+                    const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+                    dispatch(useAbility({ ability, actorId: player.id, isProc: true }));
+                }
+
+                if (effects) {
+                    dispatch(triggerCardActionCombatantBonuses({ ability: card, effects }));
+                }
+            }
+        });
+
+        dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, context }));
+
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
+                        context: {
+                            ...context,
+                            trackSumAmount: cardsToDraw.length,
+                            isProc: true,
+                        },
+                    })
+                );
+            }
+        });
+    };
+};
+
 export const drawCards = ({
     effects = [],
     filters = [],
@@ -320,43 +373,7 @@ export const drawCards = ({
         };
 
         dispatch(updateBattle(newState));
-        cardsToDraw.forEach((card: CombatAbility) => {
-            const onDraw = card.onDraw;
-            if (onDraw) {
-                const { chance = 1, ability, effects } = onDraw;
-
-                if (!passesChance(chance)) {
-                    return;
-                }
-
-                if (ability) {
-                    const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
-                    dispatch(useAbility({ ability, actorId: player.id, isProc: true }));
-                }
-
-                if (effects) {
-                    dispatch(triggerCardActionCombatantBonuses({ ability: card, effects }));
-                }
-            }
-        });
-
-        dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, context }));
-
-        playerSide.concat(enemySide).forEach((combatant) => {
-            if (combatant) {
-                dispatch(
-                    checkEventTrigger({
-                        combatantId: combatant.id,
-                        effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
-                        context: {
-                            ...context,
-                            trackSumAmount: cardsToDraw.length,
-                            isProc: true,
-                        },
-                    })
-                );
-            }
-        });
+        dispatch(handleOnDrawEvents({ cardsToDraw, bonus, context }));
 
         if (deckCycled) {
             playerSide.concat(enemySide).forEach((combatant) => {
@@ -392,11 +409,13 @@ const handleSelectCards = ({
     isAutoCast,
     source: source,
     triggerAddCardsToHandEvent,
+    context,
 }: {
     selectCards: SelectCards;
     isAutoCast?: boolean;
     source?: TriggerSource;
     triggerAddCardsToHandEvent: (numCards: number) => void;
+    context: ActionContext;
 }) => {
     return (dispatch, getState) => {
         if (!isAutoCast) {
@@ -426,22 +445,26 @@ const handleSelectCards = ({
             maxAmount
         );
 
-        if (cards.length) {
-            if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                // TODO no op for now. There are no actions which deplete from hand.
-            } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-                const cardsToMove = cards.map((card: CombatAbility) =>
-                    applyAbilityEventEffects({ event: card.onLeaveHand, ability: card })
-                );
-                const updatedHand = hand.filter((ability: CombatAbility) =>
-                    cardsToMove.every((card) => card.instanceId !== ability.instanceId)
-                );
-                const updatedDeck = [...cards, ...deck];
-                dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
-            } else {
-                dispatch(updateBattle({ hand: [...cards, ...hand] }));
-                triggerAddCardsToHandEvent(cards.length);
-            }
+        if (!cards.length) {
+            return;
+        }
+
+        if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+            // TODO no op for now. There are no actions which deplete from hand.
+        } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
+            const cardsToMove = cards.map((card: CombatAbility) => applyAbilityEventEffects({ event: card.onLeaveHand, ability: card }));
+            const updatedHand = hand.filter((ability: CombatAbility) =>
+                cardsToMove.every((card) => card.instanceId !== ability.instanceId)
+            );
+            const updatedDeck = [...cards, ...deck];
+            dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
+        } else {
+            dispatch(updateBattle({ hand: [...cards, ...hand] }));
+            triggerAddCardsToHandEvent(cards.length);
+        }
+
+        if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
+            dispatch(handleOnDrawEvents({ cardsToDraw: cards, context }));
         }
     };
 };
@@ -781,7 +804,7 @@ export const checkCardActions = ({
         }
 
         if (selectCards) {
-            dispatch(handleSelectCards({ isAutoCast, source, selectCards, triggerAddCardsToHandEvent }));
+            dispatch(handleSelectCards({ isAutoCast, source, selectCards, triggerAddCardsToHandEvent, context }));
         }
 
         if (moveCards) {
@@ -1086,6 +1109,11 @@ export const selectCardsAction =
             );
 
             triggerAddCardsToHandEvent();
+            const playbackCollectorInstance = playbackCollector();
+            const context: ActionContext = { playbackCollector: playbackCollectorInstance };
+            dispatch(handleOnDrawEvents({ cardsToDraw: cardsToAdd, context }));
+            dispatch(pushEventQueue(playbackCollectorInstance.get()));
+
             return;
         }
 
