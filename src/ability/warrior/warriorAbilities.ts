@@ -4,6 +4,7 @@ import {
     AvengersArrowImage,
     BallistaImage,
     BareBladeImage,
+    BerserkImage,
     BladestormImage,
     BladeworksImage,
     BlastExtraStrikeImage,
@@ -68,6 +69,7 @@ import {
     SpearSweepImage,
     SpikeBallImage,
     SpikedMaceImage,
+    SprintImage,
     SquareHammerImage,
     TornadoImage,
     WarLeapImage,
@@ -105,6 +107,7 @@ import {
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -3171,6 +3174,113 @@ export const rupture: Ability = {
                             damage: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+const frenzyEffect: Effect = {
+    name: "Frenzy",
+    description: "Gaining Furious Strike on every card played.",
+    type: EFFECT_TYPES.RAGE, // doesn't really matter
+    class: EFFECT_CLASSES.BUFF,
+    icon: BerserkImage,
+    duration: 1,
+    onAbility: [
+        {
+            disableTriggerFromProcs: true,
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            applyAbilityEffects: {
+                pile: CARD_PILE_TYPES.HAND,
+                filters: [
+                    {
+                        property: "name",
+                        value: "Furious Strike",
+                        comparator: "eq",
+                    },
+                ],
+                abilityEffects: [
+                    {
+                        upgradedByLevels: 1,
+                    },
+                ],
+            },
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    property: "name",
+                    value: furiousStrikeCard.name,
+                    comparator: "not",
+                },
+            ],
+        },
+        {
+            disableTriggerFromProcs: true,
+            targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            addCards: [furiousStrikeCard],
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    property: "name",
+                    value: furiousStrikeCard.name,
+                    comparator: "not",
+                },
+            ],
+        },
+    ],
+    onTurnEnd: {
+        removeEffect: true,
+    },
+};
+
+export const frenzy: Ability = {
+    name: "Frenzy",
+    rarity: RARITIES.RARE,
+    overrideBodyText: true,
+    description: "Gain <b>Furious Strike.</b> This turn only, each card played will grant <b>Furious Strike</b> (or <b>Upgrade</b> it).",
+    image: BerserkImage,
+    resourceCost: 1,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            animation: ANIMATION_TYPES.SHOUT,
+            effects: [frenzyEffect],
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
+        },
+    ],
+};
+
+export const sprint: Ability = {
+    name: "Sprint",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 0,
+    image: SprintImage,
+    depletedOnUse: true,
+    description: "Draw {{ actions.0.drawCards.amount }} cards.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 4,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    drawCards: {
+                        amount: 2,
+                    },
                 },
             ],
         },

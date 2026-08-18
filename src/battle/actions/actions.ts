@@ -1011,7 +1011,7 @@ export const checkEventTrigger = ({
             return;
         }
         const source = context?.sourceChain?.at(-1);
-        const fromProc = source?.isProc && context.isProc;
+        const fromProc = source?.isProc || context?.isProc;
 
         const triggerEffectEvent = ({ effect, effectEvent }: { effect: CombatEffect; effectEvent: EffectEventTrigger }) => {
             const { uptime, turnsTriggerFrequency, id } = effect;
