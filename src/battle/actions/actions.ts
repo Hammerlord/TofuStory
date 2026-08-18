@@ -827,7 +827,7 @@ const onEffectEventTrigger = ({
             }
 
             const action = {
-                type: ACTION_TYPES.EFFECT,
+                type: ACTION_TYPES.NONE, // No animation
                 ...other,
                 effects,
             };
@@ -885,14 +885,18 @@ const onEffectEventTrigger = ({
 
             dispatch(
                 enqueueEvent({
+                    action: {
+                        ...action,
+                        multiplier: multiplierConfig,
+                    },
                     actorId: ownerId,
                     context: procContext,
                     selectedIndex: owner.index,
                     targetSide: owner.friendlySide,
                     statUpdates: aggregated,
-                    // We need to push to event queue for stat changes to show up visually, but since these don't have an action
-                    // attached to them, append them to the previous group/have minimal playback
-                    playbackTime: 1,
+                    // We need to push to event queue for stat changes to show up visually.
+                    // Append them to the previous group/have minimal playback
+                    playbackTime: action.playbackTime || 1,
                     options: {
                         alwaysGroup: true,
                     },

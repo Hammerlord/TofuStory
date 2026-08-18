@@ -29,7 +29,7 @@ import { PlaybackCollector, playbackCollector } from "./playbackCollector";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
-const handleCastTick = (combatantId: string) => {
+const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollector) => {
     return (dispatch, getState) => {
         const { combatant } = findCombatantData(getState().battle, combatantId);
         const { ability, castTime = 0, channelDuration } = combatant.casting;
@@ -58,7 +58,7 @@ const handleCastTick = (combatantId: string) => {
             return;
         }
 
-        dispatch(useAbility({ actorId: combatantId, ability }));
+        dispatch(useAbility({ actorId: combatantId, ability, playbackCollector }));
         const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId) || {};
         if (!postAbilityActor) {
             return;
@@ -420,7 +420,7 @@ export const enemyMoves = () => {
 
             // Enemies who are unable to act still must lose a turn when casting an ability
             if (casting) {
-                dispatch(handleCastTick(id));
+                dispatch(handleCastTick(id, playbackCollectorInstance));
             } else if (!unableToAct) {
                 dispatch(enemyAction(id, playbackCollectorInstance));
             }
