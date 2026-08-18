@@ -122,7 +122,6 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
 
     useEffect(() => {
         const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
-        console.log(answer);
         if (isIncompleteAnswer) {
             return;
         }

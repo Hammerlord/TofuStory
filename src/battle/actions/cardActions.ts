@@ -439,7 +439,7 @@ const handleSelectCards = ({
                 const updatedDeck = [...cards, ...deck];
                 dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
             } else {
-                dispatch(updateBattle({ hand: [...hand, ...cards] }));
+                dispatch(updateBattle({ hand: [...cards, ...hand] }));
                 triggerAddCardsToHandEvent(cards.length);
             }
         }
@@ -805,7 +805,7 @@ export const checkCardActions = ({
 
             dispatch(
                 updateBattle({
-                    hand: [...hand, ...cardsToHand],
+                    hand: [...cardsToHand, ...hand],
                 })
             );
         }
@@ -1065,7 +1065,7 @@ export const selectCardsAction =
                     const index = pile.findIndex((ability) => ability.instanceId === id);
                     if (index > -1) {
                         const [card] = pile.splice(index, 1);
-                        cardsToAdd.push({ ...card, effects });
+                        cardsToAdd.push({ ...card, effects: [...(card.effects || []), ...effects] });
                         return true;
                     }
                 };
@@ -1077,7 +1077,7 @@ export const selectCardsAction =
 
             dispatch(
                 updateBattle({
-                    hand: [...hand, ...cardsToAdd],
+                    hand: [...cardsToAdd, ...hand],
                     deck: updatedDeck,
                     discard: updatedDiscard,
                 })
@@ -1089,7 +1089,7 @@ export const selectCardsAction =
 
         dispatch(
             updateBattle({
-                hand: [...hand, ...selectedAbilities],
+                hand: [...selectedAbilities, ...hand],
             })
         );
 

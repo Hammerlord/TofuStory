@@ -2366,7 +2366,7 @@ const checkHandleAutoCast = ({
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                         dispatch(depleteAbilities({ actorId: actor.id, abilities: [card] }));
                     } else {
-                        dispatch(updateBattle({ hand: [...hand, card] }));
+                        dispatch(updateBattle({ hand: [card, ...hand] }));
                     }
                 }
             }
