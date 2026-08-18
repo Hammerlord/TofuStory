@@ -1,7 +1,9 @@
 import * as uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
+import { lesserBolt } from "../ability/magician/magicianAbilities";
 import { WeaponImageOptions } from "../ability/types";
+import { warriorDefaultAttack } from "../ability/warrior/warriorAbilities";
 import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";
 import {
     BlueUmbrellaImage,
@@ -44,9 +46,6 @@ import {
 } from "../images";
 import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
 import { Player } from "./types";
-import { lesserBolt } from "../ability/magician/magicianAbilities";
-import { warriorDefaultAttack } from "../ability/warrior/warriorAbilities";
-import { pigsRibbonItem } from "../item/items";
 
 // Bows/oblong weapons have a different shape compared to swords and need to be positioned closer to the character
 const bowImageOptions: WeaponImageOptions = {
@@ -128,7 +127,7 @@ export const bowmanProperties: Player = {
     maxHP: 65,
     weapon: WarBowImage,
     weaponImageOptions: bowImageOptions,
-    items: [honestyStone, pigsRibbonItem],
+    items: [honestyStone],
     weaponSkins: [
         { name: "War Bow", image: WarBowImage, weaponImageOptions: bowImageOptions },
         { name: "Olympus", image: OlympusImage, weaponImageOptions: bowImageOptions },
