@@ -174,7 +174,9 @@ export const getUpdatedStats = ({
 
         const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
-            const isPreviousActionTriggeredBypass = (sourceEntity as Ability)?.actions?.some((a) => a.bypassImmunity);
+            const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
+                (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
+            );
             if (effect.bypassImmunity || action.bypassImmunity || isPreviousActionTriggeredBypass) {
                 return false;
             }
