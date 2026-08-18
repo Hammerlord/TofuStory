@@ -660,7 +660,7 @@ export const garnet: Item = {
                                 {
                                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                                     property: "resources",
-                                    value: 3,
+                                    value: 2,
                                     comparator: "lt",
                                 },
                             ],
@@ -1387,13 +1387,12 @@ export const brick: Item = {
     rarity: RARITIES.UNCOMMON,
     description:
         "When an attack would deal less than {{ effects.0.minimumAttackDamage }} damage, it deals {{ effects.0.minimumAttackDamage }} damage.",
-    applyEffectsToSummons: true,
     effects: [
         {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             name: "Brick",
-            minimumAttackDamage: 4,
+            minimumAttackDamage: 5,
         },
     ],
 };
@@ -2130,7 +2129,7 @@ export const arcStaff: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     image: ArcStaffImage,
     description:
-        "Every {{ effects.0.onFriendlyReceiveAttack.eventTriggerFrequency }} attacks received by you and your allies, Stun the last attacker.",
+        "Every {{ effects.0.onFriendlyReceiveAttack.eventTriggerFrequency }} attacks received by friendly units, zap the last attacker for {{ effects.0.onFriendlyReceiveAttack.ability.actions.0.damage }} damage + Stun.",
     effects: [
         {
             name: "Arc Staff Effect",
@@ -2153,6 +2152,7 @@ export const arcStaff: Item = {
                                 rotate: 135,
                                 flash: 500,
                             },
+                            damage: 3,
                             effects: [{ ...stun, duration: 2 }],
                         },
                     ],
@@ -2161,51 +2161,6 @@ export const arcStaff: Item = {
         },
     ],
 };
-
-/**
- * Ever since the change with DoTs to use stacks instead of duration, this version of Black Crystalhas become very weak/niche
- *
-export const blackCrystal: Item = {
-    name: "Black Crystal",
-    rarity: RARITIES.RARE,
-    type: ITEM_TYPES.EQUIPMENT,
-    image: BlackCrystalImage,
-    description: "The non-Stun debuffs you apply are extended by 1 turn.",
-    overrideTooltip: true,
-    tooltip: {
-        title: "Debuff",
-        description: "A negative status effect, such as Stun or Bleed.",
-    },
-    applyEffectsToSummons: true,
-    effects: [
-        {
-            name: "Black Crystal Effect",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.NONE,
-            extendEffectDuration: {
-                amount: 1,
-                filters: [
-                    {
-                        property: "class",
-                        comparator: "eq",
-                        value: EFFECT_CLASSES.DEBUFF,
-                    },
-                    {
-                        property: "type",
-                        comparator: "not",
-                        value: EFFECT_TYPES.FREEZE,
-                    },
-                    {
-                        property: "type",
-                        comparator: "not",
-                        value: EFFECT_TYPES.STUN,
-                    },
-                ],
-            },
-        },
-    ],
-};
-*/
 
 export const blackCrystal: Item = {
     name: "Black Crystal",
@@ -2785,7 +2740,7 @@ export const scimitar: Item = {
     image: ScimitarImage,
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "Furious Strike applies Bleed.",
+    description: "Furious Strike applies 2 Bleed.",
     effects: [
         {
             name: "Scimitar",
@@ -2802,7 +2757,7 @@ export const scimitar: Item = {
                     },
                 ],
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
-                effects: [{ ...bleed, stacks: 1 }],
+                effects: [{ ...bleed, stacks: 2 }],
             },
         },
     ],

@@ -122,7 +122,7 @@ export const warriorDefaultAttack: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 2,
+            damage: 3,
         },
     ],
     upgrades: [
@@ -202,7 +202,8 @@ export const charge: Ability = {
         {
             actions: [
                 {
-                    damage: 4,
+                    damage: 3,
+                    effects: [{ stacks: 1 }],
                 },
             ],
         },
@@ -366,7 +367,7 @@ export const spikes: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            armor: 6,
+            armor: 7,
             target: TARGET_TYPES.FRIENDLY,
             effects: [thorns],
             type: ACTION_TYPES.EFFECT,
@@ -388,7 +389,7 @@ const drumOfWar: Action = {
     target: TARGET_TYPES.SELF,
     excludePrimaryTarget: true,
     armor: 2,
-    area: 1,
+    area: 2,
     effects: [{ ...attackPower, duration: 1 }],
 };
 
@@ -397,7 +398,7 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "<b>Stealth.</b> Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _damage_ }}} to nearby allies every turn.",
+        "<b>Stealth.</b> Every turn, grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _damage_ }}} to allies within 2 spaces.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -615,13 +616,44 @@ export const ironWill: Ability = {
     image: IronWillImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>+2 {{{ _armor_ }}} Armor Up</b>",
+    description: "<b>+2 {{{ _armor_ }}} Armor Up</b>, <b>x2</b> if played on a Summon.",
     overrideBodyText: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            effects: [{ ...armorUp, stacks: 2 }],
+            bonus: [
+                {
+                    effects: [
+                        {
+                            ...armorUp,
+                            stacks: 4,
+                        },
+                    ],
+                    conditions: [
+                        {
+                            name: "Player",
+                            comparator: "not",
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                        },
+                    ],
+                },
+                {
+                    effects: [
+                        {
+                            ...armorUp,
+                            stacks: 2,
+                        },
+                    ],
+                    conditions: [
+                        {
+                            name: "Player",
+                            comparator: "eq",
+                            calculationTarget: CONDITION_TARGETS.TARGET,
+                        },
+                    ],
+                },
+            ],
         },
     ],
     upgrades: [
@@ -831,7 +863,7 @@ export const closeCombat: Ability = {
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 3,
                 },
             ],
         },
@@ -986,7 +1018,12 @@ export const rend: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 1,
+                    effects: [
+                        {
+                            stacks: 2,
+                        },
+                    ],
                 },
             ],
         },
@@ -1538,7 +1575,7 @@ export const overpower: Ability = {
                 {
                     damage: 2,
                     bonus: {
-                        damage: 1,
+                        damage: 2,
                     },
                 },
             ],
@@ -1555,19 +1592,19 @@ export const braveSlash: Ability = {
     description: "Randomly hits the target or its neighbors, x3",
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
         },
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.RANDOM_HOSTILE,
             type: ACTION_TYPES.ATTACK,
             targetArea: 1,
@@ -1743,7 +1780,7 @@ export const ragingBlow: Ability = {
     ],
     upgrades: [
         {
-            actions: [{ damage: 3 }, { damage: 3 }],
+            actions: [{ damage: 2 }, { damage: 2 }],
         },
     ],
 };
@@ -1818,7 +1855,7 @@ export const risingRage: Ability = {
 export const soulBlade: Ability = {
     name: "Soul Blade",
     resourceCost: 1,
-    image: BurningSoulBladeImage,
+    image: BurningSoulBladeMinionImage,
     overrideBodyText: true,
     description: "<b>Ward.</b> <br/> <b>Summon:</b> Attack. 50% chance to attack whenever you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
@@ -2023,7 +2060,7 @@ export const judgment: Ability = {
             actions: [
                 {
                     secondaryAction: {
-                        armor: 2,
+                        armor: 3,
                         target: TARGET_TYPES.SELF,
                         type: ACTION_TYPES.EFFECT,
                         isPriority: true,
@@ -2198,7 +2235,7 @@ export const gungnir: Ability = {
             actions: [
                 {
                     multiplier: {
-                        value: 0.05,
+                        value: 0.1,
                     },
                 },
             ],
@@ -2280,7 +2317,7 @@ export const ironMaiden: Ability = {
         {
             actions: [
                 {
-                    effects: [{}, { onReceiveDamage: { chance: 0.05 } }],
+                    effects: [{}, { onReceiveDamage: { chance: 0.07 } }],
                 },
             ],
         },
@@ -2317,7 +2354,7 @@ export const hurlBoulder: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 9,
                 },
             ],
         },
@@ -2447,7 +2484,7 @@ export const guardian: Ability = {
     upgrades: [
         {
             minion: {
-                maxHP: 1,
+                maxHP: 2,
                 abilities: [
                     {
                         actions: [
@@ -2699,7 +2736,7 @@ export const retribute: Ability = {
             damage: 9,
             area: 2,
             bonus: {
-                damage: 6,
+                damage: 4,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -2714,7 +2751,7 @@ export const retribute: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                     bonus: {
                         damage: 2,
                     },
@@ -2730,7 +2767,7 @@ export const bladeworks: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     depletedOnUse: true,
-    description: "Summon 3 Soul Blades. For each that doesn't fit, a random summon is Tributed.",
+    description: "Summon 3 Soul Blades.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -2788,12 +2825,11 @@ export const ballista: Ability = {
     resourceCost: 1,
     image: BallistaImage,
     overrideBodyText: true,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     minion: {
         name: "Ballista",
         image: BallistaImage,
-
-        maxHP: 6,
+        maxHP: 5,
         abilities: [
             {
                 name: "Shoot",
@@ -2804,7 +2840,7 @@ export const ballista: Ability = {
                         target: TARGET_TYPES.HOSTILE,
                         animation: ANIMATION_TYPES.ONE_WAY,
                         icon: AvengersArrowImage,
-                        damage: 1,
+                        damage: 2,
                         effects: [{ ...bleed, stacks: 1 }],
                         animationOptions: {
                             rotateToFaceTarget: true,
@@ -3101,10 +3137,10 @@ export const rupture: Ability = {
         {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
-            damage: 1,
+            damage: 15,
             bonus: [
                 {
-                    damage: 3,
+                    damage: 2,
                     multiplier: {
                         type: MULTIPLIER_TYPES.EFFECT_STACKS,
                         calculationTarget: CONDITION_TARGETS.TARGET,

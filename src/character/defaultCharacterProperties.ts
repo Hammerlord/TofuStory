@@ -1,7 +1,7 @@
 import * as uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
-import { lesserBolt } from "../ability/magician/magicianAbilities";
+import { magicianDefaultAttack } from "../ability/magician/magicianAbilities";
 import { WeaponImageOptions } from "../ability/types";
 import { warriorDefaultAttack } from "../ability/warrior/warriorAbilities";
 import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";
@@ -116,7 +116,7 @@ export const wizardProperties: Player = {
         { name: "Yellow Umbrella", image: YellowUmbrellaImage },
         ...sharedSkins,
     ],
-    abilities: [lesserBolt],
+    abilities: [magicianDefaultAttack],
 };
 
 export const bowmanProperties: Player = {

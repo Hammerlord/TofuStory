@@ -172,7 +172,7 @@ export const bowmanDefaultAttack: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
-            damage: 2,
+            damage: 3,
             animationOptions: bowmanAnimationOption,
         },
     ],
@@ -1962,6 +1962,11 @@ export const treat: Ability = {
                     ],
                 },
             ],
+        },
+    ],
+    upgrades: [
+        {
+            preemptive: true,
         },
     ],
 };

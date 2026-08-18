@@ -148,6 +148,34 @@ export const lesserBolt: Ability = {
     ],
 };
 
+export const magicianDefaultAttack: Ability = {
+    name: "Bolt",
+    image: OldEnergyBoltImage,
+    resourceCost: 0,
+    actions: [
+        {
+            damage: 3,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: EnergyBoltProjectileImage,
+            animationOptions: {
+                rotate: -45,
+                rotateToFaceTarget: true,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
+        },
+    ],
+};
+
 export const magicFang: Ability = {
     name: "Magic Fang",
     image: BlueRushImage,
