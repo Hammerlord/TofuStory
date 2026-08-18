@@ -704,17 +704,19 @@ export const checkCardActions = ({
                 .reverse();
 
             let newHand = [...cardsToAdd, ...getState().battle.hand];
+            let discard = [...getState().battle.discard];
 
             if (newHand.length > MAX_HAND_SIZE) {
                 const toDiscard = newHand.slice(MAX_HAND_SIZE);
                 newHand = newHand.slice(0, MAX_HAND_SIZE);
                 dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
-                dispatch(prepareForDiscard(toDiscard));
+                discard.unshift(...prepareForDiscard(toDiscard));
             }
 
             dispatch(
                 updateBattle({
                     hand: newHand,
+                    discard,
                 })
             );
 
