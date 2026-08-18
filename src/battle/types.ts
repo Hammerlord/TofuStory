@@ -27,7 +27,7 @@ export interface Event {
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
     actionParent?: Ability | Item | Effect;
-    source: TriggerSource;
+    source?: TriggerSource;
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];
     playbackTime?: number;
@@ -69,12 +69,6 @@ export enum TRIGGER_SOURCE_TYPES {
     NONE = "none",
 }
 
-/**
- * "What" triggered this action, effect, or proc to occur. For example:
- * - When triggering an action from an ability, the ability is the source (caused the action to occur)
- * - When triggering an onAttack event, the attack action is the source
- * - Events like "on turn end" were not caused by any action in particular and do not have a source
- */
 export interface TriggerSource {
     source?: Action | CombatEffect | Ability | Item;
     // The amount of, eg. block, healing, overhealing done by the source
@@ -85,11 +79,23 @@ export interface TriggerSource {
     targetId?: string;
     // All targets affected by the action
     allTargetIds?: string[];
-    // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
-    triggerHistory?: string[];
     isProc?: boolean;
     isTribute?: boolean;
+}
+
+/**
+ * "What" triggered this action, effect, or proc to occur. For example:
+ * - When triggering an action from an ability, the ability is the source (caused the action to occur)
+ * - When triggering an onAttack event, the attack action is the source
+ * - Events like "on turn end" were not caused by any action in particular and do not have a source
+ */
+export interface ActionContext {
+    sourceChain?: TriggerSource[];
+    isProc?: boolean; // Whether this action was triggered by a proc (eg. onAttack, onReceiveDamage, etc.)
+    // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
+    triggerHistory?: string[];
     // Number of eg. resources to add to EffectEventTrigger.triggerSum
+    // Why does this work at the context level?
     trackSumAmount?: number;
     // For ability previews, target indices should become determinate. (And not change every time the preview snapshot changes.)
     isPreviewMode?: boolean;

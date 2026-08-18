@@ -13,12 +13,12 @@ import {
 import { Combatant } from "../../character/types";
 import { enemyNameMap } from "../../enemy";
 import { createCombatant } from "../../enemy/createEnemy";
+import { CloudIcon, HourglassIcon } from "../../images/icons";
 import { shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
 import { findCombatantData } from "./actions";
-import { CloudIcon, HourglassIcon } from "../../images/icons";
 
 const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; duration?: number }): CombatEffect => {
     const reveal = {
@@ -167,7 +167,7 @@ export const getMorphMap = ({
 
         const minionConfig = minions.find((minionConfig) => {
             const getCalculationTarget = () => findCombatantData(getState().battle, combatant?.id); // Current combatant will always be the target
-            return passesConditions({ getCalculationTarget, proc: minionConfig, source });
+            return passesConditions({ getCalculationTarget, proc: minionConfig, source: source });
         });
 
         const minion = minionConfig?.minion;

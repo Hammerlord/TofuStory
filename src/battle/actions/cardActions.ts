@@ -27,9 +27,9 @@ import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../con
 import { passesConditions, passesValueComparison } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection, { cardPassesFilterCondition } from "../selectCardUtils";
-import { TRIGGER_SOURCE_TYPES } from "../types";
+import { TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getRandomInt } from "./../../utils";
-import { TriggerSource } from "./../types";
+import { ActionContext } from "./../types";
 import {
     applyStatChanges,
     checkEventTrigger,
@@ -89,11 +89,11 @@ const getTotalCritChance = (playerSide: (Combatant | null)[]) => {
 const handleCardActionBonus = ({
     bonus,
     targetCards,
-    triggerSource,
+    context: context,
 }: {
     bonus?: CardBonus[];
     targetCards: CombatAbility[];
-    triggerSource: TriggerSource;
+    context: ActionContext;
 }) => {
     return (dispatch, getState) => {
         if (!bonus) {
@@ -141,8 +141,8 @@ const handleCardActionBonus = ({
                 type: ACTION_TYPES.EFFECT,
                 ...bonusesInEffect,
             },
-            source: {
-                ...triggerSource,
+            context: {
+                ...context,
             },
             getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
@@ -153,7 +153,7 @@ const handleCardActionBonus = ({
 const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: CombatAbility; effects: Effect[] }) => {
     return (dispatch, getState) => {
         const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
-
+        const parentSourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
         const updated = getUpdatedStats({
             ...getState().battle,
             action: {
@@ -164,22 +164,36 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
             actorId: player.id,
             targetIds: [player.id],
             actionParent: ability,
-            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            context: { sourceChain: parentSourceChain },
             getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
-
-        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
-        dispatch(
-            triggerStatChangeEvents(
-                updated.map(({ statUpdate, action }) => ({
-                    statUpdate,
-                    source: {
+        /**
+ * {
                         source: action,
                         type: TRIGGER_SOURCE_TYPES.EFFECT,
                         actorId: player.id,
                         targetId: player.id,
                         statUpdate,
                         triggerHistory: [],
+                    }
+ */
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+        dispatch(
+            triggerStatChangeEvents(
+                updated.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    context: {
+                        sourceChain: [
+                            ...parentSourceChain,
+                            {
+                                source: action,
+                                type: TRIGGER_SOURCE_TYPES.EFFECT,
+                                actorId: player.id,
+                                targetId: player.id,
+                                statUpdate,
+                                triggerHistory: [],
+                            },
+                        ],
                     },
                 }))
             )
@@ -189,7 +203,7 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
 
 export const applyAbilityEffectsOnDraw = ({
     drawnCard,
-    source,
+    source: source,
     effects,
     playerSide,
 }: {
@@ -201,7 +215,12 @@ export const applyAbilityEffectsOnDraw = ({
     const onDrawEffects = drawnCard.onDraw?.abilityEffects;
     if (onDrawEffects) {
         const totalCritChance = getTotalCritChance(playerSide);
-        drawnCard = applyAbilityEventEffects({ event: drawnCard.onDraw, source, ability: drawnCard, bonusChance: totalCritChance });
+        drawnCard = applyAbilityEventEffects({
+            event: drawnCard.onDraw,
+            source: source,
+            ability: drawnCard,
+            bonusChance: totalCritChance,
+        });
     }
     return {
         ...drawnCard,
@@ -214,13 +233,13 @@ export const drawCards = ({
     filters = [],
     amount,
     bonus,
-    source,
+    context: context,
 }: {
     effects?: AbilityEffect[];
     filters?: ACTION_TYPES[];
     amount: number;
     bonus?: CardBonus[];
-    source?: TriggerSource;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
@@ -229,7 +248,7 @@ export const drawCards = ({
 
         // Deck cards are mostly hidden. Eg. don't give away the fact that Sudden Death is going to be drawn
         // unless we have Spectrum Goggles
-        if (source?.isPreviewMode && !hasViewDeckInOrder) {
+        if (context?.isPreviewMode && !hasViewDeckInOrder) {
             return;
         }
 
@@ -238,6 +257,7 @@ export const drawCards = ({
         let newDiscard = discard.slice();
         let cardsToDraw: CombatAbility[] = [];
         let deckCycled = false;
+        const source = context?.sourceChain?.at(-1);
         amount = sumCardDrawAmount({ effects, source, amount });
 
         if (filters.length) {
@@ -320,7 +340,7 @@ export const drawCards = ({
             }
         });
 
-        dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, triggerSource: source }));
+        dispatch(handleCardActionBonus({ bonus, targetCards: cardsToDraw, context }));
 
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
@@ -328,10 +348,10 @@ export const drawCards = ({
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onDrawCard,
-                        source: {
-                            ...source,
-                            isProc: true,
+                        context: {
+                            ...context,
                             trackSumAmount: cardsToDraw.length,
+                            isProc: true,
                         },
                     })
                 );
@@ -341,7 +361,9 @@ export const drawCards = ({
         if (deckCycled) {
             playerSide.concat(enemySide).forEach((combatant) => {
                 if (combatant) {
-                    dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle, source }));
+                    dispatch(
+                        checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle, context: context })
+                    );
                 }
             });
         }
@@ -368,7 +390,7 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 const handleSelectCards = ({
     selectCards,
     isAutoCast,
-    source,
+    source: source,
     triggerAddCardsToHandEvent,
 }: {
     selectCards: SelectCards;
@@ -427,11 +449,11 @@ const handleSelectCards = ({
 const handleMoveCards = ({
     moveCards,
     triggerAddCardsToHandEvent,
-    source,
+    context,
 }: {
     moveCards: MoveCards;
     triggerAddCardsToHandEvent;
-    source: TriggerSource;
+    context: ActionContext;
 }) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1, moveType, filters } = moveCards;
@@ -440,6 +462,7 @@ const handleMoveCards = ({
         if (from === to) {
             return;
         }
+        const source = context?.sourceChain?.at(-1);
         const parentCardId = (source?.source as CombatAbility)?.instanceId;
 
         const moveFromPile = (fromPile: CombatAbility[]): { updatedFromPile: CombatAbility[]; movedCards: CombatAbility[] } => {
@@ -511,7 +534,7 @@ const handleMoveCards = ({
             enqueueEvent({
                 newCards: cardsToMove,
                 cardsAddedTo: to,
-                source,
+                context,
             })
         );
 
@@ -530,7 +553,7 @@ const handleMoveCards = ({
 
 const handleRetrieveDepletedCards = ({
     amount,
-    source,
+    source: source,
     triggerAddCardsToHandEvent,
 }: {
     amount: number;
@@ -570,11 +593,11 @@ const handleRetrieveDepletedCards = ({
  */
 export const checkCardActions = ({
     action,
-    source,
+    context: context,
     isAutoCast,
 }: {
     action: { [key in keyof Action]?: Action[key] };
-    source?: TriggerSource;
+    context?: ActionContext;
     isAutoCast?: boolean;
 }) => {
     return (dispatch, getState) => {
@@ -590,6 +613,7 @@ export const checkCardActions = ({
             discardCardsFromHand,
             playCards,
         } = action;
+        const source = context.sourceChain.at(-1);
 
         if (playCards) {
             const { amount, filters } = playCards;
@@ -623,7 +647,7 @@ export const checkCardActions = ({
         }
 
         if (cardsToDraw) {
-            dispatch(drawCards({ ...cardsToDraw, source }));
+            dispatch(drawCards({ ...cardsToDraw, context: context }));
         }
 
         if (discardCardsFromHand) {
@@ -653,8 +677,8 @@ export const checkCardActions = ({
                         checkEventTrigger({
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
-                            source: {
-                                ...source,
+                            context: {
+                                ...context,
                                 trackSumAmount: amount,
                             },
                         })
@@ -697,7 +721,7 @@ export const checkCardActions = ({
             triggerAddCardsToHandEvent(addCards.length);
         }
 
-        dispatch(checkAddCardsToDeck({ action, ownedCards, source }));
+        dispatch(checkAddCardsToDeck({ action, ownedCards, context }));
 
         if (addCardsToDiscard) {
             const cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
@@ -707,7 +731,7 @@ export const checkCardActions = ({
                     playbackTime: CARD_ADDED_PLAYBACK_SPEED,
                     newCards: cardsToAdd,
                     cardsAddedTo: "discard",
-                    source,
+                    context: context,
                 })
             );
 
@@ -759,7 +783,7 @@ export const checkCardActions = ({
         }
 
         if (moveCards) {
-            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent, source }));
+            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent, context }));
         }
 
         if (addLastPlayedCards) {
@@ -791,11 +815,11 @@ export const checkCardActions = ({
 const checkAddCardsToDeck = ({
     action,
     ownedCards,
-    source,
+    context,
 }: {
     action: Action;
     ownedCards: { [abilityName: string]: true };
-    source?: TriggerSource;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         const { addCardsToDeck, addCardsToDeckOptions } = action;
@@ -832,7 +856,7 @@ const checkAddCardsToDeck = ({
             enqueueEvent({
                 newCards: cardsToAdd,
                 cardsAddedTo: "deck",
-                source,
+                context,
             })
         );
 
@@ -873,14 +897,14 @@ export const recalculateEffectsFromAbilities = () => {
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
  */
 export const depleteAbilities =
-    ({ actorId, abilities = [], source }: { actorId: string; abilities: CombatAbility[]; source?: TriggerSource }) =>
+    ({ actorId, abilities = [], source: context }: { actorId: string; abilities: CombatAbility[]; source?: ActionContext }) =>
     (dispatch, getState) => {
         const { hand, depleted = [] } = getState().battle;
         dispatch(
             enqueueEvent({
                 newCards: abilities,
                 cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-                source,
+                context,
             })
         );
 
@@ -898,7 +922,11 @@ export const depleteAbilities =
                 checkEventTrigger({
                     combatantId: actorId,
                     effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
-                    source: { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY, triggerHistory: [] },
+                    context: {
+                        triggerHistory: [],
+                        ...context,
+                        sourceChain: [...context.sourceChain, { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+                    },
                 })
             );
         });
@@ -929,7 +957,7 @@ export const applyAbilityEventEffects = ({
     const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
 
     const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
-    if (!passesConditions({ source, getCalculationTarget, proc: event })) {
+    if (!passesConditions({ source: source, getCalculationTarget, proc: event })) {
         return ability;
     }
 
@@ -1017,10 +1045,8 @@ export const selectCardsAction =
                         checkEventTrigger({
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
-                            source: {
-                                type: TRIGGER_SOURCE_TYPES.ABILITY,
-                                triggerHistory: [],
-                                source: abilityQueued,
+                            context: {
+                                sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: abilityQueued }],
                                 trackSumAmount: selectedAbilities.length,
                             },
                         })
@@ -1076,11 +1102,11 @@ export const selectCardsAction =
 export const handleDrawOriginalAbility = ({
     drawOriginalAbility,
     effect,
-    source,
+    context,
 }: {
     drawOriginalAbility: boolean;
     effect: CombatEffect;
-    source: TriggerSource;
+    context: ActionContext;
 }) => {
     return (dispatch, getState) => {
         if (!drawOriginalAbility || !effect.originalAbilityId) {

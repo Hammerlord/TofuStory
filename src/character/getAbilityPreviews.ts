@@ -4,7 +4,7 @@ import { checkSummonMinion, checkValidEnemyTargeting, findCombatantData, perform
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, TriggerSource } from "../battle/types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, ActionContext } from "../battle/types";
 import { getAbilityResourceCost } from "../battle/utils";
 import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
@@ -200,10 +200,8 @@ const getAbilityPreviews = ({
         resourceCost,
     };
 
-    const source: TriggerSource = {
-        source: actionParent,
-        actorId: actor.id,
-        type: TRIGGER_SOURCE_TYPES.ABILITY,
+    const context: ActionContext = {
+        sourceChain: [{ source: actionParent, actorId: actor.id, type: TRIGGER_SOURCE_TYPES.ABILITY }],
         triggerHistory: [],
         isPreviewMode: true,
     };
@@ -254,7 +252,8 @@ const getAbilityPreviews = ({
                 const { index } = combatantInfo;
                 const totalTargets = currentAction?.numTargets + 1 || 0;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
-                const isProcHostileAction = statUpdate.source?.isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
+                const isProc = statUpdate.context?.sourceChain?.at(-1)?.isProc;
+                const isProcHostileAction = isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
 
                 result[id].push({
                     statUpdate,
@@ -271,7 +270,7 @@ const getAbilityPreviews = ({
             selectedIndex: initTarget?.index,
             side: initTarget?.side,
             actorId: actor.id,
-            parentSource: source,
+            parentContext: context,
             isAutoCast: false,
         }),
         battle: { ...battle, ...previousCombatantStates },
@@ -332,7 +331,7 @@ const getAbilityPreviews = ({
             !passesConditions({
                 getCalculationTarget,
                 proc: action,
-                source,
+                source: context?.sourceChain?.at(-1),
             })
         ) {
             return;
@@ -353,8 +352,7 @@ const getAbilityPreviews = ({
         const previews = previewAction({
             actionFn: performAction({
                 action,
-                parent: actionParent,
-                parentSource: source,
+                parentContext: context,
                 selectedIndex: target.index,
                 side: target.side,
                 actorId: actor.id,

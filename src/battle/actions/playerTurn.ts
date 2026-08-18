@@ -103,11 +103,16 @@ export const usePlayerAbility = ({
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onPlayCard,
-                        source: {
-                            type: TRIGGER_SOURCE_TYPES.ABILITY,
-                            source: ability,
-                            actorId: actor.id,
+                        context: {
                             triggerHistory: [],
+                            sourceChain: [
+                                {
+                                    type: TRIGGER_SOURCE_TYPES.ABILITY,
+                                    source: ability,
+                                    actorId: actor.id,
+                                    isProc,
+                                },
+                            ],
                             isProc,
                         },
                     })
@@ -303,21 +308,21 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
 
         const playbackCollectorInstance = playbackCollector();
-        const source = { playbackCollector: playbackCollectorInstance };
-        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, source }));
+        const context = { playbackCollector: playbackCollectorInstance };
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, context }));
 
         const getPlayerSideInfo = () =>
             getState().battle.playerSide.map((combatant) => findCombatantData(getState().battle, combatant?.id));
 
         if (round > 0) {
-            dispatch(checkHalveArmor(getPlayerSideInfo(), source));
+            dispatch(checkHalveArmor(getPlayerSideInfo(), context));
         }
 
-        dispatch(checkTurnResourceGain(getPlayerSideInfo(), source));
+        dispatch(checkTurnResourceGain(getPlayerSideInfo(), context));
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source }));
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, context }));
             }
         });
 
@@ -335,13 +340,13 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         dispatch(
             drawCards({
                 amount: drawCardsAmount,
-                source,
+                context: context,
             })
         );
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw, source }));
+                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw, context }));
             }
         });
 

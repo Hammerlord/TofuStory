@@ -10,7 +10,7 @@ import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented, updateCharacters } from "../utils";
 import { BATTLE_STATES } from "./../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./../types";
 import {
     autoSelectActionTarget,
     checkEventTrigger,
@@ -87,7 +87,7 @@ const enemyAction = (combatantId: string, playbackCollector: PlaybackCollector) 
 
         const itemIndex = checkUseItem(actorData.combatant);
         if (itemIndex !== undefined) {
-            dispatch(useItem({ itemIndex, actorId: combatantId }));
+            dispatch(useItem({ itemIndex, actorId: combatantId, playbackCollector }));
         }
 
         dispatch(enemyUseAbility(combatantId, playbackCollector));
@@ -223,7 +223,7 @@ export const getUpdatedBattleActionTargets = ({
         const preview = previewAction({
             actionFn: performAction({
                 action,
-                parent: ability,
+                parentContext: { sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability }], triggerHistory: [] },
                 selectedIndex: target.index,
                 side: target.side,
                 actorId: actorInfo.combatant.id,
@@ -363,9 +363,9 @@ export const startEnemyTurn = () => {
         // The "source" acts as a context object just to pass in a playbackCollector.
         // The effect events at turn start technically don't have a `trigger source`.
         const playbackCollectorInstance = playbackCollector();
-        const source = { playbackCollector: playbackCollectorInstance };
+        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
         const combatantIds = enemySide.map((combatant) => combatant?.id).filter((v) => v);
-        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE, source }));
+        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE, context }));
 
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {
@@ -374,7 +374,7 @@ export const startEnemyTurn = () => {
         };
 
         if (round > 0) {
-            dispatch(checkHalveArmor(getEnemySideInfo(), source));
+            dispatch(checkHalveArmor(getEnemySideInfo(), context));
         }
 
         enemySide.forEach((combatant: Combatant | null) => {
@@ -382,7 +382,7 @@ export const startEnemyTurn = () => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, source }));
+            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, context }));
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));

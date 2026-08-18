@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { ReactElement } from "react";
 import { Ability, CombatAbility, SelectCards } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, Event, EventGroup, TriggerSource, Wave } from "./types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, EventGroup, TriggerSource, Wave } from "./types";
 import { getMaxHP } from "./utils";
-import { ReactElement } from "react";
 
 // Text banner notification to display some info during battle
 interface Notification {

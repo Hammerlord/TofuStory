@@ -200,10 +200,13 @@ export const onBattleStart = () => {
                             instanceId: uuid.v4(),
                         })),
                     },
-                    source: {
-                        type: TRIGGER_SOURCE_TYPES.NONE,
-                        triggerHistory: [],
-                        targetId: playerSide.find((c) => c?.isPlayer)?.id,
+                    context: {
+                        sourceChain: [
+                            {
+                                type: TRIGGER_SOURCE_TYPES.NONE,
+                                targetId: playerSide.find((c) => c?.isPlayer)?.id,
+                            },
+                        ],
                     },
                 })
             );

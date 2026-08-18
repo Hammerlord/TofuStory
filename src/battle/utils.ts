@@ -28,7 +28,7 @@ import { BASE_MAX_RESOURCES, DAMAGE_COEFF, INDUCED_ACTION_PLAYBACK_SPEED } from 
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, ActionContext, TriggerSource } from "./types";
 
 export const getMaxHP = (character?: Combatant | null): number => {
     if (!character) {
@@ -171,7 +171,11 @@ export const isValidTarget = ({
 
     const { target } = actions[0] || {};
     const area =
-        calculateActionArea({ action: actions[0], actor: actorData, source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY } }) ||
+        calculateActionArea({
+            action: actions[0],
+            actor: actorData,
+            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+        }) ||
         actions[0]?.area ||
         0;
 
@@ -602,7 +606,7 @@ export const getEnabledEffects = ({
 
         return (
             !disabled &&
-            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, source }) &&
+            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, source: source }) &&
             isTurnToTrigger({ turnsTriggerFrequency, uptime })
         );
     });
@@ -782,7 +786,7 @@ export const calculateArmor = ({
     target,
     action,
     multiplier = 1,
-    source,
+    source: source,
 }: {
     target?: CombatantInfo;
     action: { armor?: number; maxArmor?: number; flatArmor?: number };
@@ -915,7 +919,7 @@ export const calculateActionArea = ({
     action?: Action;
     actor: CombatantInfo;
     target?: CombatantInfo;
-    source: TriggerSource;
+    source?: TriggerSource;
 }): number => {
     if (!action) {
         return 0;
@@ -1172,7 +1176,7 @@ export const calculateBonus = ({
             });
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-            if (passesConditions({ getCalculationTarget, proc: bonus, source }) && isValidTarget) {
+            if (passesConditions({ getCalculationTarget, proc: bonus, source: source }) && isValidTarget) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
                 const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards } = acc;
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);

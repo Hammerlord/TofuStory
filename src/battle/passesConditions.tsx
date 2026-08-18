@@ -13,7 +13,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { BattleState } from "./reducer";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES, ActionContext, TriggerSource } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
 
 export const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: Comparator }): boolean => {
@@ -98,12 +98,11 @@ export const passesConditions = ({
             hasAbilityEffectName,
         } = condition;
 
+        const isProc = source?.isProc;
+        const sourcePayload = source?.source || {};
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            const { source: sourcePayload = {}, isProc } = source || {};
             if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
-                const { name: sourceName, resourceCost: sourceResourceCost }: Ability | CombatAbility = sourcePayload as
-                    | Ability
-                    | CombatAbility;
+                const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
 
                 if (name) {
                     const names = Array.isArray(name) ? name : [name];
@@ -362,7 +361,7 @@ export const passesConditions = ({
                 };
 
                 const used = combatant.abilityHistory.filter(abilityMatchesType).length;
-                const sourceMatchesType = !source.source || abilityMatchesType(source.source as Ability);
+                const sourceMatchesType = !sourcePayload || abilityMatchesType(sourcePayload as Ability);
 
                 if (
                     !passesValueComparison({

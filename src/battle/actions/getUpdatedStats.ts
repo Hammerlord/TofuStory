@@ -25,7 +25,7 @@ import {
     hasEffectType,
 } from "../utils";
 import { effectNameMap } from "./../../enemy/effect";
-import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "./../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, ActionContext } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
 import { Player } from "../../character/types";
@@ -33,6 +33,7 @@ import { Player } from "../../character/types";
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
     combatantId?: string;
+    actorId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
     healthDamage?: number;
@@ -49,7 +50,7 @@ export interface UpdatedCombatantStats {
     isArmorBroken?: boolean;
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
     overkill?: number;
-    source?: TriggerSource;
+    context?: ActionContext;
 }
 
 export const getUpdatedStats = ({
@@ -59,7 +60,7 @@ export const getUpdatedStats = ({
     selectedIndex,
     action: initialAction,
     actionParent,
-    source,
+    context,
     getCombatantById,
     deck,
     hand,
@@ -71,7 +72,7 @@ export const getUpdatedStats = ({
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
     actionParent?: Ability | CombatAbility | Item;
-    source?: TriggerSource;
+    context?: ActionContext;
     getCombatantById: (id: string) => CombatantInfo;
     deck: CombatAbility[];
     hand: CombatAbility[];
@@ -80,6 +81,8 @@ export const getUpdatedStats = ({
     const actor = getCombatantById(actorId);
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
+    const triggerSource = context?.sourceChain?.at(-1);
+    const sourceEntity = triggerSource?.source;
 
     return (recipients || targets).map((target: CombatantInfo) => {
         const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants } = target;
@@ -90,7 +93,7 @@ export const getUpdatedStats = ({
             allTargets: targets,
             isTargetSelected: targetIndex === selectedIndex,
             actionParent,
-            source,
+            source: triggerSource,
             deck,
             hand,
             discard,
@@ -118,7 +121,7 @@ export const getUpdatedStats = ({
             allTargets: targets,
             actor,
             actionParent,
-            source,
+            source: triggerSource,
             deck,
             hand,
             discard,
@@ -128,7 +131,16 @@ export const getUpdatedStats = ({
         if (flatDamage) {
             damage = flatDamage * multiplier;
         } else {
-            damage = calculateDamage({ actor, target, targetIndex, selectedIndex, action, actionParent, multiplier, source });
+            damage = calculateDamage({
+                actor,
+                target,
+                targetIndex,
+                selectedIndex,
+                action,
+                actionParent,
+                multiplier,
+                source: triggerSource,
+            });
         }
 
         if (destroyArmor) {
@@ -139,7 +151,7 @@ export const getUpdatedStats = ({
             damage = Math.ceil(damage / (targets.length || 1));
         }
 
-        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, source });
+        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, source: triggerSource });
         if (decayArmor) {
             const halveArmorAmount = getHalveArmorAmount(target);
             totalArmor += halveArmorAmount;
@@ -162,7 +174,8 @@ export const getUpdatedStats = ({
 
         const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
         const isImmuneTo = (effect: Effect): boolean => {
-            if (effect.bypassImmunity || action.bypassImmunity) {
+            const isPreviousActionTriggeredBypass = (sourceEntity as Ability)?.actions?.some((a) => a.bypassImmunity);
+            if (effect.bypassImmunity || action.bypassImmunity || isPreviousActionTriggeredBypass) {
                 return false;
             }
             if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
@@ -219,7 +232,7 @@ export const getUpdatedStats = ({
         const failedToApplyEffects: CombatEffect[] = [];
 
         const allActionEffects = [...actionEffects];
-        ((source?.source as CombatAbility)?.effects || []).forEach((e) => {
+        ((sourceEntity as CombatAbility)?.effects || []).forEach((e) => {
             if (Array.isArray(e.effects)) {
                 allActionEffects.push(...e.effects);
             }
@@ -317,7 +330,7 @@ export const getUpdatedStats = ({
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
             failedToApplyEffects,
-            source,
+            context: context,
         };
 
         return {

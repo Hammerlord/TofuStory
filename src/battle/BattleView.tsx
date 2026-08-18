@@ -414,7 +414,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             dispatch(
                 checkCardActions({
                     action: selectCardsPrompt?.selectCards?.then,
-                    source: selectCardsPrompt.source,
+                    context: { sourceChain: [selectCardsPrompt.source] },
                     isAutoCast: selectCardsPrompt.isAutoCast,
                 })
             );
