@@ -189,6 +189,7 @@ export { default as DiamondOreImage } from "./DiamondOre.png";
 export { default as DioramaImage } from "./Diorama.png";
 export { default as DivineChargeImage } from "./DivineCharge.png";
 export { default as DogImage } from "./Dog.gif";
+export { default as DoombringerImage } from "./Doombringer.png";
 export { default as DoTPunisherImage } from "./DoTPunisher.png";
 export { default as DoubleJumpImage } from "./DoubleJump.png";
 export { default as DoubleShotImage } from "./DoubleShot.gif";

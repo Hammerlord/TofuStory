@@ -24,6 +24,7 @@ import {
     DarkImpaleImage,
     DarkThirstImage,
     DivineChargeImage,
+    DoombringerImage,
     DoubleTimeImage,
     EndureImage,
     EnrageImage,
@@ -117,6 +118,7 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
+import { doom } from "../../enemy/effect";
 
 export const warriorDefaultAttack: Ability = {
     name: "Attack",
@@ -2877,7 +2879,7 @@ export const ballista: Ability = {
 };
 
 const pummelAction = {
-    damage: 7,
+    damage: 5,
     type: ACTION_TYPES.ATTACK,
     target: TARGET_TYPES.HOSTILE,
     secondaryAction: {
@@ -3281,6 +3283,35 @@ export const sprint: Ability = {
                     drawCards: {
                         amount: 2,
                     },
+                },
+            ],
+        },
+    ],
+};
+
+export const doombringer: Ability = {
+    name: "Doom Bringer",
+    rarity: RARITIES.RARE,
+    resourceCost: 2,
+    image: DoombringerImage,
+    description: "Inflict <b>Doom.</b>",
+    actions: [
+        {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            damage: 10,
+            effects: [
+                {
+                    ...doom,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
                 },
             ],
         },

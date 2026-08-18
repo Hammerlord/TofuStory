@@ -19,12 +19,12 @@ import {
     NamelessSwordImage,
     OmokPigImage,
     OrangeMushroomDefendImage,
-    PigsHeadImage,
     PigsRibbonImage,
     PurpleFairiesImage,
     RespawnTokenImage,
     SapOfNependeathImage,
     ShiningFairyImage,
+    SkeletonOfHorrorImage,
     SnailShellImage,
     StumpyBatImage,
     TreeBranchImage,
@@ -33,7 +33,6 @@ import {
     CloudyIcon,
     CrossedSwordsIcon,
     LinkIcon,
-    MountainIcon,
     MuscleIcon,
     NoZzzIcon,
     PristineShieldIcon,
@@ -42,7 +41,7 @@ import {
     ShieldIcon,
     SmilingImpIcon,
 } from "../images/icons";
-import { defUp, attackPower, preventArmorDecay } from "./../ability/Effects";
+import { attackPower, defUp, preventArmorDecay } from "./../ability/Effects";
 import { Effect } from "./../ability/types";
 
 export const hardwood: Effect = {
@@ -585,6 +584,20 @@ export const burrowing: Effect = {
                 },
             ],
         },
+    },
+};
+
+export const doom: Effect = {
+    name: "Doom",
+    icon: SkeletonOfHorrorImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.DEBUFF,
+    description: "Deals 30 damage upon activation.",
+    duration: 3,
+    turnsTriggerFrequency: 3,
+    onTurnStart: {
+        damage: 30,
+        removeEffect: true,
     },
 };
 
