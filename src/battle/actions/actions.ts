@@ -856,7 +856,7 @@ const onEffectEventTrigger = ({
                         battle: getState().battle,
                         source,
                         isPreviewMode: context?.isPreviewMode,
-                    });
+                    }).targetedIndices;
                 })
                 .map((indices: number[]) => {
                     indices.forEach((i) => {
@@ -2413,7 +2413,10 @@ export const calculateTargetIndices = ({
     battle: BattleState;
     source?: TriggerSource;
     isPreviewMode: boolean;
-}): number[] => {
+}): {
+    allIndices: number[];
+    targetedIndices: number[];
+} => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
@@ -2428,16 +2431,13 @@ export const calculateTargetIndices = ({
     }
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
-        const livingOrResurrecting = combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
-
         // When summoning a minion, it can auto attack an enemy target. Display that proc as an indeterminate ability.
         const isProcPreview = isPreviewMode && source?.isProc && isOffensiveAction(action) && side === BATTLEFIELD_SIDES.ENEMY_SIDE;
         if (isProcPreview) {
             return true;
         }
 
-        const inArea =
-            (livingOrResurrecting || isPreviewMode) && [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
+        const inArea = [selectedIndex, ...extraTargetIndices].some((j) => Math.abs(j - i) <= area);
 
         if (excludePrimaryTarget) {
             return inArea && i !== selectedIndex;
@@ -2450,14 +2450,27 @@ export const calculateTargetIndices = ({
         return inArea;
     };
 
-    const combatants = battle[side];
-    return combatants.reduce((acc, character: Combatant | null, i: number) => {
-        if (isAffected(character, i)) {
-            acc.push(i);
-        }
+    const isTargetableCombatant = (combatant: Combatant): boolean => {
+        return combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
+    };
 
-        return acc;
-    }, []);
+    const combatants = battle[side];
+    const allIndices = [];
+    const targetedIndices = [];
+
+    combatants.forEach((combatant: Combatant | null, i: number) => {
+        if (isAffected(combatant, i)) {
+            if (isTargetableCombatant(combatant)) {
+                targetedIndices.push(i);
+            }
+            allIndices.push(i);
+        }
+    });
+
+    return {
+        allIndices,
+        targetedIndices,
+    };
 };
 
 const handleSecondaryAction = ({
@@ -2522,7 +2535,7 @@ const handleSecondaryAction = ({
             source,
         });
 
-        const recipientIds = recipientIndices.map((i: number) => targetData.friendly[i]?.id).filter((v) => v);
+        const recipientIds = recipientIndices.targetedIndices.map((i: number) => targetData.friendly[i]?.id).filter(Boolean);
         const updatedSecondary = getUpdatedStats({
             ...updatedStatsProps,
             actorId,
@@ -2609,7 +2622,7 @@ export const performAction = ({
             isPreviewMode: parentContext?.isPreviewMode,
         });
 
-        const targetIds = targetIndices.map((i: number) => combatants[i]?.id).filter((v) => v !== undefined);
+        const targetIds = targetIndices.targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
 
         // Don't try to target things that are all gone/dead.
         // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
@@ -2706,7 +2719,7 @@ export const performAction = ({
         });
 
         // HACK: ensure that the selected index is hit first in playback
-        const allTargetIndices = uniq([selectedIndex, ...targetIndices]);
+        const allTargetIndices = uniq([selectedIndex, ...targetIndices.allIndices]);
 
         dispatch(
             enqueueEvent({
