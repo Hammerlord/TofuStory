@@ -130,6 +130,7 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
 const projectileElementCount = 100;
+const NUM_SPACES_AWAY_DELAY = 30;
 
 const { updateBattle } = battleStateSlice.actions;
 
@@ -160,6 +161,17 @@ const AnimationCanvas = ({
     const deckCycled = useAppSelector((state) => state.battle?.deckCycled);
     const dispatch = useAppDispatch();
 
+    const getIndexFromCharacterId = (characterId: string): number => {
+        if (!characterId) {
+            return;
+        }
+        const allyIndex = playerSide.findIndex((ally) => characterId === ally?.id);
+        if (allyIndex > -1) {
+            return allyIndex;
+        }
+        return enemySide.findIndex((enemy) => characterId === enemy?.id);
+    };
+
     const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
         if (!characterId) {
             return;
@@ -184,7 +196,13 @@ const AnimationCanvas = ({
 
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
     const targetElement = targets[selectedIndex]?.current;
-    const allTargets = allTargetIndices.map((i) => targets[i]?.current).filter((v) => v !== undefined);
+    const allTargets: { ref: React.RefObject<HTMLElement>; index: number }[] = allTargetIndices
+        .map((i) => {
+            const ref = targets[i];
+            return ref?.current ? { ref, index: i } : null;
+        })
+        .filter((v): v is { ref: React.RefObject<HTMLElement>; index: number } => !!v);
+
     const actorElement = getRefFromCharacterId(actorId)?.current;
 
     const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef(null) as any);
@@ -249,10 +267,19 @@ const AnimationCanvas = ({
         animationRefs.current = [];
 
         if (icon) {
-            const animateProjectile = (target, projectileRefIndex: number = 0) => {
+            const animateProjectile = (
+                target: { ref: React.RefObject<HTMLElement>; index: number } | { ref: React.RefObject<HTMLElement>; index: number }[],
+                projectileRefIndex: number = 0
+            ) => {
                 const refsFrom = projectileRefIndex * beamProjectileMultiplier;
                 const refsTo = refsFrom + 1 * beamProjectileMultiplier;
                 const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
+
+                let adjustTimingByDistance = 0;
+                if (target && !Array.isArray(target)) {
+                    const numSpacesAway = Math.abs(target.index - getIndexFromCharacterId(actorId));
+                    adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+                }
 
                 if (animation === ANIMATION_TYPES.CONSUMABLE) {
                     const animations = playTossUpAnimation({
@@ -270,15 +297,16 @@ const AnimationCanvas = ({
 
                     animationRefs.current.push(...animations);
                 } else {
+                    const targets = Array.isArray(target) ? target.map((t) => t.ref.current) : target.ref.current;
                     const animations = playTravelAnimation({
                         from: actorElement,
-                        to: target,
+                        to: targets,
                         object,
                         sidewinder,
                         returnToOrigin: animation === ANIMATION_TYPES.YOYO,
                         fadeIn: animation === ANIMATION_TYPES.BEAM,
                         ...options,
-                        playbackTime: playbackTime - 250,
+                        playbackTime: playbackTime - adjustTimingByDistance,
                     });
 
                     if (animations?.length) {
@@ -305,12 +333,17 @@ const AnimationCanvas = ({
         } else if (animation === ANIMATION_TYPES.EXPLODE) {
             animationRefs.current = playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
         } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
+            const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
+            let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+            const windup = type === ACTION_TYPES.ATTACK ? Math.min(20, 5 * action.damage) : 0;
+
             animationRefs.current = playTravelAnimation({
                 from: actorElement,
-                to: ricochet ? allTargets : targetElement,
+                to: ricochet ? allTargets.map((t) => t.ref.current) : targetElement,
                 returnToOrigin: true,
-                windup: type === ACTION_TYPES.ATTACK ? 30 : 0,
+                windup: windup,
                 ...options,
+                playbackTime: playbackTime - adjustTimingByDistance,
             });
         }
     }, [eventId]);
