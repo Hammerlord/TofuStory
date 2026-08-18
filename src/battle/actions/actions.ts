@@ -171,7 +171,7 @@ const handleOnKill = (context: ActionContext) => {
                             statUpdate,
                             context: {
                                 ...context,
-                                sourceChain: [...(context.sourceChain || []), { ...lifeOnKillSource, action, statUpdate }],
+                                sourceChain: [...(context?.sourceChain || []), { ...lifeOnKillSource, action, statUpdate }],
                             },
                         }))
                     )
@@ -460,7 +460,7 @@ const handleOnReceiveAction = ({
                 checkEventTrigger({
                     combatantId: statUpdate.combatantId,
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveAttack,
-                    context: { ...context, sourceChain: [...(context.sourceChain || []), source] },
+                    context: { ...context, sourceChain: [...(context?.sourceChain || []), source] },
                 })
             );
         });
@@ -480,7 +480,7 @@ const handleOnReceiveAction = ({
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onFriendlyReceiveAttack,
-                        context: { ...context, sourceChain: [...(context.sourceChain || []), source] },
+                        context: { ...context, sourceChain: [...(context?.sourceChain || []), source] },
                     })
                 );
             });
@@ -604,7 +604,7 @@ export const handleDoTs =
                         context: {
                             ...context,
                             sourceChain: [
-                                ...(context.sourceChain || []),
+                                ...(context?.sourceChain || []),
                                 {
                                     source: action,
                                     actorId,
@@ -766,7 +766,7 @@ const onEffectEventTrigger = ({
             targetId: source?.targetId,
             statUpdate: source?.statUpdate,
         };
-        const procContext: ActionContext = { ...context, sourceChain: [...(context.sourceChain || []), procTriggerSource] };
+        const procContext: ActionContext = { ...context, sourceChain: [...(context?.sourceChain || []), procTriggerSource] };
 
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, context: procContext }));
         dispatch(checkCardActions({ action: other, context: procContext }));
@@ -1511,7 +1511,7 @@ export const triggerStatChangeEvents =
                     checkEventTrigger({
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
-                        context: { ...context, sourceChain: [...(context.sourceChain || []), source] },
+                        context: { ...context, sourceChain: [...(context?.sourceChain || []), source] },
                     })
                 );
             });
@@ -1898,8 +1898,8 @@ const checkHandleMorph = ({
 
         const type = action.morph.type;
         let transformed = {} as any;
-        const source: TriggerSource = { ...parentContext.sourceChain?.at(-1), actorId: actorId };
-        const context = { ...parentContext, sourceChain: [...(parentContext.sourceChain || []), source] };
+        const source: TriggerSource = { ...parentContext?.sourceChain?.at(-1), actorId: actorId };
+        const context = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
 
         const morphProps = {
             targets,
@@ -2015,7 +2015,7 @@ const checkInduce = ({
                         const context: ActionContext = {
                             ...parentContext,
                             sourceChain: [
-                                ...(parentContext.sourceChain || []),
+                                ...(parentContext?.sourceChain || []),
                                 { actorId: id, source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
                             ],
                         };
@@ -2475,7 +2475,7 @@ const handleSecondaryAction = ({
     isAutoCast: boolean;
 }) => {
     return (dispatch, getState): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
-        const source = context.sourceChain.at(-1);
+        const source = context?.sourceChain.at(-1);
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
             return;
         }

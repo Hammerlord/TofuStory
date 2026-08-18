@@ -613,7 +613,7 @@ export const checkCardActions = ({
             discardCardsFromHand,
             playCards,
         } = action;
-        const source = context.sourceChain.at(-1);
+        const source = context?.sourceChain.at(-1);
 
         if (playCards) {
             const { amount, filters } = playCards;
@@ -925,7 +925,7 @@ export const depleteAbilities =
                     context: {
                         triggerHistory: [],
                         ...context,
-                        sourceChain: [...context.sourceChain, { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+                        sourceChain: [...(context?.sourceChain || []), { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
                     },
                 })
             );
