@@ -123,7 +123,7 @@ export const gachaponEvents: EventScene = {
                                         {
                                             speaker: gachaponMachine,
                                             dialog: [
-                                                "You dealt {{ damageByEnemyName.Gachapon Machine }} damage to the gachapon machine. It makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
+                                                "You dealt {{damageByEnemyName.[Gachapon Machine]}} damage to the gachapon machine. It makes a clanking sound and belches out some smoke. The screen lights up with a prompt...",
                                             ],
                                         },
                                         {
