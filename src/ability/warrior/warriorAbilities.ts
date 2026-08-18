@@ -3245,6 +3245,7 @@ export const frenzy: Ability = {
     description: "Gain <b>Furious Strike.</b> This turn only, each card played will grant <b>Furious Strike</b>.",
     image: BerserkImage,
     resourceCost: 1,
+    depletedOnUse: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
