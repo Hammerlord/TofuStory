@@ -1646,6 +1646,8 @@ export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant
                 dispatch(tickDownStatusEffects(combatant.id));
             }
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 

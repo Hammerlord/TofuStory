@@ -225,7 +225,6 @@ const minionAutoAttack = () => {
         const { playerSide } = getState().battle;
 
         const playbackCollectorInstance = playbackCollector();
-
         playerSide.forEach((combatant: Combatant | null) => {
             if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
                 return;
@@ -238,6 +237,8 @@ const minionAutoAttack = () => {
 
             dispatch(useAbility({ ability: abilityToUse, actorId: combatant.id, playbackCollector: playbackCollectorInstance }));
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 
