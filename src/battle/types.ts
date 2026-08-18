@@ -26,7 +26,7 @@ export interface Event {
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
-    actionParent?: Ability | Item | Effect;
+    actionParent?: Ability | Item | Action | CombatEffect;
     source?: TriggerSource;
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];

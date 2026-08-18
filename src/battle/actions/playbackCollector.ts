@@ -10,7 +10,7 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
 
     const { damage, armor, healing, type } = event.action || {};
     const sameAbility =
-        event.actionParent?.name === previousEvent.actionParent?.name ||
+        (event.actionParent as Ability)?.name === (previousEvent.actionParent as Ability)?.name ||
         (event.source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name;
     return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing;
 };
@@ -79,7 +79,7 @@ export const playbackCollector = (): PlaybackCollector => {
             queue.push({
                 ...event,
                 id: uuid.v4(),
-                name: event.actionParent?.name,
+                name: (event.actionParent as Ability)?.name,
                 image: (event.actionParent as Ability)?.image,
                 playbackTime: event.playbackTime || event.action?.playbackTime,
                 addCards: event.addCards || [],

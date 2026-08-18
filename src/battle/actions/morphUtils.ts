@@ -16,7 +16,7 @@ import { createCombatant } from "../../enemy/createEnemy";
 import { CloudIcon, HourglassIcon } from "../../images/icons";
 import { shuffle } from "../../utils";
 import { passesConditions } from "../passesConditions";
-import { CombatantInfo, TriggerSource } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../types";
 import { getPossibleSummonIndices } from "../utils";
 import { findCombatantData } from "./actions";
 
@@ -66,12 +66,21 @@ const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; 
  * Handle MORPH_TYPES.MERGE (take n minion(s) and transform them all to z minion(s))
  * This ignores morph conditions
  */
-export const getMorphMerge = ({ targets, morph, summoner }: { targets: CombatantInfo[]; morph: Morph; summoner: CombatantInfo }) => {
+export const getMorphMerge = ({
+    targets,
+    morph,
+    summoner,
+}: {
+    targets: CombatantInfo[];
+    morph: Morph;
+    summoner: CombatantInfo;
+}): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide, index } = summoner || targets[0] || {};
+
     if (!friendly) {
-        return {};
+        return null;
     }
 
     const combatants = friendly.map((combatant: Combatant | null) => {
@@ -114,7 +123,7 @@ export const getMorphMerge = ({ targets, morph, summoner }: { targets: Combatant
         const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
         if (!minionToSummon) {
             console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
-            return;
+            return null;
         }
 
         if (typeof pos === "number") {
@@ -151,12 +160,12 @@ export const getMorphMap = ({
     getState: Function;
     source: TriggerSource;
     summoner: CombatantInfo;
-}) => {
+}): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
     const { minions, setOriginalHealthPercentage } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide } = summoner || targets[0] || {};
     if (!friendly) {
-        return {};
+        return null;
     }
 
     const summons = [];

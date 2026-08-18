@@ -1657,7 +1657,11 @@ export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant
 const onSummonTriggers =
     ({ summonedId, summonerId, parentContext }: { summonedId: string; summonerId: string; parentContext: ActionContext }) =>
     (dispatch, getState) => {
-        const context = { ...parentContext, targetId: summonedId, allTargetIds: [summonedId] };
+        const context: ActionContext = {
+            ...parentContext,
+            sourceChain: [...(parentContext?.sourceChain || []), { actorId: summonerId, targetId: summonedId, allTargetIds: [summonedId] }],
+        };
+
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, context: context }));
         const { hostile, friendly } = findCombatantData(getState().battle, summonerId) || {};
         hostile?.forEach((combatant) => {
@@ -1795,7 +1799,7 @@ const checkHandleActionSummon = ({ action, actorId, parentContext }: { action: A
 
                 pos = getRandomItem(existingMinionIndices);
                 if (typeof pos === "number") {
-                    dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos }));
+                    dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos, parentContext }));
                     isTributeKill = true;
                 }
             }
@@ -1904,9 +1908,8 @@ const checkHandleMorph = ({
         }
 
         const type = action.morph.type;
-        let transformed = {} as any;
-        const source: TriggerSource = { ...parentContext?.sourceChain?.at(-1), actorId: actorId };
-        const context = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
+        const source: TriggerSource = { ...parentContext?.sourceChain?.at(-1), actorId };
+        const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
 
         const morphProps = {
             targets,
@@ -1916,16 +1919,19 @@ const checkHandleMorph = ({
             summoner: findCombatantData(getState().battle, actorId),
         };
 
+        let transformed: { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null = null;
+
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
         } else {
             transformed = getMorphMerge(morphProps);
         }
 
-        const { side, combatants, summons } = transformed;
-        if (!side) {
+        if (!transformed) {
             return;
         }
+
+        const { side, combatants, summons } = transformed;
 
         // Give minions time to appear before triggering any minion-related effect events (or the next action).
         // Issue where characters who automatically attacked summoned minions would fly off to 0, 0 since minions had not rendered
@@ -2185,7 +2191,7 @@ export const enqueueEvent = ({
     actorId?: string;
     selectedIndex?: number;
     allTargetIndices?: number[];
-    actionParent?: Ability | Item | Effect;
+    actionParent?: Ability | Action | Item | CombatEffect;
     targetSide?: BATTLEFIELD_SIDES;
     playbackTime?: number; // MS
     context?: ActionContext;
@@ -2252,7 +2258,7 @@ export const enqueueEvent = ({
         dispatch(
             pushEventQueue({
                 ...event,
-                name: event.actionParent?.name,
+                name: (event.actionParent as Ability)?.name,
                 image: (event.actionParent as Ability)?.image,
                 playbackTime: event.playbackTime || event.action?.playbackTime,
                 events: [event],
@@ -2726,6 +2732,7 @@ export const performAction = ({
         dispatch(
             enqueueEvent({
                 action,
+                actionParent: parentSource?.source,
                 actorId,
                 selectedIndex,
                 allTargetIndices,
@@ -3260,13 +3267,14 @@ export const useAbility = ({
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier
         };
 
-        const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, isProc };
         const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
-        const parentContext: ActionContext = { sourceChain: [source], playbackCollector, triggerHistory: [], isProc };
 
         if (!isAutoCast) {
             dispatch(applyStatChanges([resourceSpend]));
         }
+
+        const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, isProc };
+        const parentContext: ActionContext = { sourceChain: [source], playbackCollector, triggerHistory: [], isProc };
 
         dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentContext, isAutoCast }));
 
