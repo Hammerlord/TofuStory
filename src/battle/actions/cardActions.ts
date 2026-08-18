@@ -168,16 +168,7 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
             context: { sourceChain: parentSourceChain },
             getCombatantById: (id) => findCombatantData(getState().battle, id),
         });
-        /**
- * {
-                        source: action,
-                        type: TRIGGER_SOURCE_TYPES.EFFECT,
-                        actorId: player.id,
-                        targetId: player.id,
-                        statUpdate,
-                        triggerHistory: [],
-                    }
- */
+
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
         dispatch(
             triggerStatChangeEvents(

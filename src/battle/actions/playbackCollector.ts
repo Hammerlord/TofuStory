@@ -8,11 +8,11 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
         return false;
     }
 
-    const { damage, armor, healing, type } = event.action || {};
+    const { damage, armor, healing, type, summon } = event.action || {};
     const sameAbility =
         (event.actionParent as Ability)?.name === (previousEvent.actionParent as Ability)?.name ||
         (event.source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name;
-    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing;
+    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
 };
 
 export const aggregateStatUpdates = (
