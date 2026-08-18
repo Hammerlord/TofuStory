@@ -708,7 +708,11 @@ const onEffectEventTrigger = ({
         } = effectEvent;
 
         const source: TriggerSource = context?.sourceChain?.at(-1);
-        const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS): string[] => {
+        const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS | undefined): string[] => {
+            if (!targetType) {
+                return [ownerId];
+            }
+
             const targetIds =
                 {
                     [TRIGGER_TARGET_TYPES.EFFECT_OWNER]: [ownerId],
@@ -1497,6 +1501,7 @@ export const triggerStatChangeEvents =
             if (healthDamage > 0) {
                 const source = context?.sourceChain?.at(-1);
                 dispatch(updateDamageStatistics(healthDamage, source));
+                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealthDamage, trackSumAmount: Math.abs(healthDamage) });
             }
 
             effects.forEach((e: CombatEffect) => {

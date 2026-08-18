@@ -121,6 +121,7 @@ export enum EFFECT_EVENT_KEYS {
     onFriendlyAbility = "onFriendlyAbility",
     onFriendlySupportAbility = "onFriendlySupportAbility",
     onReceiveDamage = "onReceiveDamage",
+    onReceiveHealthDamage = "onReceiveHealthDamage",
     onReceiveHealing = "onReceiveHealing",
     onReceiveArmor = "onReceiveArmor",
     onReceiveEffect = "onReceiveEffect",
