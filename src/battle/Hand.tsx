@@ -5,6 +5,8 @@ import { cardPassesFilterCondition } from "./selectCardUtils";
 import { useMemo } from "react";
 
 const CARD_WIDTH = 168; // From AbilityView
+const CARD_HEIGHT = 272;
+const CARD_GAP = 1;
 
 export const getHandAuraEffects = (hand: CombatAbility[]) => {
     const auraEffects = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
@@ -65,44 +67,49 @@ const Hand = ({
     return (
         <div className={className}>
             <AnimatePresence mode="popLayout">
-                {hand.map((ability, i) => (
-                    <motion.div
-                        key={ability.instanceId}
-                        layout
-                        initial={{
-                            x: -CARD_WIDTH / 2,
-                            opacity: 0,
-                        }}
-                        animate={{
-                            x: 0,
-                            opacity: 1,
-                        }}
-                        exit={{
-                            x: -CARD_WIDTH / 2,
-                            y: "-50%",
-                            opacity: 0,
-                            filter: "saturate(0)",
-                        }}
-                        transition={{
-                            duration: 0.2,
-                            ease: "easeOut",
-                        }}
-                    >
-                        <AbilityView
-                            onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
-                            isSelected={selectedAbilityId === ability.instanceId}
+                {hand.map((ability, i) => {
+                    const spread = CARD_WIDTH * 0.65;
+
+                    // How far this card is from the rightmost card
+                    const distanceFromRight = hand.length - 1 - i;
+
+                    return (
+                        <motion.div
                             key={ability.instanceId}
-                            ability={ability}
-                            ref={(element) => {
-                                if (element) {
-                                    cardRefs.current[ability.instanceId] = element;
-                                } else {
-                                    delete cardRefs.current[ability.instanceId];
-                                }
+                            layout
+                            initial={{
+                                x: -i * spread,
+                                opacity: 0,
                             }}
-                        />
-                    </motion.div>
-                ))}
+                            animate={{
+                                x: 0,
+                                opacity: 1,
+                            }}
+                            exit={{
+                                x: distanceFromRight * spread,
+                                opacity: 0,
+                                filter: "saturate(0)",
+                            }}
+                            transition={{
+                                duration: 0.3,
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
+                        >
+                            <AbilityView
+                                onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
+                                isSelected={selectedAbilityId === ability.instanceId}
+                                ability={ability}
+                                ref={(element) => {
+                                    if (element) {
+                                        cardRefs.current[ability.instanceId] = element;
+                                    } else {
+                                        delete cardRefs.current[ability.instanceId];
+                                    }
+                                }}
+                            />
+                        </motion.div>
+                    );
+                })}
             </AnimatePresence>
         </div>
     );
