@@ -594,6 +594,7 @@ export { default as RabbitFootImage } from "./RabbitFoot.png";
 export { default as RageImage } from "./Rage.png";
 export { default as RagingBlowImage } from "./RagingBlow.png";
 export { default as RainbowBowImage } from "./RainbowBow.png";
+export { default as RavenImage } from "./Raven.gif";
 export { default as RedBoxingGloveImage } from "./RedBoxingGlove.png";
 export { default as RedCrayonImage } from "./RedCrayon.png";
 export { default as RedDrakeImage } from "./RedDrake.gif";

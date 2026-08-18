@@ -433,14 +433,20 @@ const AnimationCanvas = ({
     }, [deckCycled, deck]);
 
     const getProjectileElement = (i: number) => {
-        const projectileDimensions = { width: 70, height: 70 };
+        const MIN_PROJECTILE_SIZE = 70;
+
+        const scale = Math.max(MIN_PROJECTILE_SIZE / width, MIN_PROJECTILE_SIZE / height);
+
+        const projectileWidth = width * scale;
+        const projectileHeight = height * scale;
+
         const props = {
             ref: projectileRefs[i],
             style: {
-                left: actorX - projectileDimensions.width / 2,
-                top: actorY - projectileDimensions.height / 2,
-                width,
-                height,
+                left: actorX - MIN_PROJECTILE_SIZE / 2,
+                top: actorY - MIN_PROJECTILE_SIZE / 2,
+                width: projectileWidth,
+                height: projectileHeight,
             },
         } as any;
 

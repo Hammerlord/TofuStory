@@ -1,5 +1,6 @@
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
+import { doom } from "../../enemy/effect";
 import {
     ArcheryMasteryImage,
     ArrowBlowImage,
@@ -61,11 +62,14 @@ import {
     PiercingArrowImage,
     PowerKnockbackImage,
     Puppetree3Image,
+    RavenImage,
     RoastingShotImage,
     ScarecrowImage,
     SharpEyesImage,
     ShatteringArrowImage,
     ShieldImage,
+    SkeletonOfHorrorImage,
+    SkullStrikerImage,
     SlowAndSteadyImage,
     SnapfreezeShotImage,
     SnipeImage,
@@ -583,7 +587,7 @@ export const darkArrow: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 7,
+                    stacks: 10,
                 },
             ],
         },
@@ -3641,6 +3645,51 @@ export const ultimateStrafe: Ability = {
                     damage: 1,
                 },
             ],
+        },
+    ],
+};
+
+const doomHeraldMinion: Minion = {
+    name: "Doom Herald",
+    image: RavenImage,
+    maxHP: 5,
+    abilities: [
+        {
+            name: "Doom!",
+            image: SkeletonOfHorrorImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.EFFECT,
+                    icon: SkullStrikerImage,
+                    animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                    effects: [
+                        {
+                            ...doom,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            ...doom,
+        },
+    ],
+};
+
+export const doomHeraldAbility: Ability = {
+    name: "Doom Herald",
+    rarity: RARITIES.RARE,
+    image: RavenImage,
+    minion: doomHeraldMinion,
+    resourceCost: 3,
+    description: "Inflicts <b>Doom</b> every turn. The Doom Herald is also afflicted by <b>Doom.</b>",
+    actions: [],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };

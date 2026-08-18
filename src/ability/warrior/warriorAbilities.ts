@@ -3110,7 +3110,7 @@ export const zan: Ability = {
             effects: [
                 {
                     ...bleed,
-                    stacks: 6,
+                    stacks: 7,
                 },
             ],
         },
@@ -3242,7 +3242,7 @@ export const frenzy: Ability = {
     name: "Frenzy",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Gain <b>Furious Strike.</b> This turn only, each card played will grant <b>Furious Strike</b> (or <b>Upgrade</b> it).",
+    description: "Gain <b>Furious Strike.</b> This turn only, each card played will grant <b>Furious Strike</b>.",
     image: BerserkImage,
     resourceCost: 1,
     actions: [
