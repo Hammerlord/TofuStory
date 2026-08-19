@@ -1012,7 +1012,7 @@ export const focus: Ability = {
     resourceCost: 1,
     image: FocusImage,
     description:
-        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Crit {{ actions.0.effects.0.duration }}{{{ _duration_ }}}.</b> Next turn, gain <b>+{{ actions.0.effects.0.resourcesPerTurn }} {{{ _stamina_ }}}.</b>",
+        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Critical chance {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b> and <b>Bide.</b>",
     overrideBodyText: true,
     actions: [
         {

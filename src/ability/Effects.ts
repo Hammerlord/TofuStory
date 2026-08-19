@@ -8,6 +8,7 @@ import {
     GemHeartImage,
     GreyShieldImage,
     HumilityStoneImage,
+    LeafImage,
     MushroomOmokImage,
     NimbleJewelCImage,
     PoisonImage,
@@ -710,12 +711,12 @@ export const stashCardEffect: Effect = {
     },
 };
 
-export const infuriateEffect: Effect = {
-    name: "Infuriate",
-    description: "Gain 1 Fury next turn.",
-    type: EFFECT_TYPES.RAGE,
+export const bideEffect: Effect = {
+    name: "Bide",
+    description: "Gain 1 Resource next turn.",
+    type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    icon: HumilityStoneImage,
+    icon: LeafImage,
     resourcesPerTurn: 1,
     onTurnInProgress: {
         removeEffect: true,

@@ -90,7 +90,7 @@ import {
     bleed,
     directDamageTaken,
     immunity,
-    infuriateEffect,
+    bideEffect,
     silence,
     stealth,
     stun,
@@ -2579,7 +2579,7 @@ export const bide: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Infuriate.</b>",
+    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Bide.</b>",
     image: WarriorThroneImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -2591,7 +2591,7 @@ export const bide: Ability = {
             target: TARGET_TYPES.SELF,
             icon: WarriorThroneImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            effects: [infuriateEffect],
+            effects: [bideEffect],
         },
     ],
     upgrades: [

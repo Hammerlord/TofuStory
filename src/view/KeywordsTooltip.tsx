@@ -11,7 +11,7 @@ import {
     chill,
     freeze,
     immunity,
-    infuriateEffect,
+    bideEffect,
     poison,
     preventArmorDecay,
     silence,
@@ -27,7 +27,7 @@ import { AshesImage, CriticalShotImage, NamelessSwordImage, TargetLockImage } fr
 import Handlebars from "handlebars";
 
 const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
-    infuriateEffect,
+    bideEffect,
     {
         ...ward,
         keys: ['"Ward"'], // Bandaid for Ward Booster showing Ward in its tooltip
