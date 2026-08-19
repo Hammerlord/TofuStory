@@ -9,7 +9,7 @@ import {
     RICOCHET_ACTION_PLAYBACK_SPEED,
 } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Displacement, Event } from "../types";
+import { ActionParent, BATTLEFIELD_SIDES, Displacement, Event } from "../types";
 import { ActionContext } from "./../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { PlaybackCollector } from "./playbackCollector";
@@ -39,7 +39,7 @@ export const enqueueEvent = ({
     actorId?: string;
     selectedIndex?: number;
     allTargetIndices?: number[];
-    actionParent?: Ability | Action | Item | CombatEffect;
+    actionParent?: ActionParent;
     targetSide?: BATTLEFIELD_SIDES;
     playbackTime?: number; // MS
     context?: ActionContext;

@@ -15,7 +15,7 @@ import { Item } from "../item/types";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
 import { DAMAGE_COEFF } from "./constants";
 import { getMultiplier } from "./getMultiplier";
-import { CombatantInfo, TriggerSource } from "./types";
+import { ActionParent, CombatantInfo, TriggerSource } from "./types";
 import { hasEffectType } from "./actions/combatantData";
 
 export const calculateDamage = ({
@@ -33,7 +33,7 @@ export const calculateDamage = ({
     targetIndex?: number;
     selectedIndex?: number;
     action: Action | ActionOptionalProperties;
-    actionParent?: CombatAbility | Item; // TODO can this just be from `source` (source.source should probably be equivalent to this object) instead of having this separate param?
+    actionParent?: ActionParent; // TODO can this just be from `source` (source.source should probably be equivalent to this object) instead of having this separate param?
     multiplier?: number;
     source?: TriggerSource;
 }): number => {
@@ -115,7 +115,7 @@ export const calculateDamage = ({
                     hand: [],
                     discard: [],
                 });
-                totalSkillBonus += getSkillBonusDamage({ ability: actionParent, skillBonus }) * stacks;
+                totalSkillBonus += getSkillBonusDamage({ ability: actionParent as CombatAbility, skillBonus }) * stacks;
                 totalAttackPower += attackPower * effectMultiplier * stacks;
                 if (minimumAttackDamage > minimumDamage) {
                     minimumDamage = minimumAttackDamage;

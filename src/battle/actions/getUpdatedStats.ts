@@ -1,21 +1,20 @@
 import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
-import { Ability, Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import { Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
 import { Player } from "../../character/types";
-import { Item } from "../../item/types";
 import { getRandomItem } from "../../utils";
-import { passesValueComparison } from "../passesConditions";
-import { calculateMesoMultiplier } from "../utils";
-import { hasEffectType } from "./combatantData";
 import { calculateArmor } from "../calculateArmor";
 import { calculateBonus } from "../calculateBonus";
 import { calculateDamage } from "../calculateDamage";
-import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { getMultiplier } from "../getMultiplier";
+import { passesValueComparison } from "../passesConditions";
+import { calculateMesoMultiplier } from "../utils";
 import { effectNameMap } from "./../../enemy/effect";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
+import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
+import { hasEffectType } from "./combatantData";
 import { getHalveArmorAmount } from "./phases/checkHalveArmor";
+import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
@@ -58,7 +57,7 @@ export const getUpdatedStats = ({
     recipientIds?: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
     selectedIndex?: number; // Only applicable for abilities with manual selection?
     action: Action;
-    actionParent?: Ability | CombatAbility | Item;
+    actionParent?: ActionParent;
     context?: ActionContext;
     getCombatantById: (id: string) => CombatantInfo;
     deck: CombatAbility[];
@@ -69,7 +68,6 @@ export const getUpdatedStats = ({
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
     const triggerSource = context?.sourceChain?.at(-1);
-    const sourceEntity = triggerSource?.source;
 
     return (recipients || targets).map((target: CombatantInfo) => {
         const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants } = target;
@@ -86,14 +84,11 @@ export const getUpdatedStats = ({
             discard,
         });
         const {
-            effects: actionEffects = [],
             resources = 0,
             destroyArmor = 0,
             resurrect,
             mesos = 0,
             stealMesos = 0,
-            removeDebuffs,
-            removeEffects = [],
             flatDamage = 0,
             targetMinHP = 0,
             decayArmor = false,
@@ -101,7 +96,6 @@ export const getUpdatedStats = ({
             bypassArmor = false,
         } = action;
 
-        const enabledEffects = getEnabledEffects({ combatantInfo: target });
         const multiplier = getMultiplier({
             multiplier: action.multiplier,
             target,
@@ -158,131 +152,7 @@ export const getUpdatedStats = ({
         const maxHP = getMaxHP(targetCombatant);
         const healing = Math.min(maxHP - targetCombatant.HP, rawHealing);
         const overhealing = rawHealing - healing;
-
-        const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
-        const isImmuneTo = (effect: Effect): boolean => {
-            const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
-                (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
-            );
-            if (effect.bypassImmunity || action.bypassImmunity || isPreviousActionTriggeredBypass) {
-                return false;
-            }
-            if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
-                return true;
-            }
-            return enabledEffects.some((targetEffect: Effect) => {
-                const { type, value = [] } = targetEffect.immunities || {};
-
-                if (type === "effect-type") {
-                    return value.some((type: EFFECT_TYPES) => type === effect.type);
-                }
-
-                if (type === "effect") {
-                    return value.some((name: string) => name === effect.name);
-                }
-
-                if (type === "effect-class") {
-                    return value.some((type: EFFECT_CLASSES) => type === effect.class);
-                }
-            });
-        };
-
-        const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
-
-        const getEffectDuration = (incomingEffect: Effect) => {
-            if (isNaN(incomingEffect.duration) || incomingEffect.duration === Infinity) {
-                return Infinity;
-            }
-
-            const totalBonusDuration = allEnabledEffects.reduce((acc, e) => {
-                const { amount, filters } = e.extendEffectDuration || {};
-
-                if (!amount) {
-                    return acc;
-                }
-
-                if (
-                    !filters ||
-                    filters.every((filter) => {
-                        const { value, property, comparator } = filter;
-                        return passesValueComparison({ val: incomingEffect[property], otherVal: value, comparator });
-                    })
-                ) {
-                    return acc + amount;
-                }
-
-                return acc;
-            }, 0);
-
-            return incomingEffect.duration + totalBonusDuration;
-        };
-
-        const effects: CombatEffect[] = [];
-        const failedToApplyEffects: CombatEffect[] = [];
-
-        const allActionEffects = [...actionEffects];
-        ((sourceEntity as CombatAbility)?.effects || []).forEach((e) => {
-            if (Array.isArray(e.effects)) {
-                allActionEffects.push(...e.effects);
-            }
-        });
-
-        Array.from({ length: multiplier }).forEach(() => {
-            const effectsToAdd = allActionEffects
-                .map((effect: String | Effect) => {
-                    if (typeof effect === "string") {
-                        return {
-                            ...effectNameMap[effect],
-                        };
-                    }
-
-                    return effect as Effect | CombatEffect;
-                })
-                .filter((effect) => {
-                    if (isImmuneTo(effect)) {
-                        // ID for differentiation purposes when announcing that the effect failed to apply
-                        failedToApplyEffects.push({ ...effect, id: uuid.v4(), uptime: 0 });
-                        return false;
-                    }
-
-                    return true;
-                })
-                .map((effect: Effect | CombatEffect) => {
-                    let overrideObj;
-                    if (effect.override) {
-                        const portrait = effect.override.portrait;
-                        overrideObj = {
-                            ...effect.override,
-                            portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
-                        };
-                    }
-                    const duration = getEffectDuration(effect);
-                    return {
-                        ...cloneDeep(effect),
-                        duration,
-                        override: overrideObj,
-                        uptime: effect.uptime || 1,
-                        id: uuid.v4(),
-                        applierId: actorId,
-                        originalAbilityId: (actionParent as CombatAbility)?.instanceId,
-                        originalDuration: duration,
-                    };
-                });
-
-            effects.push(...effectsToAdd);
-        });
-
         const resourcesGained = resources * multiplier;
-        const removedEffects = targetCombatant.effects.filter((effect: CombatEffect) => {
-            if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF && effect.dispellable !== false) {
-                return true;
-            }
-
-            if (removeEffects.some((name) => name === effect.name)) {
-                return true;
-            }
-        });
-
         const isDeathBlow = targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
 
         let moneyDiff = mesos - stealMesos;
@@ -311,15 +181,13 @@ export const getUpdatedStats = ({
             armor: armorGained,
             resources: resourcesGained,
             rawResources: resources,
-            effects,
             isDeathBlow,
             overkill: isDeathBlow ? targetCombatant.HP - healthDamage + healing : 0,
             mesos: moneyDiff,
-            removedEffects,
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
-            failedToApplyEffects,
             context: context,
+            ...getStatusEffectDiff({ target, actor, action, context, multiplier, actionParent }),
         };
 
         return {
@@ -341,4 +209,151 @@ const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: 
         ) || 0;
     const healing = healingReceived + action.healing;
     return Math.max(0, healing);
+};
+
+const getStatusEffectDiff = ({
+    target,
+    actor,
+    action,
+    context,
+    multiplier,
+    actionParent,
+}: {
+    target: CombatantInfo;
+    actor: CombatantInfo;
+    action: Action;
+    context: ActionContext;
+    multiplier: number;
+    actionParent?: ActionParent;
+}) => {
+    const { effects: actionEffects = [], removeDebuffs, removeEffects = [] } = action;
+    const triggerSource = context?.sourceChain?.at(-1);
+    const sourceEntity = triggerSource?.source;
+    const enabledEffects = getEnabledEffects({ combatantInfo: target });
+
+    const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
+
+    const isImmuneTo = (effect: Effect): boolean => {
+        const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
+            (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
+        );
+        if (effect.bypassImmunity || action.bypassImmunity || isPreviousActionTriggeredBypass) {
+            return false;
+        }
+        if (targetIsImmune && effect.class === EFFECT_CLASSES.DEBUFF) {
+            return true;
+        }
+        return enabledEffects.some((targetEffect: Effect) => {
+            const { type, value = [] } = targetEffect.immunities || {};
+
+            if (type === "effect-type") {
+                return value.some((type: EFFECT_TYPES) => type === effect.type);
+            }
+
+            if (type === "effect") {
+                return value.some((name: string) => name === effect.name);
+            }
+
+            if (type === "effect-class") {
+                return value.some((type: EFFECT_CLASSES) => type === effect.class);
+            }
+        });
+    };
+
+    const removedEffects = (target?.combatant?.effects || []).filter((effect: CombatEffect) => {
+        if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF && effect.dispellable !== false) {
+            return true;
+        }
+
+        if (removeEffects.some((name) => name === effect.name)) {
+            return true;
+        }
+    });
+
+    const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
+
+    const getEffectDuration = (incomingEffect: Effect) => {
+        if (isNaN(incomingEffect.duration) || incomingEffect.duration === Infinity) {
+            return Infinity;
+        }
+
+        const totalBonusDuration = allEnabledEffects.reduce((acc, e) => {
+            const { amount, filters } = e.extendEffectDuration || {};
+
+            if (!amount) {
+                return acc;
+            }
+
+            if (
+                !filters ||
+                filters.every((filter) => {
+                    const { value, property, comparator } = filter;
+                    return passesValueComparison({ val: incomingEffect[property], otherVal: value, comparator });
+                })
+            ) {
+                return acc + amount;
+            }
+
+            return acc;
+        }, 0);
+
+        return incomingEffect.duration + totalBonusDuration;
+    };
+
+    const effects: CombatEffect[] = [];
+    const failedToApplyEffects: CombatEffect[] = [];
+
+    const allActionEffects = [...actionEffects];
+    ((sourceEntity as CombatAbility)?.effects || []).forEach((e) => {
+        if (Array.isArray(e.effects)) {
+            allActionEffects.push(...e.effects);
+        }
+    });
+
+    Array.from({ length: multiplier }).forEach(() => {
+        const effectsToAdd = allActionEffects
+            .map((effect: String | Effect) => {
+                if (typeof effect === "string") {
+                    return {
+                        ...effectNameMap[effect],
+                    };
+                }
+
+                return effect as Effect | CombatEffect;
+            })
+            .filter((effect) => {
+                if (isImmuneTo(effect)) {
+                    // ID for differentiation purposes when announcing that the effect failed to apply
+                    failedToApplyEffects.push({ ...effect, id: uuid.v4(), uptime: 0 });
+                    return false;
+                }
+
+                return true;
+            })
+            .map((effect: Effect | CombatEffect) => {
+                let overrideObj;
+                if (effect.override) {
+                    const portrait = effect.override.portrait;
+                    overrideObj = {
+                        ...effect.override,
+                        portrait: (Array.isArray(portrait) && getRandomItem(portrait)) || portrait,
+                    };
+                }
+                const duration = getEffectDuration(effect);
+                return {
+                    ...cloneDeep(effect),
+                    duration,
+                    override: overrideObj,
+                    uptime: effect.uptime || 1,
+                    id: uuid.v4(),
+                    applierId: actor?.combatant?.id,
+                    originalAbilityId: (actionParent as CombatAbility)?.instanceId,
+                    originalDuration: duration,
+                };
+            });
+
+        effects.push(...effectsToAdd);
+    });
+
+    return { effects, failedToApplyEffects, removedEffects };
 };

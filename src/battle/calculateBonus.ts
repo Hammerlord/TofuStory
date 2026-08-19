@@ -2,7 +2,7 @@ import { ActionOptionalProperties, Ability, CONDITION_TARGETS, Action, Bonus } f
 import { Item } from "../item/types";
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
-import { CombatantInfo, TriggerSource } from "./types";
+import { ActionParent, CombatantInfo, TriggerSource } from "./types";
 
 export const calculateBonus = ({
     action,
@@ -21,7 +21,7 @@ export const calculateBonus = ({
     allTargets: CombatantInfo[];
     actor?: CombatantInfo;
     isTargetSelected: boolean;
-    actionParent?: Ability | Item;
+    actionParent?: ActionParent;
     source?: TriggerSource;
     deck: Ability[];
     hand: Ability[];

@@ -16,6 +16,8 @@ export enum BATTLEFIELD_SIDES {
     PLAYER_SIDE = "playerSide",
 }
 
+export type ActionParent = Ability | Item | Action | CombatEffect;
+
 /**
  * The results of an action being applied.
  */
@@ -26,7 +28,7 @@ export interface Event {
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
     id: string;
-    actionParent?: Ability | Item | Action | CombatEffect;
+    actionParent?: ActionParent;
     source?: TriggerSource;
     playerSide: (Combatant | null)[];
     enemySide: (Combatant | null)[];

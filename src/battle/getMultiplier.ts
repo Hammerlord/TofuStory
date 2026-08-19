@@ -12,7 +12,7 @@ import {
 } from "../ability/types";
 import { Item } from "../item/types";
 import { passesValueComparison } from "./passesConditions";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { ActionParent, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 import { calculateDamage } from "./calculateDamage";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
@@ -34,7 +34,7 @@ export const getMultiplier = ({
     target?: CombatantInfo;
     allTargets?: CombatantInfo[];
     sourceTargets?: CombatantInfo[];
-    actionParent?: Ability | Item;
+    actionParent?: ActionParent;
     multiplier?: Multiplier;
     source?: TriggerSource;
     deck: Ability[];
@@ -261,7 +261,7 @@ const calculateAttackDamageInHand = ({
 }: {
     hand: CombatAbility[];
     actor: CombatantInfo;
-    actionParent?: Ability | Item | Action | CombatEffect;
+    actionParent?: ActionParent;
 }): number => {
     let damage = 0;
     hand.forEach((card) => {
