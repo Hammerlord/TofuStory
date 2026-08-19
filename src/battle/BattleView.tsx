@@ -57,9 +57,9 @@ import {
     hasEffectType,
     isTurnActionPrevented,
     isUntargetable,
-    isValidTarget,
     isWithinAbilityArea,
 } from "./utils";
+import { isValidTargetForPlayerAbility } from "./actions/targeting/playerTargeting";
 import { findCombatantData } from "./actions/combatantData";
 import { checkEventTrigger } from "./actions/triggerEffectEvent";
 import { useAbility } from "./actions/useAbility";
@@ -762,7 +762,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const hoveredIndex = hoveredCombatant?.index;
 
         if (
-            !isValidTarget({
+            !isValidTargetForPlayerAbility({
                 ability: abilityToUse,
                 side,
                 index: hoveredIndex,
@@ -800,7 +800,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
         const checkValidTargetForAbility = (ability: Ability) => {
             if (
-                isValidTarget({
+                isValidTargetForPlayerAbility({
                     ability,
                     side: combatantSide,
                     index: combatantIndex,
@@ -810,7 +810,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             ) {
                 if (
                     !hoveredCombatant ||
-                    !isValidTarget({
+                    !isValidTargetForPlayerAbility({
                         ability,
                         side: hoveredCombatant.side,
                         index: hoveredCombatant.index,

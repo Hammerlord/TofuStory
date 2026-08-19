@@ -31,7 +31,7 @@ import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
 import { ActionContext } from "./../types";
-import { updateEnemyTargetingAfterEffectsApplied } from "./enemyTargeting";
+import { updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
 import { requeueRecentlyUsedAbility } from "./enemyTurn";
 import { checkEventTrigger } from "./triggerEffectEvent";
 import { enqueueEvent } from "./enqueueEvent";

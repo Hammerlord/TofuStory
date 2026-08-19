@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Effect, WeaponImageOptions } from "../ability/types";
 import { Event } from "../battle/types";
-import { calculateActionArea } from "../battle/utils";
+import { calculateActionArea } from "../battle/actions/targeting/targeting";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { useAppSelector } from "../hooks";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";

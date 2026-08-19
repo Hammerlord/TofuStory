@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { calculateActionArea } from "../../battle/utils";
+import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 import { Ability, Action } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
 import classNames from "classnames";

@@ -12,7 +12,7 @@ import { performAction } from "./actions";
 import { PlaybackCollector } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon";
-import { autoSelectActionTarget } from "./targeting";
+import { autoSelectActionTarget } from "./targeting/targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
 

@@ -16,7 +16,8 @@ import { Combatant, Player } from "../../character/types";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { calculateActionArea, getEnabledEffects, getMultiplier } from "../utils";
+import { getEnabledEffects, getMultiplier } from "../utils";
+import { calculateActionArea } from "./targeting/targeting";
 import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
@@ -29,7 +30,7 @@ import { checkHandleMovement, checkHandleVacuum } from "./movement";
 import { PlaybackCollector, aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkHandleActionSummon, checkHandleMorph } from "./summon";
-import { autoSelectActionTarget, calculateTargetIndices } from "./targeting";
+import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
 

@@ -12,7 +12,7 @@ import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { performAction } from "./actions";
-import { autoSelectActionTarget } from "./targeting";
+import { autoSelectActionTarget } from "./targeting/targeting";
 import { onUseAbility, useAbility } from "./useAbility";
 
 /**

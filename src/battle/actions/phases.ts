@@ -18,7 +18,7 @@ import { checkCardActions } from "./cardActions/cardActions";
 import { calculateMesoMultiplier } from "../utils";
 import { findCombatantData } from "./combatantData";
 import { checkEventTrigger } from "./triggerEffectEvent";
-import { autoSelectActionTarget } from "./targeting";
+import { autoSelectActionTarget } from "./targeting/targeting";
 import { playbackCollector } from "./playbackCollector";
 import { tickDownStatusEffects } from "./effectLifecycle";
 import { updateCombatant } from "./combatantData";

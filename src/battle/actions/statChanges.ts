@@ -5,7 +5,7 @@ import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { findCombatantData } from "./combatantData";
 import { ActionContext } from "./../types";
-import { checkValidEnemyTargeting, updateEnemyTargetingAfterEffectsApplied } from "./enemyTargeting";
+import { checkValidEnemyTargeting, updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { onCombatantDeath } from "./onKill";
 import { checkEventTrigger, onEffectEventTrigger } from "./triggerEffectEvent";

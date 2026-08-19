@@ -1,7 +1,7 @@
 import { isOffensiveAction } from "../ability/AbilityView/utils";
 import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { performAction } from "../battle/actions/actions";
-import { checkValidEnemyTargeting } from "../battle/actions/enemyTargeting";
+import { checkValidEnemyTargeting } from "../battle/actions/targeting/enemyTargeting";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { checkSummonMinion } from "../battle/actions/summon";
 import { passesConditions } from "../battle/passesConditions";

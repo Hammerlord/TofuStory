@@ -1,11 +1,13 @@
-import { isOffensiveAction } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Action, TARGET_TYPES } from "../../ability/types";
-import { Combatant } from "../../character/types";
-import { getRandomItem, shuffle } from "../../utils";
-import { BattleState } from "../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../types";
-import { calculateActionArea, getValidTargetIndices, hasTruesight } from "../utils";
-import { findCombatantData } from "./combatantData";
+import _ from "lodash";
+import { isOffensiveAction } from "../../../ability/AbilityView/utils";
+import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../../ability/types";
+import { Combatant } from "../../../character/types";
+import { getRandomItem, shuffle } from "../../../utils";
+import { BattleState } from "../../reducer";
+import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
+import { getEnabledEffects, hasTruesight, isStealthed, isUntargetable } from "../../utils";
+import { findCombatantData } from "../combatantData";
+import { passesConditions } from "../../passesConditions";
 
 export const calculateTargetIndices = ({
     action,
@@ -302,4 +304,124 @@ const pickHostileIndex = ({ targetIndices, actorData }: { targetIndices: number[
     }
 
     return getRandomItem(targetIndices);
+};
+
+/**
+ * @returns indices of characters that are alive
+ */
+export const getValidTargetIndices = (
+    characters: (Combatant | null)[],
+    area: number,
+    options: {
+        excludeStealth?: boolean;
+        excludeIndex?: number;
+        onlyTaunt?: boolean;
+        excludeUntargetable?: boolean;
+        onlyPriorityTarget?: boolean;
+    } = {}
+): number[] => {
+    const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
+
+    const getIndicesForEffectType = (effectType: EFFECT_TYPES) => {
+        const effectIndices = [];
+        characters.forEach((character: Combatant | null, i: number) => {
+            const notExcluded = excludeIndex !== i;
+            if (character?.effects?.some((effect) => effect.type === effectType) && character?.HP > 0 && notExcluded) {
+                effectIndices.push(i);
+            }
+        });
+
+        return effectIndices;
+    };
+
+    let priorityIndices;
+    if (onlyPriorityTarget) {
+        priorityIndices = getIndicesForEffectType(EFFECT_TYPES.PRIORITY_TARGET);
+    }
+
+    if (onlyTaunt) {
+        const tauntingIndices = getIndicesForEffectType(EFFECT_TYPES.TAUNT);
+
+        if (priorityIndices?.length) {
+            const intersected = _.intersection(tauntingIndices, priorityIndices);
+            if (intersected.length > 0) {
+                return intersected;
+            }
+        }
+
+        if (tauntingIndices.length) {
+            return tauntingIndices;
+        }
+    }
+
+    if (priorityIndices?.length) {
+        return priorityIndices;
+    }
+
+    area = area || 0;
+    const indices = {};
+    characters.forEach((character: Combatant | null, i: number) => {
+        const hp = character?.HP || 0;
+        if (hp > 0) {
+            const notStealth = !excludeStealth || !isStealthed(character);
+            const notExcluded = excludeIndex !== i;
+            const untargetable = excludeUntargetable && isUntargetable(character);
+            if (notStealth && notExcluded && !untargetable) {
+                indices[i] = true;
+            }
+        } else if (area >= 1) {
+            for (let j = i - area; j <= i + area; ++j) {
+                if ((characters[j]?.HP || 0) > 0) {
+                    indices[i] = true;
+                    break;
+                }
+            }
+        }
+    });
+    return Object.keys(indices).map((key) => Number(key));
+};
+
+export const calculateActionArea = ({
+    action,
+    actor,
+    target,
+    source,
+}: {
+    action?: Action;
+    actor: CombatantInfo;
+    target?: CombatantInfo;
+    source?: TriggerSource;
+}): number => {
+    if (!action) {
+        return 0;
+    }
+    const { type, area = 0 } = action;
+    const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
+    let totalArea = area;
+    if (isAttack) {
+        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
+            if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
+                return actor;
+            }
+
+            if (target && calculationTarget === CONDITION_TARGETS.TARGET) {
+                return target;
+            }
+        };
+
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(({ attackAreaIncrease = 0 }) => {
+            totalArea += attackAreaIncrease;
+        });
+
+        if (action.bonus) {
+            const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
+            bonuses.forEach((bonus) => {
+                if (bonus.area && passesConditions({ getCalculationTarget, proc: bonus })) {
+                    totalArea += bonus.area;
+                }
+            });
+        }
+    }
+
+    return totalArea;
 };

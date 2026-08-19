@@ -12,7 +12,7 @@ import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } 
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
-import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "./enemyTargeting";
+import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "./targeting/enemyTargeting";
 import { enqueueEvent } from "./enqueueEvent";
 import { onEndTurnTriggers } from "./phases";
 import { playbackCollector } from "./playbackCollector";

@@ -31,7 +31,7 @@ import { getUpdatedStats } from "./getUpdatedStats";
 import { checkInduce } from "./inducedAction";
 import { aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
-import { autoSelectActionTarget, calculateTargetIndices } from "./targeting";
+import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
 import { updateCombatant } from "./combatantData";
 import { onUseAbility, useAbility } from "./useAbility";
 
