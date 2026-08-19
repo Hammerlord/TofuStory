@@ -343,7 +343,7 @@ export const drawCards = ({
         cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, source, effects, playerSide }));
 
         for (let card of cardsToDraw) {
-            if (newHand.length > MAX_HAND_SIZE) {
+            if (newHand.length >= MAX_HAND_SIZE) {
                 newDiscard.push(card);
                 handTooFull = true;
                 continue;
@@ -718,7 +718,7 @@ export const checkCardActions = ({
             let newHand = [...cardsToAdd, ...getState().battle.hand];
             let discard = [...getState().battle.discard];
 
-            if (newHand.length > MAX_HAND_SIZE) {
+            if (newHand.length >= MAX_HAND_SIZE) {
                 const toDiscard = newHand.slice(MAX_HAND_SIZE);
                 newHand = newHand.slice(0, MAX_HAND_SIZE);
                 dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
@@ -1162,7 +1162,7 @@ export const handleDrawOriginalAbility = ({
             }
         }
 
-        if (newHand.length > MAX_HAND_SIZE) {
+        if (newHand.length >= MAX_HAND_SIZE) {
             newHand = newHand.slice(0, MAX_HAND_SIZE);
             dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
             if (!foundCard.removeAfterTurn) {
