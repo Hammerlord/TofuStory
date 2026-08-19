@@ -3,7 +3,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
-import { getEnabledEffects } from "../utils";
+import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { findCombatantData } from "./combatantData";
 import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";

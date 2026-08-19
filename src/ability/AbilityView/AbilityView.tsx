@@ -4,7 +4,8 @@ import { createUseStyles } from "react-jss";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { canUseAbility, getMultiplier } from "../../battle/utils";
+import { canUsePlayerAbility } from "../../battle/utils";
+import { getMultiplier } from "../../battle/getMultiplier";
 import { findCombatantData } from "../../battle/actions/combatantData";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
@@ -481,7 +482,7 @@ const AbilityView = forwardRef(
 
         const taunt = minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
-        const isAbilityUsable = canUseAbility(player, ability);
+        const isAbilityUsable = canUsePlayerAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
         const isLocked = ((ability as CombatAbility).effects || []).some((effect) => effect.isLocked);
 

@@ -3,7 +3,8 @@ import { Combatant, Player } from "../../../character/types";
 import { checkWinCondition } from "../../checkWinCondition";
 import { battleStateSlice } from "../../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
-import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources } from "../../utils";
+import { getCardByInstanceId, getMaxResources } from "../../utils";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { updateCombatants } from "../combatantData";
 import { findCombatantData } from "../combatantData";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "../cardActions/drawCards";
@@ -320,5 +321,12 @@ export const initiatePlayerTurnInProgress = () => {
 
         // Update the enemy's targeting after all the turn start stuff has played out (in case targeting might change due to deaths etc.)
         dispatch(checkValidEnemyTargeting());
+    };
+};
+
+const clearTurnHistory = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        turnHistory: [],
     };
 };

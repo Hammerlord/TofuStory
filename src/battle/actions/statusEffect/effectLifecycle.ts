@@ -107,3 +107,14 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
         });
     };
 };
+export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
+    if (!turnsTriggerFrequency) {
+        return true;
+    }
+
+    if (uptime === 1) {
+        return false;
+    }
+
+    return uptime % turnsTriggerFrequency === 0;
+};

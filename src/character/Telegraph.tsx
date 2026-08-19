@@ -7,7 +7,7 @@ import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, TARGET_TYPES } from "../ability/types";
 import { getUseAbilityIndex } from "../battle/actions/phases/enemyTurn";
 import { CombatantInfo } from "../battle/types";
-import { isTurnActionPrevented } from "../battle/utils";
+import { isTurnActionPrevented } from "../battle/actions/combatantData";
 import { useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";

@@ -5,7 +5,7 @@ import { PristineShieldIcon, ShieldIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import { CombatantInfo } from "../battle/types";
-import { getEnabledEffects } from "../battle/utils";
+import { getEnabledEffects } from "../battle/actions/statusEffect/getEnabledEffects";
 import { useAppSelector } from "../hooks";
 import { BattleState } from "../battle/reducer";
 

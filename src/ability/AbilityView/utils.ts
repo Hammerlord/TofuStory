@@ -1,7 +1,7 @@
 import Handlebars from "handlebars";
 import { cloneDeep } from "lodash";
 import { CombatantInfo } from "../../battle/types";
-import { getMultiplier } from "../../battle/utils";
+import { getMultiplier } from "../../battle/getMultiplier";
 import { Combatant, Player } from "../../character/types";
 import {
     BloodEmojiImage,

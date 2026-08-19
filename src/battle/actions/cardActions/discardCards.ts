@@ -8,7 +8,6 @@ import { battleStateSlice } from "../../reducer";
 
 const { updateBattle } = battleStateSlice.actions;
 
-// This is the discard after the ability is used
 export const handleDiscardAfterUse = (ability: CombatAbility) => {
     return (dispatch, getState) => {
         const { removeAfterTurn, depletedOnUse, minion } = ability;

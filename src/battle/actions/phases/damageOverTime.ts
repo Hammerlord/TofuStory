@@ -1,7 +1,7 @@
 import { ACTION_TYPES, Action, EFFECT_TYPES } from "../../../ability/types";
 import { dotAbilityMap, dotDamageMap } from "../../constants";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
-import { getEnabledEffects } from "../../utils";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
 import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";

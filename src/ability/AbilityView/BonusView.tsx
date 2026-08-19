@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { getMultiplier } from "../../battle/utils";
+import { getMultiplier } from "../../battle/getMultiplier";
 import { findCombatantData } from "../../battle/actions/combatantData";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";

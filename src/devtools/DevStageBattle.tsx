@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react";
-import BattlefieldContainer from "../battle/BattleView";
-import { startBattle } from "../battle/actions/phases";
+
 import { bowmanProperties, wizardProperties } from "../character/defaultCharacterProperties";
 import { playerStateSlice } from "../character/playerReducer";
 import { devDummy, spikedDummy } from "../enemy/dummy";
@@ -13,6 +12,8 @@ import { manji } from "../enemy/Manji";
 import { gachaponMachine } from "../scene/gachapon/Gachapon";
 import { entrenchedFire, guard, shatteringArrow, windupShot } from "../ability/bowman/bowmanAbilities";
 import { curseEye } from "../enemy/enemy";
+import { startBattle } from "../battle/actions/phases/phases";
+import BattlefieldContainer from "../battle/view/BattleView";
 
 const { updatePlayer, updateDeck } = playerStateSlice?.actions || {};
 const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];

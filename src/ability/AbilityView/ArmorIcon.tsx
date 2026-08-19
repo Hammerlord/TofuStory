@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { calculateArmor, calculateBonus, getMultiplier } from "../../battle/utils";
+import { calculateArmor } from "../../battle/calculateArmor";
+import { calculateBonus } from "../../battle/calculateBonus";
+import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
 import { CombatAbility } from "../types";

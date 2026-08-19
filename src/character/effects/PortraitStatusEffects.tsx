@@ -6,7 +6,7 @@ import Healing from "./Healing";
 import Icon from "../../icon/Icon";
 import Bleed from "./Bleed";
 import Stealth from "./Stealth";
-import { getEnabledEffects } from "../../battle/utils";
+import { getEnabledEffects } from "../../battle/actions/statusEffect/getEnabledEffects";
 import { DizzyIcon, SpeechBubbleIcon, SweatDropsIcon } from "../../images/icons";
 import { NimbleJewelCImage } from "../../images";
 import classNames from "classnames";

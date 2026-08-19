@@ -3,13 +3,11 @@ import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Action, Effect } from "../ability/types";
 import { DAMAGE_COEFF } from "../battle/constants";
 import { CombatantInfo } from "../battle/types";
-import {
-    calculateDamageModifierCoeff,
-    getEnabledEffects,
-    getMultiplier,
-    getSkillBonusDamage,
-    isTurnActionPrevented,
-} from "../battle/utils";
+import { isTurnActionPrevented } from "../battle/actions/combatantData";
+import { calculateDamageModifierCoeff } from "../battle/calculateDamage";
+import { getSkillBonusDamage } from "../battle/calculateDamage";
+import { getEnabledEffects } from "../battle/actions/statusEffect/getEnabledEffects";
+import { getMultiplier } from "../battle/getMultiplier";
 import Icon from "../icon/Icon";
 import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";

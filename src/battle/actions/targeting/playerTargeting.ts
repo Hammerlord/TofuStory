@@ -3,7 +3,8 @@ import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
 import { BattleState } from "../../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, CombatantInfo } from "../../types";
-import { isUntargetable, isStealthed, hasEffectType } from "../../utils";
+import { isUntargetable, isStealthed } from "../../utils";
+import { hasEffectType } from "../combatantData";
 import { calculateActionArea } from "./targeting";
 
 export const isValidTargetForPlayerAbility = ({

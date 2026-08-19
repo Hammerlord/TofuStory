@@ -42,26 +42,20 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/drawCards";
-import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../phases/enemyTurn";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../phases/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../phases/playerTurn";
+import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/phases/enemyTurn";
+import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../actions/phases/playerTurn";
 import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { usePreloadImages } from "../hooks/usePreloadImage";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../types";
-import {
-    canTargetIfStealthed,
-    canUseAbility,
-    getCardByInstanceId,
-    hasEffectType,
-    isTurnActionPrevented,
-    isUntargetable,
-    isWithinAbilityArea,
-} from "../utils";
+import { canTargetIfStealthed, canUsePlayerAbility, getCardByInstanceId, isUntargetable, isWithinAbilityArea } from "../utils";
+import { isTurnActionPrevented } from "../actions/combatantData";
+import { hasEffectType } from "../actions/combatantData";
 import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTargeting";
 import { findCombatantData } from "../actions/combatantData";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
 
 const useStyles = createUseStyles({
@@ -341,7 +335,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
-        (!hand.length || hand.every((ability: CombatAbility) => !canUseAbility(player, getCardByInstanceId(hand, ability.instanceId))));
+        (!hand.length ||
+            hand.every((ability: CombatAbility) => !canUsePlayerAbility(player, getCardByInstanceId(hand, ability.instanceId))));
 
     const warn = (text: string | ReactElement) => {
         dispatch(
@@ -381,7 +376,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 return;
             }
 
-            if (!canUseAbility(player, ability)) {
+            if (!canUsePlayerAbility(player, ability)) {
                 warnNeedMoreResources(ability);
                 return;
             }
@@ -493,7 +488,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             } else {
                 if (selectedAbilityFromHand.unplayable || selectedAbilityFromHand.effects?.some((e) => e.isLocked)) {
                     warn(battleWarnings.unplayable);
-                } else if (!canUseAbility(player, selectedAbilityFromHand)) {
+                } else if (!canUsePlayerAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
                 } else if (isUntargetable(playerSide[index])) {
                     warn(battleWarnings.untargetable);
@@ -580,7 +575,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 warnTaunt();
                 e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
             } else {
-                if (!canUseAbility(player, selectedAbilityFromHand)) {
+                if (!canUsePlayerAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
                 }
                 dispatch(selectHandAbility(null));
@@ -788,7 +783,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
      * When selecting an ability, if a reticle should appear on a combatant, it means that combatant is a valid target.
      */
     const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
-        if (selectedAbilityFromHand && !canUseAbility(player, selectedAbilityFromHand)) {
+        if (selectedAbilityFromHand && !canUsePlayerAbility(player, selectedAbilityFromHand)) {
             return false;
         }
 

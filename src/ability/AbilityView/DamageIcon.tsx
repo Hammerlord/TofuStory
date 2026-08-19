@@ -1,7 +1,10 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { calculateBonus, calculateDamage, getAbilityResourceCost, getMultiplier } from "../../battle/utils";
+import { getAbilityResourceCost } from "../../battle/utils";
+import { calculateBonus } from "../../battle/calculateBonus";
+import { calculateDamage } from "../../battle/calculateDamage";
+import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
 import { ACTION_TYPES, Action } from "../types";

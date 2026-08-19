@@ -12,10 +12,10 @@ import { battleStateSlice } from "../../reducer";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
-import { requeueRecentlyUsedAbility } from "../../phases/enemyTurn";
+import { requeueRecentlyUsedAbility } from "../phases/enemyTurn";
 import { enqueueEvent } from "../enqueueEvent";
 import { updateEnemyTargetingAfterEffectsApplied } from "../targeting/enemyTargeting";
-import { checkEventTrigger } from "../../statusEffect/triggerEffectEvent";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

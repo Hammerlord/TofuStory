@@ -5,7 +5,8 @@ import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BattleState } from "../../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
-import { getEnabledEffects, hasTruesight, isStealthed, isUntargetable } from "../../utils";
+import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
 

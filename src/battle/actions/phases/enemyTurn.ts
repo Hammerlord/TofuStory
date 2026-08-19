@@ -8,7 +8,9 @@ import { getRandomInt } from "../../../utils";
 import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
-import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented } from "../../utils";
+import { isStunnedOrFrozen } from "../../utils";
+import { isTurnActionPrevented } from "../combatantData";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { updateCombatants } from "../combatantData";
 import { findCombatantData } from "../combatantData";
 import { BATTLE_STATES } from "../../reducer";
@@ -493,4 +495,11 @@ export const getEnemyMoveOrder = ({
             return Math.abs(aIndex - middle) - Math.abs(bIndex - middle);
         })
         .map((e) => e.id);
+};
+
+const clearTurnHistory = (character: Combatant): Combatant => {
+    return {
+        ...character,
+        turnHistory: [],
+    };
 };

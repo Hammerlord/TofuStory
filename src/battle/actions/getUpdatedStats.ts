@@ -5,16 +5,13 @@ import { Player } from "../../character/types";
 import { Item } from "../../item/types";
 import { getRandomItem } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
-import {
-    calculateArmor,
-    calculateBonus,
-    calculateDamage,
-    calculateHealing,
-    calculateMesoMultiplier,
-    getEnabledEffects,
-    getMultiplier,
-    hasEffectType,
-} from "../utils";
+import { calculateMesoMultiplier } from "../utils";
+import { hasEffectType } from "./combatantData";
+import { calculateArmor } from "../calculateArmor";
+import { calculateBonus } from "../calculateBonus";
+import { calculateDamage } from "../calculateDamage";
+import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
+import { getMultiplier } from "../getMultiplier";
 import { effectNameMap } from "./../../enemy/effect";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
@@ -331,4 +328,17 @@ export const getUpdatedStats = ({
             actorId,
         };
     });
+};
+
+const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: { healing?: number } }): number => {
+    if (!action.healing) {
+        return 0;
+    }
+    const healingReceived =
+        getEnabledEffects({ combatantInfo: target }).reduce(
+            (acc: number, { healingReceived = 0, stacks = 1 }) => acc + healingReceived * stacks,
+            0
+        ) || 0;
+    const healing = healingReceived + action.healing;
+    return Math.max(0, healing);
 };

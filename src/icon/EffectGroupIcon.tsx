@@ -9,7 +9,7 @@ import Handlebars from "handlebars";
 import _ from "lodash";
 import { useEffect, useRef } from "react";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { isTurnToTrigger } from "../battle/utils";
+import { isTurnToTrigger } from "../battle/actions/statusEffect/effectLifecycle";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { playExpandContractAnimation } from "../character/animations";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
