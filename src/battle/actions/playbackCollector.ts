@@ -9,9 +9,10 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
     }
 
     const { damage, armor, healing, type, summon } = event.action || {};
+    const { actionParent, source } = event || {};
     const sameAbility =
-        (event.actionParent as Ability)?.name === (previousEvent.actionParent as Ability)?.name ||
-        (event.source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name;
+        (actionParent && (actionParent as Ability).name === (previousEvent.actionParent as Ability)?.name) ||
+        (source?.source && (source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name);
     return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
 };
 

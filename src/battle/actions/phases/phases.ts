@@ -22,6 +22,8 @@ import { autoSelectActionTarget } from "../targeting/targeting";
 import { playbackCollector } from "../playbackCollector";
 import { tickDownStatusEffects } from "../statusEffect/effectLifecycle";
 import { updateCombatant } from "../combatantData";
+import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
+import { getEnemyMoveOrder, requeueRecentlyUsedAbility } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
@@ -216,70 +218,40 @@ export const onBattleStart = () => {
                 })
             );
         }
+
+        const playbackCollectorInstance = playbackCollector();
+        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart }));
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart, context }));
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 
 export const onWaveStart = () => {
     return (dispatch, getState) => {
+        const playbackCollectorInstance = playbackCollector();
+        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
         const { playerSide, enemySide } = getState().battle;
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart }));
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart, context }));
         });
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
-        let battle = getState().battle;
+        const battle: BattleState = getState().battle;
+        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: getState().battle.enemySide, round: battle.round });
 
-        enemySide.forEach((combatant: Combatant | null) => {
-            if (combatant?.id) {
-                const actor = findCombatantData(getState().battle, combatant.id);
-                if (!actor) {
-                    return;
-                }
-
-                const ability = getNextTelegraphedAbility(actor);
-                if (!ability?.actions) {
-                    return;
-                }
-
-                let mutableUpdatedActionTargets = [];
-                ability.actions.forEach((action, i) => {
-                    const targeting = autoSelectActionTarget({ action, actorId: combatant.id, battle: getState().battle });
-                    mutableUpdatedActionTargets = mutableUpdatedActionTargets.slice();
-                    mutableUpdatedActionTargets[i] = targeting;
-
-                    const previews = getAbilityPreviews({
-                        ability,
-                        actor: {
-                            ...combatant,
-                            targeting: {
-                                ability,
-                                actionTargets: mutableUpdatedActionTargets,
-                            },
-                        },
-                        battle,
-                    });
-
-                    battle = {
-                        ...battle,
-                        ...previews.combatantStates,
-                    };
-                });
-
-                dispatch(
-                    updateCombatant({
-                        combatantId: combatant.id,
-                        newProperties: {
-                            targeting: {
-                                actionTargets: mutableUpdatedActionTargets,
-                                ability,
-                            },
-                        },
-                    })
-                );
+        nextMoveOrderIds.forEach((combatantId) => {
+            const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
+            if (!combatant?.HP) {
+                return;
             }
+
+            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId })) || {};
         });
+
+        dispatch(checkValidEnemyTargeting());
     };
 };
 
