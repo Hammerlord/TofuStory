@@ -10,7 +10,7 @@ import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
-import { performAction } from "../actions";
+import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../enemyTurn";
 import { enqueueEvent } from "../enqueueEvent";

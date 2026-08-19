@@ -8,7 +8,7 @@ import { getAbilityResourceCost, isTurnActionPrevented } from "../utils";
 import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
-import { performAction } from "./actions";
+import { performAction } from "./performAction";
 import { PlaybackCollector } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon/summon";

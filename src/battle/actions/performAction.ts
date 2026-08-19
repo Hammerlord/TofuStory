@@ -2,7 +2,6 @@ import { uniq } from "lodash";
 import { isOffensiveAction } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
-    ANIMATION_TYPES,
     AbilityEffect,
     Action,
     ActionOptionalProperties,
@@ -17,25 +16,271 @@ import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects, getMultiplier } from "../utils";
-import { calculateActionArea } from "./targeting/targeting";
-import { findCombatantData } from "./combatantData";
-import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
-import { ActionContext } from "./../types";
+import { TRIGGER_TARGET_TYPES } from "../../ability/types";
+import { ActionContext } from "../types";
 import { checkHandleAutoCast } from "./autoCast";
 import { checkCardActions, deleteCard } from "./cardActions/cardActions";
+import { findCombatantData, updateCombatant } from "./combatantData";
 import { enqueueEvent } from "./enqueueEvent";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { checkInduce } from "./inducedAction";
 import { checkHandleMovement, checkHandleVacuum } from "./movement";
-import { PlaybackCollector, aggregateStatUpdates } from "./playbackCollector";
+import { aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
-import { checkHandleActionSummon } from "./summon/summon";
 import { checkHandleMorph } from "./summon/morphMerge";
-import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
+import { checkHandleActionSummon } from "./summon/summon";
+import { autoSelectActionTarget, calculateActionArea, calculateTargetIndices } from "./targeting/targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "./combatantData";
 
 const { updateBattle } = battleStateSlice?.actions || {};
+
+export const performAction = ({
+    action,
+    selectedIndex,
+    side,
+    actorId,
+    parentContext,
+    isAutoCast,
+}: {
+    action: Action;
+    selectedIndex: number;
+    side: BATTLEFIELD_SIDES;
+    actorId: string;
+    parentContext?: ActionContext;
+    isAutoCast?: boolean;
+}) => {
+    return (dispatch, getState) => {
+        const actorData: CombatantInfo | undefined = findCombatantData(getState().battle, actorId);
+        if (!actorData || !side) {
+            return;
+        }
+
+        const battleSide = getState().battle[side];
+        const target = findCombatantData(getState().battle, battleSide[selectedIndex]?.id);
+
+        const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
+        const combatants = getState().battle[side];
+        const parentSource = parentContext?.sourceChain.at(-1);
+
+        const targetIndices = calculateTargetIndices({
+            action,
+            selectedIndex,
+            side,
+            actorData,
+            targetData: target,
+            battle: getState().battle,
+            source: parentSource,
+            isPreviewMode: parentContext?.isPreviewMode,
+        });
+
+        const targetIds = targetIndices.targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
+
+        // Don't try to target things that are all gone/dead.
+        // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
+        if (isOffensiveAction(action) && targetIds.length === 0) {
+            return;
+        }
+
+        const source: TriggerSource = {
+            ...parentSource,
+            actorId,
+            targetId: combatants[selectedIndex]?.id || targetIds[0],
+            allTargetIds: targetIds,
+        };
+        const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
+
+        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
+            if (targetType === CONDITION_TARGETS.TARGET) {
+                // This is the primary target only
+                return findCombatantData(getState().battle, combatants[selectedIndex]?.id);
+            } else if (targetType === CONDITION_TARGETS.ACTOR) {
+                return findCombatantData(getState().battle, actorId);
+            }
+        };
+
+        const updatedStatsProps = {
+            ...getState().battle,
+            selectedIndex,
+            action,
+            targetIds,
+            actorId,
+            actionParent: parentSource?.source,
+            context,
+            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
+        };
+
+        let updatedSecondary: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined;
+        const triggerSecondaryAction = () => {
+            return dispatch(
+                handleSecondaryAction({
+                    secondaryAction,
+                    actorId,
+                    getCalculationTarget,
+                    context,
+                    parentContext,
+                    updatedStatsProps,
+                    isAutoCast,
+                })
+            );
+        };
+
+        if (secondaryAction?.isPriority) {
+            updatedSecondary = triggerSecondaryAction();
+        }
+
+        const area = calculateActionArea({ action, actor: actorData, target, source });
+
+        const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
+        const movementDisplacements: Displacement = dispatch(
+            checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, context: context })
+        );
+        // At the moment there is never both a vacuum AND a movement in one action. It's either one or the other. So we can 'safely' merge the displacement results of both.
+        const displacements: Displacement = {
+            ...vacuumDisplacements,
+            ...movementDisplacements,
+        };
+
+        const updated: { statUpdate: UpdatedCombatantStats; action: Action }[] = getUpdatedStats(updatedStatsProps);
+        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+
+        const hitTriggerSource: TriggerSource = {
+            ...source,
+            type: TRIGGER_SOURCE_TYPES.ACTION,
+            source: action,
+        };
+        // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
+        const hitEffects: { statUpdate: UpdatedCombatantStats; action: Action }[][] = getHitEffects({
+            actorId,
+            action,
+            affectedTargets: targetIds,
+            context: { ...context, sourceChain: [...(context?.sourceChain || []), source, hitTriggerSource] },
+            getState,
+        });
+        hitEffects.forEach((statChanges) => {
+            dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
+        });
+
+        let aggregated = {};
+        const allStatUpdates = [...hitEffects.flat(), ...updated, ...(updatedSecondary ?? [])];
+
+        allStatUpdates.forEach(({ statUpdate }) => {
+            const { combatantId } = statUpdate;
+
+            aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
+        });
+
+        // HACK: ensure that the selected index is hit first in playback
+        const allTargetIndices = uniq([selectedIndex, ...targetIndices.allIndices]);
+
+        dispatch(
+            enqueueEvent({
+                action,
+                actionParent: parentSource?.source,
+                actorId,
+                selectedIndex,
+                allTargetIndices,
+                targetSide: side,
+                context: context,
+                displacements,
+                statUpdates: aggregated,
+            })
+        );
+
+        dispatch(
+            triggerStatChangeEvents(
+                updated.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    context: { ...context, context: action },
+                }))
+            )
+        );
+
+        if (!secondaryAction?.isPriority) {
+            updatedSecondary = triggerSecondaryAction();
+        }
+
+        // *But don't trigger the related effect events until after the action has resolved
+        hitEffects.forEach((statChanges) => {
+            dispatch(
+                triggerStatChangeEvents(
+                    statChanges.map(({ statUpdate, action }) => ({
+                        statUpdate,
+                        context: {
+                            ...context,
+                            sourceChain: [...(context?.sourceChain || []), source, { ...hitTriggerSource, source: action }],
+                            statUpdate,
+                        } as ActionContext,
+                    }))
+                )
+            );
+        });
+
+        // Same reasoning as hitEffects
+        if (updatedSecondary) {
+            dispatch(
+                triggerStatChangeEvents(
+                    updatedSecondary.map(({ statUpdate, action }) => ({
+                        statUpdate,
+                        context: { ...context, context: action, statUpdate },
+                    }))
+                )
+            );
+        }
+
+        dispatch(checkCastRadiate({ parentContext: parentContext, action, selectedIndex, side }));
+
+        // If eg. a bonus card draw was applied during the stat update action, checkCardActions should consume it.
+        // Does secondaryAction need the same thing?
+        const postUpdateAction = updated?.[0]?.action || action;
+        dispatch(checkCardActions({ action: postUpdateAction, context: parentContext, isAutoCast }));
+
+        const multiplier = getMultiplier({
+            multiplier: action.multiplier,
+            actor: actorData,
+            ...getState().battle,
+        });
+        dispatch(
+            checkHandleAutoCast({
+                autoCastAbilities,
+                actor: actorData.combatant as Player,
+                parentAbility: parent as any,
+                multiplier,
+                context,
+            })
+        );
+        dispatch(
+            onAction({
+                action,
+                context,
+            })
+        );
+
+        dispatch(
+            handleOnReceiveAction({
+                updatedStats: updated,
+                context: context,
+                combatants,
+            })
+        );
+        dispatch(checkHandleActionSummon({ action, actorId, parentContext }));
+        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext }));
+        dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentContext }));
+        if (retreat) {
+            const { friendly, friendlySide } = findCombatantData(getState().battle, actorId);
+            dispatch(
+                updateBattle({
+                    [friendlySide]: friendly.map((combatant) => {
+                        if (combatant?.id === actorId) {
+                            return null;
+                        }
+
+                        return combatant;
+                    }),
+                })
+            );
+        }
+    };
+};
 
 const getHitEffects = ({
     affectedTargets,
@@ -348,254 +593,6 @@ const handleSecondaryAction = ({
     };
 };
 
-export const performAction = ({
-    action,
-    selectedIndex,
-    side,
-    actorId,
-    parentContext,
-    isAutoCast,
-}: {
-    action: Action;
-    selectedIndex: number;
-    side: BATTLEFIELD_SIDES;
-    actorId: string;
-    parentContext?: ActionContext;
-    isAutoCast?: boolean;
-}) => {
-    return (dispatch, getState) => {
-        const actorData: CombatantInfo | undefined = findCombatantData(getState().battle, actorId);
-        if (!actorData || !side) {
-            return;
-        }
-
-        const battleSide = getState().battle[side];
-        const target = findCombatantData(getState().battle, battleSide[selectedIndex]?.id);
-
-        const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
-        const combatants = getState().battle[side];
-        const parentSource = parentContext?.sourceChain.at(-1);
-
-        const targetIndices = calculateTargetIndices({
-            action,
-            selectedIndex,
-            side,
-            actorData,
-            targetData: target,
-            battle: getState().battle,
-            source: parentSource,
-            isPreviewMode: parentContext?.isPreviewMode,
-        });
-
-        const targetIds = targetIndices.targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
-
-        // Don't try to target things that are all gone/dead.
-        // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
-        if (isOffensiveAction(action) && targetIds.length === 0) {
-            return;
-        }
-
-        const source: TriggerSource = {
-            ...parentSource,
-            actorId,
-            targetId: combatants[selectedIndex]?.id || targetIds[0],
-            allTargetIds: targetIds,
-        };
-        const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
-
-        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
-            if (targetType === CONDITION_TARGETS.TARGET) {
-                // This is the primary target only
-                return findCombatantData(getState().battle, combatants[selectedIndex]?.id);
-            } else if (targetType === CONDITION_TARGETS.ACTOR) {
-                return findCombatantData(getState().battle, actorId);
-            }
-        };
-
-        const updatedStatsProps = {
-            ...getState().battle,
-            selectedIndex,
-            action,
-            targetIds,
-            actorId,
-            actionParent: parentSource?.source,
-            context,
-            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
-        };
-
-        let updatedSecondary: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined;
-        const triggerSecondaryAction = () => {
-            return dispatch(
-                handleSecondaryAction({
-                    secondaryAction,
-                    actorId,
-                    getCalculationTarget,
-                    context,
-                    parentContext,
-                    updatedStatsProps,
-                    isAutoCast,
-                })
-            );
-        };
-
-        if (secondaryAction?.isPriority) {
-            updatedSecondary = triggerSecondaryAction();
-        }
-
-        const area = calculateActionArea({ action, actor: actorData, target, source });
-
-        const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        const movementDisplacements: Displacement = dispatch(
-            checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, context: context })
-        );
-        // At the moment there is never both a vacuum AND a movement in one action. It's either one or the other. So we can 'safely' merge the displacement results of both.
-        const displacements: Displacement = {
-            ...vacuumDisplacements,
-            ...movementDisplacements,
-        };
-
-        const updated: { statUpdate: UpdatedCombatantStats; action: Action }[] = getUpdatedStats(updatedStatsProps);
-        dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
-
-        const hitTriggerSource: TriggerSource = {
-            ...source,
-            type: TRIGGER_SOURCE_TYPES.ACTION,
-            source: action,
-        };
-        // Include life on hit and thorns in the same action playback as the actual attack (con't below*)
-        const hitEffects: { statUpdate: UpdatedCombatantStats; action: Action }[][] = getHitEffects({
-            actorId,
-            action,
-            affectedTargets: targetIds,
-            context: { ...context, sourceChain: [...(context?.sourceChain || []), source, hitTriggerSource] },
-            getState,
-        });
-        hitEffects.forEach((statChanges) => {
-            dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
-        });
-
-        let aggregated = {};
-        const allStatUpdates = [...hitEffects.flat(), ...updated, ...(updatedSecondary ?? [])];
-
-        allStatUpdates.forEach(({ statUpdate }) => {
-            const { combatantId } = statUpdate;
-
-            aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
-        });
-
-        // HACK: ensure that the selected index is hit first in playback
-        const allTargetIndices = uniq([selectedIndex, ...targetIndices.allIndices]);
-
-        dispatch(
-            enqueueEvent({
-                action,
-                actionParent: parentSource?.source,
-                actorId,
-                selectedIndex,
-                allTargetIndices,
-                targetSide: side,
-                context: context,
-                displacements,
-                statUpdates: aggregated,
-            })
-        );
-
-        dispatch(
-            triggerStatChangeEvents(
-                updated.map(({ statUpdate, action }) => ({
-                    statUpdate,
-                    context: { ...context, context: action },
-                }))
-            )
-        );
-
-        if (!secondaryAction?.isPriority) {
-            updatedSecondary = triggerSecondaryAction();
-        }
-
-        // *But don't trigger the related effect events until after the action has resolved
-        hitEffects.forEach((statChanges) => {
-            dispatch(
-                triggerStatChangeEvents(
-                    statChanges.map(({ statUpdate, action }) => ({
-                        statUpdate,
-                        context: {
-                            ...context,
-                            sourceChain: [...(context?.sourceChain || []), source, { ...hitTriggerSource, source: action }],
-                            statUpdate,
-                        } as ActionContext,
-                    }))
-                )
-            );
-        });
-
-        // Same reasoning as hitEffects
-        if (updatedSecondary) {
-            dispatch(
-                triggerStatChangeEvents(
-                    updatedSecondary.map(({ statUpdate, action }) => ({
-                        statUpdate,
-                        context: { ...context, context: action, statUpdate },
-                    }))
-                )
-            );
-        }
-
-        dispatch(checkCastRadiate({ parentContext: parentContext, action, selectedIndex, side }));
-
-        // If eg. a bonus card draw was applied during the stat update action, checkCardActions should consume it.
-        // Does secondaryAction need the same thing?
-        const postUpdateAction = updated?.[0]?.action || action;
-        dispatch(checkCardActions({ action: postUpdateAction, context: parentContext, isAutoCast }));
-
-        const multiplier = getMultiplier({
-            multiplier: action.multiplier,
-            actor: actorData,
-            ...getState().battle,
-        });
-        dispatch(
-            checkHandleAutoCast({
-                autoCastAbilities,
-                actor: actorData.combatant as Player,
-                parentAbility: parent as any,
-                multiplier,
-                context,
-            })
-        );
-        dispatch(
-            onAction({
-                action,
-                context,
-            })
-        );
-
-        dispatch(
-            handleOnReceiveAction({
-                updatedStats: updated,
-                context: context,
-                combatants,
-            })
-        );
-        dispatch(checkHandleActionSummon({ action, actorId, parentContext }));
-        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext }));
-        dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentContext }));
-        if (retreat) {
-            const { friendly, friendlySide } = findCombatantData(getState().battle, actorId);
-            dispatch(
-                updateBattle({
-                    [friendlySide]: friendly.map((combatant) => {
-                        if (combatant?.id === actorId) {
-                            return null;
-                        }
-
-                        return combatant;
-                    }),
-                })
-            );
-        }
-    };
-};
-
 /**
  * Handle the action's "radiate" effect, which is when the actor "radiates" damage or debuffs to opposing targets on the board
  * (typically the directly opposing enemy and adjacent combatants).
@@ -625,60 +622,6 @@ const checkCastRadiate = ({
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
                 actorId: getState().battle[side][selectedIndex]?.id,
                 parentContext: parentContext,
-            })
-        );
-    };
-};
-
-export const useItem = ({
-    itemIndex,
-    actorId,
-    playbackCollector,
-}: {
-    itemIndex: number;
-    actorId: string;
-    playbackCollector: PlaybackCollector;
-}) => {
-    return (dispatch, getState) => {
-        const { index, friendlySide, combatant } = findCombatantData(getState().battle, actorId) || {};
-        if (!friendlySide) {
-            return;
-        }
-
-        const item = combatant.items[itemIndex];
-
-        const source = { type: TRIGGER_SOURCE_TYPES.ITEM, source: item, actorId, targetId: actorId, allTargetIds: [actorId] };
-
-        const context: ActionContext = {
-            sourceChain: [source],
-            triggerHistory: [],
-            playbackCollector,
-        };
-
-        dispatch(
-            performAction({
-                action: {
-                    target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.EFFECT,
-                    healing: item.healing,
-                    resources: item.resources,
-                    effects: item.effects,
-                    icon: item.image,
-                    animation: ANIMATION_TYPES.CONSUMABLE,
-                },
-                actorId,
-                selectedIndex: index,
-                side: friendlySide,
-                parentContext: context,
-            })
-        );
-
-        dispatch(
-            updateCombatant({
-                combatantId: actorId,
-                newProperties: {
-                    items: findCombatantData(getState().battle, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
-                },
             })
         );
     };

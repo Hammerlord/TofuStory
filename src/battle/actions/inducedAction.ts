@@ -5,13 +5,12 @@ import { CrossedSwordsImage } from "../../images";
 import { shuffle } from "../../utils";
 import { INDUCED_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
-import { battleStateSlice } from "../reducer";
 import { TRIGGER_SOURCE_TYPES } from "../types";
 import { isStunnedOrFrozen } from "../utils";
-import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
-import { performAction } from "./actions";
+import { findCombatantData } from "./combatantData";
+import { performAction } from "./performAction";
 import { autoSelectActionTarget } from "./targeting/targeting";
 import { onUseAbility, useAbility } from "./useAbility";
 

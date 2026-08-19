@@ -21,7 +21,7 @@ import { canTargetIfStealthed, getMultiplier, isSilenced, isStunnedOrFrozen, isT
 import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
-import { performAction } from "./actions";
+import { performAction } from "./performAction";
 import { checkHandleAutoCast } from "./autoCast";
 import { checkCardActions, handleDrawOriginalAbility } from "./cardActions/cardActions";
 import { applyAbilityEventEffects } from "./cardActions/drawCards";
