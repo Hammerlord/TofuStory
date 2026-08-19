@@ -1,10 +1,10 @@
 import { partition } from "ramda";
-import { CombatEffect, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../ability/types";
-import { findCombatantData } from "./combatantData";
-import { ActionContext } from "./../types";
-import { triggerStatChangeEvents } from "./statChanges";
+import { CombatEffect, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../../ability/types";
+import { findCombatantData } from "../combatantData";
+import { ActionContext } from "../../types";
+import { triggerStatChangeEvents } from "../statChanges";
 import { onEffectEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "./combatantData";
+import { updateCombatant } from "../combatantData";
 
 /**
  * Handles updating effect lifecycle properties

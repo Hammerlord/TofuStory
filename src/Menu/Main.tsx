@@ -3,7 +3,7 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability, WeaponImageOptions } from "../ability/types";
 import BattlefieldContainer from "../battle/view/BattleView";
-import { startBattle } from "../battle/actions/phases";
+import { startBattle } from "../battle/actions/phases/phases";
 import { passesValueComparison } from "../battle/passesConditions";
 import { BATTLE_STATES, BattleState, battleStateSlice } from "../battle/reducer";
 import { BATTLE_TYPES } from "../battle/types";

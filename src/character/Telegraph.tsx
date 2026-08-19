@@ -5,7 +5,7 @@ import { AreaIndicator } from "../ability/AbilityView/AreaView";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, TARGET_TYPES } from "../ability/types";
-import { getUseAbilityIndex } from "../battle/actions/enemyTurn";
+import { getUseAbilityIndex } from "../battle/actions/phases/enemyTurn";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/utils";
 import { useAppSelector } from "../hooks";

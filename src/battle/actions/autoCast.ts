@@ -10,7 +10,7 @@ import getCardSelection from "../selectCardUtils";
 import { ActionContext } from "./../types";
 import { depleteAbilities } from "./cardActions/depleteCards";
 import { applyAbilityEffectsOnDraw } from "./cardActions/drawCards";
-import { handleDiscard } from "./playerTurn";
+import { handleDiscard } from "./phases/playerTurn";
 import { useAbility } from "./useAbility";
 
 const { updateBattle } = battleStateSlice?.actions || {};

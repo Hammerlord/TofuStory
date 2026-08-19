@@ -1,12 +1,12 @@
-import { ACTION_TYPES, Action, EFFECT_TYPES } from "../../ability/types";
-import { dotAbilityMap, dotDamageMap } from "../constants";
-import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../types";
-import { getEnabledEffects } from "../utils";
-import { findCombatantData } from "./combatantData";
-import { ActionContext } from "./../types";
-import { enqueueEvent } from "./enqueueEvent";
-import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { ACTION_TYPES, Action, EFFECT_TYPES } from "../../../ability/types";
+import { dotAbilityMap, dotDamageMap } from "../../constants";
+import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
+import { getEnabledEffects } from "../../utils";
+import { findCombatantData } from "../combatantData";
+import { ActionContext } from "../../types";
+import { enqueueEvent } from "../enqueueEvent";
+import { UpdatedCombatantStats, getUpdatedStats } from "../getUpdatedStats";
+import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 
 /**
  * Trigger damage over time (DoT) effects. DoT effects of a class, such as burn, should be rolled into a single instance of damage

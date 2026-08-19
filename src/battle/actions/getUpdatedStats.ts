@@ -18,7 +18,7 @@ import {
 import { effectNameMap } from "./../../enemy/effect";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
-import { getHalveArmorAmount } from "./checkHalveArmor";
+import { getHalveArmorAmount } from "./phases/checkHalveArmor";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates

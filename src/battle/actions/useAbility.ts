@@ -13,7 +13,7 @@ import { PlaybackCollector } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon/summon";
 import { autoSelectActionTarget } from "./targeting/targeting";
-import { checkEventTrigger } from "./triggerEffectEvent";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
 
 export const useAbility = ({

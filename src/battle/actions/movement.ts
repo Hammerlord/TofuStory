@@ -4,7 +4,7 @@ import { getRandomItem } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Displacement } from "../types";
 import { ActionContext } from "./../types";
-import { checkEventTrigger } from "./triggerEffectEvent";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

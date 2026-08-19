@@ -2,7 +2,7 @@ import { CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../abil
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
-import { checkEventTrigger } from "../triggerEffectEvent";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

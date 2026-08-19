@@ -9,7 +9,7 @@ import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";
 import { getUpdatedStats } from "./getUpdatedStats";
 import { applyStatChanges, isActorPlayerSide, triggerStatChangeEvents } from "./statChanges";
-import { checkEventTrigger } from "./triggerEffectEvent";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};

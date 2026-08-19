@@ -6,7 +6,7 @@ import { BattleState } from "../../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { findCombatantData } from "../combatantData";
 import { performAction } from "../performAction";
-import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "../enemyTurn";
+import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "../phases/enemyTurn";
 import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./targeting";
 import { updateCombatant } from "../combatantData";
 

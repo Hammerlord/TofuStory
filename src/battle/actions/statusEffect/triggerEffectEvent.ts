@@ -8,35 +8,34 @@ import {
     EFFECT_EVENT_KEYS,
     EffectEventTrigger,
     TARGET_TYPES,
-} from "../../ability/types";
-import { playerStateSlice } from "../../character/playerReducer";
-import { Combatant, Player } from "../../character/types";
-import { abilityNameMap } from "../../enemy";
-import { Item } from "../../item/types";
-import { passesChance } from "../../utils";
-import { passesConditions } from "../passesConditions";
-import { BattleState, battleStateSlice } from "../reducer";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { canTargetIfStealthed, getMultiplier, isSilenced, isStunnedOrFrozen, isTurnActionPrevented, isTurnToTrigger } from "../utils";
-import { findCombatantData } from "./combatantData";
-import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
-import { ActionContext } from "./../types";
-import { performAction } from "./performAction";
-import { checkHandleAutoCast } from "./autoCast";
-import { checkCardActions, handleDrawOriginalAbility } from "./cardActions/cardActions";
-import { applyAbilityEventEffects } from "./cardActions/drawCards";
+} from "../../../ability/types";
+import { playerStateSlice } from "../../../character/playerReducer";
+import { Combatant, Player } from "../../../character/types";
+import { abilityNameMap } from "../../../enemy";
+import { Item } from "../../../item/types";
+import { passesChance } from "../../../utils";
+import { passesConditions } from "../../passesConditions";
+import { BattleState, battleStateSlice } from "../../reducer";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import { canTargetIfStealthed, getMultiplier, isSilenced, isStunnedOrFrozen, isTurnActionPrevented, isTurnToTrigger } from "../../utils";
+import { findCombatantData } from "../combatantData";
+import { TRIGGER_TARGET_TYPES } from "../../../ability/types";
+import { ActionContext } from "../../types";
+import { performAction } from "../performAction";
+import { checkHandleAutoCast } from "../autoCast";
+import { checkCardActions, handleDrawOriginalAbility } from "../cardActions/cardActions";
+import { applyAbilityEventEffects } from "../cardActions/drawCards";
 import { checkUpdateEffectLifecycle } from "./effectLifecycle";
-import { enqueueEvent } from "./enqueueEvent";
-import { getUpdatedStats } from "./getUpdatedStats";
-import { checkInduce } from "./inducedAction";
-import { aggregateStatUpdates } from "./playbackCollector";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
-import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
-import { updateCombatant } from "./combatantData";
-import { onUseAbility, useAbility } from "./useAbility";
+import { enqueueEvent } from "../enqueueEvent";
+import { getUpdatedStats } from "../getUpdatedStats";
+import { checkInduce } from "../inducedAction";
+import { aggregateStatUpdates } from "../playbackCollector";
+import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { autoSelectActionTarget, calculateTargetIndices } from "../targeting/targeting";
+import { updateCombatant } from "../combatantData";
+import { onUseAbility, useAbility } from "../useAbility";
 
-const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
-const { updatePlayer } = playerStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice?.actions || {};
 
 export const onEffectEventTrigger = ({
     effectEvent,

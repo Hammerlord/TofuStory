@@ -8,7 +8,7 @@ import { ActionContext } from "./../types";
 import { checkValidEnemyTargeting, updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { onCombatantDeath } from "./onKill";
-import { checkEventTrigger, onEffectEventTrigger } from "./triggerEffectEvent";
+import { checkEventTrigger, onEffectEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};

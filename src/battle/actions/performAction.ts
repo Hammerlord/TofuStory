@@ -30,7 +30,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkHandleMorph } from "./summon/morphMerge";
 import { checkHandleActionSummon } from "./summon/summon";
 import { autoSelectActionTarget, calculateActionArea, calculateTargetIndices } from "./targeting/targeting";
-import { checkEventTrigger } from "./triggerEffectEvent";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

@@ -21,7 +21,7 @@ import { passesConditions, passesValueComparison } from "../../passesConditions"
 import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { getUpdatedStats } from "../getUpdatedStats";
-import { checkEventTrigger } from "../triggerEffectEvent";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { findCombatantData } from "../combatantData";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 import { useAbility } from "../useAbility";

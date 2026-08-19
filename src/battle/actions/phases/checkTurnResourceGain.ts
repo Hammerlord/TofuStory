@@ -1,6 +1,6 @@
-import { CombatantInfo, ActionContext } from "../types";
-import { getEnabledEffects, getMaxResources, isStunnedOrFrozen } from "./../utils";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { CombatantInfo, ActionContext } from "../../types";
+import { getEnabledEffects, getMaxResources, isStunnedOrFrozen } from "../../utils";
+import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 
 export const checkTurnResourceGain = (side: (CombatantInfo | null)[], source?: ActionContext) => (dispatch) => {
     const statChanges = side

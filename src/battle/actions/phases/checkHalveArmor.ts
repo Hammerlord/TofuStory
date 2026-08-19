@@ -1,6 +1,6 @@
-import { ActionContext, CombatantInfo } from "../types";
-import { getEnabledEffects } from "./../utils";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { ActionContext, CombatantInfo } from "../../types";
+import { getEnabledEffects } from "../../utils";
+import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 
 export const checkHalveArmor = (side: (CombatantInfo | null)[], context: ActionContext) => (dispatch) => {
     const statChanges = side

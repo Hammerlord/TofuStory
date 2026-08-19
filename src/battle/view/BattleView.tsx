@@ -42,9 +42,9 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/drawCards";
-import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/enemyTurn";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../actions/playerTurn";
+import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../phases/enemyTurn";
+import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../phases/phases";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../phases/playerTurn";
 import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { usePreloadImages } from "../hooks/usePreloadImage";
@@ -61,7 +61,7 @@ import {
 } from "../utils";
 import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTargeting";
 import { findCombatantData } from "../actions/combatantData";
-import { checkEventTrigger } from "../actions/triggerEffectEvent";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
 
 const useStyles = createUseStyles({
