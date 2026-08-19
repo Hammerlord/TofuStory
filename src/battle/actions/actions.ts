@@ -75,7 +75,7 @@ import {
     checkCardActions,
     deleteCard,
     depleteAbilities,
-    handleDrawOriginalAbility
+    handleDrawOriginalAbility,
 } from "./cardActions";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
@@ -315,9 +315,13 @@ const onCombatantDeath = ({ combatantId, context }: { combatantId: string; conte
         const { friendly, hostile, combatant, friendlySide } = deadCombatant || {};
         const source = context?.sourceChain?.at(-1);
         if (isActorPlayerSide({ side: getState().battle.playerSide, source })) {
+            const currentStatistics: BattleStatistics = getState().battle.statistics;
             dispatch(
                 updateBattle({
-                    totalKills: getState().battle.totalKills + 1,
+                    statistics: {
+                        ...currentStatistics,
+                        totalKills: currentStatistics.totalKills + 1,
+                    },
                 })
             );
         }
