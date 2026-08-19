@@ -69,13 +69,14 @@ import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { createCombatant } from "./../../enemy/createEnemy";
 import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";
-import { checkCardActions, deleteCard, depleteAbilities, handleDrawOriginalAbility } from "./cardActions/cardActions";
+import { checkCardActions, deleteCard, handleDrawOriginalAbility } from "./cardActions/cardActions";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets, requeueRecentlyUsedAbility } from "./enemyTurn";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { getMorphMap, getMorphMerge } from "./morphUtils";
 import { PlaybackCollector, aggregateStatUpdates, playbackCollector } from "./playbackCollector";
 import { handleDiscard } from "./playerTurn";
 import { applyAbilityEffectsOnDraw, applyAbilityEventEffects } from "./cardActions/drawCards";
+import { depleteAbilities } from "./cardActions/depleteCards";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};

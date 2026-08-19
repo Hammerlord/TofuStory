@@ -582,6 +582,11 @@ export type CardBonus = {
     resources?: number;
 };
 
+export type AutoPlayCards = {
+    amount: number;
+    filters?: { property: string; comparator: Comparator; value: any }[];
+};
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -651,10 +656,7 @@ export type Action = {
         bonus?: CardBonus[];
     };
     // Auto-play the top `amount` cards from your deck/discard
-    playCards?: {
-        amount: number;
-        filters?: { property: string; comparator: Comparator; value: any }[];
-    };
+    playCards?: AutoPlayCards;
     selectCards?: SelectCards;
     retrieveDepletedCards?: {
         amount: number;
