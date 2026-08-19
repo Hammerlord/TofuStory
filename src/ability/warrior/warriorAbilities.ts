@@ -2344,7 +2344,7 @@ export const hurlBoulder: Ability = {
     },
     actions: [
         {
-            damage: 28,
+            damage: 25,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
@@ -2359,7 +2359,7 @@ export const hurlBoulder: Ability = {
         {
             actions: [
                 {
-                    damage: 9,
+                    damage: 7,
                 },
             ],
         },
@@ -2730,18 +2730,19 @@ export const bluntForce: Ability = {
 export const retribute: Ability = {
     name: "Retribute",
     image: SpearSweepImage,
-    description: "+{{actions.0.bonus.damage}} {{{ _damage_ }}} if you took unblocked damage last turn.",
+    description:
+        "<b>+{{actions.0.bonus.damage}} {{{ _damage_ }}}</b> and refund <b>1 {{{ _resource_ }}}</b> if you took HP damage recently.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
-    resourceCost: 2,
+    resourceCost: 1,
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 9,
+            damage: 6,
             area: 2,
             bonus: {
-                damage: 4,
+                damage: 3,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -2749,6 +2750,18 @@ export const retribute: Ability = {
                         comparator: "eq",
                     },
                 ],
+            },
+            secondaryAction: {
+                bonus: {
+                    resources: 1,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.ACTOR,
+                            hasEffect: directDamageTaken.name,
+                            comparator: "eq",
+                        },
+                    ],
+                },
             },
         },
     ],
@@ -2758,7 +2771,7 @@ export const retribute: Ability = {
                 {
                     damage: 2,
                     bonus: {
-                        damage: 2,
+                        damage: 1,
                     },
                 },
             ],
