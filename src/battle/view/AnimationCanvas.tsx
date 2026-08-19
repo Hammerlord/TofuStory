@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../ability/types";
+import AbilityView from "../../ability/AbilityView/AbilityView";
+import { Ability, ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
@@ -12,15 +12,15 @@ import {
     playTravelAnimation,
     refreshToPile,
     sendToPile,
-} from "../character/animations";
-import { DECK_CYCLE_TIME } from "../constants";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { MapleLeavesImage } from "../images";
-import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "./constants";
-import { battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, Event, EventGroup } from "./types";
-import { Combatant } from "../character/types";
-import { getRandomItem } from "../utils";
+} from "../../character/animations";
+import { DECK_CYCLE_TIME } from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { MapleLeavesImage } from "../../images";
+import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
+import { battleStateSlice } from "../reducer";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "../types";
+import { Combatant } from "../../character/types";
+import { getRandomItem } from "../../utils";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;

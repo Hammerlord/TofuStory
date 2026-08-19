@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import { BLUE, RED } from "../../ability/AbilityView/constants";
+import { BLUE, RED } from "../../../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
     root: {

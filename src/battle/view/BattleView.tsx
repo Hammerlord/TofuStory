@@ -2,10 +2,10 @@ import { cloneDeep } from "lodash";
 import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
-import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
-import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { getAbilityColor, getAbilityUpgradedFromEffects } from "../ability/AbilityView/utils";
+import { getDamageStatistics } from "../../ability/AbilityView/DamageIcon";
+import { ResourceIcon } from "../../ability/AbilityView/ResourceIcon";
+import { resourceClassNameMap } from "../../ability/AbilityView/constants";
+import { getAbilityColor, getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     Ability,
@@ -16,17 +16,17 @@ import {
     Effect,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
-} from "../ability/types";
-import { PreviewStatUpdate } from "../character/AbilityPreview";
-import CombatantView from "../character/CombatantView";
-import { getNextTelegraphedAbility } from "../character/Telegraph";
-import getAbilityPreviews, { getEmptyTileKey } from "../character/getAbilityPreviews";
-import { Combatant, Player } from "../character/types";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import EffectGroupIcon from "../icon/EffectGroupIcon";
-import Icon from "../icon/Icon";
-import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../images";
-import Tooltip from "../view/Tooltip";
+} from "../../ability/types";
+import { PreviewStatUpdate } from "../../character/AbilityPreview";
+import CombatantView from "../../character/CombatantView";
+import { getNextTelegraphedAbility } from "../../character/Telegraph";
+import getAbilityPreviews, { getEmptyTileKey } from "../../character/getAbilityPreviews";
+import { Combatant, Player } from "../../character/types";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import EffectGroupIcon from "../../icon/EffectGroupIcon";
+import Icon from "../../icon/Icon";
+import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
+import Tooltip from "../../view/Tooltip";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -40,16 +40,16 @@ import ParticleCanvas from "./ParticleCanvas";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { checkCardActions } from "./actions/cardActions/cardActions";
-import { applyAbilityEventEffects } from "./actions/cardActions/drawCards";
-import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "./actions/enemyTurn";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "./actions/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "./actions/playerTurn";
-import { checkWinCondition } from "./checkWinCondition";
-import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "./constants";
-import { usePreloadImages } from "./hooks/usePreloadImage";
-import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "./types";
+import { checkCardActions } from "../actions/cardActions/cardActions";
+import { applyAbilityEventEffects } from "../actions/cardActions/drawCards";
+import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/enemyTurn";
+import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../actions/playerTurn";
+import { checkWinCondition } from "../checkWinCondition";
+import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
+import { usePreloadImages } from "../hooks/usePreloadImage";
+import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "../reducer";
+import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../types";
 import {
     canTargetIfStealthed,
     canUseAbility,
@@ -58,11 +58,11 @@ import {
     isTurnActionPrevented,
     isUntargetable,
     isWithinAbilityArea,
-} from "./utils";
-import { isValidTargetForPlayerAbility } from "./actions/targeting/playerTargeting";
-import { findCombatantData } from "./actions/combatantData";
-import { checkEventTrigger } from "./actions/triggerEffectEvent";
-import { useAbility } from "./actions/useAbility";
+} from "../utils";
+import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTargeting";
+import { findCombatantData } from "../actions/combatantData";
+import { checkEventTrigger } from "../actions/triggerEffectEvent";
+import { useAbility } from "../actions/useAbility";
 
 const useStyles = createUseStyles({
     root: {

@@ -1,12 +1,12 @@
 import { compose } from "ramda";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CombatAbility } from "../ability/types";
-import Tooltip from "../view/Tooltip";
+import { CombatAbility } from "../../ability/types";
+import Tooltip from "../../view/Tooltip";
 import classNames from "classnames";
-import { DownArrowImage } from "../images";
-import { getAbilityLevel, getAbilityMap } from "./deckDisplayUtils";
-import { useAppSelector } from "../hooks";
+import { DownArrowImage } from "../../images";
+import { getAbilityLevel, getAbilityMap } from "../deckDisplayUtils";
+import { useAppSelector } from "../../hooks";
 
 const DECK_COLOR = "#176fbd";
 const DECK_SHADOW = "#125896";

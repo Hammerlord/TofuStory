@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability, WeaponImageOptions } from "../ability/types";
-import BattlefieldContainer from "../battle/BattleView";
+import BattlefieldContainer from "../battle/view/BattleView";
 import { startBattle } from "../battle/actions/phases";
 import { passesValueComparison } from "../battle/passesConditions";
 import { BATTLE_STATES, BattleState, battleStateSlice } from "../battle/reducer";

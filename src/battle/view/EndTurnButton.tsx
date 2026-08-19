@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { COMMON_STYLES } from "../constants";
+import { COMMON_STYLES } from "../../constants";
 
 const useStyles = createUseStyles({
     ...COMMON_STYLES,

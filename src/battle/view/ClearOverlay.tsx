@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
-import { ClearImage } from "../images";
-import Overlay from "../view/Overlay";
+import { ClearImage } from "../../images";
+import Overlay from "../../view/Overlay";
 
 const useStyles = createUseStyles({
     container: {

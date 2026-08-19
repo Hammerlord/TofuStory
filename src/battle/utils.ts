@@ -21,7 +21,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { BASE_MAX_RESOURCES, DAMAGE_COEFF } from "./constants";
-import { getHandAuraEffects } from "./Hand";
+import { getHandAuraEffects } from "./view/Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { calculateActionArea } from "./actions/targeting/targeting";

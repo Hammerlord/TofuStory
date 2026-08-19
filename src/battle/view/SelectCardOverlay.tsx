@@ -1,18 +1,18 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import AbilityView from "../ability/AbilityView/AbilityView";
-import { CombatAbility, SELECT_CARD_TYPES } from "../ability/types";
-import { Player } from "../character/types";
-import { useAppDispatch } from "../hooks";
-import { XIcon } from "../images/icons";
-import Button from "../view/Button";
-import Overlay from "../view/Overlay";
-import { PlayerSelectCardsPrompt } from "./reducer";
-import getCardSelection from "./selectCardUtils";
-import { AshesImage } from "../images";
+import AbilityView from "../../ability/AbilityView/AbilityView";
+import { CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
+import { Player } from "../../character/types";
+import { useAppDispatch } from "../../hooks";
+import { XIcon } from "../../images/icons";
+import Button from "../../view/Button";
+import Overlay from "../../view/Overlay";
+import { PlayerSelectCardsPrompt } from "../reducer";
+import getCardSelection from "../selectCardUtils";
+import { AshesImage } from "../../images";
 import { Box } from "@mui/material";
-import { selectCardsAction } from "./actions/cardActions/selectCards";
+import { selectCardsAction } from "../actions/cardActions/selectCards";
 
 const useStyles = createUseStyles({
     inner: {

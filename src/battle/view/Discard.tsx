@@ -1,12 +1,12 @@
 import { compose } from "ramda";
 import { FC, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CombatAbility } from "../ability/types";
-import Tooltip from "../view/Tooltip";
+import { CombatAbility } from "../../ability/types";
+import Tooltip from "../../view/Tooltip";
 import classNames from "classnames";
-import { getAbilityLevel, getAbilityMap } from "./deckDisplayUtils";
-import { AshesImage } from "../images";
-import Icon from "../icon/Icon";
+import { getAbilityLevel, getAbilityMap } from "../deckDisplayUtils";
+import { AshesImage } from "../../images";
+import Icon from "../../icon/Icon";
 
 const COOLDOWN_COLOR = "#aaaaaa";
 const COOLDOWN_SHADOW = "#8a8a8a";

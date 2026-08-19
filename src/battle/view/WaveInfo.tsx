@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
-import { Wave } from "./types";
-import { JapaneseOgreIcon } from "../images/icons";
-import Icon from "../icon/Icon";
+import { Wave } from "../types";
+import { JapaneseOgreIcon } from "../../images/icons";
+import Icon from "../../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {

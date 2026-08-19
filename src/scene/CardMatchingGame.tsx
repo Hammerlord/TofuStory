@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { compose, flatten, repeat } from "ramda";
 import React, { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import TurnAnnouncement from "../battle/Notification/TurnNotification";
+import TurnAnnouncement from "../battle/view/Notification/TurnNotification";
 import {
     BlueMushroomCardImage,
     BlueSnailCardImage,

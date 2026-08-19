@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import { ANIMATION_TYPES } from "../ability/types";
-import { getCenterCoords } from "../character/animations";
-import { Fireworks } from "../fireworks/fireworks";
-import { BATTLEFIELD_SIDES, Event, EventGroup } from "./types";
+import { ANIMATION_TYPES } from "../../ability/types";
+import { getCenterCoords } from "../../character/animations";
+import { Fireworks } from "../../fireworks/fireworks";
+import { BATTLEFIELD_SIDES, Event, EventGroup } from "../types";
 import { clamp } from "ramda";
 
 const useStyles = createUseStyles({
