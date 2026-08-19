@@ -424,17 +424,15 @@ const handleSelectCards = ({
         const { hand, deck, discard, playerSide } = getState().battle;
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
-        const cards = getRandomItems(
-            getCardSelection({
-                hand,
-                deck,
-                discard,
-                selectCards: selectCards,
-                selectedAbilityId: undefined,
-                player,
-            }),
-            maxAmount
-        );
+        const cards = getCardSelection({
+            hand,
+            deck,
+            discard,
+            selectCards: selectCards,
+            selectedAbilityId: undefined,
+            player,
+            numOptions: maxAmount,
+        });
 
         if (!cards.length) {
             return;

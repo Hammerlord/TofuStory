@@ -143,6 +143,11 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         description: "After 2 turns, activates at the start of the afflicted target's turn, dealing 30 damage.",
         keys: ['"Doom"'],
     },
+    {
+        name: "Search",
+        description: "Choose 1 of 3 options randomly presented from your deck/discard.",
+        keys: ["search-deck"],
+    },
 ];
 
 const useSectionStyles = createUseStyles({

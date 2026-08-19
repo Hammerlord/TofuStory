@@ -1103,7 +1103,7 @@ export const cross: Ability = {
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Search for an attack from your deck. It costs 1 less until discarded.",
+    description: "<b>Search</b> for an attack. It costs 1 less until discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
@@ -1132,7 +1132,7 @@ export const cross: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },

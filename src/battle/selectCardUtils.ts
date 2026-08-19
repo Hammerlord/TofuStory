@@ -18,6 +18,7 @@ const getCardSelection = ({
     selectCards,
     selectedAbilityId,
     player,
+    numOptions = DEFAULT_NUM_OPTIONS,
 }: {
     selectCards: SelectCards;
     selectedAbilityId?: string;
@@ -25,6 +26,7 @@ const getCardSelection = ({
     deck: CombatAbility[];
     discard: CombatAbility[];
     player: Player;
+    numOptions?: number;
 }): CombatAbility[] => {
     const { effects = [], type, filters } = selectCards || {};
     const removeParentCardAfterTurn = effects.some((e: AbilityEffect) => e.removeParentCardAfterTurn); // Can't this stay as a part of `effects` and get read there?
@@ -60,7 +62,7 @@ const getCardSelection = ({
         const secondJobCards = JOB_CARD_MAP[player.secondaryClass]?.all || [];
         const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
         const shuffled = shuffle(potentialAbilities);
-        return shuffled.slice(0, DEFAULT_NUM_OPTIONS).map(createNewOption);
+        return shuffled.slice(0, numOptions).map(createNewOption);
     }
 
     if (type === SELECT_CARD_TYPES.PRESET_CARDS) {
@@ -76,9 +78,23 @@ const getCardSelection = ({
     }
 
     if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
-        return applyFilters(deck.concat(discard))
-            .slice(0, DEFAULT_NUM_OPTIONS)
-            .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
+        let deckResult = shuffle(
+            applyFilters(deck)
+                .slice(0, numOptions)
+                .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }))
+        );
+
+        if (deckResult.length < numOptions) {
+            return deckResult.concat(
+                shuffle(
+                    applyFilters(discard)
+                        .slice(0, numOptions - deckResult.length)
+                        .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }))
+                )
+            );
+        }
+
+        return deckResult;
     }
 
     return [];
