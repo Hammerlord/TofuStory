@@ -1,7 +1,8 @@
 import { CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../types";
-import { checkEventTrigger, enqueueEvent } from "../actions";
+import { enqueueEvent } from "../enqueueEvent";
+import { checkEventTrigger } from "../triggerEffectEvent";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

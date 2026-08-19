@@ -1,11 +1,10 @@
 import classNames from "classnames";
 import { FC, forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { findCombatantData } from "../../battle/actions/actions";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { canUseAbility, getMultiplier } from "../../battle/utils";
+import { canUseAbility, findCombatantData, getMultiplier } from "../../battle/utils";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";

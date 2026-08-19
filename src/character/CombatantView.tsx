@@ -3,7 +3,6 @@ import { FC, RefObject, forwardRef, useCallback, useEffect, useRef, useState } f
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { findCombatantData } from "../battle/actions/actions";
 import { SUMMON_DELAY } from "../battle/constants";
 import { BATTLE_STATES } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
@@ -32,6 +31,7 @@ import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
+import { findCombatantData } from "../battle/utils";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {

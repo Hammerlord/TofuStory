@@ -3,9 +3,9 @@ import { Combatant } from "../../../character/types";
 import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
-import { checkEventTrigger } from "../actions";
 import { playbackCollector } from "../playbackCollector";
 import { prepareForDiscard } from "../playerTurn";
+import { checkEventTrigger } from "../triggerEffectEvent";
 import { depleteAbilities } from "./depleteCards";
 import { applyAbilityEventEffects, drawCards, handleOnDrawEvents } from "./drawCards";
 

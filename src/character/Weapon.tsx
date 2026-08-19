@@ -1,13 +1,12 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Ability, Action, Effect, WeaponImageOptions } from "../ability/types";
+import { ACTION_TYPES, Effect, WeaponImageOptions } from "../ability/types";
+import { Event } from "../battle/types";
+import { calculateActionArea, findCombatantData } from "../battle/utils";
+import { useAppSelector } from "../hooks";
 import { getRotationToFaceTarget, getTargetPoints } from "./animations";
 import { Combatant } from "./types";
-import { Event, TRIGGER_SOURCE_TYPES } from "../battle/types";
-import { calculateActionArea } from "../battle/utils";
-import { findCombatantData } from "../battle/actions/actions";
-import { useAppSelector } from "../hooks";
 
 const WEAPON_DEFAULT_ROTATION = 45; // This is a MapleStory thing where weapon sprites are at 45 degree angles
 

@@ -40,7 +40,6 @@ import ParticleCanvas from "./ParticleCanvas";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { checkEventTrigger, findCombatantData, useAbility } from "./actions/actions";
 import { checkCardActions } from "./actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "./actions/cardActions/drawCards";
 import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "./actions/enemyTurn";
@@ -54,6 +53,7 @@ import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "./types";
 import {
     canTargetIfStealthed,
     canUseAbility,
+    findCombatantData,
     getCardByInstanceId,
     hasEffectType,
     isTurnActionPrevented,
@@ -61,6 +61,8 @@ import {
     isValidTarget,
     isWithinAbilityArea,
 } from "./utils";
+import { checkEventTrigger } from "./actions/triggerEffectEvent";
+import { useAbility } from "./actions/useAbility";
 
 const useStyles = createUseStyles({
     root: {

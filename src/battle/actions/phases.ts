@@ -11,14 +11,18 @@ import { Item } from "../../item/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { BOSS_MUSIC } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
-import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
-import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
 import { checkCardActions } from "./cardActions/cardActions";
-import { calculateMesoMultiplier } from "../utils";
+import { calculateMesoMultiplier, findCombatantData } from "../utils";
+import { checkEventTrigger } from "./triggerEffectEvent";
+import { autoSelectActionTarget } from "./targeting";
+import { playbackCollector } from "./playbackCollector";
+import { tickDownStatusEffects } from "./effectLifecycle";
+import { updateCombatant } from "./updateCombatant";
 
-const { updateBattle, updateBattleState } = battleStateSlice.actions;
+const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
@@ -275,5 +279,30 @@ export const onWaveStart = () => {
                 );
             }
         });
+    };
+};
+
+export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant | null)[]; side: BATTLEFIELD_SIDES }) => {
+    return (dispatch) => {
+        const playbackCollectorInstance = playbackCollector();
+        combatants.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd,
+                        context: { sourceChain: [], playbackCollector: playbackCollectorInstance },
+                    })
+                );
+            }
+        });
+
+        combatants.forEach((combatant: Combatant | null) => {
+            if (combatant) {
+                dispatch(tickDownStatusEffects(combatant.id));
+            }
+        });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };

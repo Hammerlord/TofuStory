@@ -1,30 +1,12 @@
 import _ from "lodash";
-import * as uuid from "uuid";
-import { getLastPlayedCards } from "../../../ability/AbilityView/utils";
-import {
-    Ability,
-    Action,
-    AutoPlayCards,
-    CARD_PILE_TYPES,
-    CombatAbility,
-    CombatEffect,
-    EFFECT_EVENT_KEYS,
-    FROM_CARD_PILE_TYPES,
-    MoveCards,
-} from "../../../ability/types";
-import { Combatant } from "../../../character/types";
-import { getRandomInt, shuffle } from "../../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../../constants";
+import { CARD_PILE_TYPES, CombatAbility, FROM_CARD_PILE_TYPES, MoveCards } from "../../../ability/types";
+import { shuffle } from "../../../utils";
 import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
-import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext, TriggerSource } from "../../types";
-import { checkEventTrigger, enqueueEvent } from "../actions";
-import { handleDiscard, prepareForDiscard, usePlayerAbility } from "../playerTurn";
-import { applyAbilityEventEffects, drawCards } from "./drawCards";
-import { handleSelectCards } from "./selectCards";
+import { enqueueEvent } from "../enqueueEvent";
 
-const { updateBattle, promptPlayerSelectCards, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice?.actions || {};
 
 export const handleMoveCards = ({
     moveCards,

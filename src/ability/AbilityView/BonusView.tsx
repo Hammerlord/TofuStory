@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
-import { findCombatantData } from "../../battle/actions/actions";
-import { getMultiplier } from "../../battle/utils";
+import { findCombatantData, getMultiplier } from "../../battle/utils";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { NimbleJewelCImage } from "../../images";

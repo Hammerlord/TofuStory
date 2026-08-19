@@ -1,16 +1,7 @@
 import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
-import {
-    Ability,
-    Action,
-    CombatAbility,
-    CombatEffect,
-    CONDITION_TARGETS,
-    Effect,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    TRIGGER_TARGET_TYPES,
-} from "../../ability/types";
+import { Ability, Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import { Player } from "../../character/types";
 import { Item } from "../../item/types";
 import { getRandomItem } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
@@ -25,10 +16,9 @@ import {
     hasEffectType,
 } from "../utils";
 import { effectNameMap } from "./../../enemy/effect";
-import { BATTLEFIELD_SIDES, CombatantInfo, ActionContext } from "./../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
 import { getHalveArmorAmount } from "./checkHalveArmor";
-import { Player } from "../../character/types";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates

@@ -4,8 +4,8 @@ import { getRandomInt } from "../../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../../constants";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext } from "../../types";
-import { enqueueEvent } from "../actions";
 import { prepareForDiscard } from "../playerTurn";
+import { enqueueEvent } from "../enqueueEvent";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 

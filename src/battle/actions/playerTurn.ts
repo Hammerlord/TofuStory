@@ -5,21 +5,17 @@ import { checkWinCondition } from "../checkWinCondition";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
-import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
-import {
-    checkEventTrigger,
-    checkValidEnemyNextAbility,
-    checkValidEnemyTargeting,
-    enqueueEvent,
-    findCombatantData,
-    handleDoTs,
-    onEndTurnTriggers,
-    useAbility,
-} from "./actions";
+import { clearTurnHistory, findCombatantData, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
+import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions/drawCards";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import { handleDoTs } from "./damageOverTime";
+import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "./enemyTargeting";
+import { enqueueEvent } from "./enqueueEvent";
+import { onEndTurnTriggers } from "./phases";
 import { playbackCollector } from "./playbackCollector";
-import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions/drawCards";
+import { checkEventTrigger } from "./triggerEffectEvent";
+import { useAbility } from "./useAbility";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 

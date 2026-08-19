@@ -1,16 +1,13 @@
-import { AbilityEffect, ActionOptionalProperties, SkillBonus } from "./../ability/types";
-/**
- * @file Helpers for various battle functions
- */
 import _ from "lodash";
-import { isAttackAbility, isAttackAction, isOffensiveAbility, isOffensiveAction } from "../ability/AbilityView/utils";
+import { isAttackAction, isOffensiveAbility, isOffensiveAction } from "../ability/AbilityView/utils";
 import { Combatant, Player } from "../character/types";
-import { CrossedSwordsImage } from "../images";
 import { Item } from "../item/types";
 import {
     ACTION_TYPES,
     Ability,
+    AbilityEffect,
     Action,
+    ActionOptionalProperties,
     Bonus,
     CONDITION_TARGETS,
     CombatAbility,
@@ -20,15 +17,15 @@ import {
     Effect,
     MULTIPLIER_TYPES,
     Multiplier,
+    SkillBonus,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { findCombatantData } from "./actions/actions";
-import { BASE_MAX_RESOURCES, DAMAGE_COEFF, INDUCED_ACTION_PLAYBACK_SPEED } from "./constants";
+import { BASE_MAX_RESOURCES, DAMAGE_COEFF } from "./constants";
 import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, ActionContext, TriggerSource } from "./types";
+import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 
 export const getMaxHP = (character?: Combatant | null): number => {
     if (!character) {
@@ -1020,43 +1017,6 @@ export const applyVacuum = ({
     };
 };
 
-export const getInducedAttack = (actor: Combatant): Ability => {
-    const abilities = actor.abilities || [];
-    const attackAbility =
-        abilities.find((ability) => !ability.resourceCost && isAttackAbility(ability)) ||
-        abilities.find((ability) => !ability.resourceCost && isOffensiveAbility);
-
-    if (attackAbility) {
-        return { ...attackAbility, actions: attackAbility.actions.map((a) => ({ ...a, playbackTime: INDUCED_ACTION_PLAYBACK_SPEED })) };
-    }
-
-    let basicAttackDamage = 0;
-
-    for (const ability of abilities) {
-        if (!ability.resourceCost) {
-            for (const action of ability.actions) {
-                if (action.damage) {
-                    basicAttackDamage = action.damage;
-                    break;
-                }
-            }
-        }
-    }
-
-    return {
-        name: "Attack",
-        image: CrossedSwordsImage,
-        actions: [
-            {
-                damage: basicAttackDamage || 1,
-                target: TARGET_TYPES.HOSTILE,
-                type: ACTION_TYPES.ATTACK,
-                playbackTime: INDUCED_ACTION_PLAYBACK_SPEED,
-            },
-        ],
-    };
-};
-
 // This is used to determine whether an enemy should act during its turn. It shouldn't prevent effect events from triggering.
 export const isTurnActionPrevented = (
     combatantInfo: CombatantInfo,
@@ -1272,4 +1232,39 @@ export const getAbilityResourceCost = ({
     }, 0);
 
     return Math.max(0, resourceCost + resourceCostFromEffects);
+};
+
+/**
+ * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
+ * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
+ */
+export const findCombatantData = (battle: BattleState, combatantId?: string): CombatantInfo | undefined => {
+    if (!battle || !combatantId) {
+        return;
+    }
+
+    const { playerSide, enemySide } = battle;
+    const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
+    if (enemyIndex > -1) {
+        return {
+            combatant: enemySide[enemyIndex],
+            index: enemyIndex,
+            friendly: enemySide.slice(),
+            hostile: playerSide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        };
+    }
+
+    const index = playerSide.findIndex((c: Combatant | null) => c?.id === combatantId);
+    if (index > -1) {
+        return {
+            combatant: playerSide[index],
+            index,
+            friendly: playerSide.slice(),
+            hostile: enemySide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        };
+    }
 };

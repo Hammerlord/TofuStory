@@ -8,24 +8,27 @@ import { getRandomInt } from "../../utils";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
-import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented, updateCharacters } from "../utils";
+import {
+    clearTurnHistory,
+    findCombatantData,
+    getEnabledEffects,
+    isStunnedOrFrozen,
+    isTurnActionPrevented,
+    updateCharacters,
+} from "../utils";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./../types";
-import {
-    autoSelectActionTarget,
-    checkEventTrigger,
-    checkValidEnemyTargeting,
-    findCombatantData,
-    handleDoTs,
-    onEndTurnTriggers,
-    performAction,
-    updateCombatant,
-    useAbility,
-    useItem,
-} from "./actions";
+import { performAction, useItem } from "./actions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
+import { handleDoTs } from "./damageOverTime";
+import { checkValidEnemyTargeting } from "./enemyTargeting";
+import { onEndTurnTriggers } from "./phases";
 import { PlaybackCollector, playbackCollector } from "./playbackCollector";
+import { autoSelectActionTarget } from "./targeting";
+import { checkEventTrigger } from "./triggerEffectEvent";
+import { updateCombatant } from "./updateCombatant";
+import { useAbility } from "./useAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 

@@ -9,12 +9,12 @@ import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
-import { checkEventTrigger } from "../actions";
 import { handleDiscard, usePlayerAbility } from "../playerTurn";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
 import { applyAbilityEventEffects, drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
+import { checkEventTrigger } from "../triggerEffectEvent";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
