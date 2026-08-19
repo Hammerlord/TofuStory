@@ -1,5 +1,6 @@
 import { CombatantInfo, ActionContext } from "../../types";
-import { getMaxResources, isStunnedOrFrozen } from "../../utils";
+import { isStunnedOrFrozen } from "../../utils";
+import { getMaxResources } from "../playerAbility";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 

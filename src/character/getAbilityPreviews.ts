@@ -7,7 +7,7 @@ import { checkSummonMinion } from "../battle/actions/summon/summon";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, ActionContext } from "../battle/types";
-import { getAbilityResourceCost } from "../battle/utils";
+import { getPlayerAbilityResourceCost } from "../battle/actions/playerAbility";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
@@ -192,7 +192,7 @@ const getAbilityPreviews = ({
         };
     }
 
-    const resourceCost = getAbilityResourceCost({
+    const resourceCost = getPlayerAbilityResourceCost({
         combatant: actor,
         resourceCost: ability.resourceCost,
         // @ts-ignore

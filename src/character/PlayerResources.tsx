@@ -4,7 +4,7 @@ import { ResourceIcon } from "../ability/AbilityView/ResourceIcon";
 import Tooltip from "../view/Tooltip";
 import { Player } from "./types";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { getMaxResources } from "../battle/utils";
+import { getMaxResources } from "../battle/actions/playerAbility";
 import classNames from "classnames";
 
 const useStyles = createUseStyles({

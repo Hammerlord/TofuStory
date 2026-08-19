@@ -9,7 +9,7 @@ import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
-import { usePlayerAbility } from "../phases/playerTurn";
+import { usePlayerAbility } from "../playerAbility";
 import { handleDiscardAfterUse } from "./discardCards";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
 import { applyAbilityEventEffects, drawCards } from "./drawCards";

@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { canUsePlayerAbility } from "../../battle/utils";
+import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { findCombatantData } from "../../battle/actions/combatantData";
 import { Player } from "../../character/types";

@@ -14,7 +14,8 @@ import {
 } from "../ability/types";
 import { BattleState } from "./reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, ActionContext, TriggerSource } from "./types";
-import { getMaxHP, getMaxResources } from "./utils";
+import { getMaxHP } from "./utils";
+import { getMaxResources } from "./actions/playerAbility";
 
 export const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: Comparator }): boolean => {
     switch (comparator) {

@@ -4,7 +4,7 @@ import { getRandomInt } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { getAbilityResourceCost } from "../utils";
+import { getPlayerAbilityResourceCost } from "./playerAbility";
 import { isTurnActionPrevented } from "./combatantData";
 import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
@@ -39,7 +39,7 @@ export const useAbility = ({
         const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant, friendlySide } = findCombatantData(getState().battle, actorId) || {};
 
-        const totalResourceCost = getAbilityResourceCost({ combatant, resourceCost, effects });
+        const totalResourceCost = getPlayerAbilityResourceCost({ combatant, resourceCost, effects });
         ability = {
             ...ability,
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier

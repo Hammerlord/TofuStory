@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { getAbilityResourceCost } from "../../battle/utils";
+import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
 import { getMultiplier } from "../../battle/getMultiplier";
@@ -63,7 +63,7 @@ export const getDamageStatistics = ({
             discard,
         });
 
-        const resourceCost = getAbilityResourceCost({
+        const resourceCost = getPlayerAbilityResourceCost({
             combatant: actorInfo?.combatant,
             effects: ability.effects,
             resourceCost: ability.resourceCost,

@@ -44,13 +44,17 @@ import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/drawCards";
 import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/phases/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn, useHandAbility } from "../actions/phases/playerTurn";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
+import { useHandAbility } from "../actions/playerAbility";
 import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { usePreloadImages } from "../hooks/usePreloadImage";
 import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../types";
-import { canTargetIfStealthed, canUsePlayerAbility, getCardByInstanceId, isUntargetable, isWithinAbilityArea } from "../utils";
+import { canTargetIfStealthed, isUntargetable } from "../utils";
+import { canUsePlayerAbility } from "../actions/playerAbility";
+import { getCardByInstanceId } from "../actions/playerAbility";
+import { isWithinPlayerAbilityArea } from "../actions/playerAbility";
 import { isTurnActionPrevented } from "../actions/combatantData";
 import { hasEffectType } from "../actions/combatantData";
 import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTargeting";
@@ -776,7 +780,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         if (!actorInfo) {
             return false;
         }
-        return isWithinAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i });
+        return isWithinPlayerAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i });
     };
 
     /**
@@ -821,7 +825,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     return false;
                 }
 
-                return isWithinAbilityArea({
+                return isWithinPlayerAbilityArea({
                     ability,
                     actor: actorInfo,
                     selectedIndex: hoveredCombatant?.index,

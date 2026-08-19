@@ -1,154 +1,23 @@
-import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
+import { CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
 import { Combatant, Player } from "../../../character/types";
 import { checkWinCondition } from "../../checkWinCondition";
+import { getMaxResources } from "../playerAbility";
 import { battleStateSlice } from "../../reducer";
-import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
-import { getCardByInstanceId, getMaxResources } from "../../utils";
+import { BATTLEFIELD_SIDES } from "../../types";
+import { prepareForDiscard } from "../cardActions/discardCards";
+import { drawCards } from "../cardActions/drawCards";
+import { findCombatantData, updateCombatants } from "../combatantData";
+import { playbackCollector } from "../playbackCollector";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
-import { updateCombatants } from "../combatantData";
-import { findCombatantData } from "../combatantData";
-import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "../cardActions/drawCards";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
+import { useAbility } from "../useAbility";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "../targeting/enemyTargeting";
-import { onEndTurnTriggers } from "./phases";
-import { playbackCollector } from "../playbackCollector";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { useAbility } from "../useAbility";
 import { handleDoTs } from "./damageOverTime";
-import { handleDiscardAfterUse, prepareForDiscard } from "../cardActions/discardCards";
+import { onEndTurnTriggers } from "./phases";
 
-const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
-
-export const useHandAbility = ({
-    selectedTargetIndex,
-    selectedTargetSide,
-    selectedAbilityId,
-}: {
-    selectedTargetIndex: number;
-    selectedTargetSide: BATTLEFIELD_SIDES;
-    selectedAbilityId: string;
-}) => {
-    return (dispatch, getState) => {
-        const { hand } = getState().battle;
-        dispatch(selectHandAbility(null));
-        // Why not just pass ability object from BattleView instead of performing a lookup again?
-        const ability: CombatAbility = getCardByInstanceId(hand, selectedAbilityId);
-        const isReusable = ability.reusable || ability.effects?.some((effect) => effect.reusable);
-        if (isReusable) {
-            // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
-            dispatch(
-                updateBattle({
-                    hand: hand.map((card: CombatAbility) => {
-                        if (card.instanceId === selectedAbilityId) {
-                            card = applyAbilityEventEffects({
-                                event: card.onUse,
-                                ability: card,
-                            });
-                            return {
-                                ...card,
-                                effects: (card.effects || []).filter((effect: AbilityEffect) => {
-                                    // Do not keep any resource cost change or players can reuse the ability indefinitely
-                                    return !effect.resourceCost;
-                                }),
-                            };
-                        }
-                        return card;
-                    }),
-                })
-            );
-        } else {
-            dispatch(removeAbilityFromHand(selectedAbilityId));
-        }
-
-        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability }));
-    };
-};
-
-export const usePlayerAbility = ({
-    selectedTargetIndex,
-    selectedTargetSide,
-    ability,
-    isProc,
-}: {
-    selectedTargetIndex?: number;
-    selectedTargetSide?: BATTLEFIELD_SIDES;
-    ability: CombatAbility;
-    isProc?: boolean;
-}) => {
-    return (dispatch, getState) => {
-        const { playerSide } = getState().battle;
-        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const playbackCollectorInstance = playbackCollector();
-
-        dispatch(
-            useAbility({
-                ability,
-                selectedIndex: selectedTargetIndex,
-                side: selectedTargetSide,
-                actorId: actor?.id,
-                isProc,
-                playbackCollector: playbackCollectorInstance,
-            })
-        );
-
-        const { hostile = [], friendly = [] } = findCombatantData(getState().battle, actor.id) || {};
-        hostile.concat(friendly).forEach((combatant) => {
-            if (combatant) {
-                dispatch(
-                    checkEventTrigger({
-                        combatantId: combatant.id,
-                        effectEventKey: EFFECT_EVENT_KEYS.onPlayCard,
-                        context: {
-                            triggerHistory: [],
-                            sourceChain: [
-                                {
-                                    type: TRIGGER_SOURCE_TYPES.ABILITY,
-                                    source: ability,
-                                    actorId: actor.id,
-                                    isProc,
-                                },
-                            ],
-                            isProc,
-                        },
-                    })
-                );
-            }
-        });
-
-        // Do this AFTER the ability has been played, or buffs that you would expect to have effect, eg. ephemeral Greater Bolt, won't apply
-        dispatch(recalculateEffectsFromAbilities());
-        dispatch(checkValidEnemyNextAbility());
-        dispatch(checkValidEnemyTargeting());
-        dispatch(pushEventQueue(playbackCollectorInstance.get()));
-    };
-};
-
-const removeAbilityFromHand = (abilityId: string) => {
-    return (dispatch, getState) => {
-        const { hand: originalHand } = getState().battle;
-        const handWithAbilityUsed: CombatAbility[] = originalHand.slice();
-        const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);
-        if (index === -1) {
-            return;
-        }
-
-        const [ability] = handWithAbilityUsed.splice(index, 1);
-        if (!ability) {
-            return;
-        }
-
-        dispatch(
-            updateBattle({
-                hand: handWithAbilityUsed,
-            })
-        );
-
-        // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
-        // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
-        dispatch(handleDiscardAfterUse(ability));
-    };
-};
+const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
