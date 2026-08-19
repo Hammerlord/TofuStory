@@ -4,8 +4,8 @@ import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { playbackCollector } from "../playbackCollector";
-import { prepareForDiscard } from "../../phases/playerTurn";
-import { checkEventTrigger } from "../../statusEffect/triggerEffectEvent";
+import { prepareForDiscard } from "./discardCards";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { depleteAbilities } from "./depleteCards";
 import { applyAbilityEventEffects, drawCards, handleOnDrawEvents } from "./drawCards";
 

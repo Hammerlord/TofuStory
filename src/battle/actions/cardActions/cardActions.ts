@@ -9,12 +9,13 @@ import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
-import { handleDiscard, usePlayerAbility } from "../../phases/playerTurn";
+import { usePlayerAbility } from "../phases/playerTurn";
+import { handleDiscardAfterUse } from "./discardCards";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
 import { applyAbilityEventEffects, drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
-import { checkEventTrigger } from "../../statusEffect/triggerEffectEvent";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
@@ -214,7 +215,7 @@ const handleAutoPlayCards = (playCards: AutoPlayCards) => {
         cardsToPlay.forEach((ability) => {
             // Cards played from an action are considered procs, atm for the sole purpose of not allowing Charged to proc from Yellow Hat.
             dispatch(usePlayerAbility({ ability, isProc: true }));
-            dispatch(handleDiscard(ability));
+            dispatch(handleDiscardAfterUse(ability));
         });
     };
 };

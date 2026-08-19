@@ -10,7 +10,7 @@ import getCardSelection from "../selectCardUtils";
 import { ActionContext } from "./../types";
 import { depleteAbilities } from "./cardActions/depleteCards";
 import { applyAbilityEffectsOnDraw } from "./cardActions/drawCards";
-import { handleDiscard } from "./phases/playerTurn";
+import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { useAbility } from "./useAbility";
 
 const { updateBattle } = battleStateSlice?.actions || {};
@@ -127,7 +127,7 @@ export const checkHandleAutoCast = ({
                         deck: newDeck,
                     })
                 );
-                dispatch(handleDiscard(unmodifiedAbility));
+                dispatch(handleDiscardAfterUse(unmodifiedAbility));
             }
             // Auto-casted ability costs 0 unless it is a variable cost ability
             const resourceCost = abilityCost !== "x" ? 0 : abilityCost;

@@ -1,10 +1,8 @@
-import * as uuid from "uuid";
-import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
+import { AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
 import { Combatant, Player } from "../../../character/types";
 import { checkWinCondition } from "../../checkWinCondition";
-import { CARD_DEPLETED_PLAYBACK_SPEED } from "../../constants";
 import { battleStateSlice } from "../../reducer";
-import { BATTLEFIELD_SIDES, EventGroup, TRIGGER_SOURCE_TYPES } from "../../types";
+import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources } from "../../utils";
 import { updateCombatants } from "../combatantData";
 import { findCombatantData } from "../combatantData";
@@ -12,12 +10,12 @@ import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } 
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "../targeting/enemyTargeting";
-import { enqueueEvent } from "../enqueueEvent";
 import { onEndTurnTriggers } from "./phases";
 import { playbackCollector } from "../playbackCollector";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
 import { handleDoTs } from "./damageOverTime";
+import { handleDiscardAfterUse, prepareForDiscard } from "../cardActions/discardCards";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 
@@ -147,49 +145,7 @@ const removeAbilityFromHand = (abilityId: string) => {
 
         // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile
         // This is only a bandaid though since there's nothing stopping you from taking multiple card draw abilities (eg. Dash) that can draw each other
-        dispatch(handleDiscard(ability));
-    };
-};
-
-export const handleDiscard = (ability: CombatAbility) => {
-    return (dispatch, getState) => {
-        const { removeAfterTurn, depletedOnUse, minion } = ability;
-
-        const { discard, depleted } = getState().battle;
-        const newDiscard = discard.slice();
-        const newDepleted = depleted.slice();
-        if (depletedOnUse) {
-            newDepleted.push(ability);
-        } else if (!minion && !removeAfterTurn) {
-            const discarded = prepareForDiscard([ability]).map((card) => {
-                return applyAbilityEventEffects({
-                    event: card.onUse,
-                    ability: card,
-                });
-            });
-
-            newDiscard.unshift(...discarded);
-        }
-
-        if (depletedOnUse) {
-            dispatch(
-                enqueueEvent({
-                    ...getState().battle,
-                    id: uuid.v4(),
-                    playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
-                    newCards: [ability],
-                    cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-                    events: [],
-                } as EventGroup)
-            );
-        }
-
-        dispatch(
-            updateBattle({
-                discard: newDiscard,
-                depleted: newDepleted,
-            })
-        );
+        dispatch(handleDiscardAfterUse(ability));
     };
 };
 
@@ -365,21 +321,4 @@ export const initiatePlayerTurnInProgress = () => {
         // Update the enemy's targeting after all the turn start stuff has played out (in case targeting might change due to deaths etc.)
         dispatch(checkValidEnemyTargeting());
     };
-};
-
-export const prepareForDiscard = (cards: CombatAbility[]) => {
-    return cards
-        .filter((ability: CombatAbility) => !ability.removeAfterTurn)
-        .map((ability: CombatAbility) => {
-            return applyAbilityEventEffects({
-                event: ability.onLeaveHand,
-                ability: {
-                    ...ability,
-                    effects: (ability.effects || []).filter((e) => {
-                        const { removeOnDiscard = true } = e;
-                        return !removeOnDiscard;
-                    }),
-                },
-            });
-        });
 };
