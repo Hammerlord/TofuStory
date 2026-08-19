@@ -952,71 +952,6 @@ export const calculateActionArea = ({
     return totalArea;
 };
 
-export const applyVacuum = ({
-    characters: initCharacters,
-    index,
-    area,
-    distance,
-    side,
-}: {
-    characters: (Combatant | null)[];
-    index: number;
-    area: number;
-    distance: number;
-    side: BATTLEFIELD_SIDES;
-}): {
-    updatedCharacters: (Combatant | null)[];
-    displacements: Displacement;
-} => {
-    const characters = initCharacters.slice();
-    const isValidSlot = (combatant: Combatant | null): Boolean => {
-        return !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
-    };
-
-    const displacements = {};
-
-    for (let i = 1; i <= area; ++i) {
-        if (characters[index + i]) {
-            for (let j = 0; j < i && j < distance; ++j) {
-                const existingCharacter = characters[index + j];
-                if (isValidSlot(existingCharacter)) {
-                    characters[index + j] = characters[index + i];
-                    characters[index + i] = null;
-                    const id = characters[index + j]?.id;
-                    if (id) {
-                        displacements[id] = {
-                            from: index + i,
-                            to: index + j,
-                        };
-                    }
-                }
-            }
-        }
-        if (characters[index - i]) {
-            for (let j = 0; j < i && j < distance; ++j) {
-                const existingCharacter = characters[index - j];
-                if (isValidSlot(existingCharacter)) {
-                    characters[index - j] = characters[index - i];
-                    characters[index - i] = null;
-
-                    const id = characters[index - j]?.id;
-                    if (id) {
-                        displacements[id] = {
-                            from: index - i,
-                            to: index - j,
-                        };
-                    }
-                }
-            }
-        }
-    }
-
-    return {
-        updatedCharacters: characters,
-        displacements,
-    };
-};
-
 // This is used to determine whether an enemy should act during its turn. It shouldn't prevent effect events from triggering.
 export const isTurnActionPrevented = (
     combatantInfo: CombatantInfo,
@@ -1046,33 +981,6 @@ export const isTurnActionPrevented = (
 
 export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
     return combatant?.effects.some((effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
-};
-
-export const getPossibleMoveIndices = ({
-    currentLocationIndex,
-    friendly,
-    action,
-}: {
-    currentLocationIndex: number;
-    friendly: (Combatant | null)[];
-    action: Action;
-}): number[] => {
-    const { movement = 0, movementOptions = {} } = action;
-    if (!movement) {
-        return [];
-    }
-
-    const { canSwapCharacterPlaces: swapPlaces } = movementOptions;
-    const min = Math.max(0, currentLocationIndex - movement);
-    const max = Math.min(friendly.length - 1, currentLocationIndex + movement);
-    const moveIndices = [];
-    for (let i = min; i <= max; ++i) {
-        if (!friendly[i]?.HP || swapPlaces) {
-            moveIndices.push(i);
-        }
-    }
-
-    return moveIndices;
 };
 
 export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number[] => {

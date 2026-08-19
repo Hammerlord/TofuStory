@@ -13,11 +13,10 @@ import {
     TARGET_TYPES,
 } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { getRandomItem } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { applyVacuum, calculateActionArea, findCombatantData, getEnabledEffects, getMultiplier, getPossibleMoveIndices } from "../utils";
+import { calculateActionArea, findCombatantData, getEnabledEffects, getMultiplier } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { checkHandleAutoCast } from "./autoCast";
@@ -25,6 +24,7 @@ import { checkCardActions, deleteCard } from "./cardActions/cardActions";
 import { enqueueEvent } from "./enqueueEvent";
 import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
 import { checkInduce } from "./inducedAction";
+import { checkHandleMovement, checkHandleVacuum } from "./movement";
 import { PlaybackCollector, aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkHandleActionSummon, checkHandleMorph } from "./summon";
@@ -232,102 +232,6 @@ const onAction = ({ action, context: context }: { action: Action; context?: Acti
                 },
             })
         );
-    };
-};
-
-const checkHandleVacuum = ({
-    vacuum,
-    side,
-    selectedIndex,
-    area,
-}: {
-    vacuum: number;
-    side: BATTLEFIELD_SIDES;
-    selectedIndex: number;
-    area: number;
-}) => {
-    return (dispatch, getState) => {
-        if (!vacuum) {
-            return;
-        }
-
-        const { updatedCharacters, displacements } = applyVacuum({
-            characters: getState().battle[side],
-            index: selectedIndex,
-            area,
-            distance: vacuum,
-            side,
-        });
-
-        dispatch(
-            updateBattle({
-                [side]: updatedCharacters,
-            })
-        );
-
-        return displacements;
-    };
-};
-
-const checkHandleMovement = ({
-    action,
-    side,
-    selectedIndex: to,
-    actorIndex: from,
-    context,
-}: {
-    action: Action;
-    side: BATTLEFIELD_SIDES;
-    selectedIndex: number;
-    actorIndex: number;
-    context: ActionContext;
-}) => {
-    return (dispatch, getState) => {
-        const { movement } = action;
-        if (!movement) {
-            return;
-        }
-
-        const characters = getState().battle[side];
-        // to === from: this is legacy from when enemies use a movement ability.
-        // It's classified as a "self" ability, so they target themselves when they cast it, hence `to` and `from` indices will be the same for them.
-        // Make them move randomly still, if that's the case.
-        if (isNaN(to) || to === from) {
-            const moveIndices = getPossibleMoveIndices({ currentLocationIndex: from, friendly: characters, action });
-            to = getRandomItem(moveIndices);
-        }
-
-        if (isNaN(to)) {
-            return;
-        }
-
-        const newCharacters = characters.slice();
-        const temp = newCharacters[to];
-        newCharacters[to] = newCharacters[from];
-        newCharacters[from] = temp;
-
-        dispatch(
-            updateBattle({
-                [side]: newCharacters,
-            })
-        );
-        // Triggering effect events before event queue push of the main ability may play events out of the intended order, especially
-        // if anything reacts to the movement.
-        newCharacters.forEach((combatant) => {
-            if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onFriendlyMove, context }));
-            }
-        });
-
-        const displacements = {};
-        if (newCharacters[from]?.id) {
-            displacements[newCharacters[from].id] = { from: to, to: from, side };
-        }
-
-        if (newCharacters[to]?.id) {
-            displacements[newCharacters[to].id] = { from, to, side };
-        }
-        return displacements;
     };
 };
 
