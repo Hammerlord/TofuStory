@@ -1,9 +1,10 @@
 import * as uuid from "uuid";
 import { AbilityEffect, CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
+import { checkWinCondition } from "../checkWinCondition";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
-import { BATTLE_STATES, BattleState, battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
+import { battleStateSlice } from "../reducer";
+import { BATTLEFIELD_SIDES, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
 import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
 import {
     checkEventTrigger,
@@ -13,14 +14,12 @@ import {
     findCombatantData,
     handleDoTs,
     onEndTurnTriggers,
-    tickDownStatusEffects,
     useAbility,
 } from "./actions";
-import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { PlaybackCollector, playbackCollector } from "./playbackCollector";
-import { checkWinCondition } from "../checkWinCondition";
+import { playbackCollector } from "./playbackCollector";
+import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions/drawCards";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 

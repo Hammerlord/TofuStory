@@ -15,7 +15,7 @@ import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { autoSelectActionTarget, checkEventTrigger, findCombatantData, updateCombatant } from "./actions";
-import { checkCardActions } from "./cardActions";
+import { checkCardActions } from "./cardActions/cardActions";
 import { calculateMesoMultiplier } from "../utils";
 
 const { updateBattle, updateBattleState } = battleStateSlice.actions;
