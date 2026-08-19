@@ -11,6 +11,8 @@ import Overlay from "../view/Overlay";
 import { selectCardsAction } from "./actions/cardActions";
 import { PlayerSelectCardsPrompt } from "./reducer";
 import getCardSelection from "./selectCardUtils";
+import { AshesImage } from "../images";
+import { Box } from "@mui/material";
 
 const useStyles = createUseStyles({
     inner: {
@@ -164,6 +166,11 @@ const SelectCardOverlay = ({
                                     )}
                                 </div>
                             ))}
+                            {!abilityChoices.length && (
+                                <Box>
+                                    <img src={AshesImage} /> <Box sx={{ marginTop: "2rem", color: "white" }}>There were no cards...</Box>
+                                </Box>
+                            )}
                         </div>
                         <Button
                             variant={"contained"}
