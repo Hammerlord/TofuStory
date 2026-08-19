@@ -298,7 +298,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
-        dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide, side: BATTLEFIELD_SIDES.ENEMY_SIDE }));
+        dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide }));
 
         const { playerSide, enemySide, round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
         const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);

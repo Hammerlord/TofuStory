@@ -1,10 +1,10 @@
 import { partition } from "ramda";
-import { CombatEffect, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../../ability/types";
-import { findCombatantData } from "../combatantData";
+import { CombatEffect, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../../ability/types";
 import { ActionContext } from "../../types";
+import { findCombatantData, updateCombatant } from "../combatantData";
+import { enqueueEvent } from "../enqueueEvent";
 import { triggerStatChangeEvents } from "../statChanges";
 import { onEffectEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "../combatantData";
 
 /**
  * Handles updating effect lifecycle properties
@@ -46,6 +46,7 @@ export const checkUpdateEffectLifecycle =
 
             dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, context: context }]));
             dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+            dispatch(enqueueEvent({ actorId: ownerId, context, statUpdates: { [ownerId]: { removedEffects } } }));
             return;
         }
 
@@ -60,22 +61,18 @@ export const checkUpdateEffectLifecycle =
 /**
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
-export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_CLASSES) => {
+export const tickDownStatusEffects = (combatantId: string, context: ActionContext) => {
     return (dispatch, getState) => {
         const { combatant } = findCombatantData(getState().battle, combatantId) || {};
         if (!combatant) {
             return;
         }
         const tickedDown = combatant.effects.map((effect) => {
-            if (!effectClass || effect.class === effectClass) {
-                return {
-                    ...effect,
-                    uptime: effect.uptime + 1,
-                    duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
-                };
-            }
-
-            return effect;
+            return {
+                ...effect,
+                uptime: effect.uptime + 1,
+                duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
+            };
         });
 
         const [activeEffects, effectsEnded] = partition(({ duration = Infinity }) => duration > 0, tickedDown);
@@ -105,8 +102,11 @@ export const tickDownStatusEffects = (combatantId: string, effectClass?: EFFECT_
                 );
             });
         });
+
+        dispatch(enqueueEvent({ actorId: combatantId, context, statUpdates: { [combatantId]: { removedEffects: effectsEnded } } }));
     };
 };
+
 export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
     if (!turnsTriggerFrequency) {
         return true;

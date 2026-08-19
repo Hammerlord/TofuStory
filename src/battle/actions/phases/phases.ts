@@ -11,7 +11,7 @@ import { Item } from "../../../item/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BOSS_MUSIC } from "../../constants";
 import { BattleState, battleStateSlice } from "../../reducer";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
+import { ActionContext, BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
 import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
 import { BATTLE_STATES } from "../../reducer";
 import { checkCardActions } from "../cardActions/cardActions";
@@ -283,16 +283,17 @@ export const onWaveStart = () => {
     };
 };
 
-export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant | null)[]; side: BATTLEFIELD_SIDES }) => {
+export const onEndTurnTriggers = ({ combatants }: { combatants: (Combatant | null)[] }) => {
     return (dispatch) => {
         const playbackCollectorInstance = playbackCollector();
+        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(
                     checkEventTrigger({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd,
-                        context: { sourceChain: [], playbackCollector: playbackCollectorInstance },
+                        context,
                     })
                 );
             }
@@ -300,7 +301,7 @@ export const onEndTurnTriggers = ({ combatants, side }: { combatants: (Combatant
 
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(tickDownStatusEffects(combatant.id));
+                dispatch(tickDownStatusEffects(combatant.id, context));
             }
         });
 

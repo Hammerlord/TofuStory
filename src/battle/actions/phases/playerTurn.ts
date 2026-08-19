@@ -81,7 +81,7 @@ export const playerEndTurn = () => {
         );
 
         dispatch(minionAutoAttack());
-        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide, side: BATTLEFIELD_SIDES.PLAYER_SIDE }));
+        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide }));
         const { playerSide, enemySide } = getState().battle; // Grabbing playerSide state AFTER onEndTurnTriggers have played out
         const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
