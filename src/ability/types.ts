@@ -366,7 +366,7 @@ export interface Bonus {
     drawCards?;
     area?: number;
     destroyArmor?: number;
-
+    resources?: number;
     /**
      * A multiplier on the bonus amount
      */

@@ -282,6 +282,7 @@ export { default as FrozenTunaImage } from "./FrozenTuna.png";
 export { default as FruitKnifeImage } from "./FruitKnife.png";
 export { default as FullMoonImage } from "./FullMoon.png";
 export { default as FungalStumpImage } from "./FungalStump.png";
+export { default as FuryImage } from "./Fury.png";
 export { default as GachaponImage } from "./Gachapon.png";
 export { default as GarbageImage } from "./Garbage.png";
 export { default as GarnetImage } from "./Garnet.png";

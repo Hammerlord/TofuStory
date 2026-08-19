@@ -1502,7 +1502,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ actions.0.secondaryAction.resources }} {{{ _mana_ }}} but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
+        "Gain {{ actions.0.secondaryAction.resources }} {{{ _resource_ }}} but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1883,7 +1883,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _mana_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -3136,7 +3136,7 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend all {{{ _mana_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} + <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _resource_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} + <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} to up to 3 enemies, X times.",
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -3171,7 +3171,7 @@ export const blizzard: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SnowflakeEmojiImage,
     description:
-        "Expend all {{{ _mana_ }}} to inflict {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}, X times.",
+        "Expend all {{{ _resource_ }}} to inflict {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}, X times.",
     overrideBodyText: true,
     actions: [
         {

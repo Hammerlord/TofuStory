@@ -537,7 +537,7 @@ export const vault: Ability = {
 export const outrage: Ability = {
     name: "Outrage",
     resourceCost: 2,
-    description: "Cards in your hand cost <b>+1</b> or <b>-1 Resource</b>, randomly chosen.",
+    description: "Cards in your hand cost <b>+1</b> or <b>-1 {{{ _resource_ }}}</b>, randomly chosen.",
     image: MushmomAngryImage,
     rarity: RARITIES.UNCOMMON,
     actions: [

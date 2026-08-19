@@ -7,6 +7,7 @@ import {
     BloodEmojiImage,
     CrossedSwordsImage,
     FireEmojiImage,
+    FuryImage,
     HeartImage,
     HourglassImage,
     LeafImage,
@@ -20,6 +21,7 @@ import {
 import { getUpgradeCard } from "../../Menu/utils";
 import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
+import { PLAYER_CLASSES } from "../../Menu/types";
 
 export const getAllEffects = (ability: Ability): Effect[] => {
     return ability.actions
@@ -203,6 +205,18 @@ export const interpolateAbilityDescription = ({
         ? getMultiplier({ actor: playerInfo, multiplier: multiplierAction.multiplier, deck, hand, discard })
         : 0;
 
+    const resource =
+        {
+            [PLAYER_CLASSES.WARRIOR]: FuryImage,
+            [PLAYER_CLASSES.MAGICIAN]: ManaImage,
+            [PLAYER_CLASSES.BOWMAN]: LeafImage,
+        }[(playerInfo?.combatant as Player)?.class] || FuryImage;
+
+    const resourceStyle =
+        {
+            [PLAYER_CLASSES.MAGICIAN]: manaStyleStr,
+        }[(playerInfo?.combatant as Player)?.class] || styleStrWithShadow;
+
     const elementMapping = {
         _offense_: cardTypeString(RED),
         _support_: cardTypeString(BLUE),
@@ -213,8 +227,7 @@ export const interpolateAbilityDescription = ({
         _duration_: `<img src="${HourglassImage}" alt="Turns" style="${styleStrWithShadow}"/>`,
         _burn_: `<img src="${FireEmojiImage}" alt="Burn" style="${styleStrWithShadow}"/>`,
         _chill_: `<img src="${SnowflakeEmojiImage}" alt="Chill" style="${styleStrWithShadow}"/>`,
-        _mana_: `<img src="${ManaImage}" alt="Mana" style="${manaStyleStr}"/>`,
-        _stamina_: `<img src="${LeafImage}" alt="Stamina" style="${styleStrWithShadow}"/>`,
+        _resource_: `<img src="${resource}" alt="Resource" style="${resourceStyle}"/>`,
         _bleed_: `<img src="${BloodEmojiImage}" alt="Bleed" style="${styleStrWithShadow}"/>`,
         _stun_: `<img src="${StunImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
         _silence_: `<img src="${SealImage}" alt="Stun" style="${styleStrWithShadow}"/>`,

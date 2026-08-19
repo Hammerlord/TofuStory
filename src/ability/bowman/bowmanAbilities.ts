@@ -1509,7 +1509,7 @@ export const roar: Ability = {
     depletedOnUse: true,
     resourceCost: 0,
     description:
-        "Gain {{{ _stamina_ }}}. Draw a card. For <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _stamina_ }}} and card draw.",
+        "Gain {{{ _resource_ }}}. Draw a card. For <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _resource_ }}} and card draw.",
     overrideBodyText: true,
     actions: [
         {
@@ -1846,7 +1846,7 @@ export const arrowBlow: Ability = {
 export const momentum: Ability = {
     name: "Momentum",
     description:
-        "<b>Search</b> for a {{{ _offense_ }}} card. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _stamina_ }}}</b> less.",
+        "<b>Search</b> for a {{{ _offense_ }}} card. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> less.",
     resourceCost: 0,
     depletedOnUse: true,
     image: PowerKnockbackImage,
@@ -2256,7 +2256,7 @@ export const maneuver: Ability = {
     rarity: RARITIES.COMMON,
     image: EvasionBoostImage,
     overrideBodyText: true,
-    description: "Draw {{ actions.0.drawCards.amount }} card. If it is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
+    description: "Draw {{ actions.0.drawCards.amount }} card. If it is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -2280,7 +2280,7 @@ export const maneuver: Ability = {
     ],
     upgrades: [
         {
-            description: "Draw {{ actions.0.drawCards.amount }} cards. If any of them is a <b>Critical</b> card, gain {{{ _stamina_ }}}.",
+            description: "Draw {{ actions.0.drawCards.amount }} cards. If any of them is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
             actions: [
                 {
                     drawCards: {
@@ -3298,7 +3298,7 @@ export const scavenge: Ability = {
     name: "Scavenge",
     resourceCost: 0,
     overrideBodyText: true,
-    description: "Gain {{{ _stamina_ }}} and draw 1 card.",
+    description: "Gain {{{ _resource_ }}} and draw 1 card.",
     rarity: RARITIES.UNCOMMON,
     image: MatchaManLeafImage,
     selectCards: {
@@ -3316,7 +3316,7 @@ export const scavenge: Ability = {
     ],
     upgrades: [
         {
-            description: "Gain {{{ _stamina_ }}} and draw {{ actions.0.drawCards.amount }} cards.",
+            description: "Gain {{{ _resource_ }}} and draw {{ actions.0.drawCards.amount }} cards.",
             actions: [
                 {
                     drawCards: {
