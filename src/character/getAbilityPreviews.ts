@@ -3,7 +3,7 @@ import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { performAction } from "../battle/actions/actions";
 import { checkValidEnemyTargeting } from "../battle/actions/targeting/enemyTargeting";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import { checkSummonMinion } from "../battle/actions/summon";
+import { checkSummonMinion } from "../battle/actions/summon/summon";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, ActionContext } from "../battle/types";

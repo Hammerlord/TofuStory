@@ -709,15 +709,6 @@ export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
     return combatant?.effects.some((effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
 };
 
-export const getPossibleSummonIndices = (friendly: (Combatant | null)[]): number[] => {
-    const indices: number[] = [];
-    friendly.forEach((f, i) => {
-        if (!f || f.HP <= 0) indices.push(i);
-    });
-
-    return indices;
-};
-
 export const calculateBonus = ({
     action,
     target,
