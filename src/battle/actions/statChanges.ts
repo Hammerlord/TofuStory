@@ -1,14 +1,14 @@
-import { CombatEffect, EFFECT_EVENT_KEYS, EFFECT_TYPES, Effect } from "../../ability/types";
+import { CombatEffect, Effect, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { findCombatantData } from "./combatantData";
 import { ActionContext } from "./../types";
-import { checkValidEnemyTargeting, updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
+import { findCombatantData, isActorPlayerSide } from "./combatantData";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { onCombatantDeath } from "./onKill";
 import { checkEventTrigger, onEffectEventTrigger } from "./statusEffect/triggerEffectEvent";
+import { updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -200,7 +200,7 @@ export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: C
 
 const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
     const battle: BattleState = getState().battle;
-    if (isActorPlayerSide({ side: battle.playerSide, source: source })) {
+    if (isActorPlayerSide({ playerSide: battle.playerSide, source: source })) {
         const statistics: BattleStatistics = {
             ...battle.statistics,
             totalDamage: (battle.statistics.totalDamage || 0) + (damage || 0),
@@ -221,24 +221,6 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
             })
         );
     }
-};
-
-export const isActorPlayerSide = ({ side, source }: { side: (Combatant | Player | null)[]; source: TriggerSource }) => {
-    return side.some((combatant) => {
-        if (!combatant) {
-            return false;
-        }
-
-        if (combatant.id === source.actorId) {
-            return true;
-        }
-
-        if (source?.type === TRIGGER_SOURCE_TYPES.EFFECT) {
-            return (source?.source as CombatEffect).applierId === combatant.id;
-        }
-
-        return false;
-    });
 };
 
 /**

@@ -1,7 +1,7 @@
-import { EFFECT_TYPES } from "../../ability/types";
+import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { BattleState, battleStateSlice } from "../reducer";
-import { CombatantInfo, BATTLEFIELD_SIDES } from "../types";
+import { CombatantInfo, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 
 const { updateBattle } = battleStateSlice?.actions || {};
@@ -106,4 +106,22 @@ export const isTurnActionPrevented = (
     });
 
     return turnPreventedFromEffects;
+};
+
+export const isActorPlayerSide = ({ playerSide, source }: { playerSide: (Combatant | Player | null)[]; source: TriggerSource }) => {
+    return playerSide.some((combatant) => {
+        if (!combatant) {
+            return false;
+        }
+
+        if (combatant.id === source.actorId) {
+            return true;
+        }
+
+        if (source?.type === TRIGGER_SOURCE_TYPES.EFFECT) {
+            return (source?.source as CombatEffect).applierId === combatant.id;
+        }
+
+        return false;
+    });
 };

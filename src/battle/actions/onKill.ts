@@ -8,7 +8,8 @@ import { findCombatantData } from "./combatantData";
 import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";
 import { getUpdatedStats } from "./getUpdatedStats";
-import { applyStatChanges, isActorPlayerSide, triggerStatChangeEvents } from "./statChanges";
+import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { isActorPlayerSide } from "./combatantData";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
@@ -98,7 +99,7 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
         const deadCombatant = findCombatantData(getState().battle, combatantId);
         const { friendly, hostile, combatant, friendlySide } = deadCombatant || {};
         const source = context?.sourceChain?.at(-1);
-        if (isActorPlayerSide({ side: getState().battle.playerSide, source })) {
+        if (isActorPlayerSide({ playerSide: getState().battle.playerSide, source })) {
             const currentStatistics: BattleStatistics = getState().battle.statistics;
             dispatch(
                 updateBattle({
