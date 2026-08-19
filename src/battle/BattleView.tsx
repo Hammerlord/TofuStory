@@ -53,7 +53,6 @@ import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "./types";
 import {
     canTargetIfStealthed,
     canUseAbility,
-    findCombatantData,
     getCardByInstanceId,
     hasEffectType,
     isTurnActionPrevented,
@@ -61,6 +60,7 @@ import {
     isValidTarget,
     isWithinAbilityArea,
 } from "./utils";
+import { findCombatantData } from "./actions/combatantData";
 import { checkEventTrigger } from "./actions/triggerEffectEvent";
 import { useAbility } from "./actions/useAbility";
 

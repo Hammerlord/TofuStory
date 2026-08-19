@@ -3,7 +3,7 @@ import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { findCombatantData } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { ActionContext } from "./../types";
 import { checkValidEnemyTargeting, updateEnemyTargetingAfterEffectsApplied } from "./enemyTargeting";
 import { UpdatedCombatantStats } from "./getUpdatedStats";

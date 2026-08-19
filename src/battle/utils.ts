@@ -26,6 +26,7 @@ import { getHandAuraEffects } from "./Hand";
 import { passesConditions, passesValueComparison } from "./passesConditions";
 import { BattleState } from "./reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { findCombatantData } from "./actions/combatantData";
 
 export const getMaxHP = (character?: Combatant | null): number => {
     if (!character) {
@@ -269,19 +270,6 @@ export const isValidTarget = ({
     }
 
     return false;
-};
-
-export const updateCharacters = (
-    characters: (Combatant | null)[],
-    updateFn: (character: Combatant | null) => any
-): (Combatant | null)[] => {
-    return characters.map((character) => {
-        if (!character) {
-            return character;
-        }
-
-        return updateFn(character);
-    });
 };
 
 export const getMultiplier = ({
@@ -1140,39 +1128,4 @@ export const getAbilityResourceCost = ({
     }, 0);
 
     return Math.max(0, resourceCost + resourceCostFromEffects);
-};
-
-/**
- * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
- * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
- */
-export const findCombatantData = (battle: BattleState, combatantId?: string): CombatantInfo | undefined => {
-    if (!battle || !combatantId) {
-        return;
-    }
-
-    const { playerSide, enemySide } = battle;
-    const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (enemyIndex > -1) {
-        return {
-            combatant: enemySide[enemyIndex],
-            index: enemyIndex,
-            friendly: enemySide.slice(),
-            hostile: playerSide.slice(),
-            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
-            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
-        };
-    }
-
-    const index = playerSide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (index > -1) {
-        return {
-            combatant: playerSide[index],
-            index,
-            friendly: playerSide.slice(),
-            hostile: enemySide.slice(),
-            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
-            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
-        };
-    }
 };

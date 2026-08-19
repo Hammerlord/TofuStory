@@ -31,7 +31,7 @@ import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import { findCombatantData } from "../battle/utils";
+import { findCombatantData } from "../battle/actions/combatantData";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {

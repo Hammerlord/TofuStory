@@ -15,12 +15,13 @@ import { BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../
 import { aggregateAbilityEffects, aggregateItemEffects } from "./../../Menu/utils";
 import { BATTLE_STATES } from "./../reducer";
 import { checkCardActions } from "./cardActions/cardActions";
-import { calculateMesoMultiplier, findCombatantData } from "../utils";
+import { calculateMesoMultiplier } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { checkEventTrigger } from "./triggerEffectEvent";
 import { autoSelectActionTarget } from "./targeting";
 import { playbackCollector } from "./playbackCollector";
 import { tickDownStatusEffects } from "./effectLifecycle";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;

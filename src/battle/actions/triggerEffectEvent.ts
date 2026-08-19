@@ -17,15 +17,8 @@ import { passesChance } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import {
-    canTargetIfStealthed,
-    findCombatantData,
-    getMultiplier,
-    isSilenced,
-    isStunnedOrFrozen,
-    isTurnActionPrevented,
-    isTurnToTrigger,
-} from "../utils";
+import { canTargetIfStealthed, getMultiplier, isSilenced, isStunnedOrFrozen, isTurnActionPrevented, isTurnToTrigger } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { performAction } from "./actions";
@@ -39,7 +32,7 @@ import { checkInduce } from "./inducedAction";
 import { aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { autoSelectActionTarget, calculateTargetIndices } from "./targeting";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 import { onUseAbility, useAbility } from "./useAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice?.actions || {};

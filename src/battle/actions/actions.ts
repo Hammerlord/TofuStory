@@ -16,7 +16,8 @@ import { Combatant, Player } from "../../character/types";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { calculateActionArea, findCombatantData, getEnabledEffects, getMultiplier } from "../utils";
+import { calculateActionArea, getEnabledEffects, getMultiplier } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { checkHandleAutoCast } from "./autoCast";
@@ -30,7 +31,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkHandleActionSummon, checkHandleMorph } from "./summon";
 import { autoSelectActionTarget, calculateTargetIndices } from "./targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 

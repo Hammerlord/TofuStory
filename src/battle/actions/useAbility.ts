@@ -4,7 +4,8 @@ import { getRandomInt } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { findCombatantData, getAbilityResourceCost, isTurnActionPrevented } from "../utils";
+import { getAbilityResourceCost, isTurnActionPrevented } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { performAction } from "./actions";
@@ -13,7 +14,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon";
 import { autoSelectActionTarget } from "./targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 
 export const useAbility = ({
     ability,

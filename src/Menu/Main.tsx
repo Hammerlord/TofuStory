@@ -45,7 +45,7 @@ import Sound from "./Sound";
 import { saveGame } from "./gameFiles";
 import { PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { updateCombatant } from "../battle/actions/updateCombatant";
+import { updateCombatant } from "../battle/actions/combatantData";
 
 const TRANSITION_TIME = 0.25; // Seconds
 

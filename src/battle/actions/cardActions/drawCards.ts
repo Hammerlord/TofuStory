@@ -22,10 +22,10 @@ import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { getUpdatedStats } from "../getUpdatedStats";
 import { checkEventTrigger } from "../triggerEffectEvent";
-import { findCombatantData } from "../../utils";
+import { findCombatantData } from "../combatantData";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 import { useAbility } from "../useAbility";
-import { updateCombatant } from "../updateCombatant";
+import { updateCombatant } from "../combatantData";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 

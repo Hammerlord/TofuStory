@@ -4,7 +4,8 @@ import { Combatant } from "../../character/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../types";
-import { calculateActionArea, findCombatantData, getValidTargetIndices, hasTruesight } from "../utils";
+import { calculateActionArea, getValidTargetIndices, hasTruesight } from "../utils";
+import { findCombatantData } from "./combatantData";
 
 export const calculateTargetIndices = ({
     action,

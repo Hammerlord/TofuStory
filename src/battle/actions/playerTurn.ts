@@ -5,7 +5,9 @@ import { checkWinCondition } from "../checkWinCondition";
 import { CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, EventGroup, TRIGGER_SOURCE_TYPES } from "../types";
-import { clearTurnHistory, findCombatantData, getCardByInstanceId, getEnabledEffects, getMaxResources, updateCharacters } from "../utils";
+import { clearTurnHistory, getCardByInstanceId, getEnabledEffects, getMaxResources } from "../utils";
+import { updateCombatants } from "./combatantData";
+import { findCombatantData } from "./combatantData";
 import { applyAbilityEventEffects, drawCards, recalculateEffectsFromAbilities } from "./cardActions/drawCards";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
@@ -293,7 +295,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
             updateBattle({
                 round: round + 1,
                 charactersAttackedThisTurn: [],
-                playerSide: updateCharacters(playerSide, clearTurnHistory),
+                playerSide: updateCombatants(playerSide, clearTurnHistory),
             })
         );
 

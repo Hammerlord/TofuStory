@@ -4,11 +4,11 @@ import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import { Combatant } from "../../character/types";
 import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
-import { findCombatantData } from "../utils";
+import { findCombatantData } from "./combatantData";
 import { performAction } from "./actions";
 import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "./enemyTurn";
 import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./targeting";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 
 /**
  * Enemy targeting is rolled once after their turn. But if during the player's turn, the board changes such that their targeting

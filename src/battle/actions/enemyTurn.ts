@@ -8,14 +8,9 @@ import { getRandomInt } from "../../utils";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { BattleState, battleStateSlice } from "../reducer";
-import {
-    clearTurnHistory,
-    findCombatantData,
-    getEnabledEffects,
-    isStunnedOrFrozen,
-    isTurnActionPrevented,
-    updateCharacters,
-} from "../utils";
+import { clearTurnHistory, getEnabledEffects, isStunnedOrFrozen, isTurnActionPrevented } from "../utils";
+import { updateCombatants } from "./combatantData";
+import { findCombatantData } from "./combatantData";
 import { BATTLE_STATES } from "./../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./../types";
 import { performAction, useItem } from "./actions";
@@ -27,7 +22,7 @@ import { onEndTurnTriggers } from "./phases";
 import { PlaybackCollector, playbackCollector } from "./playbackCollector";
 import { autoSelectActionTarget } from "./targeting";
 import { checkEventTrigger } from "./triggerEffectEvent";
-import { updateCombatant } from "./updateCombatant";
+import { updateCombatant } from "./combatantData";
 import { useAbility } from "./useAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
@@ -359,7 +354,7 @@ export const startEnemyTurn = () => {
 
         dispatch(
             updateBattle({
-                enemySide: updateCharacters(enemySide, clearTurnHistory),
+                enemySide: updateCombatants(enemySide, clearTurnHistory),
             })
         );
 
