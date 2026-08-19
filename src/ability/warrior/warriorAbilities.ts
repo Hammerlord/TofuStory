@@ -836,6 +836,7 @@ export const berserk: Ability = {
     ],
     upgrades: [
         {
+            description: "Draw a card. {{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less until discarded.",
             actions: [
                 {
                     drawCards: {
