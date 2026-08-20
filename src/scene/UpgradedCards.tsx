@@ -3,13 +3,14 @@ import Button from "../view/Button";
 import { CombatAbility } from "../ability/types";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { useEffect, useRef, useState } from "react";
-import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
+import { playExplodeAnimation } from "../character/animations";
 import classNames from "classnames";
 
 const useStyles = createUseStyles({
     abilityContainer: {
         display: "inline-block",
         margin: 8,
+        verticalAlign: "top",
     },
     abilityUpgradeSection: {
         marginBottom: 64,
