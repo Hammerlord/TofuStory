@@ -244,11 +244,21 @@ export const onWaveStart = () => {
 
         nextMoveOrderIds.forEach((combatantId) => {
             const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
-            if (!combatant?.HP) {
+            if (!combatant?.HP || !combatant.abilities?.length) {
                 return;
             }
 
-            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId })) || {};
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        targeting: {
+                            actionTargets: [], // This is updated by checkValidEnemyTargeting()
+                            ability: combatant.abilities[0],
+                        },
+                    },
+                })
+            );
         });
 
         dispatch(checkValidEnemyTargeting());
