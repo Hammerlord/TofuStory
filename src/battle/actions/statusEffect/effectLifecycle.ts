@@ -103,7 +103,16 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
             });
         });
 
-        dispatch(enqueueEvent({ actorId: combatantId, context, statUpdates: { [combatantId]: { removedEffects: effectsEnded } } }));
+        dispatch(
+            enqueueEvent({
+                actorId: combatantId,
+                context,
+                statUpdates: { [combatantId]: { removedEffects: effectsEnded } },
+                // Override the playback time so that it doesn't cause a noticeable delay
+                playbackTime: 1,
+                options: { alwaysGroup: true },
+            })
+        );
     };
 };
 
