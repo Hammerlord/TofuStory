@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
         width: `${CARD_WIDTH}`,
         maxWidth: `${CARD_WIDTH}`,
         boxSizing: "border-box",
-        height: "250px",
+        height: "255px",
         padding: "10px",
         paddingTop: "6px",
         paddingBottom: "2px",

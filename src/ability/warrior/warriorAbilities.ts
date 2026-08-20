@@ -368,6 +368,8 @@ export const shout: Ability = {
 export const spikes: Ability = {
     name: "Spikes",
     resourceCost: 1,
+    description: "Gain {{{ _thorns_ }}}",
+    overrideBodyText: true,
     image: SpikeBallImage,
     rarity: RARITIES.COMMON,
     actions: [
@@ -1525,6 +1527,8 @@ export const poundOfNails: Ability = {
     resourceCost: 1,
     image: BundleOfNailsImage,
     rarity: RARITIES.UNCOMMON,
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} {{{ _thorns_ }}}</b>",
+    overrideBodyText: true,
     depletedOnUse: true,
     actions: [
         {
@@ -2255,7 +2259,9 @@ export const ironMaiden: Ability = {
     resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
-    description: "{{{ actions.0.effects.1.onReceiveDamage.chance }}} chance on taking damage to <b>Radiate</b> your Thorns to all enemies.",
+    overrideBodyText: true,
+    description:
+        "Gain {{{ _thorns_ }}}. {{{ actions.0.effects.1.onReceiveDamage.chance }}} chance on taking damage to <b>Radiate</b> your {{{ _thorns_ }}} to all enemies.",
     depletedOnUse: true,
     actions: [
         {
@@ -2953,7 +2959,7 @@ export const wallOfSpikes: Ability = {
     name: "Wall of Spikes",
     image: SharpSpikedPauldronImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} Thorns</b>. Until your next turn, double your Thorns.",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} {{{ _thorns_ }}}</b>. Until your next turn, <b>2x</b> your {{{ _thorns_ }}}.",
     overrideBodyText: true,
     resourceCost: 1,
     actions: [

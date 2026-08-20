@@ -25,6 +25,7 @@ import armorDownSvg from "../../images/icons/ArmorDown.svg?raw";
 import armorUpSvg from "../../images/icons/ArmorUp.svg?raw";
 import defDownSvg from "../../images/icons/DefDown.svg?raw";
 import defUpSvg from "../../images/icons/DefUp.svg?raw";
+import cactusSvg from "../../images/icons/Cactus.svg?raw";
 
 import { getUpgradeCard } from "../../Menu/utils";
 import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
@@ -243,6 +244,7 @@ export const interpolateAbilityDescription = ({
         _stun_: `<img src="${StunImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
         _silence_: `<img src="${SealImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
         _freeze_: `<img src="${NimbleJewelCImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
+        _thorns_: inlineSvg(cactusSvg),
         _attDown_: inlineSvg(attDownSvg),
         _attUp_: inlineSvg(attUpSvg),
         _armorDown_: inlineSvg(armorDownSvg),
