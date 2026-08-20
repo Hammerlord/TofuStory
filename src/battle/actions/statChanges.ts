@@ -33,21 +33,12 @@ export const triggerStatChangeEvents =
                 failedToApplyEffects = [],
             } = statUpdate;
 
-            const dispatchEvent = ({
-                effectEventKey,
-                sourcePayload,
-                trackSumAmount,
-            }: {
-                effectEventKey: EFFECT_EVENT_KEYS;
-                sourcePayload?: { [key in keyof TriggerSource]? };
-                trackSumAmount?: number;
-            }) => {
-                const updatedSourceChain = [...(context?.sourceChain || []), { ...sourcePayload, targetId: combatantId, statUpdate }];
+            const dispatchEvent = ({ effectEventKey, trackSumAmount }: { effectEventKey: EFFECT_EVENT_KEYS; trackSumAmount?: number }) => {
                 dispatch(
                     checkEventTrigger({
                         combatantId,
                         effectEventKey,
-                        context: { ...context, trackSumAmount, sourceChain: updatedSourceChain },
+                        context: { ...context, trackSumAmount },
                     })
                 );
             };
@@ -96,7 +87,6 @@ export const triggerStatChangeEvents =
             effects.forEach((e: CombatEffect) => {
                 dispatchEvent({
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveEffect,
-                    sourcePayload: { source: e, type: TRIGGER_SOURCE_TYPES.EFFECT },
                 });
 
                 const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
@@ -133,7 +123,6 @@ export const triggerStatChangeEvents =
             failedToApplyEffects.forEach((e: Effect) => {
                 dispatchEvent({
                     effectEventKey: EFFECT_EVENT_KEYS.onFailedToReceiveEffect,
-                    sourcePayload: { source: e, type: TRIGGER_SOURCE_TYPES.EFFECT },
                 });
             });
 

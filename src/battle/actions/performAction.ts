@@ -187,12 +187,17 @@ export const performAction = ({
             })
         );
 
+        const sourceChain = context?.sourceChain || [];
+
         dispatch(
             triggerStatChangeEvents(
-                updated.map(({ statUpdate, action }) => ({
-                    statUpdate,
-                    context: { ...context, context: action },
-                }))
+                updated.map(({ statUpdate, action }) => {
+                    const sourceWithUpdatedAction = { ...source, source: action };
+                    return {
+                        statUpdate,
+                        context: { ...context, sourceChain: [...sourceChain, sourceWithUpdatedAction] },
+                    };
+                })
             )
         );
 
@@ -208,7 +213,7 @@ export const performAction = ({
                         statUpdate,
                         context: {
                             ...context,
-                            sourceChain: [...(context?.sourceChain || []), source, { ...hitTriggerSource, source: action }],
+                            sourceChain: [...sourceChain, { ...hitTriggerSource, source: action }],
                             statUpdate,
                         } as ActionContext,
                     }))
