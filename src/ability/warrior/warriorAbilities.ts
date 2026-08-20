@@ -265,6 +265,9 @@ export const anger: Ability = {
     resourceCost: 0,
     image: EnrageImage,
     rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    description:
+        "Gain <b>{{ actions.0.resources}} {{{ _resource_ }}},</b> but self-inflict <b>{{ actions.0.damage }} {{{ _damage_ }}}.</b>",
     actions: [
         {
             damage: 5,
@@ -342,7 +345,7 @@ export const shout: Ability = {
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}</b> and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     actions: [
         {
             resources: 1,
@@ -405,7 +408,7 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "<b>Stealth.</b> Every turn, grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _attUp_ }}} to allies within 2 spaces.",
+        "Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} <b>+1</b> {{{ _attUp_ }}} to allies within 2 spaces.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -553,7 +556,8 @@ export const bunchOBricks: Ability = {
 export const hammerang: Ability = {
     name: "Hammerang",
     resourceCost: 1,
-    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    description:
+        " <b>Echo.</b> Bounces to <b>{{ actions.0.numTargets }}</b> other targets within <b>{{ actions.0.targetArea }} spaces</b>.",
     overrideBodyText: true,
     image: HammerImage,
     rarity: RARITIES.COMMON,
@@ -702,7 +706,7 @@ export const sweepingReach: Ability = {
     name: "Sweeping Reach",
     resourceCost: 1,
     image: WeaponBoosterImage,
-    description: "Your next {{ actions.0.effects.0.stacks }} {{{ _offense_ }}} abilities gain +1 Area",
+    description: "Your next {{ actions.0.effects.0.stacks }} {{{ _offense_ }}} cards gain +1 Area",
     overrideBodyText: true,
     actions: [
         {
@@ -714,7 +718,7 @@ export const sweepingReach: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: WeaponBoosterImage,
-                    description: "Increases the area of your next offensive ability.",
+                    description: "Increases the area of your next offensive card.",
                     conditions: [
                         {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
@@ -816,7 +820,8 @@ export const berserk: Ability = {
     resourceCost: 1,
     image: PowerStanceImage,
     depletedOnUse: true,
-    description: "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less until discarded.",
+    description:
+        "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost <b>3 {{{ _resource_ }}}</b> less until discarded.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -1192,7 +1197,7 @@ export const dustDevils: Ability = {
     resourceCost: 1,
     image: TornadoImage,
     description:
-        "{{ actions.0.effects.0.onAttack.chance }} chance on attack to cast <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} tornadoes at up to 3 enemies. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "{{ actions.0.effects.0.onAttack.chance }} chance on attack to deal <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} to up to <b>3</b> enemies. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -1329,6 +1334,8 @@ export const sledge: Ability = {
     name: "Sledge",
     resourceCost: 2,
     image: GiganticSledgeImage,
+    description: "<b>Deplete</b> a card. Destroy all {{{ _armor_ }}} on the target.",
+    overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
@@ -1417,7 +1424,7 @@ export const guillotine: Ability = {
     name: "Guillotine",
     resourceCost: 1,
     image: InstinctualComboImage,
-    description: "On kill: Refund cost and return to hand.",
+    description: "<b>On kill:</b> <b>+1 {{{ _resource_ }}}</b> and this stays in your hand.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -1557,7 +1564,7 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "+{{ actions.0.bonus.damage }} {{{ _damage_ }}} to targets with less HP than you.",
+    description: "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> to targets with less HP than you.",
     overrideBodyText: true,
     actions: [
         {
@@ -1678,7 +1685,7 @@ export const brandish: Ability = {
     name: "Brandish",
     resourceCost: 1,
     image: BrandishImage,
-    description: "Hits twice",
+    description: "Hit x2.",
     actions: [
         {
             damage: 4,
@@ -1775,7 +1782,7 @@ export const ragingBlow: Ability = {
     resourceCost: 2,
     image: RagingBlowImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Hit twice.",
+    description: "Hit x2.",
     overrideBodyText: true,
     actions: [
         {
@@ -1802,7 +1809,7 @@ export const worldReaver: Ability = {
     depletedOnUse: true,
     image: WorldReaverImage,
     rarity: RARITIES.RARE,
-    description: "You become Immune until your next turn.",
+    description: "Become Immune until next turn.",
     overrideBodyText: true,
     actions: [
         {
@@ -1840,7 +1847,7 @@ export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
     image: RisingRageImage,
-    description: "Expend the rest of your Fury to deal {{ actions.0.damage }} {{{ _damage_ }}} X times.",
+    description: "Expend all {{{ _resource_ }}} to deal <b>{{ actions.0.damage }} {{{ _damage_ }}} X</b> times.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1868,7 +1875,7 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeMinionImage,
     overrideBodyText: true,
-    description: "<b>Ward.</b> <br/> <b>Summon:</b> Attack. 50% chance to attack whenever you play a {{{ _offense_ }}} card.",
+    description: "<b>Inert.</b> <b>Summon:</b> Attack. 50% chance to attack when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -1989,7 +1996,7 @@ export const shieldMastery: Ability = {
     resourceCost: 1,
     image: ShieldMasteryImage,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    description: "<b>Echo.</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -2086,7 +2093,7 @@ export const shockGuard: Ability = {
     name: "Shock Guard",
     resourceCost: 1,
     image: ParashockGuardImage,
-    description: "Double your {{{ _armor_ }}}.",
+    description: "<b>x2</b> your {{{ _armor_ }}}.",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
     disableConditionGlow: true,
@@ -2341,7 +2348,7 @@ export const hurlBoulder: Ability = {
     name: "Hurl Boulder",
     image: RockImage,
     resourceCost: 4,
-    description: "Whenever this card leaves your hand, reduce its cost by 1.",
+    description: "Whenever this card leaves your hand, reduce its cost by {{{ _resource_ }}}.",
     onLeaveHand: {
         abilityEffects: [
             {
@@ -2419,7 +2426,7 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "<b>Ward.</b> Every turn, <b>Radiate</b> {{{ _attDown_}}} to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
+        "<b>Radiates</b> {{{ _attDown_}}} to foes / <b>{{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b> to allies within 2 spaces.",
     rarity: RARITIES.RARE,
     resourceCost: 2,
     minion: {
@@ -2738,8 +2745,7 @@ export const bluntForce: Ability = {
 export const retribute: Ability = {
     name: "Retribute",
     image: SpearSweepImage,
-    description:
-        "<b>+{{actions.0.bonus.damage}} {{{ _damage_ }}}</b> and refund <b>1 {{{ _resource_ }}}</b> if you took HP damage recently.",
+    description: "<b>+{{actions.0.bonus.damage}} {{{ _damage_ }}}</b> <b>+1 {{{ _resource_ }}}</b> if you took HP damage since last turn.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     resourceCost: 1,
@@ -2817,7 +2823,7 @@ export const shieldCharge: Ability = {
     image: LightningChargeImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "When you gain {{{ _armor_ }}}, the next use is free and doesn't go to discard.",
+    description: "When you gain {{{ _armor_ }}}, the next use is free and stays in your hand.",
     onReceiveArmor: {
         abilityEffects: [
             {
@@ -2959,7 +2965,7 @@ export const wallOfSpikes: Ability = {
     name: "Wall of Spikes",
     image: SharpSpikedPauldronImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} {{{ _thorns_ }}}</b>. Until your next turn, <b>2x</b> your {{{ _thorns_ }}}.",
+    description: "Gain <b>{{ actions.0.effects.0.stacks }} {{{ _thorns_ }}}</b>. Until your next turn, <b>x2</b> your {{{ _thorns_ }}}.",
     overrideBodyText: true,
     resourceCost: 1,
     actions: [
@@ -3013,7 +3019,7 @@ export const incite: Ability = {
     image: CombatMasteryImage,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain <b>Taunt.</b> Then, gain <b>{{ actions.0.secondaryAction.armor }}</b> {{{ _armor_ }}} per enemy targeted, but those targets will attack.",
+        "Gain <b>Taunt</b> and <b>{{ actions.0.secondaryAction.armor }}</b> {{{ _armor_ }}} per enemy targeted, but targets will attack.",
     overrideBodyText: true,
     resourceCost: 1,
     actions: [
@@ -3053,7 +3059,7 @@ export const suddenDeath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SkullBalloonImage,
     description:
-        "When drawn, you gain <b>+{{ onDraw.ability.actions.0.effects.0.attackPower }} {{{ _attUp_ }}} but {{ onDraw.ability.actions.0.effects.0.defenseDown }} {{{ _defDown_ }}}.</b> <br/> Play to remove the effect.",
+        "<b>Draw:</b> You gain <b>+{{ onDraw.ability.actions.0.effects.0.attackPower }} {{{ _attUp_ }}}</b> but <b>{{ onDraw.ability.actions.0.effects.0.defenseDown }} {{{ _defDown_ }}}.</b> Play to remove the effect.",
     onDraw: {
         ability: {
             name: "Sudden Death!",

@@ -1502,7 +1502,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain {{ actions.0.secondaryAction.resources }} {{{ _resource_ }}} but self-inflict {{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}} for each target.",
+        "Gain <b>{{ actions.0.secondaryAction.resources }} {{{ _resource_ }}}</b> but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}}</b> for each target.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1608,7 +1608,7 @@ export const polymorph: Ability = {
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
     description:
-        "<b>Pierce.</b> Apply {{{ _silence_ }}} and <b>2 {{{ _attDown_ }}}.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "<b>Pierce.</b> Apply {{{ _silence_ }}} + <b>2 {{{ _attDown_ }}}</b> <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     depletedOnUse: true,
     actions: [
@@ -2539,7 +2539,7 @@ export const wardBooster: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: HolyMagicShellImage,
     depletedOnUse: true,
-    description: "<b>+1 {{{ _armor_ }}} Armor Up</b>",
+    description: "<b>+1 {{{ _armorUp_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -3136,7 +3136,7 @@ export const fireworks: Ability = {
     image: FireworksImage,
     overrideBodyText: true,
     description:
-        "Expend all {{{ _resource_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} + <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} to up to 3 enemies, X times.",
+        "Expend all {{{ _resource_ }}} to deal <br/> <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} to up to 3 enemies, X times.",
     actions: [
         {
             target: TARGET_TYPES.RANDOM_HOSTILE,
@@ -3171,7 +3171,7 @@ export const blizzard: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SnowflakeEmojiImage,
     description:
-        "Expend all {{{ _resource_ }}} to inflict {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}, X times.",
+        "Expend all {{{ _resource_ }}} to deal {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <b>X</b> times.",
     overrideBodyText: true,
     actions: [
         {
@@ -3463,7 +3463,7 @@ export const chargedBlast: Ability = {
 export const flameWall: Ability = {
     name: "Flame Wall",
     description:
-        "Attackers are afflicted with <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.stacks }} {{{ _burn_ }}}</b>. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "Applies <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.stacks }} {{{ _burn_ }}}</b> to attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     image: ExplosionImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,

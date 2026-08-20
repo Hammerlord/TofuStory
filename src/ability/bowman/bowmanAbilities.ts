@@ -345,7 +345,8 @@ const puppetMinion = {
     image: ScarecrowImage,
     maxHP: 7,
     abilities: [],
-    description: "<b>{{ effects.1.stacks }} Thorns</b>",
+    overrideBodyText: true,
+    description: "Has <b>{{ effects.1.stacks }} {{{ _thorns_ }}}</b>",
     effects: [taunt, thorns],
 };
 
@@ -353,7 +354,7 @@ export const puppetAbility: Ability = {
     name: "Puppet",
     image: ScarecrowImage,
     overrideBodyText: true,
-    description: "<b>{{ minion.effects.1.stacks }} Thorns</b>",
+    description: "Has <b>{{ minion.effects.1.stacks }} {{{ _thorns_ }}}</b>",
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     minion: puppetMinion,
@@ -1464,7 +1465,7 @@ export const tragosMinion: Minion = {
 
 export const tragosAbility: Ability = {
     name: "Tragos",
-    description: "<b>Counterattacks</b> whenever it or an ally is attacked.",
+    description: "<b>Counters</b> whenever it or an ally is attacked.",
     overrideBodyText: true,
     minion: tragosMinion,
     image: TragosImage,
@@ -1922,7 +1923,7 @@ export const treat: Ability = {
     depletedOnUse: true,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Gain <b>+1 {{{ _damage_ }}}</b> and <b>+1 Armor Up</b>, <b>x2</b> if played on a Summon.",
+    description: "Gain <b>+1 {{{ _attUp_ }}}</b> <b>+1 {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -2791,7 +2792,7 @@ export const sweepingArrows: Ability = {
 
 const catMinion: Minion = {
     name: "Cat",
-    description: "Attacks twice.",
+    description: "Attacks x2.",
     maxHP: 5,
     image: CatImage,
     abilities: [
@@ -2816,7 +2817,7 @@ export const catAbility: Ability = {
     resourceCost: 1,
     image: CatImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Attacks twice.",
+    description: "Attacks x2.",
     minion: catMinion,
     actions: [],
     upgrades: [
@@ -3073,7 +3074,7 @@ const greaterPuppetMinion: Minion = {
     name: "Greater Puppet",
     image: Puppetree3Image,
     maxHP: 13,
-    description: "<b>{{ effects.1.stacks }} Thorns</b>",
+    description: "Has <b>{{ effects.1.stacks }} {{{ _thorns_ }}}</b>",
     effects: [
         taunt,
         {
@@ -3298,7 +3299,7 @@ export const scavenge: Ability = {
     name: "Scavenge",
     resourceCost: 0,
     overrideBodyText: true,
-    description: "Gain {{{ _resource_ }}} and draw 1 card.",
+    description: "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw 1 card.",
     rarity: RARITIES.UNCOMMON,
     image: MatchaManLeafImage,
     selectCards: {

@@ -148,6 +148,11 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         description: "Choose 1 of 3 options randomly presented from your deck/discard.",
         keys: ["search-deck"],
     },
+    {
+        name: "Echo",
+        description: "Adds an Ephemeral copy of the card to your hand.",
+        keys: ["Echo"],
+    },
 ];
 
 const useSectionStyles = createUseStyles({

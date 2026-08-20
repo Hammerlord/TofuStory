@@ -25,7 +25,6 @@ import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
-import SelectCards from "./SelectCards";
 import { getAbilityColor, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
 import { Box } from "@mui/material";
 
@@ -120,10 +119,11 @@ const useStyles = createUseStyles({
         left: 0,
         position: "absolute",
     },
-    minionArmor: {
+    minionBuff: {
         position: "absolute",
         right: -10,
         top: -10,
+        display: "flex",
     },
     minionDamageContainer: {
         right: 0,
@@ -487,6 +487,7 @@ const AbilityView = forwardRef(
         }
 
         const minionHostileEffect = (minionHostileAction?.effects || []).find((e) => e.class === EFFECT_CLASSES.DEBUFF);
+        const minionDefensiveEffect = (minion?.effects || []).find((e) => e.class === EFFECT_CLASSES.BUFF);
 
         const taunt = minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
 
@@ -583,7 +584,6 @@ const AbilityView = forwardRef(
                                 {unplayable && <div className={classes.bold}>Unplayable</div>}
                                 {retain && <div className={classes.bold}>Retain</div>}
 
-                                <SelectCards ability={ability} />
                                 {!healingCornerIcon && healing > 0 && (
                                     <div>
                                         Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
@@ -648,9 +648,10 @@ const AbilityView = forwardRef(
                                     <div className={classes.minionStats}>
                                         <span className={classes.minionHPContainer}>
                                             <Icon icon={<HeartIcon />} text={minion.maxHP} />
-                                            {minion.armor > 0 && (
-                                                <Icon icon={ShieldIcon} size="sm" text={minion.armor} className={classes.minionArmor} />
-                                            )}
+                                            <span className={classes.minionBuff}>
+                                                {minion.armor > 0 && <Icon icon={ShieldIcon} size="sm" text={minion.armor} />}
+                                                {minionDefensiveEffect && <Icon icon={minionDefensiveEffect.icon} size="sm" />}
+                                            </span>
                                         </span>
                                         <span className={classes.minionDamageContainer}>
                                             <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
