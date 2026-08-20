@@ -10,7 +10,7 @@ const { updateBattle } = battleStateSlice?.actions || {};
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
  */
 export const depleteAbilities =
-    ({ actorId, abilities = [], source: context }: { actorId: string; abilities: CombatAbility[]; source?: ActionContext }) =>
+    ({ actorId, abilities = [], context }: { actorId: string; abilities: CombatAbility[]; context?: ActionContext }) =>
     (dispatch, getState) => {
         const { hand, depleted = [] } = getState().battle;
         dispatch(

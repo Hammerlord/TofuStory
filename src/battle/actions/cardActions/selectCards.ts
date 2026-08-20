@@ -30,8 +30,12 @@ export const selectCardsAction =
     ({ type, selectedAbilities, player, effects, abilityQueued }) =>
     (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        const playbackCollectorInstance = playbackCollector();
+        const context: ActionContext = { playbackCollector: playbackCollectorInstance };
+
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities }));
+            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities, context }));
+            dispatch(pushEventQueue(playbackCollectorInstance.get()));
             return;
         }
 
@@ -55,6 +59,7 @@ export const selectCardsAction =
                 })
             );
 
+            dispatch(pushEventQueue(playbackCollectorInstance.get()));
             return;
         }
 
@@ -74,8 +79,8 @@ export const selectCardsAction =
                     discard: updatedDiscard,
                 })
             );
-            dispatch(drawCards({ amount: selectedAbilityIds.length }));
-
+            dispatch(drawCards({ amount: selectedAbilityIds.length, context }));
+            dispatch(pushEventQueue(playbackCollectorInstance.get()));
             return;
         }
 
@@ -91,6 +96,7 @@ export const selectCardsAction =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
                             context: {
+                                ...context,
                                 sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: abilityQueued }],
                                 trackSumAmount: selectedAbilities.length,
                             },
@@ -129,8 +135,6 @@ export const selectCardsAction =
             );
 
             triggerAddCardsToHandEvent();
-            const playbackCollectorInstance = playbackCollector();
-            const context: ActionContext = { playbackCollector: playbackCollectorInstance };
             dispatch(handleOnDrawEvents({ cardsToDraw: cardsToAdd, context }));
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
@@ -144,6 +148,7 @@ export const selectCardsAction =
         );
 
         triggerAddCardsToHandEvent();
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 
 export const handleSelectCards = ({
