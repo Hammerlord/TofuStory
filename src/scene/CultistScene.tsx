@@ -111,6 +111,7 @@ export const cultistA: Minion = {
                 {
                     type: ACTION_TYPES.NONE,
                     target: TARGET_TYPES.SELF,
+                    playbackTime: 1500,
                 },
             ],
         },
@@ -216,6 +217,7 @@ export const cultistB: Minion = {
                 {
                     type: ACTION_TYPES.NONE,
                     target: TARGET_TYPES.SELF,
+                    playbackTime: 1500,
                 },
             ],
         },

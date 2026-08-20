@@ -2909,7 +2909,7 @@ export const goldenPig: Minion = {
                 {
                     movement: 1,
                     target: TARGET_TYPES.SELF,
-                    type: ACTION_TYPES.MOVEMENT,
+                    type: ACTION_TYPES.EFFECT,
                 },
             ],
         },
