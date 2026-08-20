@@ -21,7 +21,7 @@ import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
 import BonusView from "./BonusView";
 import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
-import { CRITICAL_KEYWORD } from "./constants";
+import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
@@ -45,8 +45,10 @@ const useStyles = createUseStyles({
     },
     inner: {
         border: "1px solid rgba(0, 0, 0, 0.5)",
-        width: "150px",
-        minHeight: "250px",
+        width: `${CARD_WIDTH}`,
+        maxWidth: `${CARD_WIDTH}`,
+        boxSizing: "border-box",
+        height: "250px",
         padding: "10px",
         paddingTop: "6px",
         paddingBottom: "2px",
@@ -76,6 +78,12 @@ const useStyles = createUseStyles({
             .join(", "),
         lineHeight: "16px",
         zIndex: 1,
+        position: "absolute",
+        width: CARD_WIDTH,
+        boxSizing: "border-box",
+        maxWidth: CARD_WIDTH,
+        left: 0,
+        padding: "0 10px",
     },
     name: {
         fontWeight: 600,
@@ -139,7 +147,7 @@ const useStyles = createUseStyles({
     },
     body: {
         minHeight: "80px",
-        marginTop: "80px",
+        marginTop: "124px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-around",

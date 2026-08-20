@@ -3,10 +3,7 @@ import AbilityView from "../../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../../ability/types";
 import { cardPassesFilterCondition } from "../selectCardUtils";
 import { useMemo } from "react";
-
-const CARD_WIDTH = 168; // From AbilityView
-const CARD_HEIGHT = 272;
-const CARD_GAP = 1;
+import { CARD_WIDTH } from "../../ability/AbilityView/constants";
 
 export const getHandAuraEffects = (hand: CombatAbility[]) => {
     const auraEffects = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
