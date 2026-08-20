@@ -967,13 +967,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         }
 
                         if (Array.isArray(val)) {
-                            val.forEach((v, i) => {
-                                if (!otherObj[key][i]) {
-                                    otherObj[key][i] = v;
-                                } else {
-                                    traverseAndAggregate(v, otherObj[key][i]);
-                                }
-                            });
+                            otherObj[key].push(...val);
                             return;
                         }
 

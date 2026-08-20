@@ -123,6 +123,7 @@ const useStyles = createUseStyles({
     },
     divider: {
         borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+        margin: "auto",
         marginLeft: "4px",
         paddingRight: "4px",
         height: "15px",
@@ -239,13 +240,29 @@ const AbilityPreview = ({
                     resources = 0,
                     isDeathBlow,
                 } = statUpdate;
+                const combinedEffects = acc.effects || [];
+                effects.forEach((e) => {
+                    if (!e.icon) {
+                        return;
+                    }
+
+                    const index = combinedEffects.findIndex((aggregated) => aggregated.name === e.name);
+                    if (index > -1) {
+                        combinedEffects[index] = {
+                            ...combinedEffects[index],
+                            stacks: (combinedEffects[index].stacks || 1) + (e.stacks || 1),
+                        };
+                    } else {
+                        combinedEffects.push(e);
+                    }
+                });
 
                 return {
                     nondeterministic: acc.nondeterministic || nondeterministic,
                     rawDamage: (acc.rawDamage || 0) + rawDamage,
                     healthDamage: (acc.healthDamage || 0) + healthDamage,
                     resources: (acc.resources || 0) + resources,
-                    effects: (acc.effects || []).concat(effects),
+                    effects: combinedEffects,
                     failedToApplyEffects: (acc.failedToApplyEffects || []).concat(failedToApplyEffects),
                     armor: (acc.armor || 0) + armor,
                     isDeathBlow: acc.isDeathBlow || isDeathBlow,
@@ -290,9 +307,6 @@ const AbilityPreview = ({
                 })}
             >
                 {effects.map((e, i) => {
-                    if (!e.icon) {
-                        return null;
-                    }
                     return (
                         <span className={classes.previewIconContainer} key={[e.name, i].join("-")}>
                             <Icon icon={e.icon} size="sm" />
