@@ -342,7 +342,7 @@ export const shout: Ability = {
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Gain <b>{{ actions.0.resources }} Fury</b> and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}</b> and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     actions: [
         {
             resources: 1,
@@ -403,7 +403,7 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "<b>Stealth.</b> Every turn, grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _damage_ }}} to allies within 2 spaces.",
+        "<b>Stealth.</b> Every turn, grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} / <b>+1</b> {{{ _attUp_ }}} to allies within 2 spaces.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -416,7 +416,7 @@ export const warBanner: Ability = {
             },
             {
                 name: "War Banner - Drumbeat of War",
-                description: "Granting Armor and ATT to nearby allies every turn.",
+                description: "Granting Armor and{{{ _attUp_ }}}to nearby allies every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
@@ -482,7 +482,8 @@ export const yell: Ability = {
     image: WarMushImage,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Radiate ATT Down. Gain Taunt. <br/> </br> <b>{{ actions.0.effects.0.duration }}<b/>{{{ _duration_ }}}",
+    description:
+        "<b>Radiate {{{ _attDown_}}}.</b> </br> Gain <b>Taunt.</b> <br/> </br> <b>{{ actions.0.effects.0.duration }}<b/>{{{ _duration_ }}}",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -621,7 +622,7 @@ export const ironWill: Ability = {
     image: IronWillImage,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>+2 {{{ _armor_ }}} Armor Up</b>, <b>x2</b> if played on a Summon.",
+    description: "<b>+2 {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
     overrideBodyText: true,
     actions: [
         {
@@ -751,7 +752,7 @@ export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 1,
     image: WeaponMasteryLGImage,
-    description: "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
+    description: "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _attUp_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -2254,7 +2255,7 @@ export const ironMaiden: Ability = {
     resourceCost: 1,
     image: NightShadeExplosionImage,
     rarity: RARITIES.UNCOMMON,
-    description: "{{{ actions.0.effects.1.onReceiveDamage.chance }}} chance on taking damage to Radiate your Thorns to all enemies.",
+    description: "{{{ actions.0.effects.1.onReceiveDamage.chance }}} chance on taking damage to <b>Radiate</b> your Thorns to all enemies.",
     depletedOnUse: true,
     actions: [
         {
@@ -2412,7 +2413,7 @@ export const guardian: Ability = {
     image: PinkBeanStatueImage,
     overrideBodyText: true,
     description:
-        "<b>Ward.</b> Every turn, <b>Radiate</b> ATT Down to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
+        "<b>Ward.</b> Every turn, <b>Radiate</b> {{{ _attDown_}}} to foes / {{ nestedAbility.actions.0.secondaryAction.healing }} {{{ _healing_ }}} to allies within 2 spaces.",
     rarity: RARITIES.RARE,
     resourceCost: 2,
     minion: {
@@ -3046,7 +3047,7 @@ export const suddenDeath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SkullBalloonImage,
     description:
-        "When drawn, you gain <b>+{{ onDraw.ability.actions.0.effects.0.attackPower }} ATT but {{ onDraw.ability.actions.0.effects.0.defenseDown }} DEF Down.</b> Playing this removes the effect.",
+        "When drawn, you gain <b>+{{ onDraw.ability.actions.0.effects.0.attackPower }} {{{ _attUp_ }}} but {{ onDraw.ability.actions.0.effects.0.defenseDown }} {{{ _defDown_ }}}.</b> <br/> Play to remove the effect.",
     onDraw: {
         ability: {
             name: "Sudden Death!",
@@ -3256,7 +3257,7 @@ export const frenzy: Ability = {
     name: "Frenzy",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Gain <b>Furious Strike.</b> This turn only, each card played will grant <b>Furious Strike</b>.",
+    description: "Gain <b>Furious Strike.</b> This turn, each card played will grant <b>Furious Strike</b>.",
     image: BerserkImage,
     resourceCost: 1,
     depletedOnUse: true,

@@ -223,7 +223,7 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _damage_ }}}</b>",
+    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _attUp_ }}}</b>",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -637,7 +637,7 @@ export const arcaneAim: Ability = {
     image: ArcaneAimImage,
     resourceCost: 0,
     rarity: RARITIES.RARE,
-    description: "This turn only, gain <b>+1 {{{ _damage_ }}}</b> whenever you attack.",
+    description: "This turn, gain <b>+1 {{{ _attUp_ }}}</b> whenever you attack.",
     overrideBodyText: true,
     actions: [
         {
@@ -648,7 +648,7 @@ export const arcaneAim: Ability = {
     ],
     upgrades: [
         {
-            description: "Draw {{ actions.0.drawCards.amount }} card. This turn only, gain +1 ATT whenever you attack.",
+            description: "Draw {{ actions.0.drawCards.amount }} card. This turn, gain +1 ATT whenever you attack.",
             actions: [
                 {
                     drawCards: {
@@ -1608,7 +1608,7 @@ export const polymorph: Ability = {
     rarity: RARITIES.RARE,
     image: ScarfSnowmanImage,
     description:
-        "<b>Pierce.</b> Apply {{{ _silence_ }}} and <b>2 ATT Down.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "<b>Pierce.</b> Apply {{{ _silence_ }}} and <b>2 {{{ _attDown_ }}}.</b> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     depletedOnUse: true,
     actions: [

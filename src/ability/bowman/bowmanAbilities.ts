@@ -195,7 +195,7 @@ export const sharpEyes: Ability = {
     name: "Sharp Eyes",
     resourceCost: 1,
     image: SharpEyesImage,
-    description: "Apply <b>{{ actions.0.effects.0.stacks }} DEF down {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1592,7 +1592,7 @@ export const lockOn: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "<b>Pierce.</b> Apply <b>{{ actions.0.effects.0.stacks }} DEF down</b> + <b>Priority</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>. Command a friendly unit to attack.</b>",
+        "<b>Pierce.</b> Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> + <b>Priority</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>. Command a friendly unit to attack.</b>",
     actions: [
         {
             target: TARGET_TYPES.HOSTILE,
@@ -2954,7 +2954,7 @@ export const blind: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }} ATT Down {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.</b> Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b> for each target.",
+        "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _attDown_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.</b> Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b> for each target.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,

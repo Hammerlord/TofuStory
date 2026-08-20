@@ -30,6 +30,7 @@ import {
     TreeBranchImage,
 } from "../images";
 import {
+    ArmorDownIcon,
     CloudyIcon,
     CrossedSwordsIcon,
     LinkIcon,
@@ -512,7 +513,7 @@ export const incorporeal: Effect = {
 
 export const armorDown: Effect = {
     name: "Armor Down",
-    icon: ShieldIcon,
+    icon: ArmorDownIcon,
     description: "Armor from Armor sources reduced by 1.",
     class: EFFECT_CLASSES.DEBUFF,
     type: EFFECT_TYPES.NONE,

@@ -18,8 +18,14 @@ module.exports = {
                 },
             },
             {
-                test: /\.svg$/,
+                test: /\.svg$/i,
+                resourceQuery: { not: [/raw/] },
                 use: ["@svgr/webpack"],
+            },
+            {
+                test: /\.svg$/i,
+                resourceQuery: /raw/,
+                type: "asset/source",
             },
         ],
     },

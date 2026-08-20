@@ -19,11 +19,16 @@ import {
 } from "../images";
 import {
     AngerIcon,
+    ArmorUpIcon,
+    AttDownIcon,
+    AttUpIcon,
     BlackShieldIcon,
     BloodIcon,
     CactusIcon,
     CloudyIcon,
     CrossedSwordsIcon,
+    DefDownIcon,
+    DefUpIcon,
     DizzyIcon,
     EyeIcon,
     FireIcon,
@@ -367,7 +372,7 @@ export const warding: Effect = {
 export const attackPower: Effect = {
     name: "ATT Up",
     description: "Increases attack damage by 10% (rounded up).",
-    icon: CrossedSwordsIcon,
+    icon: AttUpIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
@@ -604,7 +609,7 @@ export const poison: Effect = {
 export const armorUp: Effect = {
     name: "Armor Up",
     description: "Gain +1 Armor from Armor sources.",
-    icon: ShieldIcon,
+    icon: ArmorUpIcon,
     class: EFFECT_CLASSES.BUFF,
     type: EFFECT_TYPES.NONE,
     armorReceived: 1,
@@ -634,7 +639,7 @@ export const preventArmorDecayPlayer: Effect = {
 export const defUp: Effect = {
     name: "DEF Up",
     description: "Reduces damage taken from attacks by 10% per stack, rounded up.",
-    icon: BlackShieldIcon,
+    icon: DefUpIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
@@ -644,7 +649,7 @@ export const defUp: Effect = {
 export const defDown: Effect = {
     name: "DEF Down",
     description: "Increases damage taken from attacks by 10% per stack, rounded up.",
-    icon: BlackShieldIcon,
+    icon: DefDownIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     canBeSilenced: true,
@@ -742,7 +747,7 @@ export const attackDown: Effect = {
     name: "ATT Down",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    icon: CrossedSwordsIcon,
+    icon: AttDownIcon,
     attackPower: -1,
     duration: 3,
     maxApplications: 3,
