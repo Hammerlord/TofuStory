@@ -3299,7 +3299,7 @@ export const scavenge: Ability = {
     name: "Scavenge",
     resourceCost: 0,
     overrideBodyText: true,
-    description: "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw 1 card.",
+    description: "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw <b>1</b> card.",
     rarity: RARITIES.UNCOMMON,
     image: MatchaManLeafImage,
     selectCards: {
@@ -3317,7 +3317,7 @@ export const scavenge: Ability = {
     ],
     upgrades: [
         {
-            description: "Gain {{{ _resource_ }}} and draw {{ actions.0.drawCards.amount }} cards.",
+            description: "Gain {{{ _resource_ }}} and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
             actions: [
                 {
                     drawCards: {

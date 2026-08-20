@@ -20,6 +20,8 @@ import {
     taunt,
     thorns,
     ward,
+    defDown,
+    defUp,
 } from "../ability/Effects";
 import { armorDown, doom, incorporeal } from "../enemy/effect";
 import Icon from "../icon/Icon";
@@ -70,16 +72,28 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...attackPower,
-        keys: ["+ATT", "ATT Up", "+1 ATT"],
+        keys: ["+ATT", "ATT Up", "+1 ATT", "attUp"],
     },
     {
         ...attackDown,
         description: Handlebars.compile(attackDown.description || "")(attackDown),
-        keys: ["ATT Down"],
+        keys: ["ATT Down", "attDown"],
     },
     preventArmorDecay,
-    armorUp,
-    armorDown,
+    {
+        ...armorUp,
+        keys: ["armorUp", "Armor Up"],
+    },
+    {
+        ...armorDown,
+        keys: ["armorDown", "Armor Down"],
+    },
+    {
+        ...defUp,
+    },
+    {
+        ...defDown,
+    },
     taunt,
     {
         name: "Counter",
@@ -152,6 +166,11 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         name: "Echo",
         description: "Adds an Ephemeral copy of the card to your hand.",
         keys: ["Echo"],
+    },
+    {
+        name: "Inert",
+        description: "Character does NOT automatically attack at the end of your turn.",
+        keys: ["Inert"],
     },
 ];
 

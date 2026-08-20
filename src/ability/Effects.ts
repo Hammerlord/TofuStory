@@ -123,7 +123,7 @@ export const stealth: Effect = {
     name: "Stealth",
     icon: CloudyIcon,
     canBeSilenced: true,
-    description: "Untargetable by single-target abilities. Effect ends if this character attacks or is hit by area damage.",
+    description: "Untargetable by most single-target abilities. Effect ends if this character attacks or is hit by area damage.",
     onAttack: {
         removeEffect: true,
     },
@@ -154,7 +154,7 @@ export const stun: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
-    description: "Stunned targets are unable to act, and they take increased damage.",
+    description: "Stunned targets are unable to act, and they take 30% increased damage, rounded up.",
     defenseDown: 3,
     icon: DizzyIcon,
 };
@@ -168,7 +168,7 @@ export const bleed: Effect = {
     maxApplications: 1,
     icon: BloodIcon,
     description:
-        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1. While active, take 10% increased damage from attacks.",
+        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1. While active, take 10% increased damage from attacks, rounded up.",
     onTurnStart: {
         decrementStacks: 1,
     },
