@@ -1,7 +1,6 @@
 import * as uuid from "uuid";
-import { ACTION_TYPES, Ability, Action, CardPileType, CombatAbility, CombatEffect } from "../../ability/types";
+import { ACTION_TYPES, Ability, Action, CardPileType, CombatAbility } from "../../ability/types";
 import { Combatant } from "../../character/types";
-import { Item } from "../../item/types";
 import {
     MULTI_ACTION_PLAYBACK_SPEED,
     NORMAL_ACTION_PLAYBACK_SPEED,
@@ -14,7 +13,7 @@ import { ActionContext } from "./../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { PlaybackCollector } from "./playbackCollector";
 
-const { updateBattle, pushEventQueue } = battleStateSlice?.actions || {};
+const { pushEventQueue } = battleStateSlice?.actions || {};
 
 /**
  * A middleware that pushes to event queue while handling playbackCollector
@@ -52,10 +51,8 @@ export const enqueueEvent = ({
 }) => {
     return (dispatch, getState) => {
         playbackTime = action?.playbackTime || playbackTime;
-        if (!playbackTime) {
-            if (!action) {
-                playbackTime = NORMAL_ACTION_PLAYBACK_SPEED;
-            } else if (action.animationOptions?.ricochet) {
+        if (!playbackTime && action) {
+            if (action.animationOptions?.ricochet) {
                 const playbackMultiple = allTargetIndices.length > 1 ? (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length : 0;
                 playbackTime = RICOCHET_ACTION_PLAYBACK_SPEED + playbackMultiple;
             } else if ((actionParent as Ability)?.actions?.length > 1) {

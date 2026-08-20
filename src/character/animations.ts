@@ -572,7 +572,6 @@ export const playDyingAnimation = ({ object, playbackTime = 750 }) => {
 
     return object.animate(animationFrames, {
         duration: playbackTime,
-        delay: 0.25,
     });
 };
 

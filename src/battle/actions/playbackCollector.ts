@@ -1,5 +1,5 @@
 import * as uuid from "uuid";
-import { Ability, ACTION_TYPES } from "../../ability/types";
+import { Ability, ACTION_TYPES, CombatAbility } from "../../ability/types";
 import { Event, EventGroup } from "../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 
@@ -10,9 +10,15 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
 
     const { damage, armor, healing, type, summon } = event.action || {};
     const { actionParent, source } = event || {};
+    /**
+     * Generally what we want to group in a single event playback are:
+     * 1. pure stat changes (such as status effect applications) with no actions attached
+     * 2. Zzz, 3. the Perion Dummies "Reinforce!" ability
+     * Do these rules satisfy the above?...
+     */
     const sameAbility =
-        (actionParent && (actionParent as Ability).name === (previousEvent.actionParent as Ability)?.name) ||
-        (source?.source && (source?.source as Ability)?.name === (previousEvent.source?.source as Ability)?.name);
+        (actionParent as CombatAbility)?.name === (previousEvent.actionParent as CombatAbility)?.name &&
+        (source?.source as CombatAbility)?.name === (previousEvent.source?.source as CombatAbility)?.name;
     return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
 };
 

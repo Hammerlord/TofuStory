@@ -1,5 +1,5 @@
 import { ACTION_TYPES, Action, EFFECT_TYPES } from "../../../ability/types";
-import { dotAbilityMap, dotDamageMap } from "../../constants";
+import { dotAbilityMap, dotDamageMap, NORMAL_ACTION_PLAYBACK_SPEED } from "../../constants";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../../types";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
@@ -72,6 +72,7 @@ export const handleDoTs =
                     // Hack: this is for displaying the dot type in the ability notification banner
                     actionParent: dotAbilityMap[dotType],
                     context: context,
+                    playbackTime: NORMAL_ACTION_PLAYBACK_SPEED,
                 })
             );
 

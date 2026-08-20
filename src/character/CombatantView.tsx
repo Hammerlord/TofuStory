@@ -346,7 +346,7 @@ const CombatantView = ({
 
     const willPerformActions =
         eventGroupQueue.length > 1 &&
-        eventGroupQueue.some((eventGroup) => eventGroup.events.some(({ actorId }) => actorId === combatant?.id));
+        eventGroupQueue.some((eventGroup) => eventGroup.events.some(({ actorId, action }) => actorId === combatant?.id && action));
     const classes = useStyles(combatant);
     const isLifeLinked = combatant?.effects.some((effect: CombatEffect) => effect.type === EFFECT_TYPES.LIFE_LINK);
 
