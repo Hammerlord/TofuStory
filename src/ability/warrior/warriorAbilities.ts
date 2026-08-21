@@ -207,7 +207,7 @@ export const charge: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                     effects: [{ stacks: 1 }],
                 },
             ],
@@ -298,7 +298,7 @@ export const shieldStrike: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
             secondaryAction: {
-                armor: 8,
+                armor: 7,
             },
         },
     ],
@@ -331,7 +331,7 @@ export const block: Ability = {
         {
             actions: [
                 {
-                    armor: 4,
+                    armor: 3,
                 },
             ],
         },
@@ -398,7 +398,7 @@ const drumOfWar: Action = {
     type: ACTION_TYPES.EFFECT,
     target: TARGET_TYPES.SELF,
     excludePrimaryTarget: true,
-    armor: 2,
+    armor: 1,
     area: 2,
     effects: [{ ...attackPower, duration: 1 }],
 };
@@ -420,8 +420,8 @@ export const warBanner: Ability = {
                 ...stealth,
             },
             {
-                name: "War Banner - Drumbeat of War",
-                description: "Granting Armor and{{{ _attUp_ }}}to nearby allies every turn.",
+                name: "Drumbeat of War",
+                description: "Granting Armor and {{{ _attUp_ }}} to nearby allies every turn.",
                 icon: FlagImage,
                 type: EFFECT_TYPES.NONE,
                 class: EFFECT_CLASSES.BUFF,
@@ -944,7 +944,7 @@ export const disrupt: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 4,
                 },
             ],
         },
@@ -1814,7 +1814,7 @@ export const worldReaver: Ability = {
     actions: [
         {
             area: 1,
-            damage: 20,
+            damage: 15,
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             secondaryAction: {
@@ -2001,7 +2001,7 @@ export const shieldMastery: Ability = {
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             armor: 7,
             addCards: [
                 {
@@ -2014,7 +2014,7 @@ export const shieldMastery: Ability = {
                     actions: [
                         {
                             type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.SELF,
+                            target: TARGET_TYPES.FRIENDLY,
                             armor: 7,
                         },
                     ],
@@ -2745,7 +2745,7 @@ export const bluntForce: Ability = {
 export const retribute: Ability = {
     name: "Retribute",
     image: SpearSweepImage,
-    description: "<b>+{{actions.0.bonus.damage}} {{{ _damage_ }}}</b> <b>+1 {{{ _resource_ }}}</b> if you took HP damage since last turn.",
+    description: "<b>+1 {{{ _resource_ }}}</b> if you took HP damage since last turn.",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     resourceCost: 1,
@@ -2753,10 +2753,9 @@ export const retribute: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 6,
+            damage: 5,
             area: 2,
             bonus: {
-                damage: 3,
                 conditions: [
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -2784,9 +2783,6 @@ export const retribute: Ability = {
             actions: [
                 {
                     damage: 2,
-                    bonus: {
-                        damage: 1,
-                    },
                 },
             ],
         },
