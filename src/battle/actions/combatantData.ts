@@ -108,13 +108,13 @@ export const isTurnActionPrevented = (
     return turnPreventedFromEffects;
 };
 
-export const isActorPlayerSide = ({ playerSide, source }: { playerSide: (Combatant | Player | null)[]; source: TriggerSource }) => {
+export const isActorPlayerSide = ({ playerSide, source }: { playerSide: (Combatant | Player | null)[]; source?: TriggerSource }) => {
     return playerSide.some((combatant) => {
         if (!combatant) {
             return false;
         }
 
-        if (combatant.id === source.actorId) {
+        if (combatant.id === source?.actorId) {
             return true;
         }
 
