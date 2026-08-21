@@ -1,8 +1,7 @@
 import * as uuid from "uuid";
+import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
 import { elite, eruptive, raging, thorns, warding } from "../../../ability/Effects";
 import { Ability, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
-import { getNextTelegraphedAbility } from "../../../character/Telegraph";
-import getAbilityPreviews from "../../../character/getAbilityPreviews";
 import { playerStateSlice } from "../../../character/playerReducer";
 import { Combatant, Player } from "../../../character/types";
 import { createCombatant } from "../../../enemy/createEnemy";
@@ -10,20 +9,16 @@ import { poisonous, sneaky } from "../../../enemy/effect";
 import { Item } from "../../../item/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BOSS_MUSIC } from "../../constants";
-import { BattleState, battleStateSlice } from "../../reducer";
-import { ActionContext, BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
-import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
-import { BATTLE_STATES } from "../../reducer";
-import { checkCardActions } from "../cardActions/cardActions";
+import { BATTLE_STATES, BattleState, battleStateSlice } from "../../reducer";
+import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
-import { findCombatantData } from "../combatantData";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { autoSelectActionTarget } from "../targeting/targeting";
+import { checkCardActions } from "../cardActions/cardActions";
+import { findCombatantData, updateCombatant } from "../combatantData";
 import { playbackCollector } from "../playbackCollector";
 import { tickDownStatusEffects } from "../statusEffect/effectLifecycle";
-import { updateCombatant } from "../combatantData";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
-import { getEnemyMoveOrder, requeueRecentlyUsedAbility } from "./enemyTurn";
+import { getEnemyMoveOrder, getUseAbilityIndex } from "./enemyTurn";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
@@ -248,13 +243,16 @@ export const onWaveStart = () => {
                 return;
             }
 
+            const actorInfo = findCombatantData(battle, combatantId);
+            const useAbilityIndex = getUseAbilityIndex(actorInfo);
+
             dispatch(
                 updateCombatant({
                     combatantId,
                     newProperties: {
                         targeting: {
                             actionTargets: [], // This is updated by checkValidEnemyTargeting()
-                            ability: combatant.abilities[0],
+                            ability: combatant.abilities[useAbilityIndex],
                         },
                     },
                 })
