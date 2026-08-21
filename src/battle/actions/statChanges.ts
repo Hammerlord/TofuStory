@@ -33,12 +33,20 @@ export const triggerStatChangeEvents =
                 failedToApplyEffects = [],
             } = statUpdate;
 
-            const dispatchEvent = ({ effectEventKey, trackSumAmount }: { effectEventKey: EFFECT_EVENT_KEYS; trackSumAmount?: number }) => {
+            const dispatchEvent = ({
+                effectEventKey,
+                sourceChain,
+                trackSumAmount,
+            }: {
+                effectEventKey: EFFECT_EVENT_KEYS;
+                sourceChain?: TriggerSource[];
+                trackSumAmount?: number;
+            }) => {
                 dispatch(
                     checkEventTrigger({
                         combatantId,
                         effectEventKey,
-                        context: { ...context, trackSumAmount },
+                        context: { ...context, sourceChain: sourceChain || context?.sourceChain, trackSumAmount },
                     })
                 );
             };
@@ -85,17 +93,19 @@ export const triggerStatChangeEvents =
             }
 
             effects.forEach((e: CombatEffect) => {
+                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const sourceChain = [...(context?.sourceChain || []), source];
+
                 dispatchEvent({
                     effectEventKey: EFFECT_EVENT_KEYS.onReceiveEffect,
+                    sourceChain,
                 });
-
-                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
 
                 dispatch(
                     checkEventTrigger({
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
-                        context: { ...context, sourceChain: [...(context?.sourceChain || []), source] },
+                        context: { ...context, sourceChain: sourceChain },
                     })
                 );
             });
