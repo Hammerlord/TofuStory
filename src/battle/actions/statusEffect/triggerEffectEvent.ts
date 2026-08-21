@@ -182,8 +182,7 @@ export const onEffectEventTrigger = ({
         const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
         $applyStatChanges: {
-            // Object keys on other: it's just 'target' and nothing else was configured, so skip the whole block
-            if (!targets || Object.keys(other).length <= 1) {
+            if (!targets) {
                 break $applyStatChanges;
             }
 
@@ -198,6 +197,11 @@ export const onEffectEventTrigger = ({
                     const maxStacks = e.maxStacks || Infinity;
                     return { ...e, stacks: Math.min(maxStacks, totalStacks) };
                 });
+            }
+
+            // No stat changes will trigger so skip the whole block
+            if (Object.keys(other).length <= 1 && effects.length === 0) {
+                break $applyStatChanges;
             }
 
             const action = {
@@ -507,7 +511,14 @@ export const checkEventTrigger = ({
 
                     const ability = cardEvent.ability;
                     if (ability && passesChance(cardEvent.chance)) {
-                        dispatch(useAbility({ ability: card[effectEventKey].ability, actorId: source?.actorId, isProc: true }));
+                        dispatch(
+                            useAbility({
+                                ability: card[effectEventKey].ability,
+                                actorId: source?.actorId,
+                                isProc: true,
+                                playbackCollector: context?.playbackCollector,
+                            })
+                        );
                     }
                 });
 

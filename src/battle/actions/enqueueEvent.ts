@@ -50,7 +50,7 @@ export const enqueueEvent = ({
     options?: { alwaysGroup: boolean };
 }) => {
     return (dispatch, getState) => {
-        playbackTime = action?.playbackTime || playbackTime;
+        playbackTime = action?.playbackTime || playbackTime || 0;
         if (!playbackTime && action) {
             if (action.animationOptions?.ricochet) {
                 const playbackMultiple = allTargetIndices.length > 1 ? (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length : 0;
@@ -105,7 +105,7 @@ export const enqueueEvent = ({
                 ...event,
                 name: (event.actionParent as Ability)?.name,
                 image: (event.actionParent as Ability)?.image,
-                playbackTime: event.playbackTime || event.action?.playbackTime,
+                playbackTime: playbackTime,
                 events: [event],
                 addCards,
             })

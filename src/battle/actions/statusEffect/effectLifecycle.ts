@@ -61,7 +61,7 @@ export const checkUpdateEffectLifecycle =
 /**
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
-export const tickDownStatusEffects = (combatantId: string, context: ActionContext) => {
+export const tickDownStatusEffects = (combatantId: string, context?: ActionContext) => {
     return (dispatch, getState) => {
         const { combatant } = findCombatantData(getState().battle, combatantId) || {};
         if (!combatant) {
@@ -98,10 +98,15 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
                         effectEvent,
                         effect,
                         effectEventKey: EFFECT_EVENT_KEYS.onEnd,
+                        context,
                     })
                 );
             });
         });
+
+        if (!effectsEnded.length) {
+            return;
+        }
 
         dispatch(
             enqueueEvent({

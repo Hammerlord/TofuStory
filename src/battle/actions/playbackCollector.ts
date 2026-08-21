@@ -65,7 +65,7 @@ export const playbackCollector = (): PlaybackCollector => {
     const addToGroup = (event: Event, group: EventGroup) => {
         group.events.push(event);
 
-        let eventPlayback = event.playbackTime || event.action?.playbackTime;
+        const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime;
         group.playbackTime = group.playbackTime || eventPlayback;
         group.addCards = [...group.addCards, ...(event.addCards || [])];
         group.newCombatants = [...group.newCombatants, ...(event.newCombatants || [])];
@@ -84,12 +84,14 @@ export const playbackCollector = (): PlaybackCollector => {
                 }
             }
 
+            const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime;
+
             queue.push({
                 ...event,
                 id: uuid.v4(),
                 name: (event.actionParent as Ability)?.name,
                 image: (event.actionParent as Ability)?.image,
-                playbackTime: event.playbackTime || event.action?.playbackTime,
+                playbackTime: eventPlayback,
                 addCards: event.addCards || [],
                 newCombatants: event.newCombatants || [],
                 events: [event],

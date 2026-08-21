@@ -588,7 +588,7 @@ const handleSecondaryAction = ({
             triggerStatChangeEvents(
                 updatedSecondary.map(({ statUpdate }) => ({
                     statUpdate,
-                    source: context,
+                    context,
                 }))
             )
         );
