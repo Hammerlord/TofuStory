@@ -303,6 +303,11 @@ export const onEffectEventTrigger = ({
             typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
         let abilityUsed = false; // One or more actions must have been performed to trigger onUseAbility
 
+        const abilityContext: ActionContext = {
+            ...procContext,
+            sourceChain: [...procContext.sourceChain, { source: ability }],
+        };
+
         ability?.actions.forEach((action: Action) => {
             const { index, side } = autoSelectActionTarget({
                 initialSelectedIndex: i,
@@ -349,7 +354,7 @@ export const onEffectEventTrigger = ({
                         selectedIndex: index,
                         side,
                         actorId: ownerId,
-                        parentContext: procContext,
+                        parentContext: abilityContext,
                     })
                 );
             }
@@ -359,7 +364,7 @@ export const onEffectEventTrigger = ({
             dispatch(
                 onUseAbility({
                     actorInfo: findCombatantData(getState().battle, ownerId),
-                    context: procContext,
+                    context: abilityContext,
                     ability,
                 })
             );

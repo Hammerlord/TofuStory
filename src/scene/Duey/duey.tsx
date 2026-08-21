@@ -199,11 +199,11 @@ const dueyFightShroom = {
     ],
 };
 
-const dueyFightShroom2 = {
+export const dueyFightShroom2: Minion = {
     ...shroom,
     effects: [
         {
-            name: "Shroom Dialog",
+            name: "",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             canBeSilenced: false,
