@@ -76,6 +76,9 @@ export const onEffectEventTrigger = ({
             ...other
         } = effectEvent;
 
+        // Should all onEffectEventTriggers just be considered procs?
+        // This is currently to prevent Charged interacting with Green Bamboo Hat.
+        context = { ...context, isProc: true };
         const source: TriggerSource = context?.sourceChain?.at(-1);
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS | undefined): string[] => {
             if (!targetType) {
