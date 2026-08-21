@@ -194,6 +194,7 @@ export const usePlayerAbility = ({
                                 },
                             ],
                             isProc,
+                            playbackCollector: playbackCollectorInstance,
                         },
                     })
                 );

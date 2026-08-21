@@ -211,7 +211,9 @@ export const checkHandleActionSummon = ({
         }
 
         // Tribute summons count as a kill for the new minion
-        tributeSummonedMinions.forEach((id) => dispatch(checkEventTrigger({ combatantId: id, effectEventKey: EFFECT_EVENT_KEYS.onKill })));
+        tributeSummonedMinions.forEach((id) =>
+            dispatch(checkEventTrigger({ combatantId: id, effectEventKey: EFFECT_EVENT_KEYS.onKill, context: parentContext }))
+        );
 
         minionsSummoned.forEach((minion) => {
             dispatch(
@@ -286,7 +288,7 @@ export const checkSummonMinion = ({
 
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};
-            dispatch(tributeKill({ tributeSummon, resourceCost, actor, side, index }));
+            dispatch(tributeKill({ tributeSummon, resourceCost, actor, side, index, parentContext }));
         }
 
         const newBattleProps: {
@@ -313,7 +315,9 @@ export const checkSummonMinion = ({
 
         // Tribute summons count as a kill for the new minion
         if (isKillPreviousMinion) {
-            dispatch(checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill }));
+            dispatch(
+                checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill, context: parentContext })
+            );
         }
         dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentContext }));
 
