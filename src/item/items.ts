@@ -784,7 +784,7 @@ export const ballerCane: Item = {
 export const greenBambooHat: Item = {
     name: "Green Bamboo Hat",
     image: GreenBambooHatImage,
-    description: "When you receive a status effect from an ability, gain {{ effects.0.onReceiveEffect.armor }} Armor.",
+    description: "When you receive a status effect, gain {{ effects.0.onReceiveEffect.armor }} Armor. Not affected by Armor Up.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -795,7 +795,7 @@ export const greenBambooHat: Item = {
             onReceiveEffect: {
                 disableTriggerFromProcs: true,
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 1,
+                flatArmor: 1,
             },
         },
     ],
@@ -804,7 +804,7 @@ export const greenBambooHat: Item = {
 export const koreanFan: Item = {
     name: "Korean Fan",
     image: KoreanFanImage,
-    description: "Every 3 turns, hurl a fan that inflicts 1 Bleed.",
+    description: "Every 3 turns, hurl a fan that inflicts 2 Bleed.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     effects: [
@@ -823,7 +823,7 @@ export const koreanFan: Item = {
                             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                             target: TARGET_TYPES.RANDOM_HOSTILE,
                             icon: KoreanFanImage,
-                            effects: [{ ...bleed, stacks: 1 }],
+                            effects: [{ ...bleed, stacks: 2 }],
                         },
                     ],
                 },
@@ -1250,7 +1250,7 @@ export const steely: Item = {
     image: SteelyImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
-    description: "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards drawn, fling knives that apply 1 Bleed to all targets.",
+    description: "Every {{ effects.0.onDrawCard.triggerFrequencyFromSum }} cards drawn, fling knives that apply 2 Bleed to all targets.",
     effects: [
         {
             name: "Steely",
@@ -1274,7 +1274,7 @@ export const steely: Item = {
                             effects: [
                                 {
                                     ...bleed,
-                                    stacks: 1,
+                                    stacks: 2,
                                 },
                             ],
                         },

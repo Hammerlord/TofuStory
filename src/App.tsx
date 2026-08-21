@@ -68,7 +68,7 @@ const theme = createTheme({
 
 export const App = () => {
     const classes = useStyles();
-    const isDevToolEnabled = true;
+    const isDevToolEnabled = false;
     const devStore = useMemo(() => (isDevToolEnabled ? getConfiguredStore() : undefined), [isDevToolEnabled]);
 
     return (

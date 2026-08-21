@@ -223,7 +223,8 @@ export const magicFang: Ability = {
 export const empower: Ability = {
     name: "Empower",
     image: ArcaneOverdriveImage,
-    description: "This turn, gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _attUp_ }}}</b>",
+    description:
+        "This turn, gain <b>+{{ actions.0.effects.0.stacks }} {{{ _attUp_ }}}</b> <b>+{{ actions.0.effects.1.stacks }} {{{ _armorUp_ }}}.</b>",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -231,7 +232,10 @@ export const empower: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...attackPower, attackPower: 4, duration: 1 }],
+            effects: [
+                { ...attackPower, stacks: 2, duration: 1 },
+                { ...armorUp, stacks: 2, duration: 1 },
+            ],
         },
     ],
     upgrades: [
@@ -240,7 +244,10 @@ export const empower: Ability = {
                 {
                     effects: [
                         {
-                            attackPower: 1,
+                            stacks: 1,
+                        },
+                        {
+                            stacks: 1,
                         },
                     ],
                 },
@@ -293,7 +300,7 @@ export const energyBolt: Ability = {
 };
 
 const magicClawAction: Action = {
-    damage: 8,
+    damage: 7,
     target: TARGET_TYPES.HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -310,7 +317,7 @@ const magicClawAction: Action = {
                 hasEffect: "Charged",
             },
         ],
-        damage: 4,
+        damage: 2,
     },
 };
 
@@ -319,7 +326,7 @@ export const magicClaw: Ability = {
     resourceCost: 2,
     image: MagicClawImage,
     overrideBodyText: true,
-    description: "Hits twice. <br/> <b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}}.",
+    description: "Hits x2. <br/> <b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} per hit.",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -1189,7 +1196,7 @@ export const greaterBolt: Ability = {
     ],
     actions: [
         {
-            damage: 6,
+            damage: 7,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1314,7 +1321,7 @@ export const glacier: Ability = {
 export const reboundingShard: Ability = {
     name: "Rebounding Shard",
     image: NimbleJewelImage,
-    description: "<b>Play:</b> Add an Ephemeral copy of this card to your hand.",
+    description: "<b>Echo.</b>",
     overrideBodyText: true,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
@@ -1374,7 +1381,7 @@ export const thunderBolt: Ability = {
     image: ThunderBoltImage,
     resourceCost: 1,
     rarity: RARITIES.COMMON,
-    description: "<b>Charged:</b> Cast again for {{ actions.1.damage }} {{{ _damage_ }}}.",
+    description: "<b>Charged:</b> Cast again for <b>{{ actions.1.damage }} {{{ _damage_ }}}.</b>",
     actions: [
         {
             damage: 4,
@@ -1389,7 +1396,7 @@ export const thunderBolt: Ability = {
             },
         },
         {
-            damage: 3,
+            damage: 2,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1426,7 +1433,8 @@ export const slimmingMuffin: Ability = {
     image: ChocolateMuffinImage,
     resourceCost: 0,
     rarity: RARITIES.COMMON,
-    description: "Draw a card. It costs ({{ actions.0.drawCards.effects.0.resourceCost }}) less until discarded.",
+    description:
+        "<b>Deplete</b> a card. Draw a card. It costs <b>{{ actions.0.drawCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     overrideBodyText: true,
     selectCards: {
         type: SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
@@ -1450,11 +1458,15 @@ export const slimmingMuffin: Ability = {
     upgrades: [
         {
             description:
-                "Draw {{ actions.0.drawCards.amount }}. It costs ({{ actions.0.drawCards.effects.0.resourceCost }}) less until discarded.",
+                "Draw a card. It costs <b>{{ actions.0.drawCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
             actions: [
                 {
                     drawCards: {
-                        amount: 1,
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
                     },
                 },
             ],
@@ -1465,7 +1477,7 @@ export const slimmingMuffin: Ability = {
 export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
-    description: "While this card is in hand, its cost reduces by 1 whenever you use another ability.",
+    description: "While this is in hand, its cost reduces by <b>1 {{{ _resource_ }}}</b> for each card you play.",
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
     onAbility: {
@@ -1502,7 +1514,7 @@ export const feedback: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Gain <b>{{ actions.0.secondaryAction.resources }} {{{ _resource_ }}}</b> but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}}</b> for each target.",
+        "For each target hit, gain <b>{{ actions.0.secondaryAction.resources }} {{{ _resource_ }}}</b> but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }} {{{ _damage_ }}}.</b>",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1883,7 +1895,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> {{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}} / {{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}} per turn. <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> <b>{{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}}</b> + <b>{{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}}</b> per turn. <br/> <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -2299,7 +2311,8 @@ export const moonBolt: Ability = {
     resourceCost: 2,
     image: FullMoonImage,
     overrideBodyText: true,
-    description: "Heal all allies for <b>{{ actions.0.secondaryAction.healing }}</b> {{{ _healing_ }}} each hit.",
+    description:
+        "Bounces to up to 2 other targets. Grants all allies <b>{{ actions.0.secondaryAction.armor }}</b> {{{ _armor_ }}} per hit.",
 
     rarity: RARITIES.COMMON,
     actions: [
@@ -2317,7 +2330,7 @@ export const moonBolt: Ability = {
                 ricochet: true,
             },
             secondaryAction: {
-                healing: 2,
+                armor: 2,
                 area: 5,
                 multiplier: {
                     type: MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS,
@@ -2330,6 +2343,9 @@ export const moonBolt: Ability = {
             actions: [
                 {
                     damage: 3,
+                    secondaryAction: {
+                        armor: 1,
+                    },
                 },
             ],
         },
@@ -2682,7 +2698,7 @@ export const ifrit: Ability = {
     name: "Ifrit",
     image: IfritImage,
     resourceCost: 2,
-    description: "<b>Summon:</b> Burns enemies in front of this character.",
+    description: "<b>Summon:</b> <b>Radiate 3 {{{ _burn_ }}}</b> to enemies within 2 spaces.",
     rarity: RARITIES.UNCOMMON,
     minion: {
         name: "Ifrit",
@@ -2768,7 +2784,7 @@ export const elquines: Ability = {
     image: ElquinesImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Summon:</b> Freezes enemies in front of this character.",
+    description: "<b>Summon:</b> <b>Radiate {{{ _freeze_ }}}</b> to enemies within 2 spaces.",
     minion: {
         name: "Elquines",
         image: ElquinesImage,
@@ -3379,7 +3395,7 @@ export const wrath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: WrathImage,
     resourceCost: 1,
-    description: "Reduces the cost of a random card in your hand by <b>1</b> until it is discarded.",
+    description: "Reduces the cost of a random card in your hand by <b>1 {{{ _resource }}}</b> until discarded.",
     actions: [
         {
             damage: 7,
