@@ -245,21 +245,38 @@ const Main = () => {
         }
     };
 
-    const handleTransition = (callback: Function = () => {}) => {
-        if (transitionRef.current) {
-            // Just call the callback immediately
+    const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const clearTransitionTimeout = () => {
+        if (transitionTimeoutRef.current !== null) {
+            clearTimeout(transitionTimeoutRef.current);
+            transitionTimeoutRef.current = null;
+        }
+    };
+
+    const handleTransition = (callback: () => void = () => {}) => {
+        if (transitionTimeoutRef.current !== null) {
             callback();
             return;
         }
+
         setShowTransitionOverlay(true);
-        transitionRef.current = setTimeout(() => {
+
+        transitionTimeoutRef.current = setTimeout(() => {
             callback();
-            setTimeout(() => {
+
+            transitionTimeoutRef.current = setTimeout(() => {
                 setShowTransitionOverlay(false);
-                transitionRef.current = null;
+                transitionTimeoutRef.current = null;
             }, TRANSITION_TIME * 1000);
         }, TRANSITION_TIME * 1000);
     };
+
+    useEffect(() => {
+        return () => {
+            clearTransitionTimeout();
+        };
+    }, []);
 
     const handleBattleNode = (node: GeneratedRouteNode) => {
         const previousEncounters = battleHistory.map(({ waves }) => waves).filter((v) => v);
@@ -293,20 +310,22 @@ const Main = () => {
     const handleSelectNode = (node: GeneratedRouteNode) => {
         dispatch(selectNode(node));
 
-        const callback = () => {
-            if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
-                handleBattleNode(node);
-            } else if (node.type === NODE_TYPES.EVENT) {
-                handleEventNode(node);
-            } else if (node.type === NODE_TYPES.TREASURE) {
-                setTreasure({ ...node.treasure, puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]) });
-            } else if (node.type === NODE_TYPES.RESTING_ZONE) {
-                setActivity(ACTIVITIES.CAMP);
-            } else if (node.type === NODE_TYPES.TOWN) {
-                dispatch(setTown(node.town));
-            }
-        };
-        handleTransition(callback);
+        if (node.type === NODE_TYPES.TREASURE) {
+            setTreasure({ ...node.treasure, puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]) });
+        } else if (node.type === NODE_TYPES.RESTING_ZONE) {
+            setActivity(ACTIVITIES.CAMP);
+        } else {
+            const callback = () => {
+                if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
+                    handleBattleNode(node);
+                } else if (node.type === NODE_TYPES.EVENT) {
+                    handleEventNode(node);
+                } else if (node.type === NODE_TYPES.TOWN) {
+                    dispatch(setTown(node.town));
+                }
+            };
+            handleTransition(callback);
+        }
     };
 
     const handleExitBattle = () => {
