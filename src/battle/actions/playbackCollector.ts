@@ -19,6 +19,7 @@ const isGroupableEvent = (event: Event, previousEvent: Event) => {
     const sameAbility =
         (actionParent as CombatAbility)?.name === (previousEvent.actionParent as CombatAbility)?.name &&
         (source?.source as CombatAbility)?.name === (previousEvent.source?.source as CombatAbility)?.name;
+
     return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
 };
 

@@ -268,8 +268,8 @@ export const performAction = ({
                 combatants,
             })
         );
-        dispatch(checkHandleActionSummon({ action, actorId, parentContext }));
-        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext }));
+        dispatch(checkHandleActionSummon({ action, actorId, parentContext, actionParent: parentSource?.source }));
+        dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext, actionParent: parentSource?.source }));
         dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentContext }));
         if (retreat) {
             const { friendly, friendlySide } = findCombatantData(getState().battle, actorId);

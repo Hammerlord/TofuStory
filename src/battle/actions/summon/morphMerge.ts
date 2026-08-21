@@ -20,7 +20,7 @@ import { shuffle } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
+import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
 import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../phases/enemyTurn";
 import { enqueueEvent } from "../enqueueEvent";
@@ -36,11 +36,13 @@ export const checkHandleMorph = ({
     morphTargetIds,
     actorId,
     parentContext,
+    actionParent,
 }: {
     action: Action;
     morphTargetIds: string[];
     actorId: string;
     parentContext: ActionContext;
+    actionParent: ActionParent;
 }) => {
     return (dispatch, getState) => {
         if (!action.morph) {
@@ -88,6 +90,7 @@ export const checkHandleMorph = ({
                 playbackTime: SUMMON_DELAY,
                 newCombatants: summons,
                 context,
+                actionParent,
             })
         );
 

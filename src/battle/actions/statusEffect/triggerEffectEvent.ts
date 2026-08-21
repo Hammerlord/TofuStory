@@ -182,7 +182,8 @@ export const onEffectEventTrigger = ({
         const { index: i, friendlySide, friendly: targets } = initialTargetData || {};
 
         $applyStatChanges: {
-            if (!targets) {
+            // Object keys on other: it's just 'target' and nothing else was configured, so skip the whole block
+            if (!targets || Object.keys(other).length <= 1) {
                 break $applyStatChanges;
             }
 
@@ -262,6 +263,7 @@ export const onEffectEventTrigger = ({
                         ...action,
                         multiplier: multiplierConfig,
                     },
+                    actionParent: source?.source,
                     actorId: ownerId,
                     context: procContext,
                     selectedIndex: owner.index,

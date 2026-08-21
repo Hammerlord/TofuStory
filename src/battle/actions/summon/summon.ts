@@ -9,7 +9,7 @@ import { getRandomItem } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../phases/enemyTurn";
@@ -28,10 +28,13 @@ export const checkHandleActionSummon = ({
     action,
     actorId,
     parentContext,
+    // used to deal with the event grouping on the 'event' created for purely visual reasons
+    actionParent,
 }: {
     action: Action;
     actorId: string;
     parentContext: ActionContext;
+    actionParent: ActionParent;
 }) => {
     return (dispatch, getState) => {
         const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
@@ -202,6 +205,7 @@ export const checkHandleActionSummon = ({
                     playbackTime: SUMMON_DELAY,
                     newCombatants: minionsSummoned,
                     context: parentContext,
+                    actionParent,
                 })
             );
         }
@@ -303,6 +307,7 @@ export const checkSummonMinion = ({
                 playbackTime: SUMMON_DELAY,
                 newCombatants: [summonedMinion],
                 context: parentContext,
+                actionParent: ability,
             })
         );
 
