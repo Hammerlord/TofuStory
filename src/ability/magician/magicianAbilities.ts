@@ -1457,8 +1457,6 @@ export const slimmingMuffin: Ability = {
     ],
     upgrades: [
         {
-            description:
-                "Draw a card. It costs <b>{{ actions.0.drawCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
             actions: [
                 {
                     drawCards: {
