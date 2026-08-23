@@ -27,7 +27,7 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 };
 
 export const selectCardsAction =
-    ({ type, selectedAbilities, player, effects, abilityQueued }) =>
+    ({ type, selectedAbilities, player, effects = [], abilityQueued }) =>
     (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
         const playbackCollectorInstance = playbackCollector();
