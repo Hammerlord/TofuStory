@@ -130,9 +130,13 @@ export const triggerStatChangeEvents =
                 });
             });
 
-            failedToApplyEffects.forEach((e: Effect) => {
+            failedToApplyEffects.forEach((e: CombatEffect) => {
+                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const sourceChain = [...(context?.sourceChain || []), source];
+
                 dispatchEvent({
                     effectEventKey: EFFECT_EVENT_KEYS.onFailedToReceiveEffect,
+                    sourceChain,
                 });
             });
 
