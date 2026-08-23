@@ -169,28 +169,37 @@ export const requeueRecentlyUsedAbility =
                 abilityIndex = getUseAbilityIndex(actorInfo);
             }
 
-            const updatedAbilities = [...actor.abilities];
-            const [used] = updatedAbilities.splice(abilityIndex, 1);
-            updatedAbilities.push(used);
+            if (abilityIndex > -1) {
+                const updatedAbilities = [...actor.abilities];
+                const [used] = updatedAbilities.splice(abilityIndex, 1);
+                updatedAbilities.push(used);
 
-            dispatch(
-                updateCombatant({
-                    combatantId,
-                    newProperties: {
-                        abilities: updatedAbilities,
-                    },
-                })
-            );
+                dispatch(
+                    updateCombatant({
+                        combatantId,
+                        newProperties: {
+                            abilities: updatedAbilities,
+                        },
+                    })
+                );
 
-            postUpdateActorInfo.combatant = {
-                ...actorInfo.combatant,
-                abilities: updatedAbilities,
-            };
+                postUpdateActorInfo.combatant = {
+                    ...actorInfo.combatant,
+                    abilities: updatedAbilities,
+                };
+            }
         }
 
         const ability = getNextTelegraphedAbility(postUpdateActorInfo);
         if (!ability?.actions) {
-            return;
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        targeting: null,
+                    },
+                })
+            );
         }
 
         dispatch(
