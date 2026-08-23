@@ -193,11 +193,12 @@ export const chill: Effect = {
     icon: SnowflakeIcon,
     type: EFFECT_TYPES.CHILL,
     class: EFFECT_CLASSES.DEBUFF,
-    duration: 3,
+    duration: 2,
     attackPower: -1,
+    defenseDown: 1,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces ATT by 1, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
+    description: "Applies 1 DEF Down and 1 ATT Down, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
 };
 
 export const freeze: Effect = {

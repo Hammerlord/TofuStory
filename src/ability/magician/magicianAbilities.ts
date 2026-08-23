@@ -117,7 +117,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../types";
 import { attack } from "./../../enemy/abilities";
-import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
+import { armorUp, attackPower, burn, chill, defDown, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
 
 export const lesserBolt: Ability = {
     name: "Lesser Bolt",
@@ -126,7 +126,7 @@ export const lesserBolt: Ability = {
     rarity: RARITIES.COMMON,
     actions: [
         {
-            damage: 2,
+            damage: 1,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -202,7 +202,7 @@ export const magicFang: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 3,
+                damage: 2,
             },
         },
     ],
@@ -281,7 +281,7 @@ export const energyBolt: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                damage: 4,
+                damage: 3,
             },
         },
     ],
@@ -515,7 +515,7 @@ export const barrier: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 4,
+                armor: 3,
             },
         },
     ],
@@ -562,7 +562,7 @@ export const teleport: Ability = {
 };
 
 const triboltAction: Action = {
-    damage: 4,
+    damage: 3,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     type: ACTION_TYPES.RANGE_ATTACK,
     animation: ANIMATION_TYPES.ONE_WAY,
@@ -579,7 +579,7 @@ export const tribolt: Ability = {
     image: TriboltImage,
     rarity: RARITIES.COMMON,
     resourceCost: 1,
-    description: "Randomly hits the target or its neighbors, x3",
+    description: "Randomly hits the target or neighbors, x3",
     actions: [{ ...triboltAction }, { ...triboltAction }, { ...triboltAction }],
     upgrades: [{ actions: [{ damage: 1 }, { damage: 1 }, { damage: 1 }] }],
 };
@@ -589,11 +589,10 @@ export const mpEater: Ability = {
     image: MPEaterImage,
     resourceCost: 0,
     depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    description: "Destroy 1 energy on the target.",
+    rarity: RARITIES.RARE,
+    description: "Destroy <b>{{ actions.0.resources }}</b> energy on the target.",
     actions: [
         {
-            damage: 0,
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.HOSTILE,
             icon: WizMushImage,
@@ -608,10 +607,8 @@ export const mpEater: Ability = {
     ],
     upgrades: [
         {
-            description: "Destroy 2 energy on the target.",
             actions: [
                 {
-                    resources: -1,
                 },
                 {
                     resources: 1,
@@ -642,7 +639,7 @@ const arcaneAiming: Effect = {
 export const arcaneAim: Ability = {
     name: "Arcane Aim",
     image: ArcaneAimImage,
-    resourceCost: 0,
+    resourceCost: 1,
     rarity: RARITIES.RARE,
     description: "This turn, gain <b>+1 {{{ _attUp_ }}}</b> whenever you attack.",
     overrideBodyText: true,
@@ -655,14 +652,7 @@ export const arcaneAim: Ability = {
     ],
     upgrades: [
         {
-            description: "Draw {{ actions.0.drawCards.amount }} card. This turn, gain +1 ATT whenever you attack.",
-            actions: [
-                {
-                    drawCards: {
-                        amount: 1,
-                    },
-                },
-            ],
+            resourceCost: -1,
         },
     ],
 };
@@ -874,7 +864,7 @@ export const wishUponAStar: Ability = {
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
     description:
-        "<b>On Draw</b> / <b>Deck Cycle:</b> Cast a {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} star at a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "<b>Draw</b> + <b>Deck Cycle:</b> Deal {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} to a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -951,7 +941,7 @@ export const fireArrow: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 3,
+                    stacks: 2,
                 },
             ],
             bonus: [
@@ -976,7 +966,7 @@ export const fireArrow: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                     effects: [
                         {
                             stacks: 1,
@@ -1028,6 +1018,7 @@ const chocolateCupcake: Ability = {
     resourceCost: 0,
     image: ChocolateCupcakeImage,
     removeAfterTurn: true,
+    description: "Draw <b>{{ actions.0.drawCards.amount }}</b>   cards.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -1056,6 +1047,8 @@ const pieceOfCake: Ability = {
     name: "Piece Of Cake",
     resourceCost: 0,
     image: PieceOfBirthdayCakeImage,
+    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+    overrideBodyText: true,
     removeAfterTurn: true,
     actions: [
         {
@@ -1063,28 +1056,19 @@ const pieceOfCake: Ability = {
             target: TARGET_TYPES.FRIENDLY,
             animation: ANIMATION_TYPES.CONSUMABLE,
             icon: PieceOfBirthdayCakeImage,
-            effects: [
-                {
-                    name: "Cake",
-                    icon: PieceOfBirthdayCakeImage,
-                    disableDisplayIcon: true,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    attackPower: 1,
-                    duration: 5,
-                },
-            ],
+            drawCards: {
+                amount: 1,
+            },
+            resources: 1,
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    effects: [
-                        {
-                            duration: Infinity,
-                        },
-                    ],
+                    drawCards: {
+                        amount: 1,
+                    },
                 },
             ],
         },
@@ -1094,7 +1078,7 @@ const pieceOfCake: Ability = {
 export const conjureTreat: Ability = {
     name: "Conjure Treat",
     resourceCost: 1,
-    description: "Add 3 treats to your deck.",
+    description: "Add 2 treats to your deck.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     image: ParfaitCupcakeImage,
@@ -1103,7 +1087,8 @@ export const conjureTreat: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            addCardsToDeck: [parfaitCupcake, chocolateCupcake, pieceOfCake],
+            addCardsToDeck: [parfaitCupcake, chocolateCupcake],
+            //addCardsToDeck: [parfaitCupcake, chocolateCupcake, pieceOfCake],
         },
     ],
     upgrades: [
@@ -1174,7 +1159,7 @@ export const greaterBolt: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "While you own this card, 'bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2</b> {{{ _damage_ }}}.",
+        "While you own this card, 'Bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2</b> {{{ _damage_ }}}.",
     effectsWhileOwned: [
         {
             name: "Greater Bolt",
@@ -1475,7 +1460,7 @@ export const slimmingMuffin: Ability = {
 export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
-    description: "While this is in hand, its cost reduces by <b>1 {{{ _resource_ }}}</b> for each card you play.",
+    description: "While this is in hand, its cost reduces by <b>1 {{{ _resource_ }}}</b> each card you play.",
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
     onAbility: {
@@ -1659,7 +1644,7 @@ export const goutOfFlame: Ability = {
     image: DoTPunisherImage,
     overrideBodyText: true,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> When drawn, <b>{{ onDraw.ability.actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} an enemy.",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} <br/> <br/> <b>Draw:</b> <b>{{ onDraw.ability.actions.0.effects.0.stacks }}</b> {{{ _burn_ }}} an enemy.",
     onDraw: {
         ability: {
             name: "Flame Gout",
@@ -1760,7 +1745,7 @@ export const greatestBolt: Ability = {
     resourceCost: 2,
     rarity: RARITIES.RARE,
     image: PurpleEnergyBoltImage,
-    description: "<b>+2</b> {{{ _damage_ }}} for every other 'bolt' card you own.",
+    description: "<b>+2</b> {{{ _damage_ }}} for every other 'Bolt' card you own.",
     disableConditionGlow: true,
     overrideBodyText: true,
     actions: [
@@ -1831,7 +1816,7 @@ export const moltenLaser: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "Destroy all armor and apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>",
+    description: "Destroy {{ actions.0.destroyArmor }} {{{ _armor_ }}} and apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1839,7 +1824,7 @@ export const moltenLaser: Ability = {
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.BEAM,
             icon: FireMarbleImage,
-            destroyArmor: 1,
+            destroyArmor: 0.5,
             effects: [
                 {
                     ...burn,
@@ -1858,17 +1843,18 @@ export const moltenLaser: Ability = {
 export const combust: Ability = {
     name: "Combust",
     image: ParalyzeImage,
-    resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    resourceCost: 3,
+    rarity: RARITIES.RARE,
     description: "Deals <b>{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each {{{ _burn_ }}} on the target.",
     actions: [
         {
+            damage: 10,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.BEAM,
             icon: FireArrowProjectileImage,
             bonus: {
-                damage: 3,
+                damage: 2,
                 multiplier: {
                     calculationTarget: CONDITION_TARGETS.TARGET,
                     type: MULTIPLIER_TYPES.EFFECT_STACKS,
@@ -1881,7 +1867,9 @@ export const combust: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -1893,7 +1881,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. While target has {{{ _burn_ }}}, gain <br/> <b>{{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}}</b> + <b>{{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}}</b> per turn. <br/> <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. Gain <br/> <b>{{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}}</b> + <b>{{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}}</b> per turn. <br/> <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,
@@ -1905,7 +1893,7 @@ export const leechingFlame: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 2,
+                    stacks: 3,
                 },
                 {
                     name: "Leeching Flame",
@@ -1928,12 +1916,6 @@ export const leechingFlame: Ability = {
                                     healing: 1,
                                     removeEffect: true,
                                 },
-                            },
-                        ],
-                        conditions: [
-                            {
-                                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                                hasEffectType: [EFFECT_TYPES.BURN],
                             },
                         ],
                     },
@@ -2091,7 +2073,7 @@ export const icyDraft: Ability = {
     rarity: RARITIES.COMMON,
     overrideBodyText: true,
     description:
-        "Apply {{{ _freeze_ }}}<br/> <br/> When drawn, {{{ _chill_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} a random enemy.",
+        "Apply {{{ _freeze_ }}}<br/> <br/> <b>Draw:</b> {{{ _chill_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}</b>{{{ _duration_ }}} an enemy.",
     onDraw: {
         ability: {
             name: "Chilling Draft",
@@ -2105,7 +2087,6 @@ export const icyDraft: Ability = {
                     effects: [
                         {
                             ...chill,
-                            duration: 3,
                         },
                     ],
                 },
@@ -2193,6 +2174,7 @@ const avalanche: Ability = {
     resourceCost: 2,
     removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
+    description: "Apply {{{ _freeze_ }}}",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2230,6 +2212,7 @@ const snowBoulder: Ability = {
     resourceCost: 1,
     removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
+    description: "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2270,6 +2253,7 @@ export const snowball: Ability = {
     image: SnowballImage,
     resourceCost: 1,
     rarity: RARITIES.RARE,
+    description: "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2284,7 +2268,6 @@ export const snowball: Ability = {
             effects: [
                 {
                     ...chill,
-                    duration: 1,
                 },
             ],
             addCardsToDeck: [snowBoulder],
@@ -2356,7 +2339,7 @@ export const starBolt: Ability = {
     image: GlisteningStarImage,
     description: "Draw {{ actions.0.drawCards.amount }} card. <br/> <b>Charged:</b> Draw {{ actions.0.bonus.drawCards.amount }} more.",
     overrideBodyText: true,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     actions: [
         {
             damage: 7,
@@ -2405,7 +2388,7 @@ export const moonlight: Ability = {
     description: "Draw a card.",
     actions: [
         {
-            armor: 5,
+            armor: 6,
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
             animation: ANIMATION_TYPES.CONSUMABLE,
@@ -2431,7 +2414,7 @@ export const zap: Ability = {
     resourceCost: 1,
     image: ThunderSparkImage,
     overrideBodyText: true,
-    description: "When drawn, {{{ _stun_ }}} a random enemy.",
+    description: "<b>Draw:</b> {{{ _stun_ }}} an enemy.",
     rarity: RARITIES.COMMON,
     onDraw: {
         ability: {
@@ -2631,7 +2614,7 @@ export const icicles: Ability = {
     image: IciclesPortraitImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "The next {{ actions.0.effects.0.stacks }} times you play a 1+ cost card, summon an Icicle.",
+    description: "The next {{ actions.0.effects.0.stacks }} times you play a <b>1+ {{{ _resource }}}</b> cost card, summon an Icicle.",
     resourceCost: 1,
     actions: [
         {
@@ -2980,7 +2963,7 @@ export const fireSpirit: Ability = {
     minion: {
         name: "Fire Spirit",
         image: FireSpiritImage,
-        maxHP: 6,
+        maxHP: 5,
         abilities: [
             {
                 name: "Shoot",
@@ -2994,7 +2977,7 @@ export const fireSpirit: Ability = {
                         effects: [
                             {
                                 ...burn,
-                                stacks: 2,
+                                stacks: 1,
                             },
                         ],
                     },
@@ -3024,7 +3007,7 @@ export const fireSpirit: Ability = {
 export const flareBolt: Ability = {
     name: "Flare Bolt",
     resourceCost: 2,
-    description: "Summon a Fire Spirit.",
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}.</b> Summon a <b>Fire Spirit.</b>",
     image: FireMarbleImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
@@ -3033,7 +3016,13 @@ export const flareBolt: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: FireMarbleImage,
-            damage: 14,
+            damage: 5,
+            effects: [
+                {
+                    ...burn,
+                    stacks: 3,
+                },
+            ],
             animationOptions: {
                 height: 90,
                 rotateToFaceTarget: true,
@@ -3047,14 +3036,23 @@ export const flareBolt: Ability = {
     ],
     upgrades: [
         {
-            actions: [{ damage: 5 }],
+            actions: [
+                {
+                    damage: 3,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
+                },
+            ],
         },
     ],
 };
 
 export const astralRewind: Ability = {
     name: "Astral Rewind",
-    description: "Create Ephemeral copies of the last {{ actions.0.addLastPlayedCards.amount }} cards you used and add them to your hand.",
+    description: "Add Ephemeral copies of the last <b>{{ actions.0.addLastPlayedCards.amount }}</b> cards you used to your hand.",
     image: EpicAdventureImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
@@ -3066,7 +3064,7 @@ export const astralRewind: Ability = {
             icon: EpicAdventureImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             addLastPlayedCards: {
-                amount: 3,
+                amount: 2,
                 abilityEffects: [
                     {
                         removeParentCardAfterTurn: true,
@@ -3187,16 +3185,16 @@ export const blizzard: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: SnowflakeEmojiImage,
     description:
-        "Expend all {{{ _resource_ }}} to deal {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} <b>X</b> times.",
+        "Expend all {{{ _resource_ }}} to deal {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}, <b>X</b> times.",
     overrideBodyText: true,
     actions: [
         {
-            target: TARGET_TYPES.RANDOM_HOSTILE,
+            target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: SnowflakeEmojiImage,
             damage: 3,
-            effects: [{ ...chill, duration: 1 }],
+            effects: [chill],
             area: 2,
         },
     ],
@@ -3318,23 +3316,22 @@ export const picoPicoHammerAbility: Ability = {
     resourceCost: 1,
     image: PicoPicoHammerImage,
     rarity: RARITIES.UNCOMMON,
-    description: "<b>Charged:</b> Cast a <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} {{{ _stun_ }}} hammer at the main target.",
+    description: "Apply {{{ _stun_ }}}. <br/> <b>Charged:</b> Cast another <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer.",
     actions: [
         {
-            damage: 6,
-            area: 1,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            target: TARGET_TYPES.HOSTILE,
-            icon: PicoPicoHammerImage,
-            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
-        },
-        {
-            damage: 6,
+            damage: 7,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: PicoPicoHammerImage,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             effects: [stun],
+        },
+        {
+            damage: 2,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            icon: PicoPicoHammerImage,
+            animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
@@ -3350,7 +3347,7 @@ export const picoPicoHammerAbility: Ability = {
                     damage: 2,
                 },
                 {
-                    damage: 2,
+                    damage: 1,
                 },
             ],
         },
@@ -3395,7 +3392,7 @@ export const wrath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: WrathImage,
     resourceCost: 1,
-    description: "Reduces the cost of a random card in your hand by <b>1 {{{ _resource }}}</b> until discarded.",
+    description: "Reduces the cost of a random card in hand by <b>1 {{{ _resource_ }}}</b> until discarded.",
     actions: [
         {
             damage: 7,
@@ -3479,7 +3476,7 @@ export const chargedBlast: Ability = {
 export const flameWall: Ability = {
     name: "Flame Wall",
     description:
-        "Applies <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.stacks }} {{{ _burn_ }}}</b> to attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "Inflicts <b>{{ actions.0.effects.0.onReceiveAttack.effects.0.stacks }} {{{ _burn_ }}}</b> on attackers. <br/> </br> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     image: ExplosionImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
@@ -3488,7 +3485,7 @@ export const flameWall: Ability = {
         {
             target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
-            armor: 5,
+            armor: 7,
             effects: [
                 {
                     name: "Flame Wall",
