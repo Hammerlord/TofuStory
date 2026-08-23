@@ -81,15 +81,19 @@ export const getMultiplier = ({
         return (source?.statUpdate?.rawDamage || 1) * numValue;
     }
 
-    if (type === MULTIPLIER_TYPES.ALL_CARDS) {
-        const allCards = [...deck, ...hand, ...discard];
+    if (type === MULTIPLIER_TYPES.ALL_CARDS || type === MULTIPLIER_TYPES.CARDS_IN_HAND) {
+        const cardsToCheck = [...hand];
+
+        if (type === MULTIPLIER_TYPES.ALL_CARDS) {
+            cardsToCheck.push(...deck, ...discard);
+        }
         const multValue = typeof value === "number" ? value : 1;
 
         if (!filters) {
-            return Math.floor(allCards.length * multValue);
+            return Math.floor(cardsToCheck.length * multValue);
         }
 
-        let filtered = allCards.filter((card) => {
+        let filtered = cardsToCheck.filter((card) => {
             return filters.some(({ property, value, comparator }) =>
                 passesValueComparison({ val: card[property], otherVal: value, comparator })
             );

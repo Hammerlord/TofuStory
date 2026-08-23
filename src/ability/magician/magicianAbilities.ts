@@ -608,8 +608,7 @@ export const mpEater: Ability = {
     upgrades: [
         {
             actions: [
-                {
-                },
+                {},
                 {
                     resources: 1,
                 },
@@ -1158,30 +1157,10 @@ export const greaterBolt: Ability = {
     image: EnergyBoltImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description:
-        "While you own this card, 'Bolt' abilities gain <b>+{{ effectsWhileOwned.0.skillBonus.0.damage }}</b> {{{ _damage_ }}}. Greater Bolt gains <b>+2</b> {{{ _damage_ }}}.",
-    effectsWhileOwned: [
-        {
-            name: "Greater Bolt",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            skillBonus: [
-                {
-                    comparator: "includes",
-                    skill: "bolt",
-                    damage: 1,
-                },
-                {
-                    comparator: "includes",
-                    skill: "greater bolt",
-                    damage: 1,
-                },
-            ],
-        },
-    ],
+    description: "Deals <b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every other 'Bolt' card in your hand.",
     actions: [
         {
-            damage: 7,
+            damage: 8,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1192,13 +1171,23 @@ export const greaterBolt: Ability = {
                 width: 100,
                 height: 100,
             },
+            bonus: {
+                damage: 3,
+                multiplier: {
+                    type: MULTIPLIER_TYPES.CARDS_IN_HAND,
+                    filters: [{ property: "name", comparator: "includes", value: "bolt" }],
+                },
+            },
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -1574,7 +1563,7 @@ export const metronome: Ability = {
 export const arcaneChanneling: Ability = {
     name: "Arcane Channeling",
     resourceCost: 0,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     depletedOnUse: true,
     image: ThunderBreakImage,
     actions: [

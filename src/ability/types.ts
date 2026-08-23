@@ -467,6 +467,7 @@ export enum MULTIPLIER_TYPES {
     DAMAGE = "damage",
     OVERHEALING = "overhealing",
     ALL_CARDS = "all-cards",
+    CARDS_IN_HAND = "cards-in-hand",
     EFFECT_STACKS = "effect-stacks",
     ABILITIES_USED = "abilities-used",
     NUM_ALLIES = "numAllies",
