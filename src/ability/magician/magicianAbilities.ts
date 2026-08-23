@@ -515,7 +515,7 @@ export const barrier: Ability = {
                         hasEffect: "Charged",
                     },
                 ],
-                armor: 3,
+                armor: 2,
             },
         },
     ],
@@ -1229,25 +1229,29 @@ export const throwTheBook: Ability = {
 export const quickspell: Ability = {
     name: "Quickspell",
     image: MagicBoosterImage,
-    resourceCost: 1,
+    resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Draw {{ actions.0.drawCards.amount }} {{{ _offense_ }}} cards.",
+    description: "<b>Search</b> your deck for an {{{ _offense_ }}} card.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
             icon: MagicBoosterImage,
-            drawCards: {
-                amount: 2,
-                filters: [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK],
+            selectCards: {
+                type: SELECT_CARD_TYPES.SEARCH_DECK,
+                filters: [
+                    {
+                        abilityType: "offense",
+                    },
+                ],
             },
         },
     ],
     upgrades: [
         {
-            resourceCost: 0,
+            preemptive: true,
         },
     ],
 };
@@ -1370,7 +1374,7 @@ export const thunderBolt: Ability = {
             },
         },
         {
-            damage: 2,
+            damage: 1,
             area: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
@@ -1406,7 +1410,7 @@ export const slimmingMuffin: Ability = {
     name: "Conjured Slimming Muffin",
     image: ChocolateMuffinImage,
     resourceCost: 0,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description:
         "<b>Deplete</b> a card. Draw a card. It costs <b>{{ actions.0.drawCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     overrideBodyText: true,
@@ -1670,25 +1674,12 @@ export const goutOfFlame: Ability = {
     ],
     upgrades: [
         {
-            onDraw: {
-                ability: {
-                    actions: [
-                        {
-                            effects: [
-                                {
-                                    stacks: 1,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
             actions: [
                 {
                     effects: [
                         {
                             ...burn,
-                            stacks: 1,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -1805,7 +1796,8 @@ export const moltenLaser: Ability = {
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "Destroy {{ actions.0.destroyArmor }} {{{ _armor_ }}} and apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>",
+    description:
+        "Destroy <b>{{ actions.0.destroyArmor }} {{{ _armor_ }}}</b> and apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1817,7 +1809,7 @@ export const moltenLaser: Ability = {
             effects: [
                 {
                     ...burn,
-                    stacks: 10,
+                    stacks: 5,
                 },
             ],
         },
@@ -2463,7 +2455,7 @@ export const frostfireBlast: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 6,
+            damage: 5,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
