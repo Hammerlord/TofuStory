@@ -116,7 +116,7 @@ export const selectCardsAction =
                     const index = pile.findIndex((ability) => ability.instanceId === id);
                     if (index > -1) {
                         const [card] = pile.splice(index, 1);
-                        cardsToAdd.push({ ...card, effects: [...(card.effects || []), ...effects] });
+                        cardsToAdd.push({ ...card, effects: [...(card?.effects || []), ...effects] });
                         return true;
                     }
                 };
