@@ -35,12 +35,14 @@ export const drawCards = ({
     amount,
     bonus,
     context: context,
+    isOnTurnDraw = false,
 }: {
     effects?: AbilityEffect[];
     filters?: ACTION_TYPES[];
     amount: number;
     bonus?: CardBonus[];
     context?: ActionContext;
+    isOnTurnDraw?: boolean;
 }) => {
     return (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
@@ -61,42 +63,64 @@ export const drawCards = ({
         const source = context?.sourceChain?.at(-1);
         amount = sumCardDrawAmount({ effects, source, amount });
 
-        if (filters.length) {
-            // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
-            // If there are not enough to fulfill the quota, it just whiffs.
-            while (cardsToDraw.length !== amount) {
-                const i = newDeck.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
-                if (i === -1) {
-                    break;
+        const addCardsToDraw = (numCards: number) => {
+            const cards = [];
+            if (filters.length) {
+                // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
+                // If there are not enough to fulfill the quota, it just whiffs.
+                while (cards.length !== numCards) {
+                    const i = newDeck.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                    if (i === -1) {
+                        break;
+                    }
+
+                    const [card] = newDeck.splice(i, 1);
+                    cards.push(card);
                 }
 
-                const [card] = newDeck.splice(i, 1);
-                cardsToDraw.push(card);
-            }
+                while (cards.length !== numCards) {
+                    const i = newDiscard.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                    if (i === -1) {
+                        break;
+                    }
 
-            while (cardsToDraw.length !== amount) {
-                const i = newDiscard.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
-                if (i === -1) {
-                    break;
+                    const [card] = newDiscard.splice(i, 1);
+                    cards.push(card);
                 }
-
-                const [card] = newDiscard.splice(i, 1);
-                cardsToDraw.push(card);
-            }
-        } else {
-            // Handle normal card draw
-            if (newDeck.length < amount) {
-                cardsToDraw.push(...newDeck.slice());
-                newDeck = shuffle(discard);
-                newDiscard = [];
-                cardsToDraw.push(...newDeck.splice(0, amount - cardsToDraw.length));
-                deckCycled = true;
             } else {
-                cardsToDraw.push(...newDeck.splice(0, amount));
+                // Handle normal card draw
+                if (newDeck.length < numCards) {
+                    cards.push(...newDeck.slice());
+                    newDeck = shuffle(discard);
+                    newDiscard = [];
+                    cards.push(...newDeck.splice(0, numCards - cards.length));
+                    deckCycled = true;
+                } else {
+                    cards.push(...newDeck.splice(0, numCards));
+                }
             }
-        }
+
+            cardsToDraw.push(...cards);
+            return cards;
+        };
+
+        const cardsDrawn = addCardsToDraw(amount);
 
         let handTooFull = false;
+        const handlePreemptive = (cards: CombatAbility[], maxRetries = 3) => {
+            const numPreemptiveCards = cards.filter((c) => c.preemptive).length;
+            if (numPreemptiveCards > 0) {
+                const newCards = addCardsToDraw(numPreemptiveCards);
+                if (newCards.length > 0) {
+                    handlePreemptive(newCards, --maxRetries);
+                }
+            }
+        };
+
+        if (isOnTurnDraw) {
+            handlePreemptive(cardsDrawn);
+        }
+
         cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, source, effects, playerSide }));
 
         for (let card of cardsToDraw) {

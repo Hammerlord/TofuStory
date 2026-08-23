@@ -165,6 +165,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
             drawCards({
                 amount: drawCardsAmount,
                 context: context,
+                isOnTurnDraw: true,
             })
         );
 

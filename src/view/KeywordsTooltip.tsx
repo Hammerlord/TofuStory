@@ -36,7 +36,8 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Pre-emptive",
-        description: "Start battle with this ability in hand.",
+        description:
+            "Start the battle with this card in hand. Drawing a Pre-emptive card does not count toward your total card draw amount for the turn.",
         keys: ["preemptive"],
     },
     {
