@@ -20,12 +20,12 @@ import { MAX_HAND_SIZE, battleWarnings } from "../../constants";
 import { passesConditions, passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import { findCombatantData, updateCombatant } from "../combatantData";
 import { getUpdatedStats } from "../getUpdatedStats";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { findCombatantData } from "../combatantData";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
-import { updateCombatant } from "../combatantData";
+import { prepareForDiscard } from "./discardCards";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
@@ -106,7 +106,6 @@ export const drawCards = ({
 
         const cardsDrawn = addCardsToDraw(amount);
 
-        let handTooFull = false;
         const handlePreemptive = (cards: CombatAbility[], maxRetries = 3) => {
             const numPreemptiveCards = cards.filter((c) => c.preemptive).length;
             if (numPreemptiveCards > 0) {
@@ -123,9 +122,12 @@ export const drawCards = ({
 
         cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, source, effects, playerSide }));
 
+        let handTooFull = false;
+
         for (let card of cardsToDraw) {
             if (newHand.length >= MAX_HAND_SIZE) {
-                newDiscard.push(card);
+                const toDiscard = prepareForDiscard([card]);
+                newDiscard.unshift(...toDiscard);
                 handTooFull = true;
                 continue;
             }
