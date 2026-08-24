@@ -73,6 +73,7 @@ export const onEffectEventTrigger = ({
             drawOriginalAbility = false,
             multiplier: multiplierConfig,
             pushEventQueue,
+            effects = [],
             ...other
         } = effectEvent;
 
@@ -189,9 +190,18 @@ export const onEffectEventTrigger = ({
                 break $applyStatChanges;
             }
 
-            let effects = [];
-            if (Array.isArray(other.effects)) {
-                effects = other.effects.map((e) => {
+            // No stat changes will trigger so skip the whole block
+            // This check is pretty cursed and not comprehensive but fixes an issue where Magic Guard's initial turn end did not apply armor
+            const onlyMetadata =
+                Object.keys(other).length === 0 ||
+                (Object.keys(other).length === 1 && Object.keys(other)[0].toLowerCase().includes("target"));
+            if (onlyMetadata && effects.length === 0) {
+                break $applyStatChanges;
+            }
+
+            let effectsToApply = [];
+            if (Array.isArray(effects)) {
+                effectsToApply = effects.map((e) => {
                     if (typeof e === "string") {
                         return e;
                     }
@@ -202,15 +212,10 @@ export const onEffectEventTrigger = ({
                 });
             }
 
-            // No stat changes will trigger so skip the whole block
-            if (Object.keys(other).length <= 1 && effects.length === 0) {
-                break $applyStatChanges;
-            }
-
-            const action = {
+            const action: Action = {
                 type: ACTION_TYPES.NONE, // No animation
                 ...other,
-                effects,
+                effects: effectsToApply,
             };
 
             const targetIds = [];
