@@ -180,7 +180,7 @@ const EffectGroupTooltipContent = ({
 }) => {
     const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effects[0];
 
-    const elementMapping = getIconInterpolationMap({ combatant: owner });
+    const elementMapping = getIconInterpolationMap({ playerClass: (owner as Player)?.class });
     const interpolatedDescription = Handlebars.compile(description || "")({
         ...elementMapping,
         ...effects[0],

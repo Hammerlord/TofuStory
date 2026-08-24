@@ -207,9 +207,9 @@ export const TooltipSection = ({
     title?: string | ReactElement;
     description?: string | ReactElement | ReactElement[];
 }) => {
-    const player = useAppSelector((state) => state.character?.player);
+    const playerClass = useAppSelector((state) => state.character?.player?.class);
     const classes = useSectionStyles();
-    const elementMapping = getIconInterpolationMap({ combatant: player });
+    const elementMapping = getIconInterpolationMap({ playerClass });
     const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
 
     return (

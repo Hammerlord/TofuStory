@@ -89,10 +89,9 @@ const ICON_INTERPOLATIONS = {
     _defUp_: inlineSvg(defUpSvg),
 };
 
-export const getIconInterpolationMap = ({ multiplier, combatant }: { multiplier?: number; combatant?: Combatant }) => {
+export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass: PLAYER_CLASSES }) => {
     const manaStyleStr = styleObjectToString({ ...iconStyles, width: 12 });
 
-    const playerClass = (combatant as Player)?.class;
     const resource =
         {
             [PLAYER_CLASSES.WARRIOR]: FuryImage,
@@ -185,7 +184,7 @@ export const interpolateAbilityDescription = ({
         ? getMultiplier({ actor: playerInfo, multiplier: multiplierAction.multiplier, deck, hand, discard })
         : 0;
 
-    const elementMapping = getIconInterpolationMap({ multiplier, combatant: playerInfo?.combatant });
+    const elementMapping = getIconInterpolationMap({ multiplier, playerClass: (playerInfo?.combatant as Player)?.class });
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
 
     return Handlebars.compile(ability.description || "")({
