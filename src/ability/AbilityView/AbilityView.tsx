@@ -25,8 +25,9 @@ import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
-import { getAbilityColor, getLastPlayedCards, interpolateAbilityDescription } from "./utils";
+import { getAbilityColor, getLastPlayedCards } from "./utils";
 import { Box } from "@mui/material";
+import { interpolateAbilityDescription } from "../descriptionInterpolation";
 
 const useStyles = createUseStyles({
     root: {

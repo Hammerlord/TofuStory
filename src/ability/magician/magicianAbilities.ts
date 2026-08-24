@@ -372,7 +372,7 @@ export const magicGuard: Ability = {
             effects: [
                 {
                     name: "Magic Guard",
-                    description: "Gaining +3 armor every turn for 3 turns",
+                    description: "Gaining {{ onTurnEnd.armor }} armor at the end of the turn.",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     icon: MagicGuardImage,
@@ -3479,7 +3479,7 @@ export const flameWall: Ability = {
                     maxApplications: 1,
                     onReceiveAttack: {
                         targetType: TRIGGER_TARGET_TYPES.ACTOR,
-                        effects: [{ ...burn, stacks: 2 }],
+                        effects: [{ ...burn, stacks: 1 }],
                     },
                 },
             ],

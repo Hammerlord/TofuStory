@@ -17,6 +17,7 @@ import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
 import { BattleState } from "../battle/reducer";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 
 const indicatorSize = 8;
 
@@ -194,7 +195,11 @@ const EffectGroupTooltipContent = ({
         class: effectClass,
     } = effects[0];
 
-    const interpolatedDescription = Handlebars.compile(description || "")(effects[0]);
+    const elementMapping = getIconInterpolationMap({ combatant: owner });
+    const interpolatedDescription = Handlebars.compile(description || "")({
+        ...elementMapping,
+        ...effects[0],
+    });
     const classes = useStyles();
 
     const tooltipContent = (
