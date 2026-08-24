@@ -27,6 +27,8 @@ import { armorDown, doom, incorporeal } from "../enemy/effect";
 import Icon from "../icon/Icon";
 import { AshesImage, CriticalShotImage, NamelessSwordImage, TargetLockImage } from "../images";
 import Handlebars from "handlebars";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
+import { useAppSelector } from "../hooks";
 
 const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
     bideEffect,
@@ -205,7 +207,11 @@ export const TooltipSection = ({
     title?: string | ReactElement;
     description?: string | ReactElement | ReactElement[];
 }) => {
+    const player = useAppSelector((state) => state.character?.player);
     const classes = useSectionStyles();
+    const elementMapping = getIconInterpolationMap({ combatant: player });
+    const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
+
     return (
         <div className={classes.section}>
             {icon && (
@@ -215,7 +221,7 @@ export const TooltipSection = ({
             )}
             <div>
                 <div className={classes.tooltipTitle}>{title}</div>
-                {description}
+                <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
             </div>
         </div>
     );
@@ -234,8 +240,8 @@ export const KeywordsTooltips = ({ object }) => {
 
     return (
         <div>
-            {tooltipConfigs.map((config) => (
-                <TooltipSection icon={config.icon} title={config.name} description={config.description} key={config.name} />
+            {tooltipConfigs.map((config, i) => (
+                <TooltipSection icon={config.icon} title={config.name} description={config.description} key={`${config.name}-${i}`} />
             ))}
         </div>
     );
