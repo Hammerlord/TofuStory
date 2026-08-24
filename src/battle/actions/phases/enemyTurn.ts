@@ -7,26 +7,22 @@ import { ITEM_TYPES, Item } from "../../../item/types";
 import { getRandomInt } from "../../../utils";
 import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
-import { BattleState, battleStateSlice } from "../../reducer";
-import { isStunnedOrFrozen } from "../../utils";
-import { isTurnActionPrevented } from "../combatantData";
-import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
-import { updateCombatants } from "../combatantData";
-import { findCombatantData } from "../combatantData";
-import { BATTLE_STATES } from "../../reducer";
+import { BATTLE_STATES, BattleState, battleStateSlice } from "../../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
+import { isStunnedOrFrozen } from "../../utils";
+import { findCombatantData, isTurnActionPrevented, updateCombatant, updateCombatants } from "../combatantData";
 import { performAction } from "../performAction";
+import { PlaybackCollector, playbackCollector } from "../playbackCollector";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
+import { autoSelectActionTarget } from "../targeting/targeting";
+import { useAbility } from "../useAbility";
 import { useItem } from "../useItem";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
-import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
-import { onEndTurnTriggers } from "./phases";
-import { PlaybackCollector, playbackCollector } from "../playbackCollector";
-import { autoSelectActionTarget } from "../targeting/targeting";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { updateCombatant } from "../combatantData";
-import { useAbility } from "../useAbility";
 import { handleDoTs } from "./damageOverTime";
+import { onEndTurnTriggers } from "./phases";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
@@ -309,39 +305,7 @@ export const endEnemyTurn = () => {
     return (dispatch, getState) => {
         dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide }));
 
-        const { playerSide, enemySide, round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
-        const isLifeLinked = (combatant) => combatant?.effects?.some((effect) => effect.type === EFFECT_TYPES.LIFE_LINK);
-
-        dispatch(
-            updateBattle({
-                playerSide: playerSide.map((combatant: Combatant | null) => {
-                    if (!combatant?.HP && !isLifeLinked(combatant)) {
-                        return null;
-                    }
-
-                    return combatant;
-                }),
-                enemySide: enemySide.map((combatant: Combatant | null) => {
-                    if (!combatant?.HP && !isLifeLinked) {
-                        return null;
-                    }
-                    if (combatant?.resources > combatant?.maxResources) {
-                        return {
-                            ...combatant,
-                            resources: combatant.maxResources,
-                        };
-                    }
-
-                    if (combatant?.resources < 0) {
-                        return {
-                            ...combatant,
-                            resources: 0,
-                        };
-                    }
-                    return combatant;
-                }),
-            })
-        );
+        const { round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
 
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
@@ -353,7 +317,7 @@ export const endEnemyTurn = () => {
                 return;
             }
 
-            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId })) || {};
+            dispatch(requeueRecentlyUsedAbility({ combatantId: combatantId }));
         });
 
         dispatch(checkValidEnemyTargeting());
