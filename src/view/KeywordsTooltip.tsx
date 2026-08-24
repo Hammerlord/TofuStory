@@ -209,7 +209,8 @@ export const TooltipSection = ({
 }) => {
     const playerClass = useAppSelector((state) => state.character?.player?.class);
     const classes = useSectionStyles();
-    const elementMapping = getIconInterpolationMap({ playerClass });
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
+
     const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
 
     return (

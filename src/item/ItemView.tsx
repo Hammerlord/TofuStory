@@ -1,12 +1,14 @@
+import { Tooltip } from "@mui/material";
 import classNames from "classnames";
-import { createUseStyles } from "react-jss";
-import { Item, RARITIES } from "./types";
-import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import Handlebars from "handlebars";
+import { createUseStyles } from "react-jss";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
+import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
-import { Tooltip } from "@mui/material";
+import { Item, RARITIES } from "./types";
+import { useMemo } from "react";
 
 const useStyles = createUseStyles({
     item: {
@@ -90,10 +92,8 @@ const ItemView = ({
     playerClass?: PLAYER_CLASSES;
 }) => {
     const classes = useStyles();
-    const interpolatedDescription = Handlebars.compile(item.description || "")({
-        ...item,
-        resources: resourceClassNameMap[playerClass] || "resource",
-    });
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
+    const interpolatedDescription = Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
 
     let tooltips;
     if (item.overrideTooltip) {
@@ -133,7 +133,7 @@ const ItemView = ({
                     </div>
                     <hr />
                 </div>
-                <div>{interpolatedDescription}</div>
+                <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
             </div>
         </Tooltip>
     );

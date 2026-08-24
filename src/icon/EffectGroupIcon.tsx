@@ -3,21 +3,20 @@ import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_CLASSES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant, Player } from "../character/types";
-import { CrossedSwordsIcon, HeartIcon, HourglassIcon, ShieldIcon } from "../images/icons";
+import { HourglassIcon } from "../images/icons";
 
 import Handlebars from "handlebars";
 import _ from "lodash";
-import { useEffect, useRef } from "react";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { isTurnToTrigger } from "../battle/actions/statusEffect/effectLifecycle";
+import { useEffect, useMemo, useRef } from "react";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { findCombatantData } from "../battle/actions/combatantData";
+import { isTurnToTrigger } from "../battle/actions/statusEffect/effectLifecycle";
+import { BattleState } from "../battle/reducer";
 import { playExpandContractAnimation } from "../character/animations";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
-import { BattleState } from "../battle/reducer";
-import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 
 const indicatorSize = 8;
 
@@ -180,7 +179,9 @@ const EffectGroupTooltipContent = ({
 }) => {
     const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effects[0];
 
-    const elementMapping = getIconInterpolationMap({ playerClass: (owner as Player)?.class });
+    const playerClass = (owner as Player)?.class;
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
+
     const interpolatedDescription = Handlebars.compile(description || "")({
         ...elementMapping,
         ...effects[0],
