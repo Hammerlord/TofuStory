@@ -1,20 +1,17 @@
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
-    AttackDownImage,
     BackpackImage,
     BombImage,
     CursedDollImage,
     FireMarbleImage,
     GemHeartImage,
     GreyShieldImage,
-    HumilityStoneImage,
     LeafImage,
     MushroomOmokImage,
     NimbleJewelCImage,
     PoisonImage,
     StoneShieldImage,
     UpMATTImage,
-    WeaponBoosterImage,
     WeaponMasteryImage,
 } from "../images";
 import {
@@ -26,7 +23,6 @@ import {
     BloodIcon,
     CactusIcon,
     CloudyIcon,
-    CrossedSwordsIcon,
     DefDownIcon,
     DefUpIcon,
     DizzyIcon,
@@ -40,7 +36,6 @@ import {
     NoStunIcon,
     PristineBlackShieldIcon,
     PristineShieldIcon,
-    ShieldIcon,
     SnowflakeIcon,
     SpeechBubbleIcon,
     VolcanoIcon,
@@ -54,14 +49,13 @@ import {
     Effect,
     MULTIPLIER_TYPES,
     Minion,
-    SCALING_VALUE_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./types";
 
 export const thorns: Effect = {
     name: "Thorns",
-    description: "Deals 1 damage to attackers.",
+    description: "Attackers take 1 damage per stack.",
     canBeSilenced: true,
     icon: CactusIcon,
     duration: Infinity,
@@ -72,7 +66,7 @@ export const thorns: Effect = {
 
 export const eliteThorns: Effect = {
     ...thorns,
-    description: "Deals 1 damage to attackers. Activates every 2 turns.",
+    description: "Attackers take 1 damage per stack. Activates every {{ turnsTriggerFequency }} turns.",
     turnsTriggerFrequency: 2,
 };
 
@@ -91,7 +85,8 @@ export const controlImmune: Effect = {
 
 export const hardy: Effect = {
     name: "Hardy",
-    description: "After being stunned or frozen, this character gains temporary immunity to those effects.",
+    description:
+        "After being stunned or frozen, gains immunity to those effects for <b>{{{ onReceiveEffect.effects.0.duration }}} {{{ _duration_ }}}.</b>",
     icon: HelmetIcon,
     disableDisplayIcon: true,
     onReceiveEffect: {
@@ -154,7 +149,7 @@ export const stun: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
-    description: "Stunned targets are unable to act, and they take 30% increased damage, rounded up.",
+    description: "Stunned targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
     defenseDown: 3,
     icon: DizzyIcon,
 };
@@ -198,7 +193,7 @@ export const chill: Effect = {
     defenseDown: 1,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Applies 1 DEF Down and 1 ATT Down, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
+    description: "Applies <b>1 {{{ _attDown_ }}} ATT Down</b> and <b>{{{ _defDown_ }}} DEF Down,</b> up to {{ maxApplications }}.",
 };
 
 export const freeze: Effect = {
@@ -208,7 +203,7 @@ export const freeze: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     maxApplications: 1,
     maxDuration: 1,
-    description: "Frozen targets are unable to act and take increased damage.",
+    description: "Frozen targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
     defenseDown: 3,
     duration: 1,
     persistsWhenDead: true,
@@ -255,7 +250,7 @@ export const raging: Effect = {
     type: EFFECT_TYPES.RAGE,
     class: EFFECT_CLASSES.BUFF,
     icon: AngerIcon,
-    description: "Ramping ATT. ATT stacks are removed if stunned or frozen.",
+    description: "Ramping <b>{{{ _attUp_ }}} ATT Up.</b> Stacks are removed if stunned or frozen.",
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         ability: {
@@ -311,7 +306,8 @@ export const avenger: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: JapaneseOgreAlternateIcon,
-    description: "Grows powerful when one of its allies falls in combat.",
+    description:
+        "Gains Armor and <b>{{ onFriendlyDeath.effects.0.attackPower }} {{{ _attUp_ }}} ATT Up</b> when one of its allies falls in combat. Lasts <b>{{ onFriendlyDeath.effects.0.duration }} {{{ _duration_ }}}.</b>",
     onFriendlyDeath: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         usableWhileStunned: true,
@@ -325,7 +321,6 @@ export const avenger: Effect = {
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     icon: JapaneseOgreIcon,
                     armor: 3,
-                    resources: 1,
                     bonus: {
                         armor: 1,
                         multiplier: {
@@ -348,7 +343,8 @@ export const warding: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: GemHeartImage,
-    description: "Periodically gaining a shield that wards off the next non-auto attack.",
+    description:
+        "Every <b>{{{ turnsTriggerFrequency }}} turns,</b> gains a shield that negates the next direct attack. (Not broken by auto-attacks triggered from effects.)",
     turnsTriggerFrequency: 3,
     onWaveStart: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
@@ -386,7 +382,8 @@ export const stoneSkin: Effect = {
     duration: Infinity,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Gaining Armor every other turn. While the character has armor, it gains +1 ATT.",
+    description:
+        "Gaining Armor every {{ turnsTriggerFrequency }} turns. While it has Armor, gains <b>+{{ onBattleStart.1.effects.0.attackPower }} {{{ _attUp_ }}} ATT Up.</b>",
     turnsTriggerFrequency: 3,
     icon: StoneShieldImage,
     onBattleStart: [
@@ -420,6 +417,7 @@ export const stoneSkin: Effect = {
     onTurnEnd: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         armor: 1,
+        maxArmor: 5,
         multiplier: {
             calculationTarget: CONDITION_TARGETS.ACTOR,
             type: MULTIPLIER_TYPES.MAX_HP,
@@ -440,7 +438,7 @@ export const volcano: Minion = {
             name: "Erupting",
             icon: VolcanoIcon,
             description: "Erupting for damage equal to the character's max health when this effect expires",
-            duration: 2,
+            duration: 3,
             onEnd: {
                 usableWhileStunned: true,
                 ability: {
@@ -477,7 +475,7 @@ export const eruptive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: VolcanoIcon,
-    description: "Periodically summoning volcanoes that erupt, dealing area damage.",
+    description: "Every {{ turnsTriggerFrequency }} turns, summons volcanoes that erupt for area damage.",
     turnsTriggerFrequency: 3,
     onTurnStart: {
         usableWhileStunned: true,
@@ -505,7 +503,8 @@ export const explosive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: BombImage,
-    description: "Explodes for its max HP when it dies, up to 10. Damage is split among targets.",
+    description:
+        "Explodes for its max HP when it dies, up to <b>{{ onDeath.ability.actions.0.maxDamage }}.</b> Damage split between targets.",
     onDeath: {
         ability: {
             name: "Explode",
@@ -515,7 +514,7 @@ export const explosive: Effect = {
                     type: ACTION_TYPES.EFFECT,
                     target: TARGET_TYPES.HOSTILE,
                     animation: ANIMATION_TYPES.EXPLODE,
-                    area: 3,
+                    area: 5,
                     damage: 1,
                     maxDamage: 10,
                     damageDividedByTargets: true,
@@ -533,6 +532,9 @@ export const explosive: Effect = {
     },
 };
 
+const eliteDescription =
+    "An elite enemy with <b>+{{ attackPower }} {{{ _attUp_ }}} ATT Up</b>. After being stunned or frozen, gains temporary immunity to those effects.";
+
 export const eliteSquad: Effect = {
     ...hardy,
     name: "Elite Squadmember",
@@ -541,8 +543,7 @@ export const eliteSquad: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: MedalIcon,
     attackPower: 1,
-    description:
-        "A member of an elite squad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
+    description: eliteDescription,
 };
 
 export const eliteTrio: Effect = {
@@ -553,8 +554,7 @@ export const eliteTrio: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: MedalIcon,
     attackPower: 1,
-    description:
-        "A member of an elite triad, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
+    description: eliteDescription,
 };
 
 export const elite: Effect = {
@@ -565,20 +565,7 @@ export const elite: Effect = {
     class: EFFECT_CLASSES.BUFF,
     attackPower: 2,
     icon: MilitaryMedalIcon,
-    description:
-        "An elite champion, tougher and stronger than most enemies. After being stunned, frozen, or silenced, this character gains temporary immunity to those effects.",
-};
-
-export const healingOverTime: Effect = {
-    name: "Healing Over Time",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    canBeSilenced: true,
-    duration: 5,
-    onTurnStart: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        healing: 2,
-    },
+    description: eliteDescription,
 };
 
 export const silence: Effect = {
@@ -595,12 +582,10 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description:
-        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1. Healing received reduced by 1 per stack.",
+    description: "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1.",
     icon: PoisonImage,
     duration: Infinity,
     maxApplications: 1,
-    healingReceived: -1,
     stacks: 2,
     onTurnStart: {
         decrementStacks: 1,
@@ -609,7 +594,7 @@ export const poison: Effect = {
 
 export const armorUp: Effect = {
     name: "Armor Up",
-    description: "Gain +1 Armor from Armor sources.",
+    description: "Gaining <b>+1 {{{ _armor_ }}}</b> from Armor sources per stack.",
     icon: ArmorUpIcon,
     class: EFFECT_CLASSES.BUFF,
     type: EFFECT_TYPES.NONE,
@@ -618,7 +603,7 @@ export const armorUp: Effect = {
 
 export const preventArmorDecay: Effect = {
     name: "Pristine Armor",
-    description: "Armor doesn't decay by half on turn start.",
+    description: "Armor doesn't decay on turn start.",
     icon: PristineShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -639,7 +624,7 @@ export const preventArmorDecayPlayer: Effect = {
 
 export const defUp: Effect = {
     name: "DEF Up",
-    description: "Reduces damage taken from attacks by 10% per stack, rounded up.",
+    description: "Reduces damage from attacks by 10% per stack, rounded up.",
     icon: DefUpIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -649,7 +634,7 @@ export const defUp: Effect = {
 
 export const defDown: Effect = {
     name: "DEF Down",
-    description: "Increases damage taken from attacks by 10% per stack, rounded up.",
+    description: "Increases damage from attacks by 10% per stack, rounded up.",
     icon: DefDownIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
@@ -659,7 +644,7 @@ export const defDown: Effect = {
 
 export const pristineDefense: Effect = {
     name: "Pristine DEF Up",
-    description: "Prevents Armor decay and reduces damage taken from attacks by 10% per stack, rounded up.",
+    description: "Prevents Armor decay and reduces damage from attacks by 10% per stack, rounded up.",
     icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -670,7 +655,7 @@ export const pristineDefense: Effect = {
 
 export const sentry: Effect = {
     name: "Sentry",
-    description: "Fires a 2-damage laser whenever an enemy uses an ability.",
+    description: "Deals <b>{{ onHostileAbility.ability.actions.0.damage }} {{{ _damage_ }}}</b> to any enemy who uses an ability.",
     icon: EyeIcon,
     portraitImage: EyeIcon,
     type: EFFECT_TYPES.NONE,
@@ -719,7 +704,7 @@ export const stashCardEffect: Effect = {
 
 export const bideEffect: Effect = {
     name: "Bide",
-    description: "Gain 1 Resource next turn.",
+    description: "Gain <b>1 {{{ _resource_ }}}</b> per stack next turn.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: LeafImage,
@@ -753,7 +738,7 @@ export const attackDown: Effect = {
     duration: 3,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces ATT by 1, up to {{ maxApplications }}. Can't bring enemy damage below 1.",
+    description: "Reduces damage dealt by 10% per stack, up to <b>{{ maxApplications }}</b> stacks. Can't bring enemy damage below 1.",
 };
 
 export const directDamageTaken: Effect = {
@@ -767,6 +752,8 @@ export const directDamageTakenTrigger: Effect = {
     name: "Direct Damage Taken Trigger",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
+    maxApplications: 1,
+    maxStacks: 1,
     onReceiveHealthDamage: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [directDamageTaken],
@@ -786,7 +773,7 @@ export const tributeSummonBuff: Effect = {
 export const lupinCurse: Effect = {
     name: "Lupin Curse",
     icon: CursedDollImage,
-    description: "Receiving damage whenever its allies are attacked.",
+    description: "Receiving <b>{{ onFriendlyReceiveAttack.damage }} {{{ _damage_ }}}</b> whenever its allies are attacked.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     onFriendlyReceiveAttack: {

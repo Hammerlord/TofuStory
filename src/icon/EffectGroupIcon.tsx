@@ -178,22 +178,7 @@ const EffectGroupTooltipContent = ({
     stackCount: number;
     disabled: boolean;
 }) => {
-    const {
-        name,
-        icon,
-        attackPower = 0,
-        defenseDown: attackDamageReceived = 0,
-        skillBonus = [],
-        description,
-        duration = Infinity,
-        canBeSilenced,
-        lifeOnHit = 0,
-        armorReceived = 0,
-        drawCardsPerTurn = 0,
-        resourcesPerTurn = 0,
-        preventArmorDecay,
-        class: effectClass,
-    } = effects[0];
+    const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effects[0];
 
     const elementMapping = getIconInterpolationMap({ combatant: owner });
     const interpolatedDescription = Handlebars.compile(description || "")({
@@ -220,46 +205,8 @@ const EffectGroupTooltipContent = ({
                         </span>
                     }
                 </div>
-                <div>{interpolatedDescription}</div>
-                <div className={classNames({ [classes.disabled]: disabled })}>
-                    {attackPower !== 0 && (
-                        <div>
-                            <Icon icon={<CrossedSwordsIcon />} text={attackPower} /> attack power
-                        </div>
-                    )}
-                    {lifeOnHit > 0 && (
-                        <div>
-                            Gaining <Icon icon={<HeartIcon />} text={lifeOnHit} size={"sm"} /> per hit
-                        </div>
-                    )}
-                    {armorReceived !== 0 && (
-                        <div>
-                            Receiving <Icon icon={<ShieldIcon />} text={armorReceived < 0 ? `-${armorReceived}` : `+${armorReceived}`} />{" "}
-                            from armor sources
-                        </div>
-                    )}
-                    {drawCardsPerTurn !== 0 && (
-                        <div>
-                            {drawCardsPerTurn < 0 ? "-" : "+"}
-                            {drawCardsPerTurn} card{drawCardsPerTurn > 1 ? "s" : ""} draw
-                        </div>
-                    )}
-                    {resourcesPerTurn !== 0 && (
-                        <div>
-                            {resourcesPerTurn < 0 ? "-" : "+"}
-                            {resourcesPerTurn}{" "}
-                            {resourceClassNameMap[(owner as Player)?.class] || resourcesPerTurn === 1 ? "resource" : "resources"}{" "}
-                            {"per turn"}
-                        </div>
-                    )}
-                    {skillBonus.map(({ skill, damage = 0, comparator }) => (
-                        <div key={skill}>
-                            {comparator === "includes" ? `Cards with '${skill}' in their name gain` : skill}{" "}
-                            {damage > 0 && <Icon icon={<CrossedSwordsIcon />} text={`+${damage}`} />}
-                        </div>
-                    ))}
-                </div>
-                {preventArmorDecay && <div>Prevents armor decay</div>}
+                <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
+
                 {canBeSilenced && <div>◆ Can be silenced</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
