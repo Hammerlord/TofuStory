@@ -10,7 +10,7 @@ import { BattleState, battleStateSlice } from "../../reducer";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
 import { usePlayerAbility } from "../playerAbility";
-import { handleDiscardAfterUse } from "./discardCards";
+import { handleDiscardAfterUse, prepareForDiscard } from "./discardCards";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
 import { applyAbilityEventEffects, drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
@@ -163,10 +163,10 @@ export const checkCardActions = ({
 
         if (addLastPlayedCards) {
             const { amount, abilityEffects = [] } = addLastPlayedCards;
-            const { hand, playerSide } = getState().battle;
+            const { hand, discard, playerSide } = getState().battle;
             const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
-            const cardsToHand = getLastPlayedCards({ player, amount }).map((card) =>
+            const cardsToAdd = getLastPlayedCards({ player, amount }).map((card) =>
                 applyAbilityEventEffects({
                     event: { abilityEffects },
                     ability: {
@@ -177,10 +177,20 @@ export const checkCardActions = ({
                     source,
                 })
             );
+            let newHand = [...cardsToAdd, ...hand];
+            let newDiscard = [...discard];
+
+            if (newHand.length >= MAX_HAND_SIZE) {
+                const toDiscard = newHand.slice(MAX_HAND_SIZE);
+                newHand = newHand.slice(0, MAX_HAND_SIZE);
+                dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
+                newDiscard.unshift(...prepareForDiscard(toDiscard));
+            }
 
             dispatch(
                 updateBattle({
-                    hand: [...cardsToHand, ...hand],
+                    hand: newHand,
+                    discard: newDiscard,
                 })
             );
         }
