@@ -477,6 +477,7 @@ export { default as MattyImage } from "./Matty.png";
 export { default as MayaImage } from "./Maya.png";
 export { default as MeatImage } from "./Meat.png";
 export { default as MedicineWithWeirdVibesImage } from "./MedicineWithWeirdVibes.png";
+export { default as MeditationImage } from "./Meditation.gif";
 export { default as MegaphoneImage } from "./Megaphone.png";
 export { default as MelonPopsicleImage } from "./MelonPopsicle.png";
 export { default as MesoImage } from "./Meso.png";

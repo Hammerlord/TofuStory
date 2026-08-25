@@ -13,7 +13,7 @@ import {
     taunt,
     thorns,
 } from "../ability/Effects";
-import { lesserBolt } from "../ability/magician/magicianAbilities";
+import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -71,7 +71,6 @@ import {
     GuidebookImage,
     HardwoodWandImage,
     HerbsImage,
-    HolyWaterImage,
     IcarusCapeImage,
     IronBallImage,
     IronMaceImage,
@@ -83,7 +82,6 @@ import {
     MesoCoinImage,
     MesoImage,
     MesoStackImage,
-    NamelessSwordImage,
     NewspaperImage,
     NewYearRiceSoupImage,
     OpalImage,
@@ -116,7 +114,6 @@ import {
     StarfallMagicSquareImage,
     StarRockImage,
     SteelOreImage,
-    SteelPlateImage,
     SteelyImage,
     StolenFenceImage,
     StrawImage,
@@ -153,7 +150,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { counterEffect } from "./../enemy/effect";
-import { chargedAbilityNames, chargedEffect } from "./starterItems";
+import { abilityHasChargedCondition, chargedEffect } from "./starterItemEffects";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
@@ -2894,12 +2891,7 @@ export const blueChaosRobe: Item = {
             class: EFFECT_CLASSES.BUFF,
             onRemoveEffect: {
                 conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        comparator: "eq",
-                        name: chargedAbilityNames,
-                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                    },
+                    abilityHasChargedCondition,
                     // Can't use disableTriggerFromProc because the effect removal in itself is a proc, so it won't trigger this if the flag is up
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,

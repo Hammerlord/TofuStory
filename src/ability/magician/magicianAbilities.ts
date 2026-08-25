@@ -60,6 +60,7 @@ import {
     MagicFangProjectileImage,
     MagicGuardImage,
     ManaImage,
+    MeditationImage,
     MetalBucketSnowmanImage,
     NimbleJewelCImage,
     NimbleJewelImage,
@@ -98,6 +99,7 @@ import {
     WrathImage,
 } from "../../images";
 import { SnowflakeIcon } from "../../images/icons";
+import { chargedEffect } from "../../item/starterItemEffects";
 import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
@@ -117,64 +119,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../types";
 import { attack } from "./../../enemy/abilities";
-import { armorUp, attackPower, burn, chill, defDown, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
-
-export const lesserBolt: Ability = {
-    name: "Lesser Bolt",
-    image: OldEnergyBoltImage,
-    resourceCost: 0,
-    rarity: RARITIES.COMMON,
-    actions: [
-        {
-            damage: 1,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: EnergyBoltProjectileImage,
-            animationOptions: {
-                rotate: -45,
-                rotateToFaceTarget: true,
-            },
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    damage: 2,
-                },
-            ],
-        },
-    ],
-};
-
-export const magicianDefaultAttack: Ability = {
-    name: "Bolt",
-    image: OldEnergyBoltImage,
-    resourceCost: 0,
-    actions: [
-        {
-            damage: 3,
-            target: TARGET_TYPES.HOSTILE,
-            type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: EnergyBoltProjectileImage,
-            animationOptions: {
-                rotate: -45,
-                rotateToFaceTarget: true,
-            },
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    damage: 2,
-                },
-            ],
-        },
-    ],
-};
+import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
 
 export const magicFang: Ability = {
     name: "Magic Fang",
@@ -3526,6 +3471,49 @@ export const boltTag: Ability = {
             actions: [
                 {
                     damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const meditation: Ability = {
+    name: "Meditation",
+    image: MeditationImage,
+    resourceCost: 1,
+    rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description: "Next turn, gain <b>Charged.</b> <b>Bide.</b>",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            effects: [
+                {
+                    name: "Meditation",
+                    icon: MeditationImage,
+                    resourcesPerTurn: 1,
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 2,
+                    onTurnStart: {
+                        effects: [{ ...chargedEffect }],
+                        removeEffect: true,
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            description: "Next turn, gain <b>Charged</b> and draw +1 card. <b>Bide.</b>",
+            actions: [
+                {
+                    effects: [
+                        {
+                            drawCardsPerTurn: 1,
+                        },
+                    ],
                 },
             ],
         },

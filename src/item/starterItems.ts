@@ -1,13 +1,13 @@
-import { JOB_CARD_MAP } from "../ability";
 import { AlchemistStoneImage, HonestyStoneImage, HumilityStoneImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { lesserBolt, pong } from "./../ability/magician/magicianAbilities";
-import { CARD_PILE_TYPES, CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import { CARD_PILE_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
 import { getUpgradeCard } from "./../Menu/utils";
 
 import { aimedShot, aimEffect } from "../ability/bowman/bowmanAbilities";
+import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { abilityHasChargedCondition, chargingStoneEffect } from "./starterItemEffects";
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
 export const rageStone: Item = {
@@ -110,63 +110,6 @@ export const rampageStone: Item = {
     ],
 };
 
-// Bit of grease to check charged abilities to avoid doing it manually anymore
-export const chargedAbilityNames = JOB_CARD_MAP.Magician.all
-    .filter((ability) => {
-        if (ability.name === pong.name) {
-            // Pong itself is not a charged ability (the abilities it adds to the hand are).
-            return false;
-        }
-        if (JSON.stringify(ability.actions).includes('"hasEffect":"Charged"')) {
-            return true;
-        }
-    })
-    .map(({ name }) => name);
-
-export const chargedEffect: Effect = {
-    name: "Charged",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    icon: AlchemistStoneImage,
-    description: "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
-    weaponAnimation: "glow",
-    onAbility: {
-        conditions: [
-            {
-                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                comparator: "eq",
-                name: chargedAbilityNames,
-                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-            },
-        ],
-        removeEffect: true,
-    },
-    onTurnEnd: {
-        ability: {
-            ...lesserBolt,
-        },
-        removeEffect: true,
-    },
-};
-
-const chargingStoneEffect: Effect = {
-    name: "Charging Stone",
-    type: EFFECT_TYPES.NONE,
-    class: EFFECT_CLASSES.BUFF,
-    onAbility: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        disableTriggerFromProcs: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                comparator: "not",
-                hasEffect: "Charged",
-            },
-        ],
-        effects: [chargedEffect],
-    },
-};
-
 export const chargingStone: Item = {
     name: "Charging Stone",
     description: "Playing a card grants Charged. If unused by end of turn, fire a Lesser Bolt.",
@@ -197,14 +140,7 @@ export const greaterChargingStone: Item = {
                         description: "Grants a bonus to certain cards.",
                         weaponAnimation: "glow",
                         onAbility: {
-                            conditions: [
-                                {
-                                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                    comparator: "eq",
-                                    name: chargedAbilityNames,
-                                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                                },
-                            ],
+                            conditions: [abilityHasChargedCondition],
                             removeEffect: true,
                         },
                     },

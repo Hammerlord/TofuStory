@@ -1,7 +1,7 @@
 import * as uuid from "uuid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { bowmanDefaultAttack } from "../ability/bowman/bowmanAbilities";
-import { magicianDefaultAttack } from "../ability/magician/magicianAbilities";
+import { magicianDefaultAttack } from "../ability/magician/defaultAttacks";
 import { WeaponImageOptions } from "../ability/types";
 import { warriorDefaultAttack } from "../ability/warrior/warriorAbilities";
 import { BASE_MAX_RESOURCES, BASE_RESOURCES_PER_TURN } from "../battle/constants";

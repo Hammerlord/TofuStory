@@ -1,16 +1,4 @@
-import { bash, cleave } from "./../../ability/warrior/warriorAbilities";
-import { lesserBolt, magicFang, magicClaw } from "./../../ability/magician/magicianAbilities";
-import { attack } from "./../../enemy/abilities";
-import {
-    ACTION_TYPES,
-    ANIMATION_TYPES,
-    Effect,
-    EFFECT_CLASSES,
-    EFFECT_TYPES,
-    Minion,
-    TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
-} from "../../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
 import { rally } from "../../enemy/abilities";
 import {
     EnergyBoltProjectileImage,
@@ -23,6 +11,8 @@ import {
     OldEnergyBoltImage,
     WeaponMasteryImage,
 } from "../../images";
+import { magicClaw, magicFang } from "./../../ability/magician/magicianAbilities";
+import { bash, cleave } from "./../../ability/warrior/warriorAbilities";
 
 const coin: Minion = {
     name: "Meso",
