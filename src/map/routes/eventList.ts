@@ -119,6 +119,7 @@ import {
     gladius,
     phoenixWand,
     blueChaosRobe,
+    doomSinger,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -233,6 +234,7 @@ export const ITEMS = [
     barrenDiorama,
     holyRelic,
     steelOre,
+    doomSinger,
 ];
 
 export const CLASS_ITEMS = {

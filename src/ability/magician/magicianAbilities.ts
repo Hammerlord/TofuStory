@@ -3148,10 +3148,14 @@ export const shatter: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: CrystalIlbiImage,
-            damage: 1,
+            damage: 4,
+            multiplier: {
+                type: MULTIPLIER_TYPES.DEBUFFS,
+                calculationTarget: CONDITION_TARGETS.TARGET,
+            },
             bonus: [
                 {
-                    damage: 5,
+                    damage: 1,
                     multiplier: {
                         type: MULTIPLIER_TYPES.DEBUFFS,
                         calculationTarget: CONDITION_TARGETS.TARGET,

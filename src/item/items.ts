@@ -78,6 +78,7 @@ import {
     LeatherSandalsImage,
     LetterImage,
     LuckSackImage,
+    MapleDoomSingerImage,
     MedicineWithWeirdVibesImage,
     MesoCoinImage,
     MesoImage,
@@ -149,7 +150,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { counterEffect } from "./../enemy/effect";
+import { counterEffect, doom } from "./../enemy/effect";
 import { abilityHasChargedCondition, chargedEffect } from "./starterItemEffects";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -2908,6 +2909,41 @@ export const blueChaosRobe: Item = {
                 ],
                 conditionOperator: "and",
                 armor: 1,
+            },
+        },
+    ],
+};
+
+export const doomSinger: Item = {
+    name: "Maple Doom Singer",
+    description: "On the start of turn {{ effects.0.turnsTriggerFrequency }}, Radiate Doom to all enemies.",
+    image: MapleDoomSingerImage,
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Maple Doom Singer",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            turnsTriggerFrequency: 4,
+            onTurnStart: {
+                ability: {
+                    name: "Doom Song",
+                    image: MapleDoomSingerImage,
+                    actions: [
+                        {
+                            type: ACTION_TYPES.EFFECT,
+                            target: TARGET_TYPES.SELF,
+                            icon: MapleDoomSingerImage,
+                            animation: ANIMATION_TYPES.ACTION_EXPLODE,
+                            radiate: {
+                                area: 2,
+                                effects: [{ ...doom }],
+                            },
+                        },
+                    ],
+                },
+                removeEffect: true,
             },
         },
     ],
