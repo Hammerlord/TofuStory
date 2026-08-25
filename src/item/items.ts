@@ -13,6 +13,7 @@ import {
     taunt,
     thorns,
 } from "../ability/Effects";
+import { lesserBolt } from "../ability/magician/magicianAbilities";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -2899,6 +2900,13 @@ export const blueChaosRobe: Item = {
                         name: chargedAbilityNames,
                         sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                     },
+                    // Can't use disableTriggerFromProc because the effect removal in itself is a proc, so it won't trigger this if the flag is up
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        comparator: "not",
+                        name: lesserBolt.name,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    },
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         comparator: "eq",
@@ -2906,6 +2914,7 @@ export const blueChaosRobe: Item = {
                         sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
                     },
                 ],
+                conditionOperator: "and",
                 armor: 1,
             },
         },
