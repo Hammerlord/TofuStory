@@ -31,6 +31,7 @@ import {
     BallerCaneImage,
     BattleShieldImage,
     BlackCrystalImage,
+    BlackDragonRobeImage,
     BloodMaskImage,
     BlueJeanShortsImage,
     BluePotionImage,
@@ -59,6 +60,7 @@ import {
     FlamingFeatherImage,
     FruitKnifeImage,
     GarnetImage,
+    GladiusImage,
     GoldenHammerImage,
     GoldenPrideImage,
     GreenBambooHatImage,
@@ -2763,6 +2765,82 @@ export const scimitar: Item = {
                 targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                 effects: [{ ...bleed, stacks: 2 }],
             },
+        },
+    ],
+};
+
+export const blackDragonRobe: Item = {
+    name: "Black Dragon Robe",
+    image: BlackDragonRobeImage,
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "While you have Taunt, gain +1 {{{ _armorUp_ }}} Armor Up.",
+    effects: [
+        {
+            name: "Black Dragon Robe",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            armorReceived: 1,
+            conditions: [
+                {
+                    calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    hasEffectType: [EFFECT_TYPES.TAUNT],
+                },
+            ],
+        },
+    ],
+};
+
+export const gladius: Item = {
+    name: "Gladius",
+    image: GladiusImage,
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "If you end turn your turn with 2+ {{{ _resource_ }}}, activate Furious Strike.",
+    effects: [
+        {
+            name: "Gladius",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnEnd: [
+                {
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            property: "resources",
+                            value: 1,
+                            comparator: "gt",
+                        },
+                    ],
+                    applyAbilityEffects: {
+                        pile: CARD_PILE_TYPES.HAND,
+                        filters: [
+                            {
+                                property: "name",
+                                value: "Furious Strike",
+                                comparator: "eq",
+                            },
+                        ],
+                        abilityEffects: [
+                            {
+                                upgradedByLevels: 1,
+                            },
+                        ],
+                    },
+                },
+                {
+                    targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                    conditions: [
+                        {
+                            calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                            property: "resources",
+                            value: 1,
+                            comparator: "gt",
+                        },
+                    ],
+                    addCards: [furiousStrikeCard],
+                },
+            ],
         },
     ],
 };
