@@ -12,7 +12,7 @@ import {
 } from "../ability/types";
 import { Item } from "../item/types";
 import { passesValueComparison } from "./passesConditions";
-import { ActionParent, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 import { calculateDamage } from "./calculateDamage";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
@@ -274,13 +274,15 @@ const calculateAttackDamageInHand = ({
             return;
         }
 
+        const context: ActionContext = { sourceChain: [{ source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+
         (card.actions || []).forEach((action: Action) => {
             if (isAttackAction(action)) {
                 const actionDamage = calculateDamage({
                     actor,
                     action,
                     actionParent: card,
-                    source: { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                    context,
                 });
                 damage += actionDamage;
             }

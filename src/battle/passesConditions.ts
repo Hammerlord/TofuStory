@@ -271,7 +271,7 @@ export const passesConditions = ({
                 return false;
             }
 
-            const procId = (proc as any)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
+            const procId = (proc as CombatEffect)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
             const otherEffects = procId ? combatant?.effects.filter((e) => e.id !== procId) : combatant.effects;
 
             if (hasEffectType !== undefined) {

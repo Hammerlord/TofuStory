@@ -70,7 +70,7 @@ export const performAction = ({
             actorData,
             targetData: target,
             battle: getState().battle,
-            source: parentSource,
+            context: parentContext,
             isPreviewMode: parentContext?.isPreviewMode,
         });
 
@@ -129,7 +129,7 @@ export const performAction = ({
             updatedSecondary = triggerSecondaryAction();
         }
 
-        const area = calculateActionArea({ action, actor: actorData, target, source });
+        const area = calculateActionArea({ action, actor: actorData, target, context });
 
         const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         const movementDisplacements: Displacement = dispatch(
@@ -548,7 +548,7 @@ const handleSecondaryAction = ({
             targetData,
             battle,
             isPreviewMode: context?.isPreviewMode,
-            source,
+            context,
         });
 
         const recipientIds = recipientIndices.targetedIndices.map((i: number) => targetData.friendly[i]?.id).filter(Boolean);

@@ -2,7 +2,7 @@ import { Ability, TARGET_TYPES, TRIGGER_TARGET_TYPES, EFFECT_TYPES } from "../..
 import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
 import { BattleState } from "../../reducer";
-import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, CombatantInfo } from "../../types";
+import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, CombatantInfo, ActionContext } from "../../types";
 import { isUntargetable, isStealthed } from "../../utils";
 import { hasEffectType } from "../combatantData";
 import { calculateActionArea } from "./targeting";
@@ -40,11 +40,12 @@ export const isValidTargetForPlayerAbility = ({
     }
 
     const { target } = actions[0] || {};
+    const context: ActionContext = { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
     const area =
         calculateActionArea({
             action: actions[0],
             actor: actorData,
-            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            context,
         }) ||
         actions[0]?.area ||
         0;
@@ -72,7 +73,7 @@ export const isValidTargetForPlayerAbility = ({
                     return findCombatantData(battle, playerSide[index]?.id);
                 }
             };
-            const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
+            const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action, context }));
             if (!conditionsPassed) {
                 return false;
             }
@@ -123,7 +124,7 @@ export const isValidTargetForPlayerAbility = ({
             }
         };
 
-        const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action }));
+        const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action, context }));
         if (!conditionsPassed) {
             return false;
         }

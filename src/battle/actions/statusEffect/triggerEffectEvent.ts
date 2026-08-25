@@ -236,7 +236,7 @@ export const onEffectEventTrigger = ({
                         actorData: owner,
                         targetData: data,
                         battle: getState().battle,
-                        source,
+                        context,
                         isPreviewMode: context?.isPreviewMode,
                     }).targetedIndices;
                 })

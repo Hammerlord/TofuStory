@@ -120,7 +120,7 @@ export const getUpdatedStats = ({
                 action,
                 actionParent,
                 multiplier,
-                source: triggerSource,
+                context,
             });
         }
 

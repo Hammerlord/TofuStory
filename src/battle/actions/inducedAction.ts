@@ -51,7 +51,11 @@ export const checkInduce = ({
                             return combatantData;
                         }
                     };
-                    if (!combatant.HP || isStunnedOrFrozen(combatant) || !passesConditions({ getCalculationTarget, proc: action })) {
+                    if (
+                        !combatant.HP ||
+                        isStunnedOrFrozen(combatant) ||
+                        !passesConditions({ getCalculationTarget, proc: action, context: parentContext })
+                    ) {
                         return;
                     }
 

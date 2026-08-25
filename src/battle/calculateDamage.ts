@@ -1,22 +1,22 @@
 import { isOffensiveAction } from "../ability/AbilityView/utils";
 import {
+    Ability,
+    AbilityEffect,
     Action,
+    ACTION_TYPES,
     ActionOptionalProperties,
     CombatAbility,
-    ACTION_TYPES,
-    EFFECT_TYPES,
-    AbilityEffect,
-    TRIGGER_TARGET_TYPES,
     CombatEffect,
-    Ability,
+    EFFECT_TYPES,
     SkillBonus,
+    TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { Item } from "../item/types";
+import { hasEffectType } from "./actions/combatantData";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
 import { DAMAGE_COEFF } from "./constants";
 import { getMultiplier } from "./getMultiplier";
-import { ActionParent, CombatantInfo, TriggerSource } from "./types";
-import { hasEffectType } from "./actions/combatantData";
+import { ActionContext, ActionParent, CombatantInfo } from "./types";
 
 export const calculateDamage = ({
     actor,
@@ -26,7 +26,7 @@ export const calculateDamage = ({
     action,
     actionParent,
     multiplier = 1,
-    source,
+    context,
 }: {
     actor?: CombatantInfo;
     target?: CombatantInfo;
@@ -35,7 +35,7 @@ export const calculateDamage = ({
     action: Action | ActionOptionalProperties;
     actionParent?: ActionParent; // TODO can this just be from `source` (source.source should probably be equivalent to this object) instead of having this separate param?
     multiplier?: number;
-    source?: TriggerSource;
+    context?: ActionContext;
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
 
@@ -92,7 +92,7 @@ export const calculateDamage = ({
     let maximumDamage = action.maxDamage;
 
     if (isAttack) {
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context: source }).forEach(
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(
             ({
                 attackPower = 0,
                 skillBonus = [],
@@ -125,7 +125,7 @@ export const calculateDamage = ({
     }
 
     let totalDefDown = 0;
-    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, getCalculationTarget, context: source });
+    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, getCalculationTarget, context });
 
     targetEnabledEffects.forEach((effect: CombatEffect) => {
         const { maxDamageTaken, excludeEffectOwner, defenseDown: defDown = 0, stacks = 1 } = effect;

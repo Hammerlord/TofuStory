@@ -4,7 +4,7 @@ import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TR
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BattleState } from "../../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
@@ -17,7 +17,7 @@ export const calculateTargetIndices = ({
     actorData,
     targetData,
     battle,
-    source,
+    context,
     isPreviewMode = false,
 }: {
     action: Action;
@@ -26,7 +26,7 @@ export const calculateTargetIndices = ({
     actorData: CombatantInfo;
     targetData: CombatantInfo;
     battle: BattleState;
-    source?: TriggerSource;
+    context?: ActionContext;
     isPreviewMode: boolean;
 }): {
     allIndices: number[];
@@ -34,7 +34,7 @@ export const calculateTargetIndices = ({
 } => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
 
-    const area = calculateActionArea({ action, actor: actorData, target: targetData, source });
+    const area = calculateActionArea({ action, actor: actorData, target: targetData, context });
 
     let extraTargetIndices = getValidTargetIndices(battle[side], action.area, {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
@@ -47,7 +47,7 @@ export const calculateTargetIndices = ({
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         // When summoning a minion, it can auto attack an enemy target. Display that proc as an indeterminate ability.
-        const isProcPreview = isPreviewMode && source?.isProc && isOffensiveAction(action) && side === BATTLEFIELD_SIDES.ENEMY_SIDE;
+        const isProcPreview = isPreviewMode && context?.isProc && isOffensiveAction(action) && side === BATTLEFIELD_SIDES.ENEMY_SIDE;
         if (isProcPreview) {
             return true;
         }
@@ -386,12 +386,12 @@ export const calculateActionArea = ({
     action,
     actor,
     target,
-    source,
+    context,
 }: {
     action?: Action;
     actor: CombatantInfo;
     target?: CombatantInfo;
-    source?: TriggerSource;
+    context?: ActionContext;
 }): number => {
     if (!action) {
         return 0;
@@ -410,14 +410,14 @@ export const calculateActionArea = ({
             }
         };
 
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context: source }).forEach(({ attackAreaIncrease = 0 }) => {
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(({ attackAreaIncrease = 0 }) => {
             totalArea += attackAreaIncrease;
         });
 
         if (action.bonus) {
             const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
             bonuses.forEach((bonus) => {
-                if (bonus.area && passesConditions({ getCalculationTarget, proc: bonus })) {
+                if (bonus.area && passesConditions({ getCalculationTarget, proc: bonus, context })) {
                     totalArea += bonus.area;
                 }
             });

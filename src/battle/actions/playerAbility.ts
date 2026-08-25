@@ -1,5 +1,9 @@
 import { Ability, AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
+import { BASE_MAX_RESOURCES } from "../constants";
+import { battleStateSlice } from "../reducer";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
+import { getHandAuraEffects } from "../view/Hand";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { applyAbilityEventEffects, recalculateEffectsFromAbilities } from "./cardActions/drawCards";
 import { findCombatantData } from "./combatantData";
@@ -8,10 +12,6 @@ import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "./targeting/enemyTargeting";
 import { calculateActionArea } from "./targeting/targeting";
 import { useAbility } from "./useAbility";
-import { BASE_MAX_RESOURCES } from "../constants";
-import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
-import { getHandAuraEffects } from "../view/Hand";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 
@@ -33,8 +33,8 @@ export const isWithinPlayerAbilityArea = ({
         return false;
     }
     const action = ability.actions[0];
-    const area =
-        calculateActionArea({ action, actor, source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY } }) || action?.area || 0;
+    const context: ActionContext = { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+    const area = calculateActionArea({ action, actor, context }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
 

@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, Effect, WeaponImageOptions } from "../ability/types";
-import { Event } from "../battle/types";
+import { ActionContext, Event } from "../battle/types";
 import { calculateActionArea } from "../battle/actions/targeting/targeting";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { useAppSelector } from "../hooks";
@@ -181,11 +181,12 @@ const Weapon = ({
 
     const battle = useAppSelector((state) => state?.battle);
     const wielderInfo = findCombatantData(battle, wielder?.id);
+    const context: ActionContext = { sourceChain: [source] };
     const totalArea = battle
         ? calculateActionArea({
               action: action,
               actor: wielderInfo,
-              source,
+              context,
           })
         : area;
     const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !totalArea;

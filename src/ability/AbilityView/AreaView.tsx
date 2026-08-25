@@ -1,9 +1,9 @@
+import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { calculateActionArea } from "../../battle/actions/targeting/targeting";
+import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { Ability, Action } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
-import classNames from "classnames";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -64,11 +64,16 @@ const Area = ({
     discard?: Ability[];
 }) => {
     const { actions = [] } = ability || {};
+
+    const context: ActionContext = {
+        sourceChain: [{ source: ability as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+    };
+
     let area =
         calculateActionArea({
             action: actions[0],
             actor: playerInfo,
-            source: { source: ability as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            context,
         }) ||
         actions[0]?.area ||
         0;

@@ -73,12 +73,17 @@ export const getDamageStatistics = ({
             ...ability,
             resourceCost,
         };
+
+        const context: ActionContext = {
+            sourceChain: [{ source: parent, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+        };
+
         const damageProps = {
             actor: actorInfo,
             action,
             actionParent: parent,
             multiplier,
-            source: { source: parent, triggerHistory: [], type: TRIGGER_SOURCE_TYPES.ABILITY },
+            context,
         };
 
         let secondaryDamage = action.secondaryDamage || 0;
