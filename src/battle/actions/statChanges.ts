@@ -113,6 +113,14 @@ export const triggerStatChangeEvents =
             dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId, effectsApplied: effects }));
 
             removedEffects.forEach((e: CombatEffect) => {
+                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const sourceChain = [...(context?.sourceChain || []), source];
+
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onRemoveEffect,
+                    sourceChain,
+                });
+
                 if (!e.onRemoved) {
                     return;
                 }
@@ -125,6 +133,7 @@ export const triggerStatChangeEvents =
                             effectEvent,
                             effect: e,
                             effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
+                            context: { ...context, sourceChain: sourceChain },
                         })
                     );
                 });

@@ -1,17 +1,17 @@
-import { CombatAbility, AbilityEffect } from "../ability/types";
+import { AbilityEffect, CombatAbility } from "../ability/types";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
-import { CombatantInfo, TriggerSource } from "./types";
+import { ActionContext, CombatantInfo } from "./types";
 
 export const calculateArmor = ({
     target,
     action,
     multiplier = 1,
-    source: source,
+    context,
 }: {
     target?: CombatantInfo;
     action: { armor?: number; maxArmor?: number; flatArmor?: number };
     multiplier: number;
-    source?: TriggerSource;
+    context?: ActionContext;
 }): number => {
     const { armor: initArmor, maxArmor = Infinity, flatArmor } = action;
     if (!initArmor && !flatArmor) {
@@ -25,6 +25,7 @@ export const calculateArmor = ({
 
     let armor = Math.min(maxArmor, (initArmor || 0) * multiplier);
 
+    const source = context?.sourceChain?.at(-1);
     const parentEffects = (source?.source as CombatAbility)?.effects;
     if (parentEffects?.length) {
         armor += parentEffects.reduce((acc, effect: AbilityEffect) => {
@@ -33,7 +34,7 @@ export const calculateArmor = ({
     }
 
     const targetArmorReceived =
-        getEnabledEffects({ combatantInfo: target }).reduce(
+        getEnabledEffects({ combatantInfo: target, context }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
             0
         ) || 0;

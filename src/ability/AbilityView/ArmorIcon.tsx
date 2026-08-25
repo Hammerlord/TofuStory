@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateArmor } from "../../battle/calculateArmor";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { getMultiplier } from "../../battle/getMultiplier";
@@ -59,6 +59,10 @@ export const getArmorStatistics = ({
             };
         });
 
+        const context: ActionContext = {
+            sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+        };
+
         const withArmorReceived = withBonus.map((action) => {
             const multiplier = getMultiplier({
                 actor: playerInfo,
@@ -74,7 +78,7 @@ export const getArmorStatistics = ({
                     target: playerInfo,
                     action,
                     multiplier,
-                    source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                    context,
                 }),
             };
         });

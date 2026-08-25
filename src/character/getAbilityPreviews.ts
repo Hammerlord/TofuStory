@@ -334,7 +334,7 @@ const getAbilityPreviews = ({
             !passesConditions({
                 getCalculationTarget,
                 proc: action,
-                source: context?.sourceChain?.at(-1),
+                context,
             })
         ) {
             return;

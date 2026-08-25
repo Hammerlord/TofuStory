@@ -118,7 +118,7 @@ export const useAbility = ({
                 return findCombatantData(getState().battle, getState().battle[side]?.[index]?.id);
             };
 
-            if (passesConditions({ getCalculationTarget, proc: action, source })) {
+            if (passesConditions({ getCalculationTarget, proc: action, context: parentContext })) {
                 dispatch(performAction({ action, selectedIndex: index, side, actorId, parentContext, isAutoCast }));
             }
         };

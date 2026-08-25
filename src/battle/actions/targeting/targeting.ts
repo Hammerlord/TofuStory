@@ -410,7 +410,7 @@ export const calculateActionArea = ({
             }
         };
 
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, source }).forEach(({ attackAreaIncrease = 0 }) => {
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context: source }).forEach(({ attackAreaIncrease = 0 }) => {
             totalArea += attackAreaIncrease;
         });
 

@@ -33,6 +33,7 @@ import {
     BlackCrystalImage,
     BlackDragonRobeImage,
     BloodMaskImage,
+    BlueChaosRobeImage,
     BlueJeanShortsImage,
     BluePotionImage,
     BlueSaunaRobeImage,
@@ -89,6 +90,7 @@ import {
     PawnChessPieceImage,
     PeachImage,
     PersonalAnvilImage,
+    PhoenixWandImage,
     PicoPicoHammerImage,
     PieceOfIceImage,
     PigIllustratedImage,
@@ -150,7 +152,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { counterEffect } from "./../enemy/effect";
-import { chargedEffect } from "./starterItems";
+import { chargedAbilityNames, chargedEffect } from "./starterItems";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
@@ -255,7 +257,7 @@ export const luckSack: Item = {
 
 export const amethyst: Item = {
     name: "Amethyst",
-    description: "Healing grants {{{ _armor_ }}} for that amount.",
+    description: "Healing grants flat {{{ _armor_ }}} for that amount.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AmethystImage,
@@ -2841,6 +2843,71 @@ export const gladius: Item = {
                     addCards: [furiousStrikeCard],
                 },
             ],
+        },
+    ],
+};
+
+export const phoenixWand: Item = {
+    name: "Phoenix Wand",
+    image: PhoenixWandImage,
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When you play a card that applies {{{ _burn_ }}}, apply +1 {{{ _burn_ }}}.",
+    effects: [
+        {
+            name: "Phoenix Wand",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onApplyEffect: {
+                disableTriggerFromProcs: true,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        hasEffectType: [EFFECT_TYPES.BURN],
+                        comparator: "includes",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                effects: [
+                    {
+                        ...burn,
+                        stacks: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const blueChaosRobe: Item = {
+    name: "Blue Chaos Robe",
+    image: BlueChaosRobeImage,
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    description: "When you play an activated Charged card, gain 1 flat {{{ _armor_ }}}.",
+    effects: [
+        {
+            name: "Blue Chaos Robe",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onRemoveEffect: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        comparator: "eq",
+                        name: chargedAbilityNames,
+                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    },
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        comparator: "eq",
+                        name: "Charged",
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                    },
+                ],
+                armor: 1,
+            },
         },
     ],
 };

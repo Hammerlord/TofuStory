@@ -108,8 +108,8 @@ export const onEffectEventTrigger = ({
 
         // Must pass parent effect conditions as well as child effectEvent conditions (if any)
         const conditionsPassed =
-            passesConditions({ getCalculationTarget, proc: effect, source: source }) &&
-            passesConditions({ getCalculationTarget, proc: effectEvent, source: source });
+            passesConditions({ getCalculationTarget, proc: effect, context }) &&
+            passesConditions({ getCalculationTarget, proc: effectEvent, context });
 
         const caster = findCombatantData(getState().battle, ownerId);
         const chanceMultiplier = getMultiplier({
@@ -179,7 +179,7 @@ export const onEffectEventTrigger = ({
 
                 return getCalculationTarget(secondaryTargetType);
             };
-            return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, source: source });
+            return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, context });
         });
 
         const initialTargetData = findCombatantData(getState().battle, initialTargetIds[0]);
@@ -353,7 +353,7 @@ export const onEffectEventTrigger = ({
                 return;
             }
 
-            if (passesConditions({ getCalculationTarget, proc: action, source: source })) {
+            if (passesConditions({ getCalculationTarget, proc: action, context })) {
                 abilityUsed = true;
 
                 dispatch(
@@ -541,7 +541,7 @@ export const checkEventTrigger = ({
                             return applyAbilityEventEffects({
                                 event: card[effectEventKey],
                                 ability: card,
-                                source,
+                                context,
                             });
                         }),
                     })

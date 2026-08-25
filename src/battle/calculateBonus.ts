@@ -1,8 +1,7 @@
-import { ActionOptionalProperties, Ability, CONDITION_TARGETS, Action, Bonus } from "../ability/types";
-import { Item } from "../item/types";
+import { Ability, Action, ActionOptionalProperties, Bonus, CONDITION_TARGETS } from "../ability/types";
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
-import { ActionParent, CombatantInfo, TriggerSource } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, TriggerSource } from "./types";
 
 export const calculateBonus = ({
     action,
@@ -11,7 +10,7 @@ export const calculateBonus = ({
     actor,
     isTargetSelected,
     actionParent,
-    source,
+    context,
     deck,
     hand,
     discard,
@@ -22,7 +21,7 @@ export const calculateBonus = ({
     actor?: CombatantInfo;
     isTargetSelected: boolean;
     actionParent?: ActionParent;
-    source?: TriggerSource;
+    context?: ActionContext;
     deck: Ability[];
     hand: Ability[];
     discard: Ability[];
@@ -40,6 +39,8 @@ export const calculateBonus = ({
         }
     };
 
+    const source = context?.sourceChain?.at(-1);
+
     return bonuses.reduce(
         (acc: Action, bonus: Bonus) => {
             const { excludePrimaryTarget = false, effects: bonusEffects = [] } = bonus;
@@ -56,7 +57,7 @@ export const calculateBonus = ({
             });
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-            if (passesConditions({ getCalculationTarget, proc: bonus, source: source }) && isValidTarget) {
+            if (passesConditions({ getCalculationTarget, proc: bonus, context }) && isValidTarget) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
                 const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards } = acc;
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);

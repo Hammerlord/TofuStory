@@ -61,13 +61,13 @@ export const passesValueComparison = ({ val, otherVal, comparator }: { val: any;
 export const passesConditions = ({
     getCalculationTarget, // If targets are an array, check that at least one satisfies conditions (OR).
     proc,
-    source,
+    context: context,
 }: {
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | CombatEffect | undefined;
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
-    source?: TriggerSource;
+    context?: ActionContext;
 }): boolean => {
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
@@ -99,10 +99,13 @@ export const passesConditions = ({
             hasAbilityEffectName,
         } = condition;
 
-        const isProc = source?.isProc;
-        const sourcePayload = source?.source || {};
+        const isProc = context?.isProc;
+        const sourceChain = [...(context?.sourceChain || [])].reverse();
+        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
+
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
             if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
+                const sourcePayload = abilitySource?.source || {};
                 const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
 
                 if (name) {
@@ -125,7 +128,7 @@ export const passesConditions = ({
                 }
 
                 if (isOffense !== undefined) {
-                    return isOffense === isOffensiveAbility(sourcePayload as Ability);
+                    return isOffense === isOffensiveAbility(sourcePayload as CombatAbility);
                 }
 
                 if (property !== undefined) {
@@ -141,6 +144,8 @@ export const passesConditions = ({
             }
 
             if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
+                const actionSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ACTION);
+                const sourcePayload = actionSource?.source || {};
                 if (property !== undefined) {
                     const propertyVal = _.get(sourcePayload, property);
                     return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
@@ -150,6 +155,8 @@ export const passesConditions = ({
             }
 
             if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
+                const effectSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.EFFECT);
+                const sourcePayload = effectSource?.source || {};
                 const { type: effectType, class: effectClass, name: effectName }: Effect = sourcePayload as Effect;
 
                 if (hasEffectType !== undefined) {
@@ -196,7 +203,7 @@ export const passesConditions = ({
             if (!sourceType) {
                 console.warn(
                     // @ts-ignore
-                    `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${source?.source?.name}.`
+                    `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`
                 );
                 return false;
             }
@@ -362,7 +369,7 @@ export const passesConditions = ({
                 };
 
                 const used = combatant.abilityHistory.filter(abilityMatchesType).length;
-                const sourceMatchesType = !sourcePayload || abilityMatchesType(sourcePayload as Ability);
+                const sourceMatchesType = !abilitySource?.source || abilityMatchesType(abilitySource?.source as Ability);
 
                 if (
                     !passesValueComparison({
@@ -379,7 +386,7 @@ export const passesConditions = ({
             if (sourceType !== undefined) {
                 if (
                     !passesValueComparison({
-                        val: source?.type,
+                        val: context?.sourceChain?.at(-1)?.type,
                         otherVal: sourceType,
                         comparator,
                     })

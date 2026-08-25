@@ -78,7 +78,7 @@ export const getUpdatedStats = ({
             allTargets: targets,
             isTargetSelected: targetIndex === selectedIndex,
             actionParent,
-            source: triggerSource,
+            context,
             deck,
             hand,
             discard,
@@ -132,7 +132,7 @@ export const getUpdatedStats = ({
             damage = Math.ceil(damage / (targets.length || 1));
         }
 
-        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, source: triggerSource });
+        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, context });
         if (decayArmor) {
             const halveArmorAmount = getHalveArmorAmount(target);
             totalArmor += halveArmorAmount;

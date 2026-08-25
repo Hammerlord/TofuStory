@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
@@ -39,7 +39,7 @@ export const getDamageStatistics = ({
         };
     }
 
-    // With bonus damage applied
+    const context: ActionContext = { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
     const withBonus = damageActions.map((action) => {
         return calculateBonus({
             action,
@@ -50,7 +50,7 @@ export const getDamageStatistics = ({
             deck,
             hand,
             discard,
-            source: { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            context,
         });
     });
 

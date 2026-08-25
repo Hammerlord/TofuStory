@@ -1,6 +1,6 @@
 import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES, Ability, CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
 import { passesConditions } from "../../passesConditions";
-import { CombatantInfo, TriggerSource } from "../../types";
+import { ActionContext, CombatantInfo, TriggerSource } from "../../types";
 import { isSilenced } from "../../utils";
 import { isTurnToTrigger } from "./effectLifecycle";
 
@@ -11,13 +11,13 @@ import { isTurnToTrigger } from "./effectLifecycle";
 export const getEnabledEffects = ({
     combatantInfo,
     getCalculationTarget,
-    source,
+    context: context,
 }: {
     combatantInfo?: CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[] | Ability;
-    source?: TriggerSource;
+    context?: ActionContext;
 }): CombatEffect[] => {
     const { combatant } = combatantInfo || {};
     if (!combatant?.effects) {
@@ -44,7 +44,7 @@ export const getEnabledEffects = ({
 
         return (
             !disabled &&
-            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, source: source }) &&
+            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, context }) &&
             isTurnToTrigger({ turnsTriggerFrequency, uptime })
         );
     });

@@ -3,7 +3,7 @@ import { FC, forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
-import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
 import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { findCombatantData } from "../../battle/actions/combatantData";
@@ -340,7 +340,7 @@ const AbilityView = forwardRef(
 
         const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = damageStatistics;
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id, triggerHistory: [] };
+        const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id };
 
         const hasConditionFulfilled = useMemo(() => {
             return actions.some((action: Action) => {
@@ -371,6 +371,8 @@ const AbilityView = forwardRef(
                     return;
                 }
 
+                const context: ActionContext = { sourceChain: [source] };
+
                 if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
                     return battle?.enemySide.some((combatant) => {
                         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
@@ -383,7 +385,9 @@ const AbilityView = forwardRef(
                             }
                         };
 
-                        return combatant?.HP > 0 && conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+                        return (
+                            combatant?.HP > 0 && conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }))
+                        );
                     });
                 }
 
@@ -398,7 +402,7 @@ const AbilityView = forwardRef(
                         }
                     };
 
-                    return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, source }));
+                    return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }));
                 });
             });
         }, [ability, battle?.enemySide, battle?.playerSide]);

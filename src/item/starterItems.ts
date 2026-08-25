@@ -111,7 +111,7 @@ export const rampageStone: Item = {
 };
 
 // Bit of grease to check charged abilities to avoid doing it manually anymore
-const chargedAbilityNames = JOB_CARD_MAP.Magician.all
+export const chargedAbilityNames = JOB_CARD_MAP.Magician.all
     .filter((ability) => {
         if (ability.name === pong.name) {
             // Pong itself is not a charged ability (the abilities it adds to the hand are).

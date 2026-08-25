@@ -85,7 +85,7 @@ export const checkHandleAutoCast = ({
                 const playerSide = getState().battle.playerSide;
                 abilityToCast = applyAbilityEffectsOnDraw({
                     drawnCard: abilityToCast,
-                    source: context?.sourceChain?.at(-1),
+                    context: context?.sourceChain?.at(-1),
                     playerSide,
                     effects: drawAbilityEffects,
                 });

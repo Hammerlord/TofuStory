@@ -145,7 +145,7 @@ export const checkCardActions = ({
                 updateBattle({
                     [pileKey]: pile.map((card: CombatAbility) => {
                         if (affectedCards[card.instanceId]) {
-                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, source });
+                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, context });
                         }
                         return card;
                     }),
@@ -174,7 +174,7 @@ export const checkCardActions = ({
                         instanceId: uuid.v4(),
                         removeAfterTurn: abilityEffects.some((e) => e.removeParentCardAfterTurn), // Why not make this effect consumed properly by the system?
                     },
-                    source,
+                    context,
                 })
             );
             let newHand = [...cardsToAdd, ...hand];

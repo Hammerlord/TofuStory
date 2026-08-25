@@ -312,7 +312,7 @@ const getHitEffects = ({
     }
 
     const results = [];
-    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo }).reduce(
+    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo, context }).reduce(
         (acc, { lifeOnHit = 0, stacks = 1 }) => acc + lifeOnHit * stacks,
         0
     );
@@ -510,7 +510,7 @@ const handleSecondaryAction = ({
 }) => {
     return (dispatch, getState): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
         const source = context?.sourceChain.at(-1);
-        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, source })) {
+        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, context })) {
             return;
         }
 

@@ -64,7 +64,7 @@ export const checkHandleMorph = ({
         const morphProps = {
             targets,
             morph: action.morph,
-            source,
+            context,
             getState,
             summoner: findCombatantData(getState().battle, actorId),
         };
@@ -201,14 +201,14 @@ export const getMorphMerge = ({
 export const getMorphMap = ({
     targets,
     morph,
-    source,
+    context: context,
     getState,
     summoner,
 }: {
     targets: CombatantInfo[];
     morph: Morph;
     getState: Function;
-    source: TriggerSource;
+    context: ActionContext;
     summoner: CombatantInfo;
 }): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
     const { minions, setOriginalHealthPercentage } = morph;
@@ -226,7 +226,7 @@ export const getMorphMap = ({
 
         const minionConfig = minions.find((minionConfig) => {
             const getCalculationTarget = () => findCombatantData(getState().battle, combatant?.id); // Current combatant will always be the target
-            return passesConditions({ getCalculationTarget, proc: minionConfig, source: source });
+            return passesConditions({ getCalculationTarget, proc: minionConfig, context });
         });
 
         const minion = minionConfig?.minion;

@@ -120,7 +120,7 @@ export const drawCards = ({
             handlePreemptive(cardsDrawn);
         }
 
-        cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, source, effects, playerSide }));
+        cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, context, effects, playerSide }));
 
         let handTooFull = false;
 
@@ -165,12 +165,12 @@ export const drawCards = ({
 
 export const applyAbilityEffectsOnDraw = ({
     drawnCard,
-    source: source,
+    context: context,
     effects,
     playerSide,
 }: {
     drawnCard: CombatAbility;
-    source: TriggerSource;
+    context: ActionContext;
     effects: AbilityEffect[];
     playerSide: (Combatant | null)[];
 }) => {
@@ -179,7 +179,7 @@ export const applyAbilityEffectsOnDraw = ({
         const totalCritChance = getTotalCritChance(playerSide);
         drawnCard = applyAbilityEventEffects({
             event: drawnCard.onDraw,
-            source: source,
+            context: context,
             ability: drawnCard,
             bonusChance: totalCritChance,
         });
@@ -193,12 +193,12 @@ export const applyAbilityEffectsOnDraw = ({
 export const applyAbilityEventEffects = ({
     event,
     ability,
-    source,
+    context,
     bonusChance,
 }: {
     event: AbilityEvent;
     ability: CombatAbility;
-    source?: TriggerSource;
+    context?: ActionContext;
     bonusChance?: number;
 }): CombatAbility => {
     if (!event) {
@@ -215,7 +215,7 @@ export const applyAbilityEventEffects = ({
     const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
 
     const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
-    if (!passesConditions({ source: source, getCalculationTarget, proc: event })) {
+    if (!passesConditions({ context, getCalculationTarget, proc: event })) {
         return ability;
     }
 

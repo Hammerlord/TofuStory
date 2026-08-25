@@ -134,7 +134,8 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveOverhealing = "onReceiveOverhealing",
     onTurnEnd = "onTurnEnd",
     onEnd = "onEnd", // When the effect ticks down and ends naturally, not when it is removed or dispelled
-    onRemoved = "onRemoved", // When the effect is removed or dispelled
+    onRemoved = "onRemoved", // When the parent effect is removed or dispelled
+    onRemoveEffect = "onRemoveEffect", // When ANY effect is removed or dispelled
     onWaveStart = "onWaveStart",
     onWaveClear = "onWaveClear",
     onSummoned = "onSummoned",

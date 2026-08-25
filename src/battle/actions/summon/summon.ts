@@ -51,10 +51,9 @@ export const checkHandleActionSummon = ({
 
         const actionSummon = action.summon || [];
         const potentialBonusSummons = bonuses.flatMap((b) => b?.summon || []);
-        const source: TriggerSource = parentContext?.sourceChain.at(-1);
         const summons = actionSummon
             .concat(potentialBonusSummons)
-            .filter((b) => passesConditions({ getCalculationTarget, proc: b, source }));
+            .filter((b) => passesConditions({ getCalculationTarget, proc: b, context: parentContext }));
         if (!summons.length) {
             return;
         }
