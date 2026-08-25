@@ -167,7 +167,7 @@ export const stolenFence: Item = {
             disableDisplayIcon: true,
             onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 7,
+                armor: 5,
             },
         },
     ],
@@ -574,7 +574,7 @@ export const pieceOfIce: Item = {
 
 export const aquamarine: Item = {
     name: "Aquamarine",
-    description: "Battle start: Gain 2 {{{ _pristine_ }}} Pristine.",
+    description: "Battle start: Gain {{ effects.0.onBattleStart.effects.0.stacks }} {{{ _pristine_ }}} Pristine.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: AquamarineImage,
@@ -585,7 +585,7 @@ export const aquamarine: Item = {
             class: EFFECT_CLASSES.BUFF,
             onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }],
+                effects: [{ ...preventArmorDecayPlayer, stacks: 3 }],
             },
         },
     ],
@@ -1132,7 +1132,7 @@ export const estherShield: Item = {
             class: EFFECT_CLASSES.BUFF,
             onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                armor: 4,
+                armor: 3,
             },
         },
     ],
@@ -2435,7 +2435,7 @@ export const starRock: Item = {
                 drawCards: {
                     amount: 1,
                 },
-                triggerFrequencyFromSum: 5,
+                triggerFrequencyFromSum: 4,
                 disableTriggerFromProcs: true,
             },
         },
