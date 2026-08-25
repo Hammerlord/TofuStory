@@ -5,6 +5,7 @@ import { CombatantInfo } from "../battle/types";
 import { Combatant, Player } from "../character/types";
 import {
     BloodEmojiImage,
+    CriticalShotImage,
     CrossedSwordsImage,
     FireEmojiImage,
     FuryImage,
@@ -13,6 +14,7 @@ import {
     LeafImage,
     ManaImage,
     NimbleJewelCImage,
+    PoisonImage,
     SealImage,
     ShieldImage,
     SnowflakeEmojiImage,
@@ -26,6 +28,8 @@ import attUpSvg from "../images/icons/AttUp.svg?raw";
 import cactusSvg from "../images/icons/Cactus.svg?raw";
 import defDownSvg from "../images/icons/DefDown.svg?raw";
 import defUpSvg from "../images/icons/DefUp.svg?raw";
+import pristine from "../images/icons/PristineShield.svg?raw";
+
 
 import { PLAYER_CLASSES } from "../Menu/types";
 import { BLUE, GREEN, RED } from "./AbilityView/constants";
@@ -51,18 +55,18 @@ const cardTypeString = (color) => {
         margin: "2px",
         transform: "rotate(45deg)",
         background: color,
+        filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 0.5px black)",
     };
 
     const styleStr = styleObjectToString(properties);
     return `<span style="${styleStr}"></span>`;
 };
 
-const iconStyleStr = styleObjectToString(iconStyles);
-
 const styleStrWithShadow = styleObjectToString({
     ...iconStyles,
-    filter: "drop-shadow(0 0 1px black)",
+    filter: "drop-shadow(0 0 1px black) drop-shadow(0 0 0.5px black)",
 });
+
 const inlineSvg = (svg: string) =>
     svg.replace("<svg ", `<svg width="15" height="15" style="vertical-align: middle; ${styleStrWithShadow}" `);
 
@@ -71,15 +75,17 @@ const ICON_INTERPOLATIONS = {
     _support_: cardTypeString(BLUE),
     _summon_: cardTypeString(GREEN),
     _damage_: `<img src="${CrossedSwordsImage}" alt="Damage" style="${styleStrWithShadow}"/>`,
-    _healing_: `<img src="${HeartImage}" alt="HP" style="${iconStyleStr}"/>`,
+    _healing_: `<img src="${HeartImage}" alt="HP" style="${styleStrWithShadow}"/>`,
     _armor_: `<img src="${ShieldImage}" alt="Armor" style="${styleStrWithShadow}"/>`,
     _duration_: `<img src="${HourglassImage}" alt="Turns" style="${styleStrWithShadow}"/>`,
-    _burn_: `<img src="${FireEmojiImage}" alt="Burn" style="${styleStrWithShadow}"/>`,
+    _burn_: `<img src="${FireEmojiImage}" alt="Poison" style="${styleStrWithShadow}"/>`,
+    _poison_: `<img src="${PoisonImage}" alt="Burn" style="${styleStrWithShadow}"/>`,
     _chill_: `<img src="${SnowflakeEmojiImage}" alt="Chill" style="${styleStrWithShadow}"/>`,
     _bleed_: `<img src="${BloodEmojiImage}" alt="Bleed" style="${styleStrWithShadow}"/>`,
     _stun_: `<img src="${StunImage}" alt="Stun" style="${styleStrWithShadow}"/>`,
     _silence_: `<img src="${SealImage}" alt="Silence" style="${styleStrWithShadow}"/>`,
     _freeze_: `<img src="${NimbleJewelCImage}" alt="Freeze" style="${styleStrWithShadow}"/>`,
+    _critical_: `<img src="${CriticalShotImage}" alt="Critical" style="${styleStrWithShadow}"/>`,
     _thorns_: inlineSvg(cactusSvg),
     _attDown_: inlineSvg(attDownSvg),
     _attUp_: inlineSvg(attUpSvg),
@@ -87,6 +93,7 @@ const ICON_INTERPOLATIONS = {
     _armorUp_: inlineSvg(armorUpSvg),
     _defDown_: inlineSvg(defDownSvg),
     _defUp_: inlineSvg(defUpSvg),
+    _pristine_: inlineSvg(pristine)
 };
 
 export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass: PLAYER_CLASSES }) => {
