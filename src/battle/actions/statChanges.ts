@@ -150,7 +150,6 @@ export const triggerStatChangeEvents =
             });
 
             if (isDeathBlow) {
-                console.log("It was a deathblow for", statUpdate, context);
                 dispatch(onCombatantDeath({ combatantId, context: context }));
             }
         });

@@ -26,12 +26,15 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
             return;
         }
 
+        const playbackCollectorInstance = playbackCollector();
+
         dispatch(
             useAbility({
                 selectedIndex,
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
                 ability,
                 actorId,
+                context: { name: "Minion Manual Attack", playbackCollector: playbackCollectorInstance },
             })
         );
 
@@ -40,6 +43,9 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
                 charactersAttackedThisTurn: [...getState().battle.charactersAttackedThisTurn, actorId],
             })
         );
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
+        dispatch(checkValidEnemyTargeting());
     };
 };
 

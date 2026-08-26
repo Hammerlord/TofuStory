@@ -164,8 +164,6 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
-        dispatch(checkValidEnemyTargeting());
-
         const { playerSide } = getState().battle;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
