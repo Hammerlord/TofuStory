@@ -8,10 +8,10 @@ import { strength } from "./enemy";
 
 export const ancientMixedGolem: Minion = {
     name: "Ancient Mixed Golem",
-    maxHP: 200,
+    maxHP: 100,
     image: AncientMixedGolemImage,
     isBoss: true,
-    armor: 150,
+    armor: 250,
     mesos: 50,
     abilities: [
         {
@@ -56,5 +56,5 @@ export const ancientMixedGolem: Minion = {
             ],
         },
     ],
-    effects: [temporaryResist, hardy, preventArmorDecay, strength],
+    effects: [{ ...temporaryResist, stacks: 5 }, hardy, preventArmorDecay, strength],
 };

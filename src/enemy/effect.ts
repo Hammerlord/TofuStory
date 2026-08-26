@@ -64,7 +64,6 @@ export const hardwood: Effect = {
         effects: [
             {
                 ...defUp,
-                name: "Barricade",
                 description: "+1 DEF per stack, up to 3. Effect is disabled by Burn.",
                 defenseDown: -1,
                 duration: 1,
@@ -81,11 +80,24 @@ export const hardwood: Effect = {
             },
         ],
     },
+    onReceiveEffect: {
+        usableWhileStunned: true,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                hasEffectType: [EFFECT_TYPES.BURN],
+                comparator: "eq",
+            },
+        ],
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        removeEffects: [defUp.name],
+    },
 };
 
 export const dryBranch: Effect = {
     name: "Dry Branch",
-    description: "Receives extra damage from attacks if Burning.",
+    description: "Receives +30% damage from attacks if Burning.",
     icon: TreeBranchImage,
     defenseDown: 3,
     type: EFFECT_TYPES.NONE,
@@ -121,18 +133,15 @@ export const bats: Effect = {
 
 export const fairySwarm: Effect = {
     name: "Fairy Swarm",
+    description:
+        "Can only take a max of {{ maxDamageTaken }} {{{ _damage_ }}} per hit. Migrates to the other side when the effect ends, inflicting {{{ _poison_ }}} on the victim.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: true,
-    defenseDown: -15,
+    maxDamageTaken: 5,
     duration: 2,
     icon: ShiningFairyImage,
     portraitImage: GreenFairiesImage,
-    onTurnStart: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        usableWhileStunned: true,
-        healing: 5,
-    },
     onEnd: {
         usableWhileStunned: true,
         ability: {
@@ -168,17 +177,13 @@ export const fairySwarm: Effect = {
 
 const frenziedFairies: Effect = {
     name: "Fairy Frenzy",
-    description: "Vulnerable. Receiving 3 damage on turn end.",
+    description: "Afflicted with {{ defenseDown }} {{{ _defDown_ }}}. Migrates to the other side when the effect ends.",
     defenseDown: 1,
     duration: 1,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     icon: AncientFairyImage,
     portraitImage: PurpleFairiesImage,
-    onTurnEnd: {
-        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        damage: 3,
-    },
     onEnd: {
         usableWhileStunned: true,
         ability: {
@@ -384,7 +389,7 @@ export const resist: Effect = {
 
 export const restless: Effect = {
     name: "Restless",
-    description: "This character does not take rest turns.",
+    description: "Does not take idle turns.",
     icon: NoZzzIcon,
     disableAbilities: [ACTION_TYPES.NONE],
     canBeSilenced: true,
