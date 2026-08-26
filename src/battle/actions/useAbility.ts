@@ -10,7 +10,6 @@ import { findCombatantData } from "./combatantData";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { performAction } from "./performAction";
-import { PlaybackCollector } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon/summon";
 import { autoSelectActionTarget } from "./targeting/targeting";
@@ -24,7 +23,7 @@ export const useAbility = ({
     actorId,
     isAutoCast,
     isProc,
-    playbackCollector,
+    context,
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
@@ -32,7 +31,7 @@ export const useAbility = ({
     actorId: string;
     isAutoCast?: boolean;
     isProc?: boolean;
-    playbackCollector?: PlaybackCollector;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
@@ -52,7 +51,7 @@ export const useAbility = ({
         }
 
         const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, isProc };
-        const parentContext: ActionContext = { sourceChain: [source], playbackCollector, triggerHistory: [], isProc };
+        const parentContext: ActionContext = { ...context, sourceChain: [...(context?.sourceChain || []), source], isProc };
 
         dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentContext, isAutoCast }));
 
@@ -191,7 +190,7 @@ export const onUseAbility =
                         ability: effect.onUse?.ability,
                         actorId: actor.id,
                         isProc: true,
-                        playbackCollector: context.playbackCollector,
+                        context,
                     })
                 );
             }

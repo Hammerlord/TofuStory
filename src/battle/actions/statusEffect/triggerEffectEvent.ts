@@ -529,7 +529,7 @@ export const checkEventTrigger = ({
                                 ability: card[effectEventKey].ability,
                                 actorId: source?.actorId,
                                 isProc: true,
-                                playbackCollector: context?.playbackCollector,
+                                context,
                             })
                         );
                     }

@@ -143,7 +143,7 @@ export const checkHandleAutoCast = ({
                     },
                     actorId: actor.id,
                     isAutoCast: true,
-                    playbackCollector: context?.playbackCollector,
+                    context,
                 })
             );
         });

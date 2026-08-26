@@ -172,7 +172,7 @@ export const usePlayerAbility = ({
                 side: selectedTargetSide,
                 actorId: actor?.id,
                 isProc,
-                playbackCollector: playbackCollectorInstance,
+                context: { playbackCollector: playbackCollectorInstance },
             })
         );
 

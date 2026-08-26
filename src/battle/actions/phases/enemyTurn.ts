@@ -55,7 +55,7 @@ const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollecto
             return;
         }
 
-        dispatch(useAbility({ actorId: combatantId, ability, playbackCollector }));
+        dispatch(useAbility({ actorId: combatantId, ability, context: { playbackCollector } }));
         const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId) || {};
         if (!postAbilityActor) {
             return;
@@ -264,7 +264,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 
         const { castTime, channelDuration } = ability || {};
         if (!castTime && !channelDuration) {
-            dispatch(useAbility({ ability, actorId: combatantId, playbackCollector }));
+            dispatch(useAbility({ ability, actorId: combatantId, context: { playbackCollector } }));
             return;
         }
 
@@ -284,7 +284,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
         );
 
         if (!castTime) {
-            dispatch(useAbility({ ability, actorId: combatantId, playbackCollector }));
+            dispatch(useAbility({ ability, actorId: combatantId, context: { playbackCollector } }));
 
             const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId);
             const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;

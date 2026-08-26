@@ -58,7 +58,9 @@ const minionAutoAttack = () => {
                 return;
             }
 
-            dispatch(useAbility({ ability: abilityToUse, actorId: combatant.id, playbackCollector: playbackCollectorInstance }));
+            dispatch(
+                useAbility({ ability: abilityToUse, actorId: combatant.id, context: { playbackCollector: playbackCollectorInstance } })
+            );
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
