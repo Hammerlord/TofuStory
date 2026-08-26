@@ -371,7 +371,7 @@ const AbilityView = forwardRef(
                     return;
                 }
 
-                const context: ActionContext = { sourceChain: [source] };
+                const context: ActionContext = { name: "Ability View", sourceChain: [source] };
 
                 if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
                     return battle?.enemySide.some((combatant) => {

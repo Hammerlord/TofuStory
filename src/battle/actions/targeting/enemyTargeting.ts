@@ -70,7 +70,10 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
                             selectedIndex: target.index,
                             side: target.side,
                             actorId: enemyId,
-                            parentContext: { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] },
+                            parentContext: {
+                                name: "Enemy Valid Target Check",
+                                sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+                            },
                         }),
                         battle: battle,
                     });

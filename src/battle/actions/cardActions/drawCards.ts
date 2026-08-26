@@ -340,6 +340,7 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
                 updated.map(({ statUpdate, action }) => ({
                     statUpdate,
                     context: {
+                        name: "Card Action Bonuses",
                         sourceChain: [
                             ...parentSourceChain,
                             {

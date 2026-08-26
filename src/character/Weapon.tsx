@@ -181,7 +181,7 @@ const Weapon = ({
 
     const battle = useAppSelector((state) => state?.battle);
     const wielderInfo = findCombatantData(battle, wielder?.id);
-    const context: ActionContext = { sourceChain: [source] };
+    const context: ActionContext = { name: "Weapon View", sourceChain: [source] };
     const totalArea = battle
         ? calculateActionArea({
               action: action,

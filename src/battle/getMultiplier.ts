@@ -274,7 +274,10 @@ const calculateAttackDamageInHand = ({
             return;
         }
 
-        const context: ActionContext = { sourceChain: [{ source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+        const context: ActionContext = {
+            name: "Attack Damage in Hand",
+            sourceChain: [{ source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+        };
 
         (card.actions || []).forEach((action: Action) => {
             if (isAttackAction(action)) {

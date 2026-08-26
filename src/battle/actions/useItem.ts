@@ -24,6 +24,7 @@ export const useItem = ({
         const source = { type: TRIGGER_SOURCE_TYPES.ITEM, source: item, actorId, targetId: actorId, allTargetIds: [actorId] };
 
         const context: ActionContext = {
+            name: "Use Item",
             sourceChain: [source],
             triggerHistory: [],
             playbackCollector,

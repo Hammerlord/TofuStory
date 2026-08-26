@@ -31,7 +31,7 @@ export const selectCardsAction =
     (dispatch, getState) => {
         const { deck, hand, discard, playerSide, enemySide } = getState().battle;
         const playbackCollectorInstance = playbackCollector();
-        const context: ActionContext = { playbackCollector: playbackCollectorInstance };
+        const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
 
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities, context }));

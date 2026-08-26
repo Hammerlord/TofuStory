@@ -204,6 +204,7 @@ const getAbilityPreviews = ({
     };
 
     const context: ActionContext = {
+        name: "Ability Previews",
         sourceChain: [{ source: actionParent, actorId: actor.id, type: TRIGGER_SOURCE_TYPES.ABILITY }],
         triggerHistory: [],
         isPreviewMode: true,

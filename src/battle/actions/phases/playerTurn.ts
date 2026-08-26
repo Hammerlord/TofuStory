@@ -59,7 +59,11 @@ const minionAutoAttack = () => {
             }
 
             dispatch(
-                useAbility({ ability: abilityToUse, actorId: combatant.id, context: { playbackCollector: playbackCollectorInstance } })
+                useAbility({
+                    ability: abilityToUse,
+                    actorId: combatant.id,
+                    context: { name: "Minion Attack", playbackCollector: playbackCollectorInstance },
+                })
             );
         });
 
@@ -105,7 +109,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
         const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
 
         const playbackCollectorInstance = playbackCollector();
-        const context = { playbackCollector: playbackCollectorInstance };
+        const context = { name: "Player Start Turn", playbackCollector: playbackCollectorInstance };
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, context }));
 
         const getPlayerSideInfo = () =>

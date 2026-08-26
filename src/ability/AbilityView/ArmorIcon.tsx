@@ -60,6 +60,7 @@ export const getArmorStatistics = ({
         });
 
         const context: ActionContext = {
+            name: "Armor View",
             sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
         };
 

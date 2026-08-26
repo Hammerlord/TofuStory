@@ -92,6 +92,7 @@ export interface TriggerSource {
  * - Events like "on turn end" were not caused by any action in particular and do not have a source
  */
 export interface ActionContext {
+    name: string; // No logic attached to this. For caller identification/debugging purposes
     sourceChain?: TriggerSource[];
     isProc?: boolean; // Whether this action was triggered by a proc (eg. onAttack, onReceiveDamage, etc.)
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.

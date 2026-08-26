@@ -66,6 +66,7 @@ const Area = ({
     const { actions = [] } = ability || {};
 
     const context: ActionContext = {
+        name: "Area View",
         sourceChain: [{ source: ability as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
     };
 

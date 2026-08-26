@@ -33,7 +33,10 @@ export const isWithinPlayerAbilityArea = ({
         return false;
     }
     const action = ability.actions[0];
-    const context: ActionContext = { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+    const context: ActionContext = {
+        name: "Player Ability Area Check",
+        sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+    };
     const area = calculateActionArea({ action, actor, context }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
@@ -172,7 +175,7 @@ export const usePlayerAbility = ({
                 side: selectedTargetSide,
                 actorId: actor?.id,
                 isProc,
-                context: { playbackCollector: playbackCollectorInstance },
+                context: { name: "Use Player Ability", playbackCollector: playbackCollectorInstance },
             })
         );
 
@@ -184,6 +187,7 @@ export const usePlayerAbility = ({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onPlayCard,
                         context: {
+                            name: "On Play Card",
                             triggerHistory: [],
                             sourceChain: [
                                 {

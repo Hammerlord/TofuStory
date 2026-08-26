@@ -203,6 +203,7 @@ export const onBattleStart = () => {
                         })),
                     },
                     context: {
+                        name: "Battle Start - Add Cards",
                         sourceChain: [
                             {
                                 type: TRIGGER_SOURCE_TYPES.NONE,
@@ -215,7 +216,7 @@ export const onBattleStart = () => {
         }
 
         const playbackCollectorInstance = playbackCollector();
-        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = { name: "Battle Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart, context }));
         });
@@ -227,7 +228,7 @@ export const onBattleStart = () => {
 export const onWaveStart = () => {
     return (dispatch, getState) => {
         const playbackCollectorInstance = playbackCollector();
-        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = { name: "Wave Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
         const { playerSide, enemySide } = getState().battle;
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart, context }));
@@ -266,7 +267,7 @@ export const onWaveStart = () => {
 export const onEndTurnTriggers = ({ combatants }: { combatants: (Combatant | null)[] }) => {
     return (dispatch) => {
         const playbackCollectorInstance = playbackCollector();
-        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = { name: "End Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(

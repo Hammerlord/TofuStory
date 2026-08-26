@@ -8,7 +8,7 @@ import { getRandomInt } from "../../../utils";
 import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { BATTLE_STATES, BattleState, battleStateSlice } from "../../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { isStunnedOrFrozen } from "../../utils";
 import { findCombatantData, isTurnActionPrevented, updateCombatant, updateCombatants } from "../combatantData";
 import { performAction } from "../performAction";
@@ -55,7 +55,7 @@ const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollecto
             return;
         }
 
-        dispatch(useAbility({ actorId: combatantId, ability, context: { playbackCollector } }));
+        dispatch(useAbility({ actorId: combatantId, ability, context: { name: "Enemy Cast", playbackCollector } }));
         const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId) || {};
         if (!postAbilityActor) {
             return;
@@ -229,7 +229,11 @@ export const getUpdatedBattleActionTargets = ({
         const preview = previewAction({
             actionFn: performAction({
                 action,
-                parentContext: { sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability }], triggerHistory: [] },
+                parentContext: {
+                    name: "Action Preview",
+                    sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability }],
+                    triggerHistory: [],
+                },
                 selectedIndex: target.index,
                 side: target.side,
                 actorId: actorInfo.combatant.id,
@@ -264,7 +268,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 
         const { castTime, channelDuration } = ability || {};
         if (!castTime && !channelDuration) {
-            dispatch(useAbility({ ability, actorId: combatantId, context: { playbackCollector } }));
+            dispatch(useAbility({ ability, actorId: combatantId, context: { name: "Enemy Ability", playbackCollector } }));
             return;
         }
 
@@ -284,7 +288,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
         );
 
         if (!castTime) {
-            dispatch(useAbility({ ability, actorId: combatantId, context: { playbackCollector } }));
+            dispatch(useAbility({ ability, actorId: combatantId, context: { name: "Enemy Ability", playbackCollector } }));
 
             const { combatant: postAbilityActor } = findCombatantData(getState().battle, combatantId);
             const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
@@ -337,7 +341,7 @@ export const startEnemyTurn = () => {
         // The "source" acts as a context object just to pass in a playbackCollector.
         // The effect events at turn start technically don't have a `trigger source`.
         const playbackCollectorInstance = playbackCollector();
-        const context = { sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context: ActionContext = { name: "Enemy Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
         const combatantIds = enemySide.map((combatant) => combatant?.id).filter((v) => v);
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE, context }));
 

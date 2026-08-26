@@ -40,7 +40,10 @@ export const isValidTargetForPlayerAbility = ({
     }
 
     const { target } = actions[0] || {};
-    const context: ActionContext = { sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+    const context: ActionContext = {
+        name: "Player Valid Target Check",
+        sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+    };
     const area =
         calculateActionArea({
             action: actions[0],

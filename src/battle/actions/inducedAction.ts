@@ -82,6 +82,7 @@ export const checkInduce = ({
 
                         const context: ActionContext = {
                             ...parentContext,
+                            name: "Induced Action",
                             sourceChain: [
                                 ...(parentContext?.sourceChain || []),
                                 { actorId: id, source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
