@@ -603,8 +603,18 @@ export const doom: Effect = {
     turnsTriggerFrequency: 3,
     onTurnStart: {
         usableWhileStunned: true,
-        damage: 30,
         removeEffect: true,
+        ability: {
+            name: "Doom!",
+            image: SkeletonOfHorrorImage,
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    damage: 30,
+                },
+            ],
+        },
     },
 };
 

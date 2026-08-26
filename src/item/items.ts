@@ -2925,7 +2925,7 @@ export const doomSinger: Item = {
             name: "Maple Doom Singer",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            turnsTriggerFrequency: 4,
+            turnsTriggerFrequency: 3,
             onTurnStart: {
                 ability: {
                     name: "Doom Song",

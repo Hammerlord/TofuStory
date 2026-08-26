@@ -1,4 +1,3 @@
-import { isOffensiveAction } from "../ability/AbilityView/utils";
 import {
     Ability,
     AbilityEffect,
@@ -63,10 +62,6 @@ export const calculateDamage = ({
         baseDamage = Math.max(0, baseDamage);
     }
 
-    if (!actor) {
-        return baseDamage;
-    }
-
     const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
         if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
             return actor;
@@ -82,7 +77,7 @@ export const calculateDamage = ({
     let minimumDamage = 0;
     let maximumDamage = action.maxDamage;
 
-    if (isAttack) {
+    if (isAttack && actor) {
         getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(
             ({
                 attackPower = 0,
@@ -133,7 +128,7 @@ export const calculateDamage = ({
 
     const damage = baseDamage * multiplier + totalSkillBonus;
     let debuffModifiers = 0;
-    if (isAttack || (isOffensiveAction(action) && typeof action.damage === "number")) {
+    if (isAttack || typeof action.damage === "number") {
         const hasBleed = targetEnabledEffects.some((e) => e.type === EFFECT_TYPES.BLEED);
         const bleedModifier = hasBleed ? 1 : 0;
         debuffModifiers += bleedModifier + totalDefDown;
