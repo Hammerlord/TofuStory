@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
+import { Ability, ACTION_TYPES, ActionAnimation, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
@@ -134,6 +134,19 @@ const NUM_SPACES_AWAY_DELAY = 30;
 
 const { updateBattle } = battleStateSlice.actions;
 
+const getRotation = (animation: ANIMATION_TYPES) => {
+    if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
+        return 900;
+    }
+    if ([ANIMATION_TYPES.YOYO, ANIMATION_TYPES.ONE_WAY_SPIN].includes(animation)) {
+        return 360;
+    }
+    if ([ANIMATION_TYPES.SPIN].includes(animation)) {
+        return 720;
+    }
+    return 0;
+};
+
 /**
  * Component that controls animations such as moving an attacker to its target, or a projectile
  */
@@ -225,21 +238,9 @@ const AnimationCanvas = ({
         return getCenterCoords(discardRef.current);
     }, [discardRef?.current]);
 
-    const { icon, animation, animationOptions } = action || {};
-    const {
-        mirrorX,
-        width,
-        height,
-        rotateToFaceTarget,
-        rotate,
-        opacity,
-        flash,
-        fadeOut,
-        sidewinder,
-        brightness,
-        ricochet,
-        disableScreenShake,
-    } = animationOptions || {};
+    const { icon, animation, animationOptions, animations = [] } = action || {};
+    const { mirrorX, width, height, opacity, flash, fadeOut, sidewinder, brightness, ricochet, disableScreenShake } =
+        animationOptions || animations[0]?.options || {};
     const classes = useStyles({ playbackTime, flash, brightness } as any)();
 
     // "Beam" animations shoot a bunch of projectile images
@@ -252,99 +253,116 @@ const AnimationCanvas = ({
             return;
         }
 
-        const { type, animation, icon } = action || {};
-        let spin = 0;
-        if ([ANIMATION_TYPES.ONE_WAY_SPIN_FAST].includes(animation)) {
-            spin = 900;
-        } else if ([ANIMATION_TYPES.YOYO, ANIMATION_TYPES.ONE_WAY_SPIN].includes(animation)) {
-            spin = 360;
-        } else if ([ANIMATION_TYPES.SPIN].includes(animation)) {
-            spin = 720;
-        }
-
-        const options = { spin, rotation: rotate, playbackTime: playbackTime, rotateToFaceTarget };
+        const { type: actionType, animation, animationOptions, icon, animations } = action || {};
         animationRefs.current.forEach((animation) => animation.cancel());
         animationRefs.current = [];
 
-        if (icon) {
-            const animateProjectile = (
-                target: { ref: React.RefObject<HTMLElement>; index: number } | { ref: React.RefObject<HTMLElement>; index: number }[],
-                projectileRefIndex: number = 0
-            ) => {
-                const refsFrom = projectileRefIndex * beamProjectileMultiplier;
-                const refsTo = refsFrom + 1 * beamProjectileMultiplier;
-                const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
-
-                let adjustTimingByDistance = 0;
-                if (target && !Array.isArray(target)) {
-                    const numSpacesAway = Math.abs(target.index - getIndexFromCharacterId(actorId));
-                    adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
-                }
-
-                if (animation === ANIMATION_TYPES.CONSUMABLE) {
-                    const animations = playTossUpAnimation({
-                        from: actorElement,
-                        object,
-                        ...options,
-                    });
-                    animationRefs.current.push(...animations);
-                } else if (animation === ANIMATION_TYPES.ACTION_EXPLODE) {
-                    const animations = playExplodeAnimation({
-                        from: actorElement,
-                        object,
-                        ...options,
-                    });
-
-                    animationRefs.current.push(...animations);
-                } else {
-                    const targets = Array.isArray(target) ? target.map((t) => t.ref.current) : target.ref.current;
-                    const animations = playTravelAnimation({
-                        from: actorElement,
-                        to: targets,
-                        object,
-                        sidewinder,
-                        returnToOrigin: animation === ANIMATION_TYPES.YOYO,
-                        fadeIn: animation === ANIMATION_TYPES.BEAM,
-                        ...options,
-                        playbackTime: playbackTime - adjustTimingByDistance,
-                    });
-
-                    if (animations?.length) {
-                        animationRefs.current.push(...animations);
-                    }
-                }
+        const handleAnimation = (animationConfig: ActionAnimation) => {
+            let { image, options, type: animationType } = animationConfig;
+            options = {
+                ...options,
+                spin: options.spin || getRotation(animation),
             };
 
-            if (ricochet) {
-                animateProjectile(allTargets);
-            } else {
-                allTargets.forEach(animateProjectile);
-            }
-        } else if (animation === ANIMATION_TYPES.STOMP) {
-            const shakeDuration = 175;
-            const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
-            if (battlefieldRef.current && !disableScreenShake) {
-                playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
+            if (image) {
+                const animateProjectile = (
+                    target: { ref: React.RefObject<HTMLElement>; index: number } | { ref: React.RefObject<HTMLElement>; index: number }[],
+                    projectileRefIndex: number = 0
+                ) => {
+                    const refsFrom = projectileRefIndex * beamProjectileMultiplier;
+                    const refsTo = refsFrom + 1 * beamProjectileMultiplier;
+                    const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
+
+                    let adjustTimingByDistance = 0;
+                    if (target && !Array.isArray(target)) {
+                        const numSpacesAway = Math.abs(target.index - getIndexFromCharacterId(actorId));
+                        adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+                    }
+
+                    if (animationType === ANIMATION_TYPES.CONSUMABLE) {
+                        const animations = playTossUpAnimation({
+                            from: actorElement,
+                            object,
+                            ...options,
+                        });
+                        animationRefs.current.push(...animations);
+                    } else if (animationType === ANIMATION_TYPES.ACTION_EXPLODE) {
+                        const animations = playExplodeAnimation({
+                            from: actorElement,
+                            object,
+                            playbackTime,
+                            ...options,
+                        });
+
+                        animationRefs.current.push(...animations);
+                    } else {
+                        const targets = Array.isArray(target) ? target.map((t) => t.ref.current) : target.ref.current;
+                        const animations = playTravelAnimation({
+                            from: actorElement,
+                            to: targets,
+                            object,
+                            sidewinder,
+                            returnToOrigin: animationType === ANIMATION_TYPES.YOYO,
+                            fadeIn: animationType === ANIMATION_TYPES.BEAM,
+                            ...options,
+                            playbackTime: playbackTime - adjustTimingByDistance,
+                        });
+
+                        if (animations?.length) {
+                            animationRefs.current.push(...animations);
+                        }
+                    }
+                };
+
+                if (ricochet) {
+                    animateProjectile(allTargets);
+                } else {
+                    allTargets.forEach(animateProjectile);
+                }
+
+                return;
             }
 
-            animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
-        } else if (animation === ANIMATION_TYPES.SPIN) {
-            animationRefs.current = playTravelAnimation({ from: actorElement, to: targetElement, ...options });
-        } else if (animation === ANIMATION_TYPES.EXPLODE) {
-            animationRefs.current = playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
-        } else if (type === ACTION_TYPES.ATTACK || animation === ANIMATION_TYPES.ONE_WAY) {
-            const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
-            let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
-            const windup = type === ACTION_TYPES.ATTACK ? Math.min(20, 5 * action.damage) : 0;
+            if (animationType === ANIMATION_TYPES.STOMP) {
+                const shakeDuration = 175;
+                const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
+                if (battlefieldRef.current && !disableScreenShake) {
+                    playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
+                }
 
-            animationRefs.current = playTravelAnimation({
-                from: actorElement,
-                to: ricochet ? allTargets.map((t) => t.ref.current) : targetElement,
-                returnToOrigin: true,
-                windup: windup,
-                ...options,
-                playbackTime: playbackTime - adjustTimingByDistance,
-            });
+                animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
+                return;
+            }
+
+            if (animationType === ANIMATION_TYPES.SPIN) {
+                animationRefs.current = playTravelAnimation({ from: actorElement, to: targetElement, ...options, playbackTime });
+                return;
+            }
+
+            if (animationType === ANIMATION_TYPES.EXPLODE) {
+                animationRefs.current = playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
+                return;
+            }
+
+            if (actionType === ACTION_TYPES.ATTACK || animationType === ANIMATION_TYPES.ONE_WAY) {
+                const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
+                let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+                const windup = actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * action.damage) : 0;
+
+                animationRefs.current = playTravelAnimation({
+                    from: actorElement,
+                    to: ricochet ? allTargets.map((t) => t.ref.current) : targetElement,
+                    returnToOrigin: true,
+                    windup: windup,
+                    ...options,
+                    playbackTime: playbackTime - adjustTimingByDistance,
+                });
+            }
+        };
+
+        handleAnimation({ image: icon, type: animation, options: animationOptions });
+        if (Array.isArray(animations)) {
+            animations.forEach(handleAnimation);
         }
     }, [eventId]);
 

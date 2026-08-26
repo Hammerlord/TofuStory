@@ -588,6 +588,35 @@ export type AutoPlayCards = {
     filters?: { property: string; comparator: Comparator; value: any }[];
 };
 
+export type AnimationOptions = {
+    rotate?: number; // Degrees to rotate a sprite; for example, an arrow sprite might be at 45 degrees and need to be oriented to point at a target
+    mirrorX?: boolean;
+    rotateToFaceTarget?: boolean; // Whether a projectile such as an arrow should orient toward the target. True by default.
+    width?: number;
+    height?: number;
+    opacity?: number; // Should be a decimal with a max value of 1
+    flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
+    fadeOut?: boolean;
+    sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
+    brightness?: number; // Value of 1 is normal brightness
+    // Bounces between numTargets within targetArea.
+    ricochet?: boolean;
+    disableScreenShake?: boolean; // Only applicable for stomp
+    portraitEffectImage?: string;
+    weapon?: {
+        hide?: boolean;
+        glow?: boolean;
+        rotateToFaceTarget?: boolean; // For ranged attacks where the weapon should face the target
+    };
+    spin?: number; // Custom degrees to spin; animations like ONE_WAY_SPIN etc. already come with defaults
+};
+
+export type ActionAnimation = {
+    type: ANIMATION_TYPES;
+    image?: string;
+    options?: AnimationOptions;
+};
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -662,10 +691,14 @@ export type Action = {
     retrieveDepletedCards?: {
         amount: number;
     };
-    icon?: string; // Used as a projectile
     bonus?: Bonus | Bonus[];
     multiplier?: Multiplier;
+    animations?: ActionAnimation[];
+
+    // Legacy animation options; use animations instead
+    icon?: string; // Used as a projectile
     animation?: ANIMATION_TYPES;
+    animationOptions?: AnimationOptions;
     conditions?: Condition[];
     excludePrimaryTarget?: boolean;
     /** Radiates damage/effects to opponents on the other side of the board. */
@@ -698,27 +731,6 @@ export type Action = {
     removeDebuffs?: boolean;
     // Names of effects to be removed
     removeEffects?: string[];
-    animationOptions?: {
-        rotate?: number; // Degrees to rotate a sprite; for example, an arrow sprite might be at 45 degrees and need to be oriented to point at a target
-        mirrorX?: boolean;
-        rotateToFaceTarget?: boolean; // Whether a projectile such as an arrow should orient toward the target. True by default.
-        width?: number;
-        height?: number;
-        opacity?: number; // Should be a decimal with a max value of 1
-        flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
-        fadeOut?: boolean;
-        sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
-        brightness?: number; // Value of 1 is normal brightness
-        // Bounces between numTargets within targetArea.
-        ricochet?: boolean;
-        disableScreenShake?: boolean; // Only applicable for stomp
-        portraitEffectImage?: string;
-        weapon?: {
-            hide?: boolean;
-            glow?: boolean;
-            rotateToFaceTarget?: boolean; // For ranged attacks where the weapon should face the target
-        };
-    };
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     // Use this to avoid an extra playback for an effect that could be applied in the same action event.
     secondaryAction?: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
