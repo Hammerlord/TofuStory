@@ -597,6 +597,7 @@ export const doom: Effect = {
     duration: 3,
     turnsTriggerFrequency: 3,
     onTurnStart: {
+        usableWhileStunned: true,
         damage: 30,
         removeEffect: true,
     },

@@ -70,7 +70,7 @@ const BlockIcon = ({ statChanges, delay }: { statChanges: UpdatedCombatantStats;
             animationRefs.current.push(rootAnimation);
             setOldBlockedDamage(Math.abs(blockedDamage));
         }
-    }, [statChanges]);
+    }, [statChanges?.id]);
 
     return (
         <span className={classes.root} ref={rootRef}>
