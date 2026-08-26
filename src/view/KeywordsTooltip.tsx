@@ -211,7 +211,13 @@ export const TooltipSection = ({
     const classes = useSectionStyles();
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
 
-    const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
+    let content;
+    if (typeof description === "string") {
+        const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
+        content = <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />;
+    } else {
+        content = description;
+    }
 
     return (
         <div className={classes.section}>
@@ -222,7 +228,7 @@ export const TooltipSection = ({
             )}
             <div>
                 <div className={classes.tooltipTitle}>{title}</div>
-                <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
+                {content}
             </div>
         </div>
     );
