@@ -3500,7 +3500,8 @@ export const meditation: Ability = {
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 2,
-                    onTurnStart: {
+                    // Remove AFTER the card draw (see upgrade)
+                    onTurnInProgress: {
                         effects: [{ ...chargedEffect }],
                         removeEffect: true,
                     },
