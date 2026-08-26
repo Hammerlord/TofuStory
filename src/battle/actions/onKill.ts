@@ -11,6 +11,7 @@ import { getUpdatedStats } from "./getUpdatedStats";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { isActorPlayerSide } from "./combatantData";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
+import { checkValidEnemyTargeting } from "./targeting/enemyTargeting";
 
 const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -164,13 +165,14 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
+        dispatch(checkValidEnemyTargeting());
+
         const { playerSide } = getState().battle;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         if (player.HP <= 0) {
             dispatch(updateBattleState(BATTLE_STATES.DEFEAT));
             dispatch(updatePlayer(player));
-            return;
         }
     };
 };
