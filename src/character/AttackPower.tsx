@@ -54,7 +54,6 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
         return null;
     }
 
-    const overrideDamage = effects.find(({ override }) => override?.damage)?.override?.damage;
     let abilityToUse;
     if (isEnemy) {
         abilityToUse = casting?.ability || targeting?.ability;
@@ -97,7 +96,7 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     );
 
     const totalDamage = (() => {
-        const total = calculateDamageModifierCoeff({ totalDamageMod: totalAttackPower, damage: overrideDamage || damage });
+        const total = calculateDamageModifierCoeff({ totalDamageMod: totalAttackPower, damage: damage });
         if (total < 0) {
             return 0;
         }
@@ -118,7 +117,7 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
                 text={totalDamage || Math.max(0, totalAttackPower)}
                 className={classNames({
                     [classes.bonus]: totalAttackPower > 0,
-                    [classes.negative]: totalAttackPower < 0 || (!isNaN(overrideDamage) && overrideDamage < damage),
+                    [classes.negative]: totalAttackPower < 0,
                     [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
                         [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
                     ),

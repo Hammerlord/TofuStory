@@ -248,7 +248,6 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     /** Replace certain properties on the effect owner */
     override?: {
         portrait?: string[]; // If an array is provided, a random item will be chosen
-        damage?: number;
         weapon?: string | null;
     };
     viewDeckInOrder?: boolean;
