@@ -786,56 +786,59 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     /**
      * When selecting an ability, if a reticle should appear on a combatant, it means that combatant is a valid target.
      */
-    const shouldShowReticle = (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
-        if (selectedAbilityFromHand && !canUsePlayerAbility(player, selectedAbilityFromHand)) {
-            return false;
-        }
+    const shouldShowReticle = useCallback(
+        (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number) => {
+            if (selectedAbilityFromHand && !canUsePlayerAbility(player, selectedAbilityFromHand)) {
+                return false;
+            }
 
-        const moveAbility = allowFriendlyMovement && selectedMinion ? movementAbility : undefined;
+            const moveAbility = allowFriendlyMovement && selectedMinion ? movementAbility : undefined;
 
-        if (!abilityToUse && !moveAbility) {
-            return false;
-        }
+            if (!abilityToUse && !moveAbility) {
+                return false;
+            }
 
-        const checkValidTargetForAbility = (ability: Ability) => {
-            if (
-                isValidTargetForPlayerAbility({
-                    ability,
-                    side: combatantSide,
-                    index: combatantIndex,
-                    battle,
-                    actorId,
-                })
-            ) {
+            const checkValidTargetForAbility = (ability: Ability) => {
                 if (
-                    !hoveredCombatant ||
-                    !isValidTargetForPlayerAbility({
+                    isValidTargetForPlayerAbility({
                         ability,
-                        side: hoveredCombatant.side,
-                        index: hoveredCombatant.index,
+                        side: combatantSide,
+                        index: combatantIndex,
                         battle,
                         actorId,
                     })
                 ) {
-                    return true;
+                    if (
+                        !hoveredCombatant ||
+                        !isValidTargetForPlayerAbility({
+                            ability,
+                            side: hoveredCombatant.side,
+                            index: hoveredCombatant.index,
+                            battle,
+                            actorId,
+                        })
+                    ) {
+                        return true;
+                    }
+
+                    const actorInfo = findCombatantData(battle, actorId);
+                    if (!actorInfo) {
+                        return false;
+                    }
+
+                    return isWithinPlayerAbilityArea({
+                        ability,
+                        actor: actorInfo,
+                        selectedIndex: hoveredCombatant?.index,
+                        targetIndex: combatantIndex,
+                    });
                 }
+            };
 
-                const actorInfo = findCombatantData(battle, actorId);
-                if (!actorInfo) {
-                    return false;
-                }
-
-                return isWithinPlayerAbilityArea({
-                    ability,
-                    actor: actorInfo,
-                    selectedIndex: hoveredCombatant?.index,
-                    targetIndex: combatantIndex,
-                });
-            }
-        };
-
-        return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
-    };
+            return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
+        },
+        [selectedMinion, selectedAbilityFromHand, allowFriendlyMovement, movementAbility, hoveredCombatant, abilityToUse]
+    );
 
     const origination = useMemo(() => {
         if (disableActions) {
@@ -882,11 +885,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         );
     };
 
-    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = ((): {
-        result: { [combatantId: string]: PreviewStatUpdate[] };
-        combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
-    } => {
-        const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
+    const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
+
+    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = useMemo(() => {
         const empty = { result: {}, combatantStates: undefined } as any;
         if (!selectedAbility) {
             return empty;
@@ -922,7 +923,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         calculatePotentialResults(enemySide, BATTLEFIELD_SIDES.ENEMY_SIDE);
         calculatePotentialResults(playerSide, BATTLEFIELD_SIDES.PLAYER_SIDE);
         return { result: allPotentialTargetResults, combatantStates: undefined };
-    })();
+    }, [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player]);
 
     const targetedByEnemyAbilities = useMemo(() => {
         const targetMap = {};
