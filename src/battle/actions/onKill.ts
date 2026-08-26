@@ -2,7 +2,7 @@ import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from ".
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { findCombatantData } from "./combatantData";
 import { BATTLE_STATES } from "./../reducer";
@@ -52,11 +52,10 @@ export const handleOnKill = (context: ActionContext) => {
                 });
 
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
-                const lifeOnKillSource = {
+                const lifeOnKillSource: TriggerSource = {
                     type: TRIGGER_SOURCE_TYPES.EFFECT,
                     actorId: killedBy.id,
                     targetId: killedBy.id,
-                    triggerHistory: [],
                 };
 
                 dispatch(

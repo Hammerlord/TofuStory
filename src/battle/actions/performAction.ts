@@ -213,8 +213,7 @@ export const performAction = ({
                         statUpdate,
                         context: {
                             ...context,
-                            sourceChain: [...sourceChain, { ...hitTriggerSource, source: action }],
-                            statUpdate,
+                            sourceChain: [...sourceChain, { ...hitTriggerSource, source: action, statUpdate }],
                         } as ActionContext,
                     }))
                 )
@@ -227,7 +226,7 @@ export const performAction = ({
                 triggerStatChangeEvents(
                     updatedSecondary.map(({ statUpdate, action }) => ({
                         statUpdate,
-                        context: { ...context, context: action, statUpdate },
+                        context: { ...context, sourceChain: [...sourceChain, { source: action, statUpdate }] },
                     }))
                 )
             );
