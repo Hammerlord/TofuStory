@@ -2332,15 +2332,28 @@ const fireBurst: Ability = {
             area: 2,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
-            animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            icon: FireMarbleImage,
-            animationOptions: {
-                width: 75,
-                height: 75,
-                fadeOut: true,
-                brightness: 1.2,
-                opacity: 0.5,
-            },
+            animations: [
+                {
+                    type: ANIMATION_TYPES.ACTION_EXPLODE,
+                    image: FireMarbleImage,
+                    options: {
+                        width: 75,
+                        height: 75,
+                        fadeOut: true,
+                        brightness: 1.2,
+                        opacity: 0.5,
+                    },
+                },
+                {
+                    type: ANIMATION_TYPES.ONE_WAY,
+                    image: FlamingFeatherImage,
+                    options: {
+                        rotate: 135,
+                        rotateToFaceTarget: true,
+                        flash: 600,
+                    },
+                },
+            ],
             secondaryAction: {
                 damage: 1,
             },
