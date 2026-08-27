@@ -89,7 +89,7 @@ export const hardy: Effect = {
         "After being stunned or frozen, gains immunity to those effects for <b>{{{ onReceiveEffect.effects.0.duration }}} {{{ _duration_ }}}.</b>",
     icon: HelmetIcon,
     disableDisplayIcon: true,
-    onReceiveEffect: {
+    onEffectEnded: {
         usableWhileStunned: true,
         conditionOperator: "and",
         conditions: [

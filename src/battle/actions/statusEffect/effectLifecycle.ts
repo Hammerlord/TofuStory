@@ -1,6 +1,6 @@
 import { partition } from "ramda";
 import { CombatEffect, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../../ability/types";
-import { ActionContext } from "../../types";
+import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerStatChangeEvents } from "../statChanges";
@@ -85,25 +85,6 @@ export const tickDownStatusEffects = (combatantId: string, context?: ActionConte
             })
         );
 
-        effectsEnded.forEach((effect: CombatEffect) => {
-            if (!effect.onEnd) {
-                return;
-            }
-
-            const events = Array.isArray(effect.onEnd) ? effect.onEnd : [effect.onEnd];
-            events.forEach((effectEvent) => {
-                dispatch(
-                    onEffectEventTrigger({
-                        ownerId: combatantId,
-                        effectEvent,
-                        effect,
-                        effectEventKey: EFFECT_EVENT_KEYS.onEnd,
-                        context,
-                    })
-                );
-            });
-        });
-
         if (!effectsEnded.length) {
             return;
         }
@@ -118,6 +99,57 @@ export const tickDownStatusEffects = (combatantId: string, context?: ActionConte
                 options: { alwaysGroup: true },
             })
         );
+
+        effectsEnded.forEach((effect: CombatEffect) => {
+            if (effect.onEnd) {
+                const events = Array.isArray(effect.onEnd) ? effect.onEnd : [effect.onEnd];
+                events.forEach((effectEvent) => {
+                    const sourceChain: TriggerSource[] = [
+                        ...(context?.sourceChain || []),
+                        {
+                            source: effect,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                        },
+                    ];
+                    dispatch(
+                        onEffectEventTrigger({
+                            ownerId: combatantId,
+                            effectEvent,
+                            effect,
+                            effectEventKey: EFFECT_EVENT_KEYS.onEnd,
+                            context: { ...context, sourceChain },
+                        })
+                    );
+                });
+            }
+
+            activeEffects.forEach((stillActive: CombatEffect) => {
+                if (!stillActive.onEffectEnded) {
+                    return;
+                }
+
+                const effectEvents = Array.isArray(stillActive.onEffectEnded) ? stillActive.onEffectEnded : [stillActive.onEffectEnded];
+                effectEvents.forEach((event) => {
+                    const sourceChain: TriggerSource[] = [
+                        ...(context?.sourceChain || []),
+                        {
+                            source: effect,
+                            type: TRIGGER_SOURCE_TYPES.EFFECT,
+                        },
+                    ];
+
+                    dispatch(
+                        onEffectEventTrigger({
+                            ownerId: combatantId,
+                            effectEvent: event,
+                            effect,
+                            effectEventKey: EFFECT_EVENT_KEYS.onEffectEnded,
+                            context: { ...context, sourceChain },
+                        })
+                    );
+                });
+            });
+        });
     };
 };
 
