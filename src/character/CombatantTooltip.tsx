@@ -89,7 +89,6 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
             title: effects[0]?.name,
             icon: effects[0]?.icon,
             description: Handlebars.compile(effects[0]?.description || "")(effects[0]),
-            key: effects[0]?.name || i,
         };
     };
 
@@ -104,7 +103,7 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
         <>
             <TooltipSection title={header} description={getDifficultyLabel()} />
             {getEffectGroups(effects).map((effects, i) => (
-                <TooltipSection {...getEffectSectionProps(effects, i)} />
+                <TooltipSection {...getEffectSectionProps(effects, i)} key={effects[0]?.name || i} />
             ))}
         </>
     );

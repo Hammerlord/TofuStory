@@ -6,7 +6,7 @@ import { soulBlade } from "../warrior/warriorAbilities";
 import AbilityView from "./AbilityView";
 import { chargingStone } from "../../item/starterItems";
 import { Tooltip } from "@mui/material";
-import { ReactElement } from "react";
+import { ReactElement, useMemo } from "react";
 import { GREEN } from "./constants";
 import classNames from "classnames";
 
@@ -101,7 +101,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
 
     const tooltips = [];
 
-    const stringified = JSON.stringify(ability);
+    const stringified = useMemo(() => JSON.stringify(ability), [ability]);
 
     if (stringified.includes('"Charged"')) {
         // exclude Charged Shot (Bowman ability)
@@ -152,6 +152,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
                     "A minion fights alongside you. Most minions auto-attack at the end of your turn. Each Summon card can only be played once per battle."
                 }
                 icon={diamond}
+                key="summon"
             />
         );
     }
