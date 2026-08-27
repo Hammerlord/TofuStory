@@ -46,7 +46,7 @@ export const playTravelAnimation = ({
     to,
     playbackTime,
     spin = 0,
-    rotation: initialRotation = 0,
+    rotate: initialRotation = 0,
     rotateToFaceTarget = false,
     returnToOrigin = false,
     sidewinder = false,
@@ -54,13 +54,14 @@ export const playTravelAnimation = ({
     freezeAxis,
     fadeIn = false,
     fill,
+    delay,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     to: HTMLElement | HTMLElement[];
     playbackTime: number;
     spin?: number;
-    rotation?: number;
+    rotate?: number;
     rotateToFaceTarget?: boolean;
     returnToOrigin?: boolean;
     sidewinder?: boolean;
@@ -68,6 +69,7 @@ export const playTravelAnimation = ({
     freezeAxis?: "x" | "y";
     fadeIn?: boolean | "fast";
     fill?: "forwards";
+    delay?: number;
 }) => {
     if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
@@ -229,7 +231,7 @@ export const playTravelAnimation = ({
     return elementsToAnimate.map((el, i) => {
         return el.animate(animationFrames, {
             duration: playbackTime,
-            delay: i * 50,
+            delay: delay || i * 50,
             fill,
         });
     });
@@ -288,10 +290,12 @@ export const playTossUpAnimation = ({
     from,
     object,
     playbackTime = 750,
+    delay,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     playbackTime?: number;
+    delay?: number;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
@@ -319,7 +323,7 @@ export const playTossUpAnimation = ({
     return elementsToAnimate.map((el, i) => {
         return el.animate(animationFrames, {
             duration: playbackTime,
-            delay: i * 50,
+            delay: delay || i * 50,
         });
     });
 };

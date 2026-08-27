@@ -2,7 +2,16 @@ import classNames from "classnames";
 import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
-import { Ability, ACTION_TYPES, ActionAnimation, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
+import {
+    Ability,
+    ACTION_TYPES,
+    ActionAnimation,
+    ANIMATION_TYPES,
+    AnimationOptions,
+    CARD_PILE_TYPES,
+    CardPileType,
+    CombatAbility,
+} from "../../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
@@ -129,7 +138,6 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
 
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
-const projectileElementCount = 100;
 const NUM_SPACES_AWAY_DELAY = 30;
 
 const { updateBattle } = battleStateSlice.actions;
@@ -209,26 +217,16 @@ const AnimationCanvas = ({
 
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
     const targetElement = targets[selectedIndex]?.current;
-    const allTargets: { ref: React.RefObject<HTMLElement>; index: number }[] = allTargetIndices
+    const allTargets: { element: HTMLElement | null; index: number }[] = allTargetIndices
         .map((i) => {
             const ref = targets[i];
-            return ref?.current ? { ref, index: i } : null;
+            return ref?.current ? { element: ref.current, index: i } : null;
         })
-        .filter((v): v is { ref: React.RefObject<HTMLElement>; index: number } => !!v);
+        .filter((v): v is { element: HTMLElement | null; index: number } => !!v);
 
     const actorElement = getRefFromCharacterId(actorId)?.current;
-
-    const projectileRefs = Array.from({ length: projectileElementCount }).map(() => useRef(null) as any);
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef(null) as any);
     const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef(null));
-
-    const { x: actorX, y: actorY } = useMemo(() => {
-        if (!actorElement?.getBoundingClientRect) {
-            return { x: 0, y: 0 };
-        }
-
-        return getCenterCoords(actorElement);
-    }, [actorElement]);
 
     const { x: discardX, y: discardY } = useMemo(() => {
         if (!discardRef?.current?.getBoundingClientRect) {
@@ -238,120 +236,42 @@ const AnimationCanvas = ({
         return getCenterCoords(discardRef.current);
     }, [discardRef?.current]);
 
-    const { icon, animation, animationOptions, animations = [] } = action || {};
-    const { mirrorX, width, height, opacity, flash, fadeOut, sidewinder, brightness, ricochet, disableScreenShake } =
-        animationOptions || animations[0]?.options || {};
-    const classes = useStyles({ playbackTime, flash, brightness } as any)();
+    const { icon, animation, animationOptions, animations = [], type: actionType } = action || {};
 
-    // "Beam" animations shoot a bunch of projectile images
-    const beamProjectileMultiplier = animation === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
-
-    const animationRefs = useRef([]);
+    const classes = useStyles({})();
 
     useEffect(() => {
-        if (!targetElement || !action || !actorElement) {
-            return;
-        }
+        const handleCharacterAnimation = (animationConfig: ActionAnimation) => {
+            const { type: animationType, options } = animationConfig;
+            if (animationType === ANIMATION_TYPES.SPIN) {
+                playTravelAnimation({ from: actorElement, to: targetElement, ...options, playbackTime });
+                return;
+            }
 
-        const { type: actionType, animation, animationOptions, icon, animations } = action || {};
-        animationRefs.current.forEach((animation) => animation.cancel());
-        animationRefs.current = [];
-
-        const handleAnimation = (animationConfig: ActionAnimation) => {
-            let { image, options, type: animationType } = animationConfig;
-            options = {
-                ...options,
-                spin: options.spin || getRotation(animation),
-            };
-
-            if (image) {
-                const animateProjectile = (
-                    target: { ref: React.RefObject<HTMLElement>; index: number } | { ref: React.RefObject<HTMLElement>; index: number }[],
-                    projectileRefIndex: number = 0
-                ) => {
-                    const refsFrom = projectileRefIndex * beamProjectileMultiplier;
-                    const refsTo = refsFrom + 1 * beamProjectileMultiplier;
-                    const object = projectileRefs.slice(refsFrom, refsTo).map((ref) => ref.current);
-
-                    let adjustTimingByDistance = 0;
-                    if (target && !Array.isArray(target)) {
-                        const numSpacesAway = Math.abs(target.index - getIndexFromCharacterId(actorId));
-                        adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
-                    }
-
-                    if (animationType === ANIMATION_TYPES.CONSUMABLE) {
-                        const animations = playTossUpAnimation({
-                            from: actorElement,
-                            object,
-                            ...options,
-                        });
-                        animationRefs.current.push(...animations);
-                    } else if (animationType === ANIMATION_TYPES.ACTION_EXPLODE) {
-                        const animations = playExplodeAnimation({
-                            from: actorElement,
-                            object,
-                            playbackTime,
-                            ...options,
-                        });
-
-                        animationRefs.current.push(...animations);
-                    } else {
-                        const targets = Array.isArray(target) ? target.map((t) => t.ref.current) : target.ref.current;
-                        const animations = playTravelAnimation({
-                            from: actorElement,
-                            to: targets,
-                            object,
-                            sidewinder,
-                            returnToOrigin: animationType === ANIMATION_TYPES.YOYO,
-                            fadeIn: animationType === ANIMATION_TYPES.BEAM,
-                            ...options,
-                            playbackTime: playbackTime - adjustTimingByDistance,
-                        });
-
-                        if (animations?.length) {
-                            animationRefs.current.push(...animations);
-                        }
-                    }
-                };
-
-                if (ricochet) {
-                    animateProjectile(allTargets);
-                } else {
-                    allTargets.forEach(animateProjectile);
-                }
-
+            if (animationType === ANIMATION_TYPES.EXPLODE) {
+                playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
                 return;
             }
 
             if (animationType === ANIMATION_TYPES.STOMP) {
                 const shakeDuration = 175;
                 const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
-                if (battlefieldRef.current && !disableScreenShake) {
+                if (battlefieldRef.current && !options?.disableScreenShake) {
                     playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
                 }
 
-                animationRefs.current.push(playStompAnimation({ object: actorElement, playbackTime: stompPlayback }));
+                playStompAnimation({ object: actorElement, playbackTime: stompPlayback });
                 return;
             }
 
-            if (animationType === ANIMATION_TYPES.SPIN) {
-                animationRefs.current = playTravelAnimation({ from: actorElement, to: targetElement, ...options, playbackTime });
-                return;
-            }
-
-            if (animationType === ANIMATION_TYPES.EXPLODE) {
-                animationRefs.current = playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
-                return;
-            }
-
-            if (actionType === ACTION_TYPES.ATTACK || animationType === ANIMATION_TYPES.ONE_WAY) {
+            if (actionType === ACTION_TYPES.ATTACK) {
                 const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
                 let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
                 const windup = actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * action.damage) : 0;
 
-                animationRefs.current = playTravelAnimation({
+                playTravelAnimation({
                     from: actorElement,
-                    to: ricochet ? allTargets.map((t) => t.ref.current) : targetElement,
+                    to: options?.ricochet ? allTargets.map((t) => t.element) : targetElement,
                     returnToOrigin: true,
                     windup: windup,
                     ...options,
@@ -360,9 +280,9 @@ const AnimationCanvas = ({
             }
         };
 
-        handleAnimation({ image: icon, type: animation, options: animationOptions });
+        handleCharacterAnimation({ image: icon, type: animation, options: animationOptions });
         if (Array.isArray(animations)) {
-            animations.forEach(handleAnimation);
+            animations.forEach(handleCharacterAnimation);
         }
     }, [eventId]);
 
@@ -450,83 +370,26 @@ const AnimationCanvas = ({
         }
     }, [deckCycled, deck]);
 
-    const getProjectileElement = (i: number) => {
-        const MIN_PROJECTILE_SIZE = 70;
-
-        const scale = Math.max(MIN_PROJECTILE_SIZE / width, MIN_PROJECTILE_SIZE / height);
-
-        const projectileWidth = width * scale;
-        const projectileHeight = height * scale;
-
-        const props = {
-            ref: projectileRefs[i],
-            style: {
-                left: actorX - MIN_PROJECTILE_SIZE / 2,
-                top: actorY - MIN_PROJECTILE_SIZE / 2,
-                width: projectileWidth,
-                height: projectileHeight,
-            },
-        } as any;
-
-        let projectile = icon;
-        const character = getCombatantFromId(actorId);
-        if (projectile && character?.projectileOverride) {
-            if (Array.isArray(character.projectileOverride) && character.projectileOverride.length > 0) {
-                projectile = getRandomItem(character.projectileOverride);
-            } else if (typeof character.projectileOverride === "string") {
-                projectile = character?.projectileOverride;
-            }
-        }
-
-        if (typeof projectile === "string") {
-            return (
-                <span
-                    className={classNames(classes.iconProjectile, {
-                        [classes.flash]: flash,
-                        [classes.fadeOut]: fadeOut,
-                    })}
-                    {...props}
-                    key={i}
-                >
-                    <img
-                        src={projectile}
-                        className={classNames(classes.projectileInner, {
-                            [classes.mirrorX]: mirrorX,
-                        })}
-                        style={{
-                            opacity,
-                        }}
-                    />
-                </span>
-            );
-        } else if (typeof projectile === "function") {
-            const Icon: FC<{ className?: string }> = projectile;
-            return (
-                <span
-                    className={classNames(classes.iconProjectile, {
-                        [classes.flash]: flash,
-                        [classes.fadeOut]: fadeOut,
-                    })}
-                    {...props}
-                    key={i}
-                >
-                    <Icon
-                        className={classNames(classes.projectileInner, {
-                            [classes.mirrorX]: mirrorX,
-                        })}
-                    />
-                </span>
-            );
-        }
+    const projectileGroups = [{ image: icon, type: animation, options: animationOptions }, ...animations];
+    const actor: { element: HTMLElement | null; combatant: Combatant; index: number } = {
+        element: actorElement,
+        combatant: getCombatantFromId(actorId),
+        index: getIndexFromCharacterId(actorId),
     };
-
-    // TODO This gnarly bit of code is really just because there's one ability that ricochets right now and it's single target, so don't spawn more projectiles than needed
-    const projectileTargets = ricochet ? [allTargets[0]] : allTargets;
-    const numProjectiles = projectileTargets.filter((val) => val).length * beamProjectileMultiplier;
 
     return (
         <div className={classNames("animation-canvas", classes.root)}>
-            {Array.from({ length: numProjectiles }).map((_, i) => getProjectileElement(i))}
+            {projectileGroups.map((group, i) => (
+                <ProjectileGroup
+                    actionAnimation={group}
+                    allTargets={allTargets}
+                    key={`${eventId}-${i}`}
+                    eventId={eventId}
+                    playbackTime={playbackTime}
+                    actor={actor}
+                    index={i}
+                />
+            ))}
             <div className={classes.center}>
                 {eventGroup?.addCards?.map((addCards: { cards: CombatAbility[] }) =>
                     addCards.cards.map((ability: CombatAbility, i) => (
@@ -550,6 +413,207 @@ const AnimationCanvas = ({
                 ))}
         </div>
     );
+};
+
+const ProjectileGroup = ({
+    actionAnimation,
+    actor,
+    allTargets,
+    playbackTime,
+    eventId,
+    index,
+}: {
+    actionAnimation: ActionAnimation;
+    actor: { element: HTMLElement | null; combatant: Combatant; index: number };
+    allTargets: { element: HTMLElement | null; index: number }[];
+    playbackTime: number;
+    eventId: string;
+    index: number;
+}) => {
+    const { options, type: animationType } = actionAnimation;
+
+    // "Beam" animations shoot a bunch of projectile images
+    const beamProjectileMultiplier = animationType === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
+
+    if (options?.ricochet) {
+        return Array.from({ length: beamProjectileMultiplier }).map((_, i) => (
+            <Projectile
+                target={allTargets}
+                playbackTime={playbackTime}
+                eventId={eventId}
+                actionAnimation={actionAnimation}
+                key={`projectile-${eventId}-${index}-${i}`}
+                actor={actor}
+                delay={i * 25}
+            />
+        ));
+    }
+
+    return allTargets.map((target) =>
+        Array.from({ length: beamProjectileMultiplier }).map((_, i) => (
+            <Projectile
+                target={target}
+                playbackTime={playbackTime}
+                eventId={eventId}
+                actionAnimation={actionAnimation}
+                key={`projectile-${eventId}-${index}-${i}`}
+                actor={actor}
+                delay={i * 25}
+            />
+        ))
+    );
+};
+
+const MIN_PROJECTILE_SIZE = 50;
+
+const Projectile = ({
+    actor,
+    target,
+    playbackTime,
+    actionAnimation,
+    eventId,
+    delay,
+}: {
+    actor: { element: HTMLElement | null; combatant: Combatant; index: number };
+    target: { element: HTMLElement | null; index: number } | { element: HTMLElement | null; index: number }[];
+    actionAnimation: ActionAnimation;
+    playbackTime: number;
+    eventId: string;
+    delay?: number;
+}) => {
+    let { image, type: animationType, options } = actionAnimation || {};
+    const { flash, brightness, width = MIN_PROJECTILE_SIZE, height = MIN_PROJECTILE_SIZE, opacity, fadeOut, mirrorX } = options || {};
+    const { element: actorElement, combatant: actorCombatant, index: actorIndex } = actor || {};
+    const ref = useRef(null);
+    const classes = useStyles({ playbackTime, flash, brightness } as any)();
+
+    const { x: actorX, y: actorY } = useMemo(() => {
+        if (!actorElement?.getBoundingClientRect) {
+            return { x: 0, y: 0 };
+        }
+
+        return getCenterCoords(actorElement);
+    }, [actorElement]);
+
+    const scale = Math.max(MIN_PROJECTILE_SIZE / width, MIN_PROJECTILE_SIZE / height);
+
+    const projectileWidth = width * scale;
+    const projectileHeight = height * scale;
+
+    const props = {
+        ref,
+        style: {
+            left: actorX - MIN_PROJECTILE_SIZE / 2,
+            top: actorY - MIN_PROJECTILE_SIZE / 2,
+            width: projectileWidth,
+            height: projectileHeight,
+        },
+    };
+
+    const projectileOverride = actorCombatant?.projectileOverride;
+    let projectile = image;
+    if (projectile && projectileOverride) {
+        if (Array.isArray(projectileOverride) && projectileOverride.length > 0) {
+            projectile = getRandomItem(projectileOverride);
+        } else if (typeof projectileOverride === "string") {
+            projectile = projectileOverride;
+        }
+    }
+
+    useEffect(() => {
+        if (!actorElement || !projectile || !ref.current) {
+            return;
+        }
+
+        options = {
+            ...options,
+            spin: options?.spin || getRotation(animationType),
+        };
+
+        const object = ref.current;
+
+        if (animationType === ANIMATION_TYPES.CONSUMABLE) {
+            playTossUpAnimation({
+                ...options,
+                from: actorElement,
+                object,
+                delay,
+            });
+            return;
+        }
+
+        if (animationType === ANIMATION_TYPES.ACTION_EXPLODE) {
+            playExplodeAnimation({
+                ...options,
+                from: actorElement,
+                object,
+                playbackTime,
+                delay,
+            });
+
+            return;
+        }
+        let adjustTimingByDistance = 0;
+        if (target && !Array.isArray(target)) {
+            const numSpacesAway = Math.abs(target.index - actorIndex);
+            adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+        }
+
+        const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
+        playTravelAnimation({
+            returnToOrigin: animationType === ANIMATION_TYPES.YOYO,
+            fadeIn: animationType === ANIMATION_TYPES.BEAM,
+            ...options,
+            from: actorElement,
+            to: targets,
+            object,
+            playbackTime: playbackTime - adjustTimingByDistance,
+            delay,
+        });
+    }, [eventId]);
+
+    if (typeof projectile === "string") {
+        return (
+            <span
+                className={classNames(classes.iconProjectile, {
+                    [classes.flash]: flash,
+                    [classes.fadeOut]: fadeOut,
+                })}
+                {...props}
+            >
+                <img
+                    src={projectile}
+                    className={classNames(classes.projectileInner, {
+                        [classes.mirrorX]: mirrorX,
+                    })}
+                    style={{
+                        opacity,
+                    }}
+                />
+            </span>
+        );
+    }
+
+    if (typeof projectile === "function") {
+        const Icon: FC<{ className?: string }> = projectile;
+        return (
+            <span
+                className={classNames(classes.iconProjectile, {
+                    [classes.flash]: flash,
+                    [classes.fadeOut]: fadeOut,
+                })}
+                {...props}
+            >
+                <Icon
+                    className={classNames(classes.projectileInner, {
+                        [classes.mirrorX]: mirrorX,
+                    })}
+                />
+            </span>
+        );
+    }
+
+    return null;
 };
 
 export default AnimationCanvas;
