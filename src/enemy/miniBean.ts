@@ -206,6 +206,13 @@ const throwFood: Ability = {
             induceCombatantAttack: true,
         },
     ],
+    conditions: [
+        {
+            numFriendly: 1,
+            comparator: "gt",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
+        },
+    ],
 };
 
 const picoDrop: Ability = {

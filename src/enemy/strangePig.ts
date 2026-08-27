@@ -191,6 +191,13 @@ export const mutantRibbonPig: Minion = {
             name: "Seismic Toss",
             image: MountainIcon,
             actions: throwRocks,
+            conditions: [
+                {
+                    numFriendly: 1,
+                    comparator: "gt",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            ],
         },
         {
             ...attack,
@@ -203,6 +210,19 @@ export const mutantRibbonPig: Minion = {
             ],
         },
         {
+            name: "Shake Off",
+            image: PigsHeadImage,
+            description: "Removes debuffs from itself.",
+            actions: [
+                {
+                    target: TARGET_TYPES.SELF,
+                    type: ACTION_TYPES.EFFECT,
+                    animation: ANIMATION_TYPES.SHOUT,
+                    removeDebuffs: true,
+                },
+            ],
+        },
+        {
             name: "Reckless Charge",
             image: JapaneseOgreIcon,
             resourceCost: 3,
@@ -210,17 +230,17 @@ export const mutantRibbonPig: Minion = {
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {

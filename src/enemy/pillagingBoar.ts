@@ -10,7 +10,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, OmokPigImage, PillagingWildBoarImage, RockImage } from "../images";
+import { IronHogHoofImage, OmokPigImage, PigsHeadImage, PillagingWildBoarImage, RockImage } from "../images";
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
 import { defDown, hardy, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
@@ -118,8 +118,15 @@ export const pillagingWildBoar: Minion = {
         {
             name: "Seismic Toss",
             description: "Throws Boulders at enemies.",
-            image: MountainIcon,
+            image: RockImage,
             actions: throwRocks,
+            conditions: [
+                {
+                    numFriendly: 1,
+                    comparator: "gt",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            ],
         },
         {
             ...attack,
@@ -133,14 +140,13 @@ export const pillagingWildBoar: Minion = {
         },
         {
             name: "Shake Off",
-            image: ShieldIcon,
-            description: "Removes enemy debuffs and gains Armor.",
+            image: PigsHeadImage,
+            description: "Removes debuffs from itself.",
             actions: [
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     animation: ANIMATION_TYPES.SHOUT,
-                    armor: 10,
                     removeDebuffs: true,
                 },
             ],
@@ -153,17 +159,17 @@ export const pillagingWildBoar: Minion = {
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
-                    target: TARGET_TYPES.RANDOM_HOSTILE,
+                    target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                 },
                 {
