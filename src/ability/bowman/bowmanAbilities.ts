@@ -37,6 +37,7 @@ import {
     EvasionBoostImage,
     FinalAttackImage,
     FireMarbleImage,
+    FlamingFeatherImage,
     FocusImage,
     FrozenArrowImage,
     GreenLeafShoesImage,
