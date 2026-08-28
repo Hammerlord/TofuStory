@@ -161,7 +161,7 @@ export const reinforce: Ability = {
     name: "Reinforce",
     image: ComboSynergyImage,
     description:
-        "Search for a {{{ _support_ }}} {{{ _summon_ }}} card from your deck. It costs {{ actions.0.selectCards.effects.0.resourceCost }} less until discarded.",
+        "Search for a {{{ _support_ }}} {{{ _summon_ }}} card from your deck. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,

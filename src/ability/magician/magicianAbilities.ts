@@ -744,6 +744,7 @@ export const swift: Ability = {
     image: StarImage,
     resourceCost: 0,
     removeAfterTurn: true,
+    description: "Draw a card.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -808,7 +809,7 @@ export const wishUponAStar: Ability = {
     image: StarHairPinImage,
     rarity: RARITIES.COMMON,
     description:
-        "<b>Draw</b> + <b>Deck Cycle:</b> Deal {{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }} {{{ _damage_ }}} to a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "<b>Draw</b> + <b>Deck Cycle:</b> Deal <b>{{ actions.0.effects.0.onDrawCard.ability.actions.0.damage }}</b> {{{ _damage_ }}} to a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -2190,7 +2191,7 @@ export const snowball: Ability = {
                 width: 40,
                 height: 40,
             },
-            damage: 5,
+            damage: 7,
             effects: [
                 {
                     ...chill,
@@ -2834,7 +2835,7 @@ export const whelp: Ability = {
     name: "Star Whelp",
     resourceCost: 1,
     image: BabyDragonImage,
-    description: "<b>On attack:</b> Draw a card.",
+    description: "<b>Attack:</b> Draw a card.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -3140,7 +3141,8 @@ export const shatter: Ability = {
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     image: CrystalIlbiImage,
-    description: "Deal <b>{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each debuff on the target.",
+    description:
+        "Deal <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} for each unique debuff on the target. <b>Charged: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> more per.",
     overrideBodyText: true,
     actions: [
         {
@@ -3148,37 +3150,27 @@ export const shatter: Ability = {
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
             icon: CrystalIlbiImage,
-            damage: 4,
+            damage: 2,
             multiplier: {
                 type: MULTIPLIER_TYPES.DEBUFFS,
                 calculationTarget: CONDITION_TARGETS.TARGET,
             },
-            bonus: [
-                {
-                    damage: 1,
-                    multiplier: {
-                        type: MULTIPLIER_TYPES.DEBUFFS,
-                        calculationTarget: CONDITION_TARGETS.TARGET,
+            bonus: {
+                damage: 1,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
                     },
-                    conditions: [
-                        {
-                            calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
-                            hasEffectClass: EFFECT_CLASSES.DEBUFF,
-                        },
-                    ],
-                },
-            ],
+                ],
+            },
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    bonus: [
-                        {
-                            damage: 2,
-                        },
-                    ],
+                    damage: 1,
                 },
             ],
         },

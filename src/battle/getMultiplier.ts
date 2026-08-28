@@ -187,7 +187,12 @@ export const getMultiplier = ({
             });
         }
 
-        return debuffs.length;
+        const unique = {};
+        debuffs.forEach((d) => {
+            unique[d.name] = true;
+        });
+
+        return Object.keys(unique).length;
     }
 
     if (type === MULTIPLIER_TYPES.BUFFS) {
@@ -203,7 +208,12 @@ export const getMultiplier = ({
             });
         }
 
-        return buffs.length;
+        const unique = {};
+        buffs.forEach((b) => {
+            unique[b.name] = true;
+        });
+
+        return Object.keys(unique).length;
     }
 
     if (type === MULTIPLIER_TYPES.ABILITIES_USED) {
