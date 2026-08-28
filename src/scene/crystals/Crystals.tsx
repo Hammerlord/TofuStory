@@ -14,18 +14,21 @@ import {
     garnet,
     opal,
     pieceOfIce,
+    steelOre,
     topaz,
 } from "../../item/items";
 import { EventScene } from "../types";
 import { SCENE_STYLES } from "../constants";
 import classNames from "classnames";
+import { temporaryResist } from "../../enemy/effect";
 
 const crystalA: Minion = {
     name: "Crystal Formation",
     image: SanctuaryCrystalAImage,
-    maxHP: 100,
+    maxHP: 250,
     abilities: [],
     effects: [
+        temporaryResist,
         {
             name: "Frosty",
             description: "Chills attackers.",
@@ -38,10 +41,7 @@ const crystalA: Minion = {
                 effects: [
                     {
                         ...chill,
-                        attackPower: -1,
-                        maxApplications: undefined,
                         duration: 1,
-                        description: "Reduces ATT by 1.",
                     },
                 ],
             },
@@ -59,9 +59,9 @@ const crystalsFight: { disableCardRewards: boolean; waves: Wave[] } = {
     waves: [
         {
             enemies: [crystalA, null, crystalB, null, crystalA],
-            description: [<>Deal as much damage as you can to the crystals in 6 turns.</>],
+            description: [<>Deal as much damage as you can to the crystals in 5 turns!</>],
             winCondition: {
-                surviveRounds: 6,
+                surviveRounds: 5,
             },
         },
     ],
@@ -173,7 +173,7 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             battle: {
-                                                totalDamage: 249,
+                                                totalDamage: 600,
                                             },
                                             comparator: "gt",
                                         },
@@ -228,7 +228,7 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             battle: {
-                                                totalDamage: 149,
+                                                totalDamage: 449,
                                             },
                                             comparator: "gt",
                                         },
@@ -255,6 +255,7 @@ export const crystalScene: EventScene = {
                                                     topaz,
                                                     aquamarine,
                                                     diamondOre,
+                                                    steelOre,
                                                 ],
                                                 amount: 1,
                                             },
@@ -275,7 +276,7 @@ export const crystalScene: EventScene = {
                                     conditions: [
                                         {
                                             battle: {
-                                                totalDamage: 99,
+                                                totalDamage: 299,
                                             },
                                             comparator: "gt",
                                         },
@@ -290,7 +291,7 @@ export const crystalScene: EventScene = {
                                         {
                                             dialog: ["..."],
                                             items: {
-                                                itemPool: [diamond, garnet, amethyst, topaz, aquamarine, diamondOre],
+                                                itemPool: [diamond, garnet, amethyst, topaz, aquamarine, diamondOre, steelOre],
                                                 amount: 1,
                                             },
                                         },

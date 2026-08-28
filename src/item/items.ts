@@ -2736,8 +2736,8 @@ export const steelOre: Item = {
             name: "Steel Ore",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            description: "Cannot take more than 15 damage in one hit.",
-            maxDamageTaken: 15,
+            description: "Cannot take more than {{ maxDamageTaken }} damage in one hit.",
+            maxDamageTaken: 12,
         },
     ],
 };
