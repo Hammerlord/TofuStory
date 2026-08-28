@@ -310,6 +310,45 @@ const getStatusEffectDiff = ({
         }
     });
 
+    const currentEffectCount: {
+        [effectName: string]: {
+            totalStacks: number;
+            totalApplications: number;
+            lowestDuration: number;
+        };
+    } = {};
+
+    target?.combatant?.effects?.forEach((e) => {
+        const duration = e.duration ?? Infinity;
+        if (!currentEffectCount[e.name]) {
+            currentEffectCount[e.name] = {
+                totalStacks: e.stacks || 1,
+                totalApplications: 1,
+                lowestDuration: duration,
+            };
+        } else {
+            currentEffectCount[e.name].totalStacks += e.stacks || 1;
+            currentEffectCount[e.name].totalApplications += 1;
+
+            if (duration < currentEffectCount[e.name].lowestDuration) {
+                currentEffectCount[e.name].lowestDuration = duration;
+            }
+        }
+    });
+
+    const isCapped = (e: Effect): boolean => {
+        const { totalStacks = 0, totalApplications, lowestDuration = 0 } = currentEffectCount[e.name] || {};
+        if (totalApplications < (e.maxApplications || Infinity) || totalStacks < (e.maxStacks || Infinity)) {
+            return false;
+        }
+
+        if (typeof e.maxDuration === "number" && e.maxDuration !== Infinity) {
+            return lowestDuration >= e.maxDuration;
+        }
+
+        return false;
+    };
+
     Array.from({ length: multiplier }).forEach(() => {
         const effectsToAdd = allActionEffects
             .map((effect: String | Effect) => {
@@ -325,6 +364,10 @@ const getStatusEffectDiff = ({
                 if (isImmuneTo(effect)) {
                     // ID for differentiation purposes when announcing that the effect failed to apply
                     failedToApplyEffects.push({ ...effect, id: uuid.v4(), uptime: 0 });
+                    return false;
+                }
+
+                if (isCapped(effect)) {
                     return false;
                 }
 

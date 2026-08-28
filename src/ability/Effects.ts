@@ -746,6 +746,9 @@ export const directDamageTaken: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
     duration: 1,
+    maxStacks: 1,
+    maxApplications: 1,
+    maxDuration: 1,
 };
 
 export const directDamageTakenTrigger: Effect = {

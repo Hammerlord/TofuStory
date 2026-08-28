@@ -256,18 +256,22 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             if (!idCountMap[effect.name]) {
                 idCountMap[effect.name] = {
                     count: 1,
+                    totalStacks: effect.stacks || 1,
                     lowestDuration: effect,
                 };
 
                 return;
             }
+
             ++idCountMap[effect.name].count;
+            idCountMap[effect.name].stacks += effect.stacks || 1;
             if (effect.duration < idCountMap[effect.name].lowestDuration?.duration) {
                 idCountMap[effect.name].lowestDuration = effect;
             }
         });
 
-        if (!idCountMap[incomingEffect.name] || idCountMap[incomingEffect.name].count < incomingEffect.maxApplications) {
+        const { count, totalStacks } = idCountMap[incomingEffect.name] || {};
+        if (!count || (count < (incomingEffect.maxApplications || Infinity) && totalStacks < (incomingEffect.maxStacks || Infinity))) {
             updatedEffects.push(incomingEffect);
             return;
         }

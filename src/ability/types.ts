@@ -205,6 +205,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     stacks?: number;
     maxStacks?: number;
     /** When reapplied at the application maximum, the application with the lowest duration will pandemic, instead of adding another application */
+    // An 'application' is a individual instance of the status effect (eg. Chill; applications could have varying durations depending on when they were cast)
+    // whereas a stack is a number amount within the status effect instance.
     maxApplications?: number;
     attackAreaIncrease?: number;
     basicAttackAreaIncrease?: number;

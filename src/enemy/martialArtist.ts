@@ -363,8 +363,9 @@ export const martialArtist: Minion = {
                     {
                         ...defUp,
                         duration: 1,
-                        maxStacks: 1,
-                        maxApplications: 5,
+                        maxApplications: 1,
+                        maxStacks: 5,
+                        stacks: 1,
                         maxDuration: 1,
                     },
                 ],
