@@ -87,14 +87,13 @@ export const playTravelAnimation = ({
         },
     ];
 
-    const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
-    const { x, y } = getCenterCoords(from);
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
-
     if (!elementsToAnimate[0]) {
         return;
     }
 
+    const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
+    const { x, y } = getCenterCoords(from);
     const objectCoords = getCenterCoords(elementsToAnimate[0]);
 
     // If `object` and `from` are both supplied, make sure the object starts at the `from` position
