@@ -9,29 +9,37 @@ const useStyles = createUseStyles({
         position: "absolute",
         top: "50%",
         left: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
-        filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
         width: "30px",
         height: "30px",
         minWidth: "30px",
         minHeight: "30px",
+        transform: "translate(-50%, -50%)",
+        filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
     },
+
+    rotationWrapper: {
+        position: "absolute",
+        inset: 0,
+        transformOrigin: "center center",
+    },
+
     icon: {
+        position: "absolute",
         width: "225%",
         height: "225%",
-        position: "absolute",
-        top: "45%",
-        left: "42%",
-        transform: "translateX(-50%) translateY(-50%)",
-        margin: "auto",
+        top: "50%",
+        left: "50%",
+        margin: 0,
+        transform: "translate(-50%, -50%)",
     },
+
     text: {
         position: "absolute",
         color: "white",
         fontWeight: "bold",
-        top: "40%",
+        top: "50%",
         left: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
+        transform: "translate(-50%, -50%)",
         fontSize: "22px",
         textShadow: Array.from({ length: 10 })
             .map(() => "0 0 3px black")
@@ -46,6 +54,8 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
         x: getRandomInt(baseline - maxOffset, baseline + maxOffset),
         y: getRandomInt(baseline - maxOffset, baseline + maxOffset),
     });
+
+    const [rotation] = useState(getRandomInt(0, 360));
 
     const classes = useStyles();
     const rootRef = useRef<HTMLSpanElement>(null);
@@ -106,10 +116,18 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
             className={classes.root}
             ref={rootRef}
             style={{
-                transform: `translateX(-${pos.x}%) translateY(-${pos.y}%)`,
+                transform: `translate(-${pos.x}%, -${pos.y}%)`,
             }}
         >
-            <img src={BoomImage} className={classes.icon} ref={iconRef} />
+            <span
+                className={classes.rotationWrapper}
+                style={{
+                    transform: `rotate(${rotation}deg)`,
+                }}
+            >
+                <img src={BoomImage} className={classes.icon} ref={iconRef} />
+            </span>
+
             <span className={classes.text}>{statChanges.healthDamage}</span>
         </span>
     );
