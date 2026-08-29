@@ -8,7 +8,7 @@ import { createCombatant } from "../../../enemy/createEnemy";
 import { poisonous, sneaky } from "../../../enemy/effect";
 import { Item } from "../../../item/types";
 import { getRandomItem, shuffle } from "../../../utils";
-import { BOSS_MUSIC } from "../../constants";
+import { BASE_MAX_RESOURCES, BOSS_MUSIC } from "../../constants";
 import { BATTLE_STATES, BattleState, battleStateSlice } from "../../reducer";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
@@ -283,6 +283,20 @@ export const onEndTurnTriggers = ({ combatants }: { combatants: (Combatant | nul
         combatants.forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(tickDownStatusEffects(combatant.id, context));
+            }
+        });
+
+        // Particularly, the player could have overcapped resources during the turn, but the cap must apply afterward.
+        combatants.forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    updateCombatant({
+                        combatantId: combatant.id,
+                        newProperties: {
+                            resources: Math.min(combatant.maxResources || BASE_MAX_RESOURCES, combatant.resources || 0),
+                        },
+                    })
+                );
             }
         });
 
