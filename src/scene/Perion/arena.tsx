@@ -2,12 +2,11 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../../battle/types";
 import { Player } from "../../character/types";
-import { manji } from "../../enemy/Manji";
-import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
-import Tooltip from "../../view/Tooltip";
-import { EventScene, SceneEncounter, ScriptNode } from "../types";
-import { tauromacis, taurospear } from "../../enemy/minotaur";
 import { ayanEnemy } from "../../enemy/ayan";
+import { manji } from "../../enemy/Manji";
+import { tauromacis, taurospear } from "../../enemy/minotaur";
+import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
+import { EventScene, SceneEncounter } from "../types";
 
 const announcer = {
     name: "Announcer",
@@ -153,13 +152,11 @@ const ArenaBackdrop = ({
             <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander6, classes.character)} />
             <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander7, classes.character)} />
             <img src={announcer.image} alt="Announcer" className={classNames(classes.announcer, classes.character)} />
-            <Tooltip placement="top" title="..." open={true} PopperProps={{ disablePortal: true }}>
-                <img
-                    src={DancesWithBalrogSittingImage}
-                    alt="Dances With Balrog"
-                    className={classNames(classes.dancesWithBalrog, classes.character)}
-                />
-            </Tooltip>
+            <img
+                src={DancesWithBalrogSittingImage}
+                alt="Dances With Balrog"
+                className={classNames(classes.dancesWithBalrog, classes.character)}
+            />
             {showTaurospear && <img src={taurospear.image} alt="Taurospear" className={classNames(classes.opponent, classes.character)} />}
             {showTauromacis && <img src={tauromacis.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
             {showManji && <img src={manji.image} alt="Manji" className={classNames(classes.opponent, classes.character)} />}
