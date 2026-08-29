@@ -1,7 +1,7 @@
 import { ClickAwayListener, Popper } from "@mui/material";
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
@@ -10,6 +10,7 @@ import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import Button from "../view/Button";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
 import { Player } from "../character/types";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 
 const useStyles = createUseStyles({
     root: {
@@ -185,13 +186,10 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
         }
     };
 
+    const playerClass = player.class;
     const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
-
-    const interpolateDescription = (item: Item) =>
-        Handlebars.compile(item.description || "")({
-            ...item,
-            resources: resourceClassNameMap[player.class] || "resource",
-        });
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
+    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")(elementMapping);
 
     return (
         <>

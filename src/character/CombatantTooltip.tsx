@@ -6,6 +6,8 @@ import { TooltipSection } from "../view/KeywordsTooltip";
 import { getEffectGroups } from "./effects/EffectIcons";
 import { Combatant } from "./types";
 import { Tooltip } from "@mui/material";
+import { useMemo } from "react";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 
 const useStyles = createUseStyles({
     tooltip: {
@@ -84,11 +86,13 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
         return "◆ Common";
     };
 
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass: null }), []);
+
     const getEffectSectionProps = (effects, i) => {
         return {
             title: effects[0]?.name,
             icon: effects[0]?.icon,
-            description: Handlebars.compile(effects[0]?.description || "")(effects[0]),
+            description: Handlebars.compile(effects[0]?.description || "")({ ...elementMapping, ...effects[0] }),
         };
     };
 
