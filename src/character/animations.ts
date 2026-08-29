@@ -103,8 +103,9 @@ export const playTravelAnimation = ({
 
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
         const { x: toX, y: toY } = getCenterCoords(element);
+
         // If the target coordinates are 0,0 (upper left of the screen) then the destination is invalid (probably due to element not having rendered).
-        //  Skip the animation rather than have the character fly to 0,0.
+        // Skip the animation rather than have the character fly to 0,0.
         if (toX === 0 && toY === 0) {
             return acc;
         }
@@ -118,16 +119,16 @@ export const playTravelAnimation = ({
             const jitterX = getRandomArbitrary(50, 50);
             const jitterY = getRandomArbitrary(2, 3);
             const sidewinderX = x + jitterX;
-            const sideWinderX2 = x2 + jitterX;
+            const sidewinderX2 = x2 + jitterX;
             const sidewinderY = y / jitterY;
             const sidewinderY2 = y2 / jitterY;
 
             acc.push({
                 x: sidewinderX,
-                x2: sideWinderX2,
+                x2: sidewinderX2,
                 y: sidewinderY,
                 y2: sidewinderY2,
-                xDiff: sideWinderX2 - sidewinderX,
+                xDiff: sidewinderX2 - sidewinderX,
                 yDiff: sidewinderY2 - sidewinderY,
             });
         }
@@ -227,15 +228,32 @@ export const playTravelAnimation = ({
     animationFrames[0].easing = "ease-out";
     animationFrames[animationFrames.length - 1].easing = "ease-in";
 
+    // Guard against the Web Animations API throwing when offsets are not
+    // monotonically non-decreasing. Don't know why this is happening all of a sudden though...
+    let previousOffset = 0;
+
+    const safeAnimationFrames = animationFrames.map((frame) => {
+        if (frame.offset == null || !Number.isFinite(frame.offset)) {
+            return frame;
+        }
+
+        const offset = Math.max(previousOffset, Math.min(1, frame.offset));
+        previousOffset = offset;
+
+        return {
+            ...frame,
+            offset,
+        };
+    });
+
     return elementsToAnimate.map((el, i) => {
-        return el.animate(animationFrames, {
+        return el.animate(safeAnimationFrames, {
             duration: playbackTime,
             delay: delay || i * 50,
             fill,
         });
     });
 };
-
 /**
  * Scale up an `object` at the `from` location rapidly to simulate an 'exploding' effect.
  */
