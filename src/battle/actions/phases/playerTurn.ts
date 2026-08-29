@@ -93,7 +93,7 @@ export const playerEndTurn = () => {
         );
 
         dispatch(minionAutoAttack());
-        dispatch(onEndTurnTriggers({ combatants: getState().battle.playerSide }));
+        dispatch(onEndTurnTriggers(BATTLEFIELD_SIDES.PLAYER_SIDE));
     };
 };
 

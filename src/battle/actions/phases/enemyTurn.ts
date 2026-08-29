@@ -307,7 +307,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 
 export const endEnemyTurn = () => {
     return (dispatch, getState) => {
-        dispatch(onEndTurnTriggers({ combatants: getState().battle.enemySide }));
+        dispatch(onEndTurnTriggers(BATTLEFIELD_SIDES.ENEMY_SIDE));
 
         const { round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
 
