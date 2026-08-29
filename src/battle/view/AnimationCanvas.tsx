@@ -242,7 +242,12 @@ const AnimationCanvas = ({
 
     useEffect(() => {
         const handleCharacterAnimation = (animationConfig: ActionAnimation) => {
-            const { type: animationType, options } = animationConfig;
+            let { type: animationType, options } = animationConfig;
+            options = {
+                ...options,
+                spin: options?.spin || getRotation(animationType),
+            };
+
             if (animationType === ANIMATION_TYPES.SPIN) {
                 playTravelAnimation({ from: actorElement, to: targetElement, ...options, playbackTime });
                 return;
