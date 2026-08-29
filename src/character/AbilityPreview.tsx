@@ -185,10 +185,6 @@ const AbilityPreview = ({
     }
 
     const isNondeterministic = previewStatUpdate[0]?.nondeterministic;
-    // Just show the first item, for abilities like Tribolt
-    if (isNondeterministic) {
-        previewStatUpdate = previewStatUpdate.slice(0, 1);
-    }
 
     const getIndicator = () => {
         const { arrow, arrowBase } = isEnemy
