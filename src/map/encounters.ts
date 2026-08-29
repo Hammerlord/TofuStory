@@ -1,20 +1,9 @@
+import { partition } from "ramda";
 import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
 import { Wave } from "../battle/types";
-import { sneaky, lifeLink, poisonous, taunting, restless } from "../enemy/effect";
-import {
-    avenger,
-    elite,
-    eliteSquad,
-    eliteThorns,
-    eliteTrio,
-    eruptive,
-    explosive,
-    raging,
-    warding,
-    stoneSkin,
-    vengeful,
-} from "./../ability/Effects";
-import { attack, tantrum, shoot } from "./../enemy/abilities";
+import { lifeLink, poisonous, restless, sneaky, taunting } from "../enemy/effect";
+import { avenger, elite, eliteSquad, eliteThorns, eliteTrio, eruptive, raging, stoneSkin, vengeful, warding } from "./../ability/Effects";
+import { attack, shoot, tantrum } from "./../enemy/abilities";
 import { getRandomItem, moveHeadToTail, shuffle } from "./../utils";
 import { CHANCE_TO_SPAWN_SPECIAL_ENEMY } from "./constants";
 import { EliteMap, EliteOptions, Route } from "./types";
@@ -402,7 +391,7 @@ export const generateWaves = ({
     for (let i = 0; i < numWaves; ++i) {
         let retries = 3;
         const generateEnemies = () => {
-            let candidates = enemyPool.shift().slice();
+            let candidates: (Minion | null)[] = enemyPool.shift().slice();
             const numSameEnemies = waves.length && candidates.map((c, j) => c && c?.name === waves[i - 1][j]?.name).filter((v) => v).length;
             const isTooSimilarToPrev = numSameEnemies >= 3;
             if (isTooSimilarToPrev && retries) {
@@ -411,19 +400,38 @@ export const generateWaves = ({
                 --retries;
             } else {
                 if (Math.random() <= CHANCE_TO_SPAWN_SPECIAL_ENEMY && route.specialEnemies?.length) {
-                    const specialEnemy = getRandomItem(route.specialEnemies);
-                    const numSpecial = getRandomItem([1, 2, 3, 5]);
-                    Array.from({ length: numSpecial }).forEach((_, i) => {
-                        const isEven = i % 2 === 0;
+                    const numSpecial = getRandomItem([1, 1, 2, 2, 3, 4, 5]);
 
-                        const emptySlot = candidates.findIndex((c) => !c);
-                        if (emptySlot > -1) {
-                            candidates[emptySlot] = { ...specialEnemy, resources: isEven ? 0 : 1 };
+                    const isNotSpecialEnemy = (c: Minion | null): boolean => {
+                        return !c || route.specialEnemies.every((e) => e.name !== c.name);
+                    };
+
+                    Array.from({ length: numSpecial }).forEach((_) => {
+                        const specialEnemy = getRandomItem(route.specialEnemies);
+
+                        const [nonemptySlots, emptySlots] = partition(
+                            ([c]) => Boolean(c),
+                            candidates.map((c, i) => [c, i])
+                        );
+
+                        const rollResourceAmount = () => {
+                            return getRandomItem([0, 1, 2]);
+                        };
+
+                        const emptyIndices: number[] = emptySlots.map(([, i]) => i).filter((i: number) => isNotSpecialEnemy(candidates[i]));
+                        if (emptyIndices.length > 0) {
+                            const emptySlot: number = getRandomItem(emptyIndices);
+                            candidates[emptySlot] = { ...specialEnemy, resources: rollResourceAmount() };
                             return;
                         }
 
-                        const occupiedSlot = candidates.findIndex((c) => c?.name !== specialEnemy.name);
-                        candidates[occupiedSlot] = { ...specialEnemy, resources: isEven ? 0 : 1 };
+                        const nonemptyIndices: number[] = nonemptySlots
+                            .map(([, i]) => i)
+                            .filter((i: number) => isNotSpecialEnemy(candidates[i]));
+                        if (nonemptyIndices.length) {
+                            const occupiedSlot: number = getRandomItem(nonemptyIndices);
+                            candidates[occupiedSlot] = { ...specialEnemy, resources: rollResourceAmount() };
+                        }
                     });
                 }
                 waves.push({ enemies: candidates });
