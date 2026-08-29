@@ -92,8 +92,16 @@ export const triggerStatChangeEvents =
                 dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealthDamage, trackSumAmount: Math.abs(healthDamage) });
             }
 
+            const prevSource = context?.sourceChain?.at(-1);
+
             effects.forEach((e: CombatEffect) => {
-                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const source: TriggerSource = {
+                    ...prevSource,
+                    statUpdate,
+                    source: e,
+                    type: TRIGGER_SOURCE_TYPES.EFFECT,
+                    targetId: combatantId,
+                };
                 const sourceChain = [...(context?.sourceChain || []), source];
 
                 dispatchEvent({
@@ -113,7 +121,13 @@ export const triggerStatChangeEvents =
             dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId, effectsApplied: effects }));
 
             removedEffects.forEach((e: CombatEffect) => {
-                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const source: TriggerSource = {
+                    ...prevSource,
+                    statUpdate,
+                    source: e,
+                    type: TRIGGER_SOURCE_TYPES.EFFECT,
+                    targetId: combatantId,
+                };
                 const sourceChain = [...(context?.sourceChain || []), source];
 
                 dispatchEvent({
@@ -140,7 +154,13 @@ export const triggerStatChangeEvents =
             });
 
             failedToApplyEffects.forEach((e: CombatEffect) => {
-                const source: TriggerSource = { statUpdate, source: e, type: TRIGGER_SOURCE_TYPES.EFFECT, targetId: combatantId };
+                const source: TriggerSource = {
+                    ...prevSource,
+                    statUpdate,
+                    source: e,
+                    type: TRIGGER_SOURCE_TYPES.EFFECT,
+                    targetId: combatantId,
+                };
                 const sourceChain = [...(context?.sourceChain || []), source];
 
                 dispatchEvent({

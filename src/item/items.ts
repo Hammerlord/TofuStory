@@ -2867,7 +2867,7 @@ export const phoenixWand: Item = {
                         comparator: "includes",
                     },
                 ],
-                targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
                 effects: [
                     {
                         ...burn,
