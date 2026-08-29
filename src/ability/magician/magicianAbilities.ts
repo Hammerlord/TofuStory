@@ -1403,7 +1403,7 @@ export const slimmingMuffin: Ability = {
 export const aurora: Ability = {
     name: "Aurora",
     image: HighWisdomImage,
-    description: "While this is in hand, its cost reduces by <b>1 {{{ _resource_ }}}</b> each card you play.",
+    description: "While in hand, this costs <b>1 {{{ _resource_ }}}</b> less each card you play.",
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
     onAbility: {

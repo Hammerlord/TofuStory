@@ -420,7 +420,7 @@ export const provoke: Ability = {
     name: "Provoke",
     resourceCost: 1,
     image: CynicalOrangeMushroomJumpImage,
-    description: "Grants Taunt for the next turn.",
+    description: "Grants <b>Taunt</b> for the next turn.",
     overrideBodyText: true,
     actions: [
         {
@@ -504,7 +504,7 @@ export const combatOrders: Ability = {
 
 export const vault: Ability = {
     name: "Vault",
-    description: "Play the top card of your deck. It is Upgraded.",
+    description: "Play the top card of your deck. It is <b>Upgraded.</b>",
     rarity: RARITIES.COMMON,
     image: VaultImage,
     resourceCost: 1,
@@ -522,7 +522,7 @@ export const vault: Ability = {
     ],
     upgrades: [
         {
-            description: "Play the top card of your deck. It is Upgraded x{{ actions.0.autoCastAbilities.upgradeLevels }}.",
+            description: "Play the top card of your deck. It is <b>Upgraded x{{ actions.0.autoCastAbilities.upgradeLevels }}.</b>",
             actions: [
                 {
                     autoCastAbilities: {
