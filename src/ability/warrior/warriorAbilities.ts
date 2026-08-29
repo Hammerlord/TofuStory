@@ -118,7 +118,7 @@ import { MULTIPLIER_TYPES } from "./../types";
 
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
-import { doom } from "../../enemy/effect";
+import { doomEffect } from "../../enemy/effect";
 
 export const warriorDefaultAttack: Ability = {
     name: "Attack",
@@ -3326,7 +3326,7 @@ export const doombringer: Ability = {
             damage: 10,
             effects: [
                 {
-                    ...doom,
+                    ...doomEffect,
                 },
             ],
         },

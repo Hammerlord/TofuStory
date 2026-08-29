@@ -593,7 +593,7 @@ export const burrowing: Effect = {
     },
 };
 
-export const doom: Effect = {
+export const doomEffect: Effect = {
     name: "Doom",
     icon: SkeletonOfHorrorImage,
     type: EFFECT_TYPES.NONE,

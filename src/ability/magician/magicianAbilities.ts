@@ -1,4 +1,5 @@
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { doomEffect } from "../../enemy/effect";
 import {
     AdvancedChargeImage,
     ArcaneAimImage,
@@ -17,6 +18,7 @@ import {
     CrystalIlbiImage,
     DarkShockImage,
     DoTPunisherImage,
+    DoomImage,
     ElementalAdaptationFPImage,
     ElementalAdaptationImage,
     EliteFirebrandImage,
@@ -62,6 +64,7 @@ import {
     ManaImage,
     MeditationImage,
     MetalBucketSnowmanImage,
+    MysticDoorImage,
     NimbleJewelCImage,
     NimbleJewelImage,
     OldEnergyBoltImage,
@@ -79,6 +82,7 @@ import {
     RocketImage,
     ScarfSnowmanImage,
     ShimmeringStarsImage,
+    SkullStrikerImage,
     SnowballImage,
     SnowflakeEmojiImage,
     StarHairPinImage,
@@ -3142,7 +3146,7 @@ export const shatter: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: CrystalIlbiImage,
     description:
-        "Deal <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} for each unique debuff on the target. <b>Charged: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> more per.",
+        "Deal <b>{{ actions.0.damage }}</b> {{{ _damage_ }}} per unique debuff on the target. <b>Charged: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> more per.",
     overrideBodyText: true,
     actions: [
         {
@@ -3513,6 +3517,111 @@ export const meditation: Ability = {
                     ],
                 },
             ],
+        },
+    ],
+};
+
+export const mysticDoor: Ability = {
+    name: "Mystic Door",
+    rarity: RARITIES.UNCOMMON,
+    image: MysticDoorImage,
+    resourceCost: 1,
+    description: "Draw {{ actions.0.drawCards.amount }} cards. <br/> <b>Charged:</b> Draw from your discard instead.",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 2,
+            },
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    comparator: "not",
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            moveCards: {
+                from: "discard",
+                to: "hand",
+                amount: 2,
+            },
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    drawCards: {
+                        amount: 1,
+                    },
+                },
+                {
+                    moveCards: {
+                        amount: 1,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const doomAbility: Ability = {
+    name: "Doom",
+    description: "Inflict <b>Doom.</b> <br/> <b>Charged:</b> +1 Area.",
+    overrideBodyText: true,
+    resourceCost: 3,
+    image: DoomImage,
+    rarity: RARITIES.RARE,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.HOSTILE,
+            area: 1,
+            bonus: {
+                area: 1,
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        hasEffect: "Charged",
+                    },
+                ],
+            },
+            animations: [
+                {
+                    type: ANIMATION_TYPES.ACTION_EXPLODE,
+                    image: DoomImage,
+                },
+                {
+                    type: ANIMATION_TYPES.ONE_WAY,
+                    image: SkullStrikerImage,
+                    options: {
+                        rotate: 135,
+                        rotateToFaceTarget: true,
+                    },
+                },
+            ],
+            effects: [
+                {
+                    ...doomEffect,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            resourceCost: -1,
         },
     ],
 };

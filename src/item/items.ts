@@ -150,7 +150,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
-import { counterEffect, doom } from "./../enemy/effect";
+import { counterEffect, doomEffect } from "./../enemy/effect";
 import { abilityHasChargedCondition, chargedEffect } from "./starterItemEffects";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
@@ -2938,7 +2938,7 @@ export const doomSinger: Item = {
                             animation: ANIMATION_TYPES.ACTION_EXPLODE,
                             radiate: {
                                 area: 2,
-                                effects: [{ ...doom }],
+                                effects: [{ ...doomEffect }],
                             },
                         },
                     ],

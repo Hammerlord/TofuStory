@@ -23,7 +23,7 @@ import {
     defDown,
     defUp,
 } from "../ability/Effects";
-import { armorDown, doom, incorporeal } from "../enemy/effect";
+import { armorDown, doomEffect, incorporeal } from "../enemy/effect";
 import Icon from "../icon/Icon";
 import { AshesImage, CriticalShotImage, NamelessSwordImage, TargetLockImage } from "../images";
 import Handlebars from "handlebars";
@@ -156,7 +156,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         description: "Bypasses Stealth and Immune.",
     },
     {
-        ...doom,
+        ...doomEffect,
         description: "After 2 turns, activates at the start of the afflicted target's turn, dealing 30 damage.",
         keys: ['"Doom"'],
     },

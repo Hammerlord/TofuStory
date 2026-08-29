@@ -1,6 +1,6 @@
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
-import { doom } from "../../enemy/effect";
+import { doomEffect } from "../../enemy/effect";
 import {
     ArcheryMasteryImage,
     ArrowBlowImage,
@@ -3680,7 +3680,7 @@ const doomHeraldMinion: Minion = {
                     animation: ANIMATION_TYPES.ACTION_EXPLODE,
                     effects: [
                         {
-                            ...doom,
+                            ...doomEffect,
                         },
                     ],
                 },
@@ -3689,7 +3689,7 @@ const doomHeraldMinion: Minion = {
     ],
     effects: [
         {
-            ...doom,
+            ...doomEffect,
         },
     ],
 };
