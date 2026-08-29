@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { BoomImage } from "../images";
 import { getRandomInt } from "../utils";
+import { HIT_PLAYBACK } from "./constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -84,7 +85,7 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
                 },
             ],
             {
-                duration: 1500,
+                duration: HIT_PLAYBACK,
                 fill: "forwards",
             }
         );
@@ -157,7 +158,7 @@ const HitIcons = ({ statChanges, delay }: { statChanges?: UpdatedCombatantStats;
 
         const endTimeout = setTimeout(() => {
             setHits((prev) => prev.filter((hit) => hit.id !== id));
-        }, delay + 1600);
+        }, delay + HIT_PLAYBACK);
 
         return () => {
             clearTimeout(startTimeout);

@@ -2,6 +2,7 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { ShieldImage } from "../images";
+import { HIT_PLAYBACK } from "./constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -9,7 +10,6 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        display: "none",
         filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
     },
     icon: {
@@ -38,12 +38,10 @@ const useStyles = createUseStyles({
 /**
  * To display damage that was blocked by Armor.
  */
-const BlockIcon = ({ statChanges, delay }: { statChanges: UpdatedCombatantStats; delay: number }) => {
-    const [oldBlockedDamage, setOldBlockedDamage] = useState(0);
+const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
     const classes = useStyles();
     const rootRef: RefObject<HTMLSpanElement> = useRef(null);
     const iconRef: RefObject<HTMLImageElement> = useRef(null);
-    const animationRefs: RefObject<any> = useRef([]);
 
     useEffect(() => {
         const { armor = 0 } = statChanges || {};
@@ -53,31 +51,76 @@ const BlockIcon = ({ statChanges, delay }: { statChanges: UpdatedCombatantStats;
         }
 
         if (rootRef.current) {
-            animationRefs.current?.forEach((animation) => animation.cancel());
-            animationRefs.current = [];
             const rootAnimation = rootRef.current.animate(
                 [
                     {
-                        opacity: 0.75,
-                        display: "block",
+                        opacity: 1,
                         offset: 0.8,
                     },
-                    { opacity: 0, display: "block" },
+                    {
+                        opacity: 0,
+                    },
                 ],
-                { delay: delay, duration: 1500 }
+                {
+                    duration: HIT_PLAYBACK,
+                    fill: "forwards",
+                }
             );
 
-            animationRefs.current.push(rootAnimation);
-            setOldBlockedDamage(Math.abs(blockedDamage));
+            return () => {
+                rootAnimation.cancel();
+            };
         }
     }, [statChanges?.id]);
 
     return (
         <span className={classes.root} ref={rootRef}>
             <img src={ShieldImage} className={classes.icon} ref={iconRef} />
-            <span className={classes.text}>{oldBlockedDamage}</span>
+            <span className={classes.text}>{Math.abs(statChanges.armor)}</span>
         </span>
     );
 };
 
-export default BlockIcon;
+const BlockIcons = ({ statChanges, delay }: { statChanges?: UpdatedCombatantStats; delay: number }) => {
+    const [hits, setHits] = useState<{ id: number; statChanges: UpdatedCombatantStats }[]>([]);
+
+    const nextId = useRef(0);
+
+    useEffect(() => {
+        const armor = statChanges?.armor || 0;
+        if (armor >= 0) {
+            return;
+        }
+
+        const id = nextId.current++;
+
+        const startTimeout = setTimeout(() => {
+            setHits((prev) => [
+                ...prev,
+                {
+                    id,
+                    statChanges,
+                },
+            ]);
+        }, delay);
+
+        const endTimeout = setTimeout(() => {
+            setHits((prev) => prev.filter((hit) => hit.id !== id));
+        }, delay + HIT_PLAYBACK);
+
+        return () => {
+            clearTimeout(startTimeout);
+            clearTimeout(endTimeout);
+        };
+    }, [statChanges, delay]);
+
+    return (
+        <>
+            {hits.map((hit) => (
+                <BlockIcon key={hit.id} statChanges={hit.statChanges} />
+            ))}
+        </>
+    );
+};
+
+export default BlockIcons;
