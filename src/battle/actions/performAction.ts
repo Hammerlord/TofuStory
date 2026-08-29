@@ -201,8 +201,30 @@ export const performAction = ({
             )
         );
 
-        if (!secondaryAction?.isPriority) {
+        if (secondaryAction && !secondaryAction.isPriority) {
             updatedSecondary = triggerSecondaryAction();
+            const statUpdates = updatedSecondary.reduce((acc, payload) => {
+                const statUpdate = payload.statUpdate;
+                if (statUpdate) {
+                    acc[statUpdate.combatantId] = statUpdate;
+                }
+                return acc;
+            }, {});
+
+            dispatch(
+                enqueueEvent({
+                    action,
+                    actionParent: parentSource?.source,
+                    actorId,
+                    selectedIndex,
+                    allTargetIndices,
+                    targetSide: side,
+                    context: context,
+                    displacements,
+                    statUpdates,
+                    options: { alwaysGroup: true },
+                })
+            );
         }
 
         // *But don't trigger the related effect events until after the action has resolved
