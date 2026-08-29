@@ -345,7 +345,7 @@ const getHitEffects = ({
             targetIds: [actor.id],
             action: {
                 type: ACTION_TYPES.EFFECT,
-                damage: totalThorns,
+                flatDamage: totalThorns,
             },
             context: context,
             getCombatantById: (id) => findCombatantData(getState().battle, id),
