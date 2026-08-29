@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { ANIMATION_TYPES } from "../../ability/types";
 import { getCenterCoords } from "../../character/animations";
@@ -45,8 +45,8 @@ const ParticleCanvas = ({
     enemyRefs = [],
 }: {
     eventGroup?: EventGroup;
-    allyRefs?: any[];
-    enemyRefs?: any[];
+    allyRefs?: RefObject<HTMLDivElement | null>[];
+    enemyRefs?: RefObject<HTMLDivElement | null>[];
 }) => {
     const { events = [], id: eventId, playbackTime, statUpdates } = eventGroup || {};
     // For the EventGroup refactoring we're just taking the first event here, but we probably want to aggregate it similar to other Event/EventGroup properties
@@ -74,7 +74,9 @@ const ParticleCanvas = ({
             setTimeout(() => {
                 particles.current.updateOptions(fireworksSettings);
                 allTargets.forEach((element) => {
-                    particles.current!.launch(getCenterCoords(element));
+                    if (element) {
+                        particles.current!.launch(getCenterCoords(element));
+                    }
                 });
             }, playbackTime / 2);
 
@@ -101,7 +103,11 @@ const ParticleCanvas = ({
                             ...defaultHitSettings,
                             particles: numParticles,
                         });
-                        particles.current!.launch(getCenterCoords(targetElements[index]?.current));
+
+                        const element = targetElements[index]?.current;
+                        if (element) {
+                            particles.current!.launch(getCenterCoords(element));
+                        }
                         return;
                     }
 
@@ -114,7 +120,11 @@ const ParticleCanvas = ({
                             hue: { min: 30, max: 40 },
                             friction: 0.9,
                         });
-                        particles.current!.launch(getCenterCoords(targetElements[index]?.current));
+
+                        const element = targetElements[index]?.current;
+                        if (element) {
+                            particles.current!.launch(getCenterCoords(element));
+                        }
                     }
                 });
             }, playbackTime / 2);
