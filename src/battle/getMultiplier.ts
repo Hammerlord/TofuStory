@@ -37,9 +37,9 @@ export const getMultiplier = ({
     actionParent?: ActionParent;
     multiplier?: Multiplier;
     source?: TriggerSource;
-    deck: Ability[];
-    hand: Ability[];
-    discard: Ability[];
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
 }): number => {
     if (!multiplier) {
         return 1;
@@ -82,7 +82,10 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.ALL_CARDS || type === MULTIPLIER_TYPES.CARDS_IN_HAND) {
-        const cardsToCheck = [...hand];
+        const cardsToCheck: CombatAbility[] = hand.filter((card: CombatAbility) => {
+            // Greater Bolt should not affect itself
+            return card.instanceId !== (source?.source as CombatAbility)?.instanceId;
+        });
 
         if (type === MULTIPLIER_TYPES.ALL_CARDS) {
             cardsToCheck.push(...deck, ...discard);
@@ -98,16 +101,6 @@ export const getMultiplier = ({
                 passesValueComparison({ val: card[property], otherVal: value, comparator })
             );
         }).length;
-
-        const ownCardPassesCondition = filters.some(({ property, value, comparator }) =>
-            passesValueComparison({ val: actionParent?.[property], otherVal: value, comparator })
-        );
-
-        // For example, Greatest Bolt should not buff itself.
-        // TODO probably want to do this via instance IDs instead
-        if (ownCardPassesCondition && filtered > 0) {
-            filtered -= 1;
-        }
 
         return Math.floor(filtered * multValue);
     }
