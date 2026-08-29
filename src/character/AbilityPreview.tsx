@@ -282,7 +282,8 @@ const AbilityPreview = ({
             }
         );
 
-        const showDeathBlow = (isDeathBlow && !isDeathBlowShown) || healthDamage >= combatant?.HP || isDefiniteKill;
+        const HP = combatant?.HP || 0;
+        const showDeathBlow = (isDeathBlow && !isDeathBlowShown) || (HP > 0 && healthDamage >= HP) || isDefiniteKill;
         if (showDeathBlow) {
             isDeathBlowShown = true;
         }
