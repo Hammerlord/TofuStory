@@ -1,4 +1,6 @@
 import {
+    BrokenMirrorGlassImage,
+    HammerImage,
     SirBlacksmithHammerImage,
     SirBlacksmithImage,
     SteelPlateImage,
@@ -13,8 +15,10 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     MULTIPLIER_TYPES,
     Minion,
     TARGET_TYPES,
@@ -22,6 +26,42 @@ import {
 } from "./../ability/types";
 import { attack, shoot } from "./abilities";
 import { resist } from "./effect";
+
+const dissipate = {
+    name: "Dissipate",
+    image: BrokenMirrorGlassImage,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            retreat: true,
+            animationOptions: {
+                fadeOut: true, // TODO does nothing on combatant portraits
+            },
+        },
+    ],
+};
+
+const construct: Effect = {
+    name: "Construct",
+    icon: SirBlacksmithHammerImage,
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    description: "Disappears if Wandering Blacksmith is defeated.",
+    onFriendlyDeath: {
+        usableWhileStunned: true,
+        usableWhileDead: true,
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TARGET,
+                name: "Wandering Blacksmith",
+                comparator: "includes",
+            },
+        ],
+        ability: dissipate,
+    },
+};
 
 const terracottaCrossbowman: Minion = {
     name: "Terracotta Bowman",
@@ -38,7 +78,7 @@ const terracottaCrossbowman: Minion = {
             ],
         },
     ],
-    effects: [resist],
+    effects: [resist, construct],
 };
 
 const terracottaSwordsman: Minion = {
@@ -57,7 +97,7 @@ const terracottaSwordsman: Minion = {
             ],
         },
     ],
-    effects: [resist],
+    effects: [resist, construct],
 };
 
 const forgeWarriors: Ability = {
@@ -117,6 +157,13 @@ export const wanderingBlacksmith: Minion = {
                     effects: [attackPower],
                 },
             ],
+            conditions: [
+                {
+                    numFriendly: 1,
+                    comparator: "gt",
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                },
+            ],
         },
         {
             name: "Ghostly Palm Strike",
@@ -136,12 +183,10 @@ export const wanderingBlacksmith: Minion = {
             ],
         },
         forgeWarriors,
-        forgeWarriors,
         {
             name: "Repurpose",
             dialog: "All things can be remade into something greater. Even one's self.",
             image: TerracottaDieImage,
-            castTime: 1,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
