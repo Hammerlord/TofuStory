@@ -157,12 +157,12 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...doomEffect,
-        description: "After 2 turns, activates at the start of the afflicted target's turn, dealing 30 damage.",
+        description: "After 2 turns, activates at the start of the afflicted target's turn, dealing 40 {{{ _damage_ }}} damage.",
         keys: ['"Doom"'],
     },
     {
         name: "Search",
-        description: "Choose 1 of 3 options randomly presented from your deck/discard.",
+        description: "Choose 1 of 3 options from your deck. (If not enough eligible cards are in your deck, uses your discard.)",
         keys: ["search-deck"],
     },
     {

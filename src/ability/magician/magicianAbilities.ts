@@ -3063,7 +3063,7 @@ export const fireworks: Ability = {
                 width: 25,
                 height: 50,
             },
-            damage: 5,
+            damage: 3,
             icon: RocketImage,
             numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
@@ -3074,7 +3074,7 @@ export const fireworks: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 2,
                 },
             ],
         },
@@ -3554,7 +3554,6 @@ export const doomAbility: Ability = {
     resourceCost: 3,
     image: DoomImage,
     rarity: RARITIES.RARE,
-    depletedOnUse: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,

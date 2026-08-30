@@ -598,7 +598,7 @@ export const doomEffect: Effect = {
     icon: SkeletonOfHorrorImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Deals 30 damage upon activation.",
+    description: "Deals <b>{{ onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> upon activation.",
     duration: 3,
     turnsTriggerFrequency: 3,
     onTurnStart: {
@@ -611,7 +611,7 @@ export const doomEffect: Effect = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    damage: 30,
+                    damage: 40,
                 },
             ],
         },
