@@ -9,6 +9,7 @@ import { NEUTRAL_ABILITIES, shellThrow } from "../ability/neutralAbilities";
 import Button from "../view/Button";
 import { Ability, CombatAbility } from "../ability/types";
 import { RARITIES } from "../item/types";
+import { Box } from "@mui/material";
 
 const useStyles = createUseStyles({
     class: {
@@ -58,6 +59,20 @@ const DevAbilityViewer = ({ onClose }) => {
             return (rarityChart[a.rarity] || 0) - (rarityChart[b.rarity] || 0);
         });
     };
+
+    const cardsByRarity: { [rarity: string]: Ability[] } = Object.values(RARITIES).reduce((acc, rarity: RARITIES) => {
+        acc[rarity] = [];
+        return acc;
+    }, {});
+
+    JOB_CARD_MAP[selectedClass]?.all?.forEach((card) => {
+        if (JOB_CARD_MAP[selectedClass]?.starters.some((c) => c.name === card.name)) {
+            cardsByRarity[RARITIES.STARTER].push(card);
+            return;
+        }
+        cardsByRarity[card.rarity || RARITIES.COMMON].push(card);
+    });
+
     return (
         <div>
             <Button variant="contained" color="primary" onClick={() => setIsViewingUpgrades((prev) => !prev)}>
@@ -81,7 +96,16 @@ const DevAbilityViewer = ({ onClose }) => {
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
                     </p>
-                    <Grid cards={formatCards(JOB_CARD_MAP[selectedClass]?.all)} />
+                    {Object.entries(cardsByRarity).map(([rarity, cards]) => {
+                        return (
+                            <Box>
+                                <p>
+                                    {rarity} - {cards.length}
+                                </p>
+                                <Grid cards={cards} />
+                            </Box>
+                        );
+                    })}
                 </div>
             )}
         </div>
