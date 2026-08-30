@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { attack } from "../../enemy/abilities";
 import { doomEffect } from "../../enemy/effect";
@@ -12,7 +13,6 @@ import {
     BlindImage,
     BlockImage,
     BlueDirosImage,
-    BowExpertImage,
     BreadImage,
     BroilerShotImage,
     BronzeCrossbowArrowImage,
@@ -22,6 +22,7 @@ import {
     CocaFruitImage,
     ConcentrateImage,
     CoveringFireImage,
+    CriticalShotImage,
     CrossbowImage,
     CrowImage,
     CupOfCoffeeImage,
@@ -68,7 +69,6 @@ import {
     ScarecrowImage,
     SharpEyesImage,
     ShatteringArrowImage,
-    ShieldImage,
     SkeletonOfHorrorImage,
     SkullStrikerImage,
     SlowAndSteadyImage,
@@ -122,7 +122,6 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { cloneDeep } from "lodash";
 
 const bowmanAnimationOption = {
     rotateToFaceTarget: true,
@@ -532,8 +531,8 @@ const eagleMinion = {
     effects: [
         {
             name: "Critical Bonus",
-            description: "Granting Critical Chance.",
-            icon: BullseyeIcon,
+            description: "Granting +{{ criticalChance }} Critical Chance.",
+            icon: CriticalShotImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             criticalChance: 0.1,
@@ -547,7 +546,7 @@ export const eagleAbility: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Grants <b>+{{ minion.effects.0.criticalChance }} Critical</b>",
+    description: "Grants <b>+{{ minion.effects.0.criticalChance }} Critical</b> while active.",
     minion: eagleMinion,
     actions: [],
     upgrades: [
@@ -1014,7 +1013,7 @@ export const focus: Ability = {
     resourceCost: 1,
     image: FocusImage,
     description:
-        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Critical chance {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b> and <b>Bide.</b>",
+        "Gain <b>+{{ actions.0.effects.1.criticalChance }} Critical {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b> and <b>Bide.</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1148,7 +1147,7 @@ export const finalAttack: Ability = {
 export const coveringFire: Ability = {
     name: "Covering Fire",
     resourceCost: 1,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     image: CoveringFireImage,
     description: "You and your allies gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b>",
     overrideBodyText: true,
@@ -1920,11 +1919,11 @@ export const takeCover: Ability = {
 export const treat: Ability = {
     name: "Treat",
     image: MeatImage,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     depletedOnUse: true,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Gain <b>+1 {{{ _attUp_ }}}</b> <b>+1 {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
+    description: "Gain <b>+1 {{{ _attUp_ }}} {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -1983,7 +1982,7 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "<b>Pierce.</b> <br/> Destroy <b>{{ actions.0.destroyArmor }}</b> Armor. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.0.destroyArmor }}</b> more.",
+        "<b>Pierce.</b> <br/> Destroy <b>{{ actions.0.destroyArmor }}</b> {{{ _armor_ }}}. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.0.destroyArmor }}</b> more.",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
@@ -2197,13 +2196,13 @@ export const snapfreezeShot: Ability = {
     ],
 };
 
-export const turtleUp: Ability = {
-    name: "Turtle Up",
+export const huddle: Ability = {
+    name: "Huddle",
     image: TortieShellImage,
     resourceCost: 1,
     overrideBodyText: true,
     description: "<b>Critical: +{{ actions.0.bonus.armor }} {{{ _armor_ }}}</b>",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     onDraw: {
         chance: 0,
         abilityEffects: [
@@ -2629,7 +2628,7 @@ export const poise: Ability = {
     overrideBodyText: true,
     resourceCost: 1,
     description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim</b>",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     image: ChestnutLeafImage,
     actions: [
         {
@@ -2903,6 +2902,8 @@ export const stimulant: Ability = {
     image: CupOfCoffeeImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
+    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> <b>Bide.</b>",
+    overrideBodyText: true,
     actions: [
         {
             resources: 2,
