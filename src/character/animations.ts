@@ -649,7 +649,7 @@ export const playFadeInAnimation = ({
     delay,
     fill,
 }: {
-    object;
+    object: HTMLElement;
     playbackTime?: number;
     shiftUp?: boolean;
     delay?: number;

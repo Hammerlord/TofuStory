@@ -32,6 +32,7 @@ import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { Combatant, Player } from "./types";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { findCombatantData } from "../battle/actions/combatantData";
+import { useEntranceAnimation } from "./hooks/useEntranceAnimation";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -384,10 +385,6 @@ const CombatantView = ({
                     const delta = isEnemy ? baseDelta : -baseDelta;
                     playHitAnimation({ object: characterImageRef.current, delta });
                 }
-
-                if (currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id)) {
-                    playFadeInAnimation({ object: characterImageRef.current, playbackTime: SUMMON_DELAY });
-                }
             }
         };
 
@@ -507,6 +504,8 @@ const CombatantView = ({
     );
 
     const showCombatant = combatant?.HP > 0 || isLifeLinked || isDeathBlow;
+
+    useEntranceAnimation({ currentEventGroup, combatantId: combatant?.id, characterRef });
 
     return (
         <div
