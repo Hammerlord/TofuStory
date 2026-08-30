@@ -53,7 +53,43 @@ const minionCardLookup = {
 };
 
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: ReactElement }) => {
+    const classes = useTooltipStyles();
+
+    const tooltips = [];
+
+    const stringified = useMemo(() => JSON.stringify(ability), [ability]);
+
+    if (ability.tooltip) {
+        const { title, description, icon } = ability.tooltip;
+        tooltips.push(<TooltipSection title={title} description={description} icon={icon} key={title} />);
+    }
+
+    if (ability.overrideTooltip) {
+        return (
+            <Tooltip
+                title={tooltips}
+                placement={"right-end"}
+                classes={{ tooltip: classes.tooltip }}
+                enterDelay={500}
+                disableInteractive={true}
+            >
+                {children}
+            </Tooltip>
+        );
+    }
+
+    if (stringified.includes('"Charged"')) {
+        // exclude Charged Shot (Bowman ability)
+        const chargedTooltip = {
+            title: "Charged Ability",
+            icon: chargingStone.image,
+            description: "Consumes Charged for a bonus.",
+        };
+        tooltips.push(<TooltipSection {...chargedTooltip} key={chargedTooltip.title} />);
+    }
+
     const cardsToAddMap = {};
+
     const findCardsToAdd = (obj) => {
         if (Array.isArray(obj)) {
             obj.forEach(findCardsToAdd);
@@ -97,21 +133,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
     };
 
     findCardsToAdd(ability);
-    const classes = useTooltipStyles();
-
-    const tooltips = [];
-
-    const stringified = useMemo(() => JSON.stringify(ability), [ability]);
-
-    if (stringified.includes('"Charged"')) {
-        // exclude Charged Shot (Bowman ability)
-        const chargedTooltip = {
-            title: "Charged Ability",
-            icon: chargingStone.image,
-            description: "Consumes Charged for a bonus.",
-        };
-        tooltips.push(<TooltipSection {...chargedTooltip} key={chargedTooltip.title} />);
-    }
 
     const minionTooltip = ability.tooltip?.minion;
     if (minionTooltip) {
@@ -136,11 +157,6 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
                 ))}
             </div>
         );
-    }
-
-    if (ability.tooltip) {
-        const { title, description, icon } = ability.tooltip;
-        tooltips.push(<TooltipSection title={title} description={description} icon={icon} key={title} />);
     }
 
     if (ability.minion || stringified.includes("summon")) {

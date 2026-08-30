@@ -747,6 +747,10 @@ export type Action = {
     bypassPreventTurnAction?: boolean;
     bypassImmunity?: boolean;
     bypassStealth?: boolean; // Pierces stealth (especially if it is a single target ability)
+    chance?: number;
+    // If an action passed a condition/chance, and we ONLY want to play that action in that scenario, this flag will tell the handler to stop
+    // See Call Companion for an example how this is used.
+    stopAction?: boolean;
 };
 
 export type ActionOptionalProperties = { [key in keyof Action]?: Action[key] };
@@ -813,6 +817,7 @@ export interface AbilityUpgrade {
         moveCards?;
         summon?;
         addLastPlayedCards?;
+        chance?;
     }[];
 }
 
@@ -855,6 +860,7 @@ export interface Ability {
     description?: string;
     /** Escape hatch to depend on description only if the body text generator is unmanageable */
     overrideBodyText?: boolean;
+    overrideTooltip?: boolean;
     /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
     // If true, this card cannot be played.

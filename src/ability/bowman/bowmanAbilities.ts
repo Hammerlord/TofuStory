@@ -1305,7 +1305,7 @@ export const lycanthropeMinion: Minion = {
     name: "Lycanthrope",
     maxHP: 10,
     image: LycanthropeImage,
-    description: "Gains +2 ATT when it kills.",
+    description: "Gains +{{ onKill.effects.stacks }} {{{ _attUp_ }}} ATT when it kills.",
     abilities: [
         {
             ...attack,
@@ -1323,7 +1323,7 @@ export const lycanthropeMinion: Minion = {
     effects: [
         {
             name: "Slayer",
-            description: "Gains +3 ATT when it kills a threatening target.",
+            description: "Gains +{{ onKill.effects.stacks }} {{{ _attUp_ }}} ATT when it kills.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onKill: {
@@ -1351,7 +1351,7 @@ export const lycanthropeMinion: Minion = {
 
 export const lycanthropeAbility: Ability = {
     name: "Lycanthrope",
-    description: "Gains <b>+{{{ minion.effects.0.onKill.effects.0.stacks }}}{{{ _damage_ }}}</b> when it kills a threatening target.",
+    description: "Gains <b>+{{{ minion.effects.0.onKill.effects.0.stacks }}} {{{ _attUp_ }}}</b> when it kills a threatening target.",
     minion: lycanthropeMinion,
     image: LycanthropeImage,
     resourceCost: 2,
@@ -1847,7 +1847,7 @@ export const arrowBlow: Ability = {
 export const momentum: Ability = {
     name: "Momentum",
     description:
-        "<b>Search</b> for a {{{ _offense_ }}} card. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> less.",
+        "<b>Search</b> for a {{{ _offense_ }}} card. It costs <b>{{ actions.0.selectCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> less until discarded.",
     resourceCost: 0,
     depletedOnUse: true,
     image: PowerKnockbackImage,
@@ -2362,7 +2362,7 @@ const fireBurst: Ability = {
     ],
 };
 
-const phoenix: Minion = {
+const phoenixMinion: Minion = {
     name: "Phoenix",
     maxHP: 1,
     armor: 30,
@@ -2400,13 +2400,13 @@ export const phoenixEgg: Ability = {
             },
         ],
     },
-    minion: phoenix,
+    minion: phoenixMinion,
     resourceCost: 1,
     unplayable: true,
     description: "<b>Critical:</b> Playable. Summon a Phoenix.",
     actions: [],
     tooltip: {
-        minion: phoenix,
+        minion: phoenixMinion,
     },
     upgrades: [
         {
@@ -2850,49 +2850,6 @@ export const catAbility: Ability = {
                     },
                 ],
             },
-        },
-    ],
-};
-
-export const callCompanion: Ability = {
-    name: "Call Companion",
-    resourceCost: 1,
-    depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    image: GuidesWhistleImage,
-    description: "Summon a random common or uncommon minion.",
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            animation: ANIMATION_TYPES.CONSUMABLE,
-            icon: BreadImage,
-            summon: [
-                {
-                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion],
-                    tributePossible: true,
-                },
-            ],
-        },
-    ],
-    upgrades: [
-        {
-            description: "Summon a random common or uncommon minion. It is upgraded.",
-            actions: [
-                {
-                    summon: [
-                        {
-                            minion: [
-                                puppetAbility.upgrades[0].minion,
-                                wolfAbility.upgrades[0].minion,
-                                eagleAbility.upgrades[0].minion,
-                                crowAbility.upgrades[0].minion,
-                                catAbility.upgrades[0].minion,
-                            ],
-                        },
-                    ],
-                },
-            ],
         },
     ],
 };
@@ -3706,6 +3663,57 @@ export const doomHeraldAbility: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+export const callCompanion: Ability = {
+    name: "Call Companion",
+    resourceCost: 1,
+    depletedOnUse: true,
+    rarity: RARITIES.UNCOMMON,
+    image: GuidesWhistleImage,
+    tooltip: {
+        title: "Summon",
+        description: "A minion fights alongside you in combat. Most minions will automatically attack at the end of your turn.",
+    },
+    overrideTooltip: true,
+    description: "Summon a random minion. <b>{{ actions.0.chance }}</b> chance for a Rare.",
+    actions: [
+        {
+            chance: 0.15,
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: BreadImage,
+            summon: [
+                {
+                    minion: [tragosMinion, doomHeraldMinion, lycanthropeMinion, phoenixMinion],
+                    tributePossible: true,
+                },
+            ],
+            stopAction: true,
+        },
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.CONSUMABLE,
+            icon: BreadImage,
+            summon: [
+                {
+                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion],
+                    tributePossible: true,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    chance: 0.1,
+                },
+            ],
         },
     ],
 };

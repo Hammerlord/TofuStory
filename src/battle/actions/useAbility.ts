@@ -1,6 +1,6 @@
 import { getAbilityUpgradedFromEffects, isOffensiveAbility, isSupportAbility } from "../../ability/AbilityView/utils";
 import { Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_EVENT_KEYS, TARGET_TYPES } from "../../ability/types";
-import { getRandomInt } from "../../utils";
+import { getRandomInt, passesChance } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
@@ -124,13 +124,27 @@ export const useAbility = ({
             }
         };
 
+        const handleActions = () => {
+            for (let i = 0; i < actions.length; ++i) {
+                const action = actions[i];
+                if (!passesChance(action.chance)) {
+                    continue;
+                }
+
+                handleAction(action, i);
+                if (action.stopAction) {
+                    return;
+                }
+            }
+        };
+
         if (resourceCost === "x") {
             const numTimesToCast = isAutoCast ? getRandomInt(1, 3) : totalResourceCost;
             Array.from({ length: numTimesToCast }).forEach(() => {
-                actions.forEach(handleAction);
+                handleActions();
             });
         } else {
-            actions.forEach(handleAction);
+            handleActions();
         }
 
         // Resource spend events triggered down here due to Bounce otherwise causing Furious Strike to be discarded

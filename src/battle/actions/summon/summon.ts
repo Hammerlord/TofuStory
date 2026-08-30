@@ -1,11 +1,11 @@
 import { cloneDeep } from "lodash";
 import { tributeSummonBuff } from "../../../ability/Effects";
-import { ACTION_TYPES, Action, CombatAbility, EFFECT_EVENT_KEYS, Minion, TRIGGER_TARGET_TYPES } from "../../../ability/types";
+import { ACTION_TYPES, Action, ActionSummon, CombatAbility, EFFECT_EVENT_KEYS, Minion, TRIGGER_TARGET_TYPES } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { enemyNameMap } from "../../../enemy";
 import { createCombatant } from "../../../enemy/createEnemy";
 import { Item } from "../../../item/types";
-import { getRandomItem } from "../../../utils";
+import { getRandomItem, passesChance } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
@@ -50,10 +50,11 @@ export const checkHandleActionSummon = ({
         };
 
         const actionSummon = action.summon || [];
-        const potentialBonusSummons = bonuses.flatMap((b) => b?.summon || []);
+        const potentialBonusSummons: ActionSummon[] = bonuses.flatMap((b) => b?.summon || []);
         const summons = actionSummon
             .concat(potentialBonusSummons)
             .filter((b) => passesConditions({ getCalculationTarget, proc: b, context: parentContext }));
+
         if (!summons.length) {
             return;
         }
