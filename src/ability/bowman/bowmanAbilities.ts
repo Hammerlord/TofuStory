@@ -3679,6 +3679,7 @@ export const callCompanion: Ability = {
     },
     overrideTooltip: true,
     description: "Summon a random minion. <b>{{ actions.0.chance }}</b> chance for a Rare.",
+    disablePreview: true,
     actions: [
         {
             chance: 0.15,

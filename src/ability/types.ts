@@ -861,6 +861,9 @@ export interface Ability {
     /** Escape hatch to depend on description only if the body text generator is unmanageable */
     overrideBodyText?: boolean;
     overrideTooltip?: boolean;
+    // Non-deterministic abilities like Call Companion would be misleading/confusing since they spawn on random locations
+    // and the preview would change every time, so this flag can disable the preview if it's problematic.
+    disablePreview?: boolean;
     /** AKA ephemeral -- ability disappears after your turn or on use */
     removeAfterTurn?: boolean;
     // If true, this card cannot be played.

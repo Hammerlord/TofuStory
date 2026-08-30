@@ -889,7 +889,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = useMemo(() => {
         const empty = { result: {}, combatantStates: undefined } as any;
-        if (!selectedAbility) {
+        if (!selectedAbility || selectedAbility.disablePreview) {
             return empty;
         }
 
