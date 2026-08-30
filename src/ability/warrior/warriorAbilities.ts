@@ -561,6 +561,7 @@ export const hammerang: Ability = {
     overrideBodyText: true,
     image: HammerImage,
     rarity: RARITIES.COMMON,
+    echo: true,
     actions: [
         {
             damage: 7,
@@ -573,39 +574,6 @@ export const hammerang: Ability = {
             },
             animation: ANIMATION_TYPES.YOYO,
             icon: HammerImage,
-            addCards: [
-                {
-                    name: "Hammerang",
-                    resourceCost: 1,
-                    overrideBodyText: true,
-                    removeAfterTurn: true,
-                    image: HammerImage,
-                    rarity: RARITIES.COMMON,
-                    actions: [
-                        {
-                            damage: 7,
-                            targetArea: 2,
-                            numTargets: 2,
-                            type: ACTION_TYPES.RANGE_ATTACK,
-                            target: TARGET_TYPES.HOSTILE,
-                            animationOptions: {
-                                ricochet: true,
-                            },
-                            animation: ANIMATION_TYPES.YOYO,
-                            icon: HammerImage,
-                        },
-                    ],
-                    upgrades: [
-                        {
-                            actions: [
-                                {
-                                    damage: 2,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
         },
     ],
     upgrades: [
@@ -613,9 +581,6 @@ export const hammerang: Ability = {
             actions: [
                 {
                     damage: 2,
-                    addCardOptions: {
-                        upgradeLevels: 1,
-                    },
                 },
             ],
         },
@@ -1998,37 +1963,12 @@ export const shieldMastery: Ability = {
     rarity: RARITIES.UNCOMMON,
     description: "<b>Echo.</b>",
     overrideBodyText: true,
+    echo: true,
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
             armor: 7,
-            addCards: [
-                {
-                    name: "Shield Mastery",
-                    resourceCost: 1,
-                    image: ShieldMasteryImage,
-                    rarity: RARITIES.UNCOMMON,
-                    removeAfterTurn: true,
-                    overrideBodyText: true,
-                    actions: [
-                        {
-                            type: ACTION_TYPES.EFFECT,
-                            target: TARGET_TYPES.FRIENDLY,
-                            armor: 7,
-                        },
-                    ],
-                    upgrades: [
-                        {
-                            actions: [
-                                {
-                                    armor: 3,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
         },
     ],
     upgrades: [
@@ -2036,15 +1976,6 @@ export const shieldMastery: Ability = {
             actions: [
                 {
                     armor: 3,
-                    addCards: [
-                        {
-                            actions: [
-                                {
-                                    armor: 3,
-                                },
-                            ],
-                        },
-                    ],
                 },
             ],
         },
