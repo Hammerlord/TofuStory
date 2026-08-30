@@ -726,7 +726,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             playbackStartedAt.current = now;
         }
 
-        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime;
+        // Some animations are getting cut off at the end, need to investigate
+        const graceWindow = 175;
+        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime + graceWindow;
 
         const delay = Math.max(0, deadline - now);
 
