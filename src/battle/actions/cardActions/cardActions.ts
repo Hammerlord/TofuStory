@@ -84,28 +84,6 @@ export const checkCardActions = ({
             );
         }
 
-        const triggerAddCardsToHandEvent = (amount: number) => {
-            if (amount === 0) {
-                return;
-            }
-
-            const { playerSide, enemySide } = getState().battle;
-            playerSide.concat(enemySide).forEach((combatant) => {
-                if (combatant) {
-                    dispatch(
-                        checkEventTrigger({
-                            combatantId: combatant.id,
-                            effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
-                            context: {
-                                ...context,
-                                trackSumAmount: amount,
-                            },
-                        })
-                    );
-                }
-            });
-        };
-
         const { hand, deck, discard } = getState().battle as BattleState;
 
         const ownedCards = [...hand, ...deck, ...discard].reduce((acc, card) => {
@@ -114,7 +92,7 @@ export const checkCardActions = ({
         }, {});
 
         if (addCards) {
-            dispatch(handleAddCardsToHand({ addCards, ownedCards, triggerAddCardsToHandEvent }));
+            dispatch(handleAddCardsToHand({ addCards, ownedCards, context }));
         }
 
         dispatch(checkAddCardsToDeck({ action, ownedCards, context }));
@@ -124,7 +102,7 @@ export const checkCardActions = ({
         }
 
         if (typeof retrieveDepletedCards?.amount === "number") {
-            dispatch(handleRetrieveDepletedCards({ amount: retrieveDepletedCards?.amount, source, triggerAddCardsToHandEvent }));
+            dispatch(handleRetrieveDepletedCards({ amount: retrieveDepletedCards?.amount, source, context }));
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
@@ -154,11 +132,11 @@ export const checkCardActions = ({
         }
 
         if (selectCards) {
-            dispatch(handleSelectCards({ isAutoCast, source, selectCards, triggerAddCardsToHandEvent, context }));
+            dispatch(handleSelectCards({ isAutoCast, source, selectCards, context }));
         }
 
         if (moveCards) {
-            dispatch(handleMoveCards({ moveCards, triggerAddCardsToHandEvent, context }));
+            dispatch(handleMoveCards({ moveCards, context }));
         }
 
         if (addLastPlayedCards) {
@@ -293,5 +271,29 @@ export const handleDrawOriginalAbility = ({
                 deplete: newDeplete,
             })
         );
+    };
+};
+
+export const triggerAddCardsToHandEvent = (amount: number, context?: ActionContext) => {
+    return (dispatch, getState) => {
+        if (amount === 0) {
+            return;
+        }
+
+        const { playerSide, enemySide } = getState().battle;
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
+                        context: {
+                            ...context,
+                            trackSumAmount: amount,
+                        },
+                    })
+                );
+            }
+        });
     };
 };

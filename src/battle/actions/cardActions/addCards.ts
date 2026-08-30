@@ -6,6 +6,7 @@ import { battleStateSlice } from "../../reducer";
 import { ActionContext } from "../../types";
 import { prepareForDiscard } from "./discardCards";
 import { enqueueEvent } from "../enqueueEvent";
+import { triggerAddCardsToHandEvent } from "./cardActions";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
@@ -118,12 +119,11 @@ export const handleAddCardsToDiscard = ({
 export const handleAddCardsToHand = ({
     addCards,
     ownedCards,
-    triggerAddCardsToHandEvent,
+    context,
 }: {
     addCards: Ability[];
     ownedCards: { [abilityName: string]: true };
     context?: ActionContext;
-    triggerAddCardsToHandEvent: (amount: number) => void;
 }) => {
     return (dispatch, getState) => {
         let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
@@ -151,6 +151,6 @@ export const handleAddCardsToHand = ({
             })
         );
 
-        triggerAddCardsToHandEvent(addCards.length);
+        dispatch(triggerAddCardsToHandEvent(addCards.length, context));
     };
 };

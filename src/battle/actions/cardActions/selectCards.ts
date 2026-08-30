@@ -1,12 +1,12 @@
-import { CombatAbility, EFFECT_EVENT_KEYS, SELECT_CARD_TYPES, SelectCards } from "../../../ability/types";
+import { CombatAbility, SELECT_CARD_TYPES, SelectCards } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { playbackCollector } from "../playbackCollector";
-import { prepareForDiscard } from "./discardCards";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { triggerAddCardsToHandEvent } from "./cardActions";
 import { depleteAbilities } from "./depleteCards";
+import { prepareForDiscard } from "./discardCards";
 import { applyAbilityEventEffects, drawCards, handleOnDrawEvents } from "./drawCards";
 
 const { updateBattle, promptPlayerSelectCards, pushEventQueue } = battleStateSlice?.actions || {};
@@ -84,26 +84,18 @@ export const selectCardsAction =
             return;
         }
 
-        const triggerAddCardsToHandEvent = () => {
+        const triggerAddCardsEvent = () => {
             if (selectedAbilities.length === 0) {
                 return;
             }
 
-            playerSide.concat(enemySide).forEach((combatant) => {
-                if (combatant) {
-                    dispatch(
-                        checkEventTrigger({
-                            combatantId: combatant.id,
-                            effectEventKey: EFFECT_EVENT_KEYS.onAddCardToHand,
-                            context: {
-                                ...context,
-                                sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: abilityQueued }],
-                                trackSumAmount: selectedAbilities.length,
-                            },
-                        })
-                    );
-                }
-            });
+            const selectedAbilityContext: ActionContext = {
+                ...context,
+                sourceChain: [{ type: TRIGGER_SOURCE_TYPES.ABILITY, source: abilityQueued }],
+                trackSumAmount: selectedAbilities.length,
+            };
+
+            dispatch(triggerAddCardsToHandEvent(selectedAbilities.length, selectedAbilityContext));
         };
 
         if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
@@ -134,7 +126,7 @@ export const selectCardsAction =
                 })
             );
 
-            triggerAddCardsToHandEvent();
+            triggerAddCardsEvent();
             dispatch(handleOnDrawEvents({ cardsToDraw: cardsToAdd, context }));
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
@@ -147,7 +139,7 @@ export const selectCardsAction =
             })
         );
 
-        triggerAddCardsToHandEvent();
+        triggerAddCardsEvent();
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 
@@ -155,13 +147,11 @@ export const handleSelectCards = ({
     selectCards,
     isAutoCast,
     source: source,
-    triggerAddCardsToHandEvent,
     context,
 }: {
     selectCards: SelectCards;
     isAutoCast?: boolean;
     source?: TriggerSource;
-    triggerAddCardsToHandEvent: (numCards: number) => void;
     context: ActionContext;
 }) => {
     return (dispatch, getState) => {
@@ -205,7 +195,7 @@ export const handleSelectCards = ({
             dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
         } else {
             dispatch(updateBattle({ hand: [...cards, ...hand] }));
-            triggerAddCardsToHandEvent(cards.length);
+            dispatch(triggerAddCardsToHandEvent(cards.length, context));
         }
 
         if (type === SELECT_CARD_TYPES.SEARCH_DECK) {

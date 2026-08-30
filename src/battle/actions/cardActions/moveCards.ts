@@ -5,18 +5,11 @@ import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
+import { triggerAddCardsToHandEvent } from "./cardActions";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
-export const handleMoveCards = ({
-    moveCards,
-    triggerAddCardsToHandEvent,
-    context,
-}: {
-    moveCards: MoveCards;
-    triggerAddCardsToHandEvent;
-    context: ActionContext;
-}) => {
+export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; context: ActionContext }) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1, moveType, filters } = moveCards;
         const battle: BattleState = getState().battle;
@@ -108,7 +101,7 @@ export const handleMoveCards = ({
         );
 
         if (to === CARD_PILE_TYPES.HAND) {
-            triggerAddCardsToHandEvent(cardsToMove.length);
+            triggerAddCardsToHandEvent(cardsToMove.length, context);
         }
     };
 };
@@ -116,11 +109,11 @@ export const handleMoveCards = ({
 export const handleRetrieveDepletedCards = ({
     amount,
     source: source,
-    triggerAddCardsToHandEvent,
+    context,
 }: {
     amount: number;
     source: TriggerSource;
-    triggerAddCardsToHandEvent: Function;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
@@ -145,7 +138,7 @@ export const handleRetrieveDepletedCards = ({
                 })
             );
 
-            triggerAddCardsToHandEvent(cardsToHand.length);
+            dispatch(triggerAddCardsToHandEvent(cardsToHand.length, context));
         }
     };
 };

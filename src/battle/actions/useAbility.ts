@@ -15,6 +15,8 @@ import { checkSummonMinion } from "./summon/summon";
 import { autoSelectActionTarget } from "./targeting/targeting";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
+import { handleAddCardsToHand } from "./cardActions/addCards";
+import { cloneDeep } from "lodash";
 
 export const useAbility = ({
     ability,
@@ -35,7 +37,7 @@ export const useAbility = ({
 }) => {
     return (dispatch, getState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
-        const { resourceCost = 0, actions = [], effects = [] } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
+        const { resourceCost = 0, actions = [], effects = [], echo } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant, friendlySide } = findCombatantData(getState().battle, actorId) || {};
 
         const totalResourceCost = getPlayerAbilityResourceCost({ combatant, resourceCost, effects });
@@ -140,6 +142,18 @@ export const useAbility = ({
         // Due to morph, the combatant may no longer exist
         if (actorInfo) {
             dispatch(onUseAbility({ actorInfo, context: parentContext, ability, isAutoCast }));
+        }
+
+        if (echo) {
+            const { hand, deck, discard } = getState().battle;
+            const removeEchoRegex = /(?:<b>)?Echo\.?(?:<\/b>)?/g;
+            const newDescription = ability.description.replace(removeEchoRegex, "");
+            const copy: CombatAbility = { ...cloneDeep(ability), echo: false, removeAfterTurn: true, description: newDescription };
+            const ownedCards = [...hand, ...deck, ...discard].reduce((acc, card) => {
+                acc[card.name] = true;
+                return acc;
+            }, {});
+            dispatch(handleAddCardsToHand({ addCards: [copy], ownedCards, context }));
         }
     };
 };

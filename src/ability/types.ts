@@ -833,6 +833,8 @@ export interface Ability {
     exclusive?: string; // Eg. you cannot get more than one "Arm of the Exiled One" in any card selection screen
     // Ability stays in your hand after turn end. This does not count against the number of cards drawn next turn.
     retain?: boolean;
+    // Creates an Ephemeral, non-Echo copy of the card and adds it to your hand
+    echo?: boolean;
     actions: Action[];
     tooltip?: {
         title?: string;
