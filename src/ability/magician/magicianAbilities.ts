@@ -98,6 +98,7 @@ import {
     ThunderBoltProjectileImage,
     ThunderBreakImage,
     ThunderSparkImage,
+    ThunderSpearImage,
     TriboltImage,
     WizMushImage,
     WrathImage,
@@ -3592,6 +3593,60 @@ export const doomAbility: Ability = {
     upgrades: [
         {
             resourceCost: -1,
+        },
+    ],
+};
+
+const thunderSpearAction: Action = {
+    area: 1,
+    damage: 8,
+    target: TARGET_TYPES.HOSTILE,
+    type: ACTION_TYPES.RANGE_ATTACK,
+    animations: [
+        {
+            type: ANIMATION_TYPES.BEAM,
+            image: ThunderSparkImage,
+            options: {
+                rotateToFaceTarget: true,
+                rotate: 135,
+                flash: 500,
+            },
+        },
+    ],
+};
+
+export const thunderSpear: Ability = {
+    name: "Thunder Spear",
+    rarity: RARITIES.RARE,
+    image: ThunderSpearImage,
+    resourceCost: 1,
+    description: "<b>Echo.</b> <b>Charged:</b> Cast again for <b>{{{ actions.1.damage }}} {{{ _damage_ }}}.</b>",
+    echo: true,
+    actions: [
+        {
+            ...thunderSpearAction,
+        },
+        {
+            ...thunderSpearAction,
+            damage: 3,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                    hasEffect: "Charged",
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
+                },
+                {
+                    damage: 1,
+                },
+            ],
         },
     ],
 };

@@ -785,6 +785,7 @@ export { default as ThunderBoltImage } from "./ThunderBolt.png";
 export { default as ThunderBoltProjectileImage } from "./ThunderBoltProjectile.png";
 export { default as ThunderBreakImage } from "./ThunderBreak.png";
 export { default as ThunderSparkImage } from "./ThunderSpark.png";
+export { default as ThunderSpearImage } from "./ThunderSpear.gif";
 export { default as TofuImage } from "./Tofu.png";
 export { default as TopazImage } from "./Topaz.png";
 export { default as TornadoImage } from "./Tornado.png";
