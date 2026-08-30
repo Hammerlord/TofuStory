@@ -572,6 +572,8 @@ const AbilityView = forwardRef(
                                     ability={ability}
                                     player={player}
                                     disableBattleIndicators={disableBattleBonuses || !battle}
+                                    /** Only play the 'resource cost changed' animation if it's the same card */
+                                    key={ability?.instanceId}
                                 />
                             </span>
                             <div className={classes.portraitContainer}>{imageNode}</div>
