@@ -363,7 +363,7 @@ const getStatusEffectDiff = ({
             .filter((effect) => {
                 if (isImmuneTo(effect)) {
                     // ID for differentiation purposes when announcing that the effect failed to apply
-                    failedToApplyEffects.push({ ...effect, id: uuid.v4(), uptime: 0 });
+                    failedToApplyEffects.push({ ...effect, applierId: actor?.combatant?.id, id: uuid.v4(), uptime: 0 });
                     return false;
                 }
 

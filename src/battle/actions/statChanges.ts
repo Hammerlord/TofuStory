@@ -167,6 +167,14 @@ export const triggerStatChangeEvents =
                     effectEventKey: EFFECT_EVENT_KEYS.onFailedToReceiveEffect,
                     sourceChain,
                 });
+
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: e.applierId,
+                        effectEventKey: EFFECT_EVENT_KEYS.onFailedToApplyEffect,
+                        context: { ...context, sourceChain: sourceChain },
+                    })
+                );
             });
 
             if (isDeathBlow) {

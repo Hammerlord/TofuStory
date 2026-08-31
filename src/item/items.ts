@@ -121,6 +121,7 @@ import {
     StarEarringsImage,
     StarfallMagicSquareImage,
     StarRockImage,
+    SteelMisselImage,
     SteelOreImage,
     SteelyImage,
     StiffFeatherImage,
@@ -3172,6 +3173,65 @@ export const rock: Item = {
                     ],
                 },
                 removeEffect: true,
+            },
+        },
+    ],
+};
+
+export const battleGauntlets: Item = {
+    name: "Battle Gauntlets",
+    description: "When you would apply {{{ _defDown_ }}} or {{{ _stun_ }}}, also apply {{{ _bleed_ }}}.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: SteelMisselImage,
+    effects: [
+        {
+            name: "Battle Gauntlets",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onApplyEffect: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        hasEffect: defDown.name,
+                    },
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        hasEffect: stun.name,
+                    },
+                ],
+                conditionOperator: "or",
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        ...bleed,
+                        stacks: 1,
+                    },
+                ],
+            },
+            onFailedToApplyEffect: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        hasEffect: defDown.name,
+                    },
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        hasEffect: stun.name,
+                    },
+                ],
+                conditionOperator: "or",
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        ...bleed,
+                        stacks: 1,
+                    },
+                ],
             },
         },
     ],

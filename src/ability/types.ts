@@ -125,6 +125,7 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveArmor = "onReceiveArmor",
     onReceiveEffect = "onReceiveEffect",
     onFailedToReceiveEffect = "onFailedToReceiveEffect", // If the effect recipient was immune to that effect
+    onFailedToApplyEffect = "onFailedToApplyEffect",
     onApplyEffect = "onApplyEffect",
     onResourcesSpent = "onResourcesSpent",
     onResourcesGained = "onResourcesGained",
