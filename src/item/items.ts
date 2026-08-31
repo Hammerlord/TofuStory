@@ -1,3 +1,4 @@
+import { CRITICAL_KEYWORD } from "../ability/AbilityView/constants";
 import { aimEffect } from "../ability/bowman/bowmanAbilities";
 import {
     attackDown,
@@ -79,6 +80,7 @@ import {
     KoreanFanImage,
     LeatherSandalsImage,
     LetterImage,
+    LucidaTailImage,
     LuckSackImage,
     MapleDoomSingerImage,
     MedicineWithWeirdVibesImage,
@@ -119,6 +121,7 @@ import {
     StarRockImage,
     SteelOreImage,
     SteelyImage,
+    StiffFeatherImage,
     StolenFenceImage,
     StrawImage,
     SunflowerImage,
@@ -3028,6 +3031,65 @@ export const olympus: Item = {
                     {
                         ...aimEffect,
                         stacks: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const stiffFeather: Item = {
+    name: "Stiff Feather",
+    description: "Battle start: Gain {{ effects.0.onBattleStart.effects.0.stacks }} Aim.",
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: StiffFeatherImage,
+    effects: [
+        {
+            name: "Stiff Feather",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onBattleStart: {
+                effects: [
+                    {
+                        ...aimEffect,
+                        stacks: 4,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+export const lucidaTail: Item = {
+    name: "Lucida Tail",
+    description:
+        "Your attacks have a {{ effects.0.onAttack.chance }} chance to apply {{{ _defDown_ }}} for {{ effects.0.onAttack.effects.0.duration }}{{{ _duration_ }}}. 20% for active Criticals.",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: LucidaTailImage,
+    effects: [
+        {
+            name: "Lucida Tail",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onAttack: {
+                chance: 0.1,
+                bonus: {
+                    bonusChance: 0.1,
+                    conditions: [
+                        {
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            hasAbilityEffectName: CRITICAL_KEYWORD,
+                        },
+                    ],
+                },
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                effects: [
+                    {
+                        ...defDown,
+                        duration: 2,
                     },
                 ],
             },

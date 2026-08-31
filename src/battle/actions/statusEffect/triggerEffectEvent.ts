@@ -37,6 +37,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 import { autoSelectActionTarget, calculateTargetIndices } from "../targeting/targeting";
 import { updateCombatant } from "../combatantData";
 import { onUseAbility, useAbility } from "../useAbility";
+import { calculateBonus } from "../../calculateBonus";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -121,7 +122,20 @@ export const onEffectEventTrigger = ({
             actionParent: source?.source,
             ...getState().battle,
         });
-        const chanceCheckPass = Math.random() < chance * chanceMultiplier;
+
+        const { chance: chanceWithBonus = 1 } =
+            calculateBonus({
+                action: effectEvent,
+                actor: caster,
+                target: caster,
+                allTargets: [caster],
+                actionParent: source?.source,
+                context,
+                isTargetSelected: false,
+                ...getState().battle,
+            }) || {};
+
+        const chanceCheckPass = Math.random() < chanceWithBonus * chanceMultiplier;
 
         if (conditionsPassed && chanceCheckPass) {
             dispatch(checkUpdateEffectLifecycle({ effect, effectEvent, context, ownerId }));

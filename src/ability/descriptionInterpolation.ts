@@ -30,10 +30,10 @@ import defDownSvg from "../images/icons/DefDown.svg?raw";
 import defUpSvg from "../images/icons/DefUp.svg?raw";
 import pristine from "../images/icons/PristineShield.svg?raw";
 
-
 import { PLAYER_CLASSES } from "../Menu/types";
 import { BLUE, GREEN, RED } from "./AbilityView/constants";
 import { Ability, CombatAbility } from "./types";
+import { traverseForNestedPercentages } from "../utils";
 
 const iconStyles = {
     width: 16,
@@ -93,7 +93,7 @@ const ICON_INTERPOLATIONS = {
     _armorUp_: inlineSvg(armorUpSvg),
     _defDown_: inlineSvg(defDownSvg),
     _defUp_: inlineSvg(defUpSvg),
-    _pristine_: inlineSvg(pristine)
+    _pristine_: inlineSvg(pristine),
 };
 
 export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass: PLAYER_CLASSES }) => {
@@ -160,30 +160,6 @@ export const interpolateAbilityDescription = ({
                 }
             }
         }
-    };
-
-    // If displaying a percentage, show "25%" instead of "0.25x" for values 0 < n < 1.
-    // !!! This action is destructive! Must clone deep beforehand !!!
-    const traverseForNestedPercentages = (obj) => {
-        if (!obj) {
-            return;
-        }
-
-        for (const [key, val] of Object.entries(obj)) {
-            if (typeof val === "object") {
-                traverseForNestedPercentages(val);
-            } else if (typeof val === "number") {
-                if ((val > 0 && val < 1) || (val > -1 && val < 0)) {
-                    obj[key] = Math.floor(val * 100) + "%";
-                }
-            } else if (Array.isArray(obj)) {
-                for (const val of obj) {
-                    traverseForNestedPercentages(val);
-                }
-            }
-        }
-
-        return obj;
     };
 
     const multiplierAction = ability.actions?.find((action) => action.multiplier);

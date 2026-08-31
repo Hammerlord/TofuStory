@@ -82,7 +82,6 @@ export type EffectEventTrigger = { [key in keyof Action]?: Action[key] } & {
     // (Ability actions already have their own targeting and effects and whatnot).
     // If a string is supplied, it is assumed to be a reference to an ability object.
     ability?: Ability | string;
-    chance?: number; // A percentage of occurrence, up to 1
     // Reduces a stack of the parent effect when this event triggers. If the parent effect has 1 or no stacks, this behaves like removeEffect.
     decrementStacks?: number;
     incrementStacks?: number;
@@ -382,6 +381,9 @@ export interface Bonus {
     conditions?: Condition[];
     excludePrimaryTarget?: boolean;
     summon?: ActionSummon[];
+
+    // If the parent has a chance, this improves that chance. ONLY works for effect events right now
+    bonusChance?: number;
 }
 
 export interface Condition {

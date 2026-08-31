@@ -69,3 +69,27 @@ export const passesChance = (chance: number | any): boolean => {
 
     return Math.random() <= chance;
 };
+
+// If displaying a percentage, show "25%" instead of "0.25x" for values 0 < n < 1.
+// !!! This action is destructive! Must clone deep beforehand !!!
+export const traverseForNestedPercentages = (obj) => {
+    if (!obj) {
+        return;
+    }
+
+    for (const [key, val] of Object.entries(obj)) {
+        if (typeof val === "object") {
+            traverseForNestedPercentages(val);
+        } else if (typeof val === "number") {
+            if ((val > 0 && val < 1) || (val > -1 && val < 0)) {
+                obj[key] = Math.floor(val * 100) + "%";
+            }
+        } else if (Array.isArray(obj)) {
+            for (const val of obj) {
+                traverseForNestedPercentages(val);
+            }
+        }
+    }
+
+    return obj;
+};

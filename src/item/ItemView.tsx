@@ -1,14 +1,16 @@
 import { Tooltip } from "@mui/material";
 import classNames from "classnames";
 import Handlebars from "handlebars";
+import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { GREEN, resourceClassNameMap } from "../ability/AbilityView/constants";
+import { GREEN } from "../ability/AbilityView/constants";
 import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
+import { traverseForNestedPercentages } from "../utils";
 import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
 import { Item, RARITIES } from "./types";
-import { useMemo } from "react";
+import { cloneDeep } from "lodash";
 
 const useStyles = createUseStyles({
     item: {
@@ -93,7 +95,10 @@ const ItemView = ({
 }) => {
     const classes = useStyles();
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
-    const interpolatedDescription = Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
+    const interpolatedDescription = Handlebars.compile(item.description || "")({
+        ...traverseForNestedPercentages(cloneDeep(item)),
+        ...elementMapping,
+    });
 
     let tooltips;
     if (item.overrideTooltip) {

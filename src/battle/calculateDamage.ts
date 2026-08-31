@@ -141,6 +141,7 @@ export const calculateDamage = ({
     if (typeof maximumDamage === "number") {
         total = Math.min(total, maximumDamage);
     }
+
     return Math.max(minimumDamage, Math.ceil(total));
 };
 
