@@ -41,6 +41,7 @@ import {
     FlamingFeatherImage,
     FocusImage,
     FrozenArrowImage,
+    GoldenEagleImage,
     GreenLeafShoesImage,
     GreenWinterHatImage,
     GrossJaegerImage,
@@ -3752,6 +3753,78 @@ export const headshot: Ability = {
             actions: [
                 {
                     damage: 5,
+                },
+            ],
+        },
+    ],
+};
+
+export const blitz: Ability = {
+    name: "Blitz",
+    image: GoldenEagleImage,
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 1,
+    overrideBodyText: true,
+    description:
+        "When you play <b>Aimed Shot</b> or an active <b>Critical</b>, one of your minions attacks. <br/> {{ actions.0.effects.0.duration }}{{{ _duration_ }}}",
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Blitz",
+                    icon: GoldenEagleImage,
+                    description: "When you play <b>Aimed Shot or an active <b>Critical</b> card, one of your minions attacks.",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    duration: 3,
+                    onPlayCard: {
+                        ability: {
+                            name: "Blitz",
+                            actions: [
+                                {
+                                    type: ACTION_TYPES.EFFECT,
+                                    target: TARGET_TYPES.RANDOM_FRIENDLY,
+                                    excludeActor: true,
+                                    induceCombatantAttack: true,
+                                },
+                            ],
+                            conditions: [
+                                {
+                                    numFriendly: 1, // Including the actor itself
+                                    comparator: "gt",
+                                    calculationTarget: CONDITION_TARGETS.ACTOR,
+                                },
+                            ],
+                        },
+                        conditions: [
+                            {
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                hasAbilityEffectName: CRITICAL_KEYWORD,
+                            },
+                            {
+                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                                name: aimedShot.name,
+                            },
+                        ],
+                        conditionOperator: "or",
+                    },
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [
+                        {
+                            duration: 1,
+                        },
+                    ],
                 },
             ],
         },
