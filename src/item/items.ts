@@ -114,6 +114,7 @@ import {
     SapOfNependeathImage,
     ScimitarImage,
     ScrollImage,
+    SilverSnowboardImage,
     SnowshoesImage,
     SpectrumGogglesImage,
     StarEarringsImage,
@@ -3064,7 +3065,7 @@ export const stiffFeather: Item = {
 export const lucidaTail: Item = {
     name: "Lucida Tail",
     description:
-        "Your attacks have a {{ effects.0.onAttack.chance }} chance to apply {{{ _defDown_ }}} for {{ effects.0.onAttack.effects.0.duration }}{{{ _duration_ }}}. 20% for active Criticals.",
+        "Your attacks have a {{ effects.0.onAttack.chance }} chance to apply {{{ _defDown_ }}} for {{ effects.0.onAttack.effects.0.duration }}{{{ _duration_ }}}. +10% for active Criticals.",
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: LucidaTailImage,
@@ -3093,6 +3094,29 @@ export const lucidaTail: Item = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const silverSnowboard: Item = {
+    name: "Silver Snowboard",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.UNCOMMON,
+    image: SilverSnowboardImage,
+    applyEffectsToSummons: true,
+    description: "Gain an additional +{{ effects.0.attackPower }} {{{ _attUp_ }}} against {{{ _stun_ }}} or {{{ _freeze_ }}} targets.",
+    effects: [
+        {
+            name: "Silver Snowboard",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            attackPower: 2,
+            conditions: [
+                {
+                    hasEffectType: [EFFECT_TYPES.FREEZE, EFFECT_TYPES.STUN],
+                    calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                },
+            ],
         },
     ],
 };

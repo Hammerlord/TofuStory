@@ -673,6 +673,7 @@ export { default as ShoutImage } from "./Shout.png";
 export { default as ShrineSceneImage } from "./ShrineScene.png";
 export { default as ShroomImage } from "./Shroom.png";
 export { default as SilverAquilaImage } from "./SilverAquila.png";
+export { default as SilverSnowboardImage } from "./SilverSnowboard.png";
 export { default as SirBlacksmithImage } from "./SirBlacksmith.png";
 export { default as SirBlacksmithHammerImage } from "./SirBlacksmithHammer.png";
 export { default as SkelegonImage } from "./Skelegon.gif";
