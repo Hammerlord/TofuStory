@@ -72,6 +72,7 @@ import {
     forage,
     ultimateStrafe,
     doomHeraldAbility,
+    headshot,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -470,6 +471,7 @@ export const JOB_CARD_MAP = {
             forage,
             ultimateStrafe,
             doomHeraldAbility,
+            headshot,
         ],
         starters: [puppetAbility, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

@@ -593,6 +593,7 @@ export { default as PowerStanceImage } from "./PowerStance.png";
 export { default as PrettyPinkBeanBalloonImage } from "./PrettyPinkBeanBalloon.png";
 export { default as ProofOfAHeroImage } from "./ProofOfAHero.png";
 export { default as PunctureImage } from "./Puncture.png";
+export { default as PuppetImage } from "./Puppet.gif";
 export { default as PuppetreeImage } from "./Puppetree.png";
 export { default as Puppetree2Image } from "./Puppetree2.png";
 export { default as Puppetree3Image } from "./Puppetree3.gif";

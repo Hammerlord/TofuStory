@@ -63,6 +63,7 @@ import {
     PhoenixImage,
     PiercingArrowImage,
     PowerKnockbackImage,
+    PuppetImage,
     Puppetree3Image,
     RavenImage,
     RoastingShotImage,
@@ -3713,6 +3714,44 @@ export const callCompanion: Ability = {
             actions: [
                 {
                     chance: 0.1,
+                },
+            ],
+        },
+    ],
+};
+
+export const headshot: Ability = {
+    name: "Headshot",
+    description: "<b>On kill:</b> <b>+1 {{{ _resource_ }}} +{{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b>",
+    resourceCost: 2,
+    image: PuppetImage,
+    rarity: RARITIES.COMMON,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            damage: 17,
+            secondaryAction: {
+                resources: 1,
+                healing: 2,
+                conditions: [
+                    {
+                        healthPercentage: 0,
+                        comparator: "eq",
+                        calculationTarget: CONDITION_TARGETS.TARGET,
+                    },
+                ],
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
                 },
             ],
         },
