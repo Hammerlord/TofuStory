@@ -74,7 +74,15 @@ type EffectQueued = {
 /**
  * A widget for announcing when status effects have been added or have faded
  */
-const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: UpdatedCombatantStats; combatant: Combatant }) => {
+const StatusEffectAnnouncer = ({
+    statChanges,
+    combatant,
+    delay,
+}: {
+    statChanges: UpdatedCombatantStats;
+    combatant: Combatant;
+    delay?: number;
+}) => {
     const classes = useStyles();
     const ref = useRef({});
     const [queue, setQueue]: [EffectQueued[], Function] = useState([]);
@@ -149,8 +157,18 @@ const StatusEffectAnnouncer = ({ statChanges, combatant }: { statChanges: Update
             return;
         }
 
-        setQueue(newQueue);
-    }, [statChanges]);
+        if (delay) {
+            const timeout = setTimeout(() => {
+                setQueue(newQueue);
+            }, delay);
+
+            return () => {
+                clearTimeout(timeout);
+            };
+        } else {
+            setQueue(newQueue);
+        }
+    }, [statChanges, delay]);
 
     useEffect(() => {
         if (isInvalidCombatant) {

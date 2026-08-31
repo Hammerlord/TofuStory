@@ -1,9 +1,9 @@
 import classNames from "classnames";
-import { FC, RefObject, forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { FC, RefObject, useCallback, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
-import { SUMMON_DELAY } from "../battle/constants";
+import { findCombatantData } from "../battle/actions/combatantData";
 import { BATTLE_STATES } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
 import { useAppSelector } from "../hooks";
@@ -25,14 +25,12 @@ import ResourceBar from "./ResourceBar";
 import Reticle from "./Reticle";
 import Telegraph from "./Telegraph";
 import Weapon from "./Weapon";
-import { playDyingAnimation, playFadeInAnimation, playHitAnimation } from "./animations";
+import { playDyingAnimation, playHitAnimation } from "./animations";
 import EffectIconsContainer from "./effects/EffectIcons";
 import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
-import { Combatant, Player } from "./types";
-import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import { findCombatantData } from "../battle/actions/combatantData";
 import { useEntranceAnimation } from "./hooks/useEntranceAnimation";
+import { Combatant, Player } from "./types";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -630,7 +628,7 @@ const CombatantView = ({
             {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
             {combatant?.HP > 0 && (
                 <div className={classes.statusEffectAnnouncerContainer}>
-                    <StatusEffectAnnouncer statChanges={eventStatChanges} combatant={combatant} />
+                    <StatusEffectAnnouncer statChanges={eventStatChanges} combatant={combatant} delay={hitPlaybackDelay} />
                 </div>
             )}
         </div>
