@@ -22,7 +22,7 @@ import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
 import { findCombatantData } from "../combatantData";
-import { requeueRecentlyUsedAbility } from "../phases/enemyTurn";
+import { requeueRecentlyUsedAbility } from "../phases/phases";
 import { enqueueEvent } from "../enqueueEvent";
 import { getPossibleSummonIndices, onSummonTriggers } from "./summon";
 

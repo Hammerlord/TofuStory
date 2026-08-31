@@ -16,12 +16,14 @@ import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
 import { onEndTurnTriggers } from "./phases";
+import { requeueRecentlyUsedAbility } from "./phases";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch, getState) => {
-        const ability = findCombatantData(getState().battle, actorId)?.combatant?.abilities[0];
+        const combatant = findCombatantData(getState().battle, actorId)?.combatant;
+        const ability = combatant?.abilities[0];
         if (!ability) {
             return;
         }
@@ -37,6 +39,8 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
                 context: { name: "Minion Manual Attack", playbackCollector: playbackCollectorInstance },
             })
         );
+
+        dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id }));
 
         dispatch(
             updateBattle({
@@ -71,6 +75,8 @@ const minionAutoAttack = () => {
                     context: { name: "Minion Attack", playbackCollector: playbackCollectorInstance },
                 })
             );
+
+            dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id }));
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));

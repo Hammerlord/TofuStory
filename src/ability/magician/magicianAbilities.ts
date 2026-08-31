@@ -17,6 +17,7 @@ import {
     ColdBeamProjectileImage,
     CrystalIlbiImage,
     DarkShockImage,
+    DarkWyvernImage,
     DoTPunisherImage,
     DoomImage,
     ElementalAdaptationFPImage,
@@ -3646,6 +3647,104 @@ export const thunderSpear: Ability = {
                     damage: 1,
                 },
             ],
+        },
+    ],
+};
+
+const wyvernMinion: Minion = {
+    name: "Wyvern",
+    image: DarkWyvernImage,
+    controllable: true,
+    maxHP: 7,
+    abilities: [
+        {
+            name: "Flame Breath",
+            image: FireMarbleImage,
+            description: "Inflicts {{ actions.0.effects.0.stacks }} {{{ _burn_ }}}.",
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: FireMarbleImage,
+                    damage: 5,
+                    effects: [
+                        {
+                            ...burn,
+                            stacks: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Thundershock",
+            image: LightningOrbImage,
+            description: "Inflicts {{{ _stun_ }}}.",
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    animations: [
+                        {
+                            image: LightningOrbProjectileImage,
+                            type: ANIMATION_TYPES.ONE_WAY_SPIN,
+                        },
+                    ],
+                    damage: 5,
+                    effects: [
+                        {
+                            ...stun,
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "Frost Breath",
+            image: SnowballImage,
+            description: "Inflicts {{{ _chill_ }}} for {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.",
+            actions: [
+                {
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    icon: SnowballImage,
+                    damage: 5,
+                    effects: [
+                        {
+                            ...chill,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const wyvernAbility: Ability = {
+    name: "Wyvern",
+    image: DarkWyvernImage,
+    rarity: RARITIES.RARE,
+    minion: wyvernMinion,
+    resourceCost: 2,
+    description: "<b>Controllable.</b> Applies {{{ _chill_ }}}, {{{ _burn_ }}} OR {{{ _stun_ }}}, changing each attack.",
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+                abilities: [
+                    {
+                        damage: 2,
+                    },
+                    {
+                        damage: 2,
+                    },
+                    {
+                        damage: 2,
+                    },
+                ],
+            },
         },
     ],
 };

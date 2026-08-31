@@ -170,7 +170,7 @@ export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?
 /**
  * Tells the player what this combatant wants to do next.
  */
-const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
+const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; isEnemy: boolean }) => {
     const classes = useStyles();
     const battle = useAppSelector((state) => state.battle);
     const { combatant } = combatantInfo || {};
@@ -179,8 +179,19 @@ const Telegraph = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return null;
     }
 
-    const { channelDuration, castTime: castingCastTime } = combatant?.casting || {};
-    const ability = combatant.targeting?.ability;
+    let ability;
+    let channelDuration: number | undefined;
+    let castingCastTime: number | undefined;
+    if (isEnemy) {
+        ability = combatant.targeting?.ability;
+        const casting = combatant?.casting;
+        if (casting) {
+            channelDuration = casting.channelDuration;
+            castingCastTime = casting.castTime;
+        }
+    } else {
+        ability = combatant.abilities[0];
+    }
 
     if (!ability) {
         return null;

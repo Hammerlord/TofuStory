@@ -522,9 +522,9 @@ const CombatantView = ({
                     </span>
                 )}
 
-                {combatant?.HP > 0 && isEnemy && (
+                {combatant?.HP > 0 && (isEnemy || combatant?.abilities?.length > 1) && (
                     <div className={classes.header}>
-                        <Telegraph combatantInfo={combatantInfo} />
+                        <Telegraph combatantInfo={combatantInfo} isEnemy={isEnemy} />
                         {showResourceBar && <ResourceBar resources={combatant.resources} maxResources={combatant.maxResources} />}
                     </div>
                 )}

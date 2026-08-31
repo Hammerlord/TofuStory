@@ -1,6 +1,5 @@
 import { isSupportAbility } from "../../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
-import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 import { previewAction } from "../../../character/getAbilityPreviews";
 import { Combatant } from "../../../character/types";
 import { ITEM_TYPES, Item } from "../../../item/types";
@@ -22,7 +21,7 @@ import { useItem } from "../useItem";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
-import { onEndTurnTriggers } from "./phases";
+import { onEndTurnTriggers, requeueRecentlyUsedAbility } from "./phases";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
@@ -137,79 +136,6 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
 
     return -1;
 };
-
-export const requeueRecentlyUsedAbility =
-    ({ combatantId }: { combatantId: string }) =>
-    (dispatch, getState) => {
-        const battle = getState().battle;
-        const actorInfo = findCombatantData(battle, combatantId);
-        if (!actorInfo?.combatant?.HP || !actorInfo?.combatant?.abilities?.length) {
-            return;
-        }
-
-        const actor: Combatant = actorInfo.combatant;
-
-        const postUpdateActorInfo = {
-            ...actorInfo,
-        };
-
-        if (!actorInfo.combatant.casting?.channelDuration) {
-            const validAbilityIds = actor.abilities.map((a) => a.instanceId);
-            // Exclude procs from being considered for requeuing
-            const history = actor.abilityHistory.filter((a) => validAbilityIds.includes(a.instanceId));
-            const abilityUsed = history[history.length - 1];
-            let abilityIndex = -1;
-            if (abilityUsed) {
-                abilityIndex = actor.abilities.findIndex((ability) => ability.instanceId === abilityUsed?.instanceId);
-            } else {
-                abilityIndex = getUseAbilityIndex(actorInfo);
-            }
-
-            if (abilityIndex > -1) {
-                const updatedAbilities = [...actor.abilities];
-                const [used] = updatedAbilities.splice(abilityIndex, 1);
-                updatedAbilities.push(used);
-
-                dispatch(
-                    updateCombatant({
-                        combatantId,
-                        newProperties: {
-                            abilities: updatedAbilities,
-                        },
-                    })
-                );
-
-                postUpdateActorInfo.combatant = {
-                    ...actorInfo.combatant,
-                    abilities: updatedAbilities,
-                };
-            }
-        }
-
-        const ability = getNextTelegraphedAbility(postUpdateActorInfo);
-        if (!ability?.actions) {
-            dispatch(
-                updateCombatant({
-                    combatantId,
-                    newProperties: {
-                        targeting: null,
-                    },
-                })
-            );
-        }
-
-        dispatch(
-            updateCombatant({
-                combatantId,
-                newProperties: {
-                    targeting: {
-                        actionTargets: [], // This is updated by checkValidEnemyTargeting() in the function that calls this
-                        ability,
-                    },
-                },
-            })
-        );
-    };
 
 export const getUpdatedBattleActionTargets = ({
     ability,

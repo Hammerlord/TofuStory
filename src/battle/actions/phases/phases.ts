@@ -19,6 +19,7 @@ import { tickDownStatusEffects } from "../statusEffect/effectLifecycle";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
 import { getEnemyMoveOrder, getUseAbilityIndex } from "./enemyTurn";
+import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
@@ -304,3 +305,75 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
+export const requeueRecentlyUsedAbility =
+    ({ combatantId }: { combatantId: string }) =>
+    (dispatch, getState) => {
+        const battle = getState().battle;
+        const actorInfo = findCombatantData(battle, combatantId);
+        if (!actorInfo?.combatant?.HP || !actorInfo?.combatant?.abilities?.length) {
+            return;
+        }
+
+        const actor: Combatant = actorInfo.combatant;
+
+        const postUpdateActorInfo = {
+            ...actorInfo,
+        };
+
+        if (!actorInfo.combatant.casting?.channelDuration) {
+            const validAbilityIds = actor.abilities.map((a) => a.instanceId);
+            // Exclude procs from being considered for requeuing
+            const history = actor.abilityHistory.filter((a) => validAbilityIds.includes(a.instanceId));
+            const abilityUsed = history[history.length - 1];
+            let abilityIndex = -1;
+            if (abilityUsed) {
+                abilityIndex = actor.abilities.findIndex((ability) => ability.instanceId === abilityUsed?.instanceId);
+            } else {
+                abilityIndex = getUseAbilityIndex(actorInfo);
+            }
+
+            if (abilityIndex > -1) {
+                const updatedAbilities = [...actor.abilities];
+                const [used] = updatedAbilities.splice(abilityIndex, 1);
+                updatedAbilities.push(used);
+
+                dispatch(
+                    updateCombatant({
+                        combatantId,
+                        newProperties: {
+                            abilities: updatedAbilities,
+                        },
+                    })
+                );
+
+                postUpdateActorInfo.combatant = {
+                    ...actorInfo.combatant,
+                    abilities: updatedAbilities,
+                };
+            }
+        }
+
+        const ability = getNextTelegraphedAbility(postUpdateActorInfo);
+        if (!ability?.actions) {
+            dispatch(
+                updateCombatant({
+                    combatantId,
+                    newProperties: {
+                        targeting: null,
+                    },
+                })
+            );
+        }
+
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    targeting: {
+                        actionTargets: [], // This is updated by checkValidEnemyTargeting() in the function that calls this
+                        ability,
+                    },
+                },
+            })
+        );
+    };
