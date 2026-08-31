@@ -50,6 +50,7 @@ import {
     CoffeePotImage,
     CouponImage,
     CursedDollImage,
+    CutlassImage,
     DarkPoleFeatherHatImage,
     DiamondImage,
     DiamondOreImage,
@@ -3110,6 +3111,25 @@ export const silverSnowboard: Item = {
                     calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                 },
             ],
+        },
+    ],
+};
+
+export const cutlass: Item = {
+    name: "Cutlass",
+    description: "Battle start: Gain Furious Strike.",
+    image: CutlassImage,
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    effects: [
+        {
+            name: "Cutlass",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onBattleStart: {
+                addCards: [furiousStrikeCard],
+                removeEffect: true,
+            },
         },
     ],
 };
