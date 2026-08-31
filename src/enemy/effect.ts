@@ -272,6 +272,14 @@ export const lifeLink: Effect = {
                 canBeSilenced: false,
                 description: "When this effect ends, the character will revive and recover a portion of its HP.",
                 duration: 3,
+                // Edge case where if the final ally died on its turn, it can still 'revive' (though at least the battle ends by then)
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                        comparator: "gt",
+                        numFriendly: 0,
+                    },
+                ],
                 onEnd: {
                     pushEventQueue: true,
                     usableWhileStunned: true,
