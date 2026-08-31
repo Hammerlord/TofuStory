@@ -312,21 +312,14 @@ export const redWhip: Item = {
 
 export const topaz: Item = {
     name: "Topaz",
-    description: "Every {{ effects.0.onReceiveDamage.eventTriggerFrequency }} times you take damage, gain {{{ _thorns_ }}}.",
+    description: "Gain {{ effects.0.stacks }} {{{ _thorns_ }}}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     image: TopazImage,
     effects: [
         {
-            name: "Topaz",
-            description: "Gaining thorns after receiving damage 7 times.",
-            type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onReceiveDamage: {
-                effects: [thorns],
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                eventTriggerFrequency: 7,
-            },
+            ...thorns,
+            stacks: 2,
         },
     ],
 };
