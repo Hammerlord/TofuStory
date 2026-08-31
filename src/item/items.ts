@@ -3,6 +3,7 @@ import { aimEffect } from "../ability/bowman/bowmanAbilities";
 import {
     attackDown,
     attackPower,
+    bideEffect,
     bleed,
     chill,
     defDown,
@@ -16,7 +17,7 @@ import {
 } from "../ability/Effects";
 import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
-import { dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
+import { bide, dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import {
     AdamantiumPlateImage,
@@ -105,6 +106,7 @@ import {
     PolearmImage,
     PrettyPinkBeanBalloonImage,
     RabbitFootImage,
+    RedDukeImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
     RedPotionImage,
@@ -1909,7 +1911,7 @@ export const toyHammer: Item = {
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     image: PicoPicoHammerImage,
-    description: "Battle start: 3 cards in your hand are Upgraded.",
+    description: "Battle start: {{ effects.0.onBattleStart.applyAbilityEffects.amount }} cards in your hand are Upgraded.",
     effects: [
         {
             name: "Toy Hammer",
@@ -3230,6 +3232,43 @@ export const battleGauntlets: Item = {
                     {
                         ...bleed,
                         stacks: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+const redDukeEffect: Effect = {
+    name: "Red Duke",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    maxApplications: 1,
+    maxStacks: 1,
+    onReceiveHealthDamage: {
+        effects: [bideEffect],
+        removeEffect: true,
+    },
+    onTurnStart: {
+        removeEffect: true,
+    },
+};
+
+export const redDuke: Item = {
+    name: "Red Duke",
+    image: RedDukeImage,
+    description: "Once per turn, if you take HP damage, gain Bide.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    effects: [
+        {
+            name: "Red Duke",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onTurnInProgress: {
+                effects: [
+                    {
+                        ...redDukeEffect,
                     },
                 ],
             },

@@ -614,6 +614,7 @@ export { default as RavenImage } from "./Raven.gif";
 export { default as RedBoxingGloveImage } from "./RedBoxingGlove.png";
 export { default as RedCrayonImage } from "./RedCrayon.png";
 export { default as RedDrakeImage } from "./RedDrake.gif";
+export { default as RedDukeImage } from "./RedDuke.png";
 export { default as RedFistOfFuryImage } from "./RedFistOfFury.png";
 export { default as RedHeadbandImage } from "./RedHeadband.png";
 export { default as RedHeartedEarringsImage } from "./RedHeartedEarrings.png";
