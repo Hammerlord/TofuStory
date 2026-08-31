@@ -50,7 +50,6 @@ const construct: Effect = {
     description: "Disappears if Wandering Blacksmith is defeated.",
     onFriendlyDeath: {
         usableWhileStunned: true,
-        usableWhileDead: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         conditions: [
             {
