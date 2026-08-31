@@ -2732,10 +2732,12 @@ export const steelOre: Item = {
     image: SteelOreImage,
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
+    applyEffectsToSummons: true,
     description: "You cannot take more than {{ effects.0.maxDamageTaken }} damage in one hit.",
     effects: [
         {
             name: "Steel Ore",
+            icon: SteelOreImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             description: "Cannot take more than {{ maxDamageTaken }} damage in one hit.",
