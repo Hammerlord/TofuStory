@@ -87,6 +87,7 @@ import {
     MesoStackImage,
     NewspaperImage,
     NewYearRiceSoupImage,
+    OlympusImage,
     OpalImage,
     PanlidImage,
     PawnChessPieceImage,
@@ -2997,6 +2998,38 @@ export const spikyCollar: Item = {
                 armor: 10,
                 effects: [{ ...thorns, stacks: 3 }, { ...preventArmorDecayPlayer }, { ...taunt }],
                 removeEffect: true,
+            },
+        },
+    ],
+};
+
+export const olympus: Item = {
+    name: "Olympus",
+    description: "When you gain Aim, gain +1 more Aim.",
+    rarity: RARITIES.RARE,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: OlympusImage,
+    effects: [
+        {
+            name: "Olympus",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onApplyEffect: {
+                conditions: [
+                    {
+                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                        name: "Aim",
+                        comparator: "eq",
+                    },
+                ],
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                effects: [
+                    {
+                        ...aimEffect,
+                        stacks: 1,
+                    },
+                ],
             },
         },
     ],
