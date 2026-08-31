@@ -19,6 +19,7 @@ import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
 import { bide, dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
+import { attack } from "../enemy/abilities";
 import {
     AdamantiumPlateImage,
     AdventurerCapeImage,
@@ -89,6 +90,7 @@ import {
     MesoCoinImage,
     MesoImage,
     MesoStackImage,
+    NamelessSwordImage,
     NewspaperImage,
     NewYearRiceSoupImage,
     OlympusImage,
@@ -593,7 +595,7 @@ export const aquamarine: Item = {
             class: EFFECT_CLASSES.BUFF,
             onBattleStart: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                effects: [{ ...preventArmorDecayPlayer, stacks: 3 }],
+                effects: [{ ...preventArmorDecayPlayer, stacks: 2 }],
             },
         },
     ],
@@ -741,7 +743,17 @@ const pigsRibbonCounter: Effect = {
         usableWhileStunned: false,
         removeEffect: true,
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        induceCombatantAttack: true,
+        ability: {
+            name: "Counter",
+            image: NamelessSwordImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    damage: 1,
+                },
+            ],
+        },
     },
     onTurnStart: {
         removeEffect: true,
@@ -751,7 +763,8 @@ const pigsRibbonCounter: Effect = {
 export const pigsRibbonItem: Item = {
     name: "Pig's Ribbon",
     image: PigsRibbonImage,
-    description: "Once per turn, gain Counterattack.",
+    description:
+        "Once per turn, gain Counter for {{ effects.0.onTurnEnd.effects.0.onReceiveAttack.ability.actions.0.damage }} {{{ _damage_ }}}.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
     applyEffectsToSummons: true,
@@ -795,7 +808,7 @@ export const greenBambooHat: Item = {
     image: GreenBambooHatImage,
     description: "When you receive a status effect, gain {{ effects.0.onReceiveEffect.flatArmor }} flat {{{ _armor_ }}}.",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     effects: [
         {
             name: "Green Bamboo Hat",
@@ -1166,7 +1179,7 @@ export const redHeartedEarrings: Item = {
     name: "Red-Hearted Earrings",
     image: RedHeartedEarringsImage,
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     description: "When you Deplete a card, heal 1 {{{ _healing_ }}}.",
     applyEffectsToSummons: true,
     effects: [
@@ -1634,7 +1647,7 @@ export const tofuSpecial: Item = {
 export const sword: Item = {
     name: "Sword",
     description:
-        "Battle start: gain +{{ effects.0.onBattleStart.effects.0.attackPower }} {{{ _attUp_ }}} ATT for {{ effects.0.onBattleStart.effects.0.duration }} turns.",
+        "When your deck cycles, gain +{{ effects.0.onDeckCycle.effects.0.attackPower }} {{{ _attUp_ }}} ATT for {{ effects.0.onDeckCycle.effects.0.duration }} turn.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     image: SwordImage,
@@ -1643,7 +1656,7 @@ export const sword: Item = {
             name: "Sword Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            onBattleStart: {
+            onDeckCycle: {
                 targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                 effects: [
                     {
@@ -1653,7 +1666,7 @@ export const sword: Item = {
                         type: EFFECT_TYPES.NONE,
                         class: EFFECT_CLASSES.BUFF,
                         attackPower: 1,
-                        duration: 2,
+                        duration: 1,
                     },
                 ],
             },
@@ -1673,22 +1686,35 @@ export const rabbitFoot: Item = {
     },
 };
 
+const blueJeanShortsEffect: Effect = {
+    name: "Blue Jean Shorts",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    onSupportAbility: {
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        resources: 1,
+        triggerFrequencyFromSum: 3,
+        disableTriggerFromProcs: true,
+        removeEffect: true,
+    },
+    onTurnEnd: {
+        removeEffect: true,
+    },
+};
+
 export const blueJeanShorts: Item = {
     name: "Blue Jean Shorts",
-    description: "When you play {{ effects.0.onSupportAbility.triggerFrequencyFromSum }} support cards, gain 1 {{{ _resource_ }}}.",
+    description:
+        "When you play {{ effects.0.onTurnStart.effects.0.onSupportAbility.triggerFrequencyFromSum }} support cards in one turn, gain 1 {{{ _resource_ }}}.",
     type: ITEM_TYPES.EQUIPMENT,
     image: BlueJeanShortsImage,
     effects: [
         {
             name: "Blue Jean Shorts",
-            description: "When you play 9 support abilities, gain 1 resource.",
             type: EFFECT_TYPES.NONE,
-            class: EFFECT_CLASSES.BUFF,
-            onSupportAbility: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                resources: 1,
-                triggerFrequencyFromSum: 9,
-                disableTriggerFromProcs: true,
+            class: EFFECT_CLASSES.NONE,
+            onTurnStart: {
+                effects: [blueJeanShortsEffect],
             },
         },
     ],
@@ -1722,6 +1748,8 @@ export const personalAnvil: Item = {
     },
 };
 
+/** Too powerful for a noob item
+ * 
 export const tShirt: Item = {
     name: "White T-Shirt",
     description: "If you spend a turn without attacking, gain 1 {{{ _resource_ }}} next turn.",
@@ -1761,6 +1789,32 @@ export const tShirt: Item = {
                         duration: 1,
                     },
                 ],
+            },
+        },
+    ],
+};
+*/
+
+export const tShirt: Item = {
+    name: "White T-Shirt",
+    description:
+        "Battle start: Gain {{ effects.0.onBattleStart.armor }} {{{ _armor_ }}}. Every {{ effects.0.onTurnStart.triggerFrequencyFromSum }} turns, gain {{ effects.0.onTurnStart.armor }} {{{ _armor_ }}}.",
+    type: ITEM_TYPES.EQUIPMENT,
+    applyEffectsToSummons: true,
+    image: WhiteUndershirtImage,
+    effects: [
+        {
+            name: "White T-Shirt Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                triggerFrequencyFromSum: 3,
+                armor: 1,
+            },
+            onBattleStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                armor: 1,
             },
         },
     ],
@@ -1964,7 +2018,7 @@ export const chessPiece: Item = {
 export const ironBall: Item = {
     name: "Iron Ball",
     type: ITEM_TYPES.EQUIPMENT,
-    rarity: RARITIES.COMMON,
+    rarity: RARITIES.UNCOMMON,
     image: IronBallImage,
     description: "+{{ effects.0.attackPower }} {{{ _attUp_ }}} ATT vs. {{{ _armor_ }}} targets.",
     applyEffectsToSummons: true,
@@ -2215,7 +2269,7 @@ export const fruitKnife: Item = {
             name: "Fruit Knife Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            attackPower: 2,
+            attackPower: 1,
             conditions: [
                 {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
@@ -2371,7 +2425,7 @@ export const goldenPride: Item = {
 
 export const medicineWithWeirdVibes: Item = {
     name: "Medicine with Weird Vibes",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     description: "If you take unblocked damage, heal 1 {{{ _healing_ }}} next turn.",
     image: MedicineWithWeirdVibesImage,
