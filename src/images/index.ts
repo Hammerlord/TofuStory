@@ -277,6 +277,7 @@ export { default as FlanImage } from "./Flan.png";
 export { default as FlashJumpImage } from "./FlashJump.gif";
 export { default as FocusImage } from "./Focus.png";
 export { default as ForkedTurkeyImage } from "./ForkedTurkey.png";
+export { default as ForkOnAStickImage } from "./ForkOnAStick.png";
 export { default as FrostfireProjectileImage } from "./FrostfireProjectile.png";
 export { default as FrostpreyImage } from "./Frostprey.png";
 export { default as FrownyMaskImage } from "./FrownyMask.png";

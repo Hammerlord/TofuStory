@@ -60,6 +60,7 @@ import {
     FairyWingImage,
     FishSpearImage,
     FlamingFeatherImage,
+    ForkOnAStickImage,
     FruitKnifeImage,
     GarnetImage,
     GladiusImage,
@@ -2945,6 +2946,33 @@ export const doomSinger: Item = {
                 },
                 removeEffect: true,
             },
+        },
+    ],
+};
+
+export const forkOnAStick: Item = {
+    name: "Fork On A Stick",
+    description: "2+ area cards gain +1 {{{ _attUp_ }}} ATT.",
+    rarity: RARITIES.COMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    image: ForkOnAStickImage,
+    effects: [
+        {
+            name: "Fork On A Stick Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            attackPower: 1,
+            conditions: [
+                {
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    sourceType: TRIGGER_SOURCE_TYPES.ACTION,
+                    comparator: "gt",
+                    area: 1,
+                    isOffense: true,
+                    // Do we need to do this similar to how Fruit Knife does it?
+                    notProc: true,
+                },
+            ],
         },
     ],
 };

@@ -120,6 +120,7 @@ import {
     phoenixWand,
     blueChaosRobe,
     doomSinger,
+    forkOnAStick,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -235,6 +236,7 @@ export const ITEMS = [
     holyRelic,
     steelOre,
     doomSinger,
+    forkOnAStick,
 ];
 
 export const CLASS_ITEMS = {
