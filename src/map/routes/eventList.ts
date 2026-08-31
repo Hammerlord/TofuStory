@@ -127,6 +127,7 @@ import {
     lucidaTail,
     silverSnowboard,
     cutlass,
+    rock,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -246,7 +247,7 @@ export const ITEMS = [
 ];
 
 export const CLASS_ITEMS = {
-    [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride, polearm, scimitar, blackDragonRobe, gladius, cutlass],
+    [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride, polearm, scimitar, blackDragonRobe, gladius, cutlass, rock],
     [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester, phoenixWand, blueChaosRobe, silverSnowboard],
     [PLAYER_CLASSES.BOWMAN]: [
         brokenArrow,

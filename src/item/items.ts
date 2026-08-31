@@ -126,6 +126,7 @@ import {
     StiffFeatherImage,
     StolenFenceImage,
     StrawImage,
+    SummoningRockImage,
     SunflowerImage,
     SunshinePanImage,
     SwordImage,
@@ -3128,6 +3129,48 @@ export const cutlass: Item = {
             class: EFFECT_CLASSES.NONE,
             onBattleStart: {
                 addCards: [furiousStrikeCard],
+                removeEffect: true,
+            },
+        },
+    ],
+};
+
+export const rock: Item = {
+    name: "Rock",
+    image: SummoningRockImage,
+    description:
+        "Battle start: Inflict 1 {{{ _damage_ }}} and 1 {{{ _defDown_ }}} to an enemy for {{ effects.0.onBattleStart.ability.actions.0.effects.0.duration }}{{{ _duration_ }}}.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    effects: [
+        {
+            name: "Rock",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onBattleStart: {
+                ability: {
+                    name: "Throw Rock",
+                    image: SummoningRockImage,
+                    actions: [
+                        {
+                            target: TARGET_TYPES.RANDOM_HOSTILE,
+                            type: ACTION_TYPES.RANGE_ATTACK,
+                            animations: [
+                                {
+                                    image: SummoningRockImage,
+                                    type: ANIMATION_TYPES.ONE_WAY,
+                                },
+                            ],
+                            damage: 1,
+                            effects: [
+                                {
+                                    ...defDown,
+                                    duration: 3,
+                                },
+                            ],
+                        },
+                    ],
+                },
                 removeEffect: true,
             },
         },
