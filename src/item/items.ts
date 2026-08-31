@@ -29,6 +29,7 @@ import {
     ASetOfMemoryCardsImage,
     AvengersArrowImage,
     BackpackImage,
+    BainsSpikyCollarImage,
     BallerCaneImage,
     BattleShieldImage,
     BlackCrystalImage,
@@ -2973,6 +2974,28 @@ export const forkOnAStick: Item = {
                     notProc: true,
                 },
             ],
+        },
+    ],
+};
+
+export const spikyCollar: Item = {
+    name: "Bain's Spiky Collar",
+    description:
+        "Your first summoned minion in battle gains <br/> {{ effects.0.onFriendlySummon.armor }} {{{ _armor_ }}}, 1 {{{ _pristine_ }}}, {{ effects.0.onFriendlySummon.effects.0.stacks }} {{{ _thorns_ }}} + Taunt.",
+    image: BainsSpikyCollarImage,
+    rarity: RARITIES.UNCOMMON,
+    type: ITEM_TYPES.EQUIPMENT,
+    effects: [
+        {
+            name: "Spiky Collar Effect",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.NONE,
+            onFriendlySummon: {
+                targetType: TRIGGER_TARGET_TYPES.TARGET,
+                armor: 10,
+                effects: [{ ...thorns, stacks: 3 }, { ...preventArmorDecayPlayer }, { ...taunt }],
+                removeEffect: true,
+            },
         },
     ],
 };

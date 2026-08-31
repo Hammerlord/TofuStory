@@ -35,6 +35,7 @@ export { default as AxeStumpImage } from "./AxeStump.png";
 export { default as AyanImage } from "./Ayan.png";
 export { default as BabyDragonImage } from "./BabyDragon.gif";
 export { default as BackpackImage } from "./Backpack.png";
+export { default as BainsSpikyCollarImage } from "./BainsSpikyCollar.png";
 export { default as BallerCaneImage } from "./BallerCane.png";
 export { default as BallistaImage } from "./Ballista.png";
 export { default as BalrogImage } from "./Balrog.gif";

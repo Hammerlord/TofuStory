@@ -121,6 +121,7 @@ import {
     blueChaosRobe,
     doomSinger,
     forkOnAStick,
+    spikyCollar,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -242,5 +243,5 @@ export const ITEMS = [
 export const CLASS_ITEMS = {
     [PLAYER_CLASSES.WARRIOR]: [bloodMask, broom, goldenPride, polearm, scimitar, blackDragonRobe, gladius],
     [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester, phoenixWand, blueChaosRobe],
-    [PLAYER_CLASSES.BOWMAN]: [brokenArrow, drakeSkull, telescope, greenMask, darkPoleFeatherHat, bundleOfStraw],
+    [PLAYER_CLASSES.BOWMAN]: [brokenArrow, drakeSkull, telescope, greenMask, darkPoleFeatherHat, bundleOfStraw, spikyCollar],
 };
