@@ -96,7 +96,7 @@ const ICON_INTERPOLATIONS = {
     _pristine_: inlineSvg(pristine),
 };
 
-export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass: PLAYER_CLASSES }) => {
+export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass?: PLAYER_CLASSES }) => {
     const manaStyleStr = styleObjectToString({ ...iconStyles, width: 12 });
 
     const resource =

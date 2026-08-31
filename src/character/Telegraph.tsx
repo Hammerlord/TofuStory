@@ -13,6 +13,7 @@ import Icon from "../icon/Icon";
 import { HourglassIcon, NoEntryIcon, ThoughtBubbleIcon, WarningIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { FC } from "react";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 
 const useStyles = createUseStyles({
     "@keyframes fadeIn": {
@@ -207,7 +208,7 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
         imageNode = <ImageNode className={classes.abilityIcon} />;
     }
 
-    const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "" });
+    const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "", ...getIconInterpolationMap({}) });
     const abilityHasYetToCast = typeof castingCastTime === "undefined" && castTime;
     const isTurnPrevented = isTurnActionPrevented(combatantInfo);
     const abilityType = (() => {
@@ -323,7 +324,8 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
                                     </div>
                                 )}
                             </div>
-                            <div>{interpolatedDescription}</div>
+                            <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
+
                             {abilityHasYetToCast && castTime > 0 && (
                                 <div className={classes.container}>
                                     Activates after {castTime === 1 ? "next turn." : `${castTime} turns.`}
