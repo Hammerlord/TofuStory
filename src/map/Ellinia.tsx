@@ -35,7 +35,7 @@ const useStyles = createUseStyles({
     ...TOWN_STYLES,
     player: {
         ...TOWN_STYLES.player,
-        bottom: 175,
+        bottom: "175px",
     },
     root: {
         width: "100%",

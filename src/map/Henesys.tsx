@@ -44,13 +44,13 @@ const useStyles = createUseStyles({
     },
     player: {
         ...TOWN_STYLES.player,
-        bottom: 185,
+        bottom: "185px",
         left: "52%",
     },
     gachaponMachine: {
         position: "absolute",
-        left: 100,
-        top: 59,
+        left: "100px",
+        top: "59px",
     },
 });
 

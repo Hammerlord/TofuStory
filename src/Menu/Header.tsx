@@ -21,10 +21,10 @@ const useStyles = createUseStyles({
         background: "rgba(15, 15, 15, 0.9)",
         color: "white",
         fontWeight: 500,
-        padding: "8",
+        padding: "8px",
     },
     playerPortrait: {
-        height: 50,
+        height: "50px",
         marginRight: "24px",
     },
     stats: {
@@ -57,11 +57,11 @@ const useStyles = createUseStyles({
         fontFamily: "Barlow",
         zIndex: "1000",
         color: "white",
-        maxWidth: 300,
+        maxWidth: "300px",
         padding: "16px",
     },
     playerHP: {
-        minWidth: 100,
+        minWidth: "100px",
         display: "inline-block",
     },
     profile: {
@@ -78,17 +78,17 @@ const useStyles = createUseStyles({
         color: "white",
         border: 0,
         margin: 0,
-        fontSize: 16,
+        fontSize: "16px",
         fontWeight: "bold",
-        padding: 16,
+        padding: "16px",
         background: 0,
         "&:hover": {
             filter: "drop-shadow(0 0 5px #45ff61)",
         },
     },
     abilityView: {
-        height: 25,
-        width: 15,
+        height: "25px",
+        width: "15px",
         background: "#176fbd",
         borderRadius: "2px",
         border: "1px solid white",

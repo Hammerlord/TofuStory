@@ -27,7 +27,7 @@ const useStyles = createUseStyles({
         justifyContent: "space-between",
     },
     body: {
-        marginTop: 64,
+        marginTop: "64px",
     },
     loot: {
         display: "flex",

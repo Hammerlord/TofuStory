@@ -56,14 +56,14 @@ const useStyles = createUseStyles({
         },
     },
     selectContainer: {
-        marginBottom: 72,
+        marginBottom: "72px",
     },
     moreThanOne: {
         color: "#45ff61",
     },
     selectionsRemainingContainer: {
-        marginBottom: 16,
-        fontSize: 18,
+        marginBottom: "16px",
+        fontSize: "18px",
     },
     selectionsRemainingCount: {
         fontWeight: "bold",

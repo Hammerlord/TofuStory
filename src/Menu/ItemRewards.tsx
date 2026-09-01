@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
+import { Player } from "../character/types";
 import { BOSS_RARE_RATE, BOSS_UNCOMMON_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
 import ItemView from "../item/ItemView";
 import { goldenHammer, incense, mesoItem, tofu } from "../item/items";
-import { ITEM_TYPES, Item, RARITIES } from "../item/types";
+import { Item, RARITIES } from "../item/types";
 import { rollItemPool } from "../item/utils";
-import { getRandomItem } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
-import { Player } from "../character/types";
 import { filterUnobtainableItems } from "./utils";
 
 const useStyles = createUseStyles({
@@ -45,22 +44,22 @@ const useStyles = createUseStyles({
         padding: "64px 100px",
     },
     selectContainer: {
-        marginBottom: 40,
+        marginBottom: "40px",
     },
     item: {
-        margin: 16,
+        margin: "16px",
     },
     border: {
         borderTop: 0,
-        width: 250,
+        width: "250px",
         borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
     },
     itemChoices: {
-        marginBottom: 48,
+        marginBottom: "48px",
     },
     rewardListIcon: {
         verticalAlign: "bottom",
-        marginRight: 8,
+        marginRight: "8px",
     },
     rewardsList: {
         marginBottom: "16px",

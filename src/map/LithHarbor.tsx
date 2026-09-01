@@ -54,16 +54,16 @@ const useStyles = createUseStyles({
     },
     player: {
         ...TOWN_STYLES.player,
-        top: 187,
+        top: "187px",
     },
     dummyCharContainer: {
         bottom: "94px",
-        left: 175,
+        left: "175px",
         position: "absolute",
     },
     dummyCharContainer2: {
         bottom: "94px",
-        left: 100,
+        left: "100px",
         position: "absolute",
     },
     olafCharContainer: {

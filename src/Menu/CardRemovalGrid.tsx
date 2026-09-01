@@ -43,7 +43,7 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        width: 125,
+        width: "125px",
         zIndex: 10,
         filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
         opacity: 0.75,
@@ -53,13 +53,13 @@ const useStyles = createUseStyles({
         verticalAlign: "top",
     },
     confirmContainer: {
-        minHeight: 38,
-        marginBottom: 16,
+        minHeight: "38px",
+        marginBottom: "16px",
     },
     divider: {
         borderBottom: "1px solid rgba(255, 255, 255, 0.6)",
-        marginTop: 16,
-        maxWidth: 600,
+        marginTop: "16px",
+        maxWidth: "600px",
     },
 });
 

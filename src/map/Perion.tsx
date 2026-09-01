@@ -46,21 +46,21 @@ const useStyles = createUseStyles({
     },
     player: {
         ...TOWN_STYLES.player,
-        bottom: 155,
+        bottom: "155px",
     },
     dummyCharContainer: {
-        bottom: 106,
-        left: 175,
+        bottom: "106px",
+        left: "175px",
         position: "absolute",
     },
     dummyCharContainer2: {
-        bottom: 106,
-        left: 125,
+        bottom: "106px",
+        left: "125px",
         position: "absolute",
     },
     dummyCharContainer3: {
-        bottom: 106,
-        left: 75,
+        bottom: "106px",
+        left: "75px",
         position: "absolute",
     },
 });

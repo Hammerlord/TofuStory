@@ -49,7 +49,7 @@ const useStyles = createUseStyles({
     player: {
         ...TOWN_STYLES.player,
         position: "absolute",
-        bottom: 184,
+        bottom: "184px",
         left: "50%",
         transform: "translateX(-50%)",
     },
@@ -60,7 +60,7 @@ const useStyles = createUseStyles({
         position: "absolute",
     },
     caseyDialog: {
-        minWidth: 150,
+        minWidth: "150px",
     },
 });
 

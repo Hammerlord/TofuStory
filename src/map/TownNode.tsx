@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
         position: "relative",
         cursor: "pointer",
         display: "inline-block",
-        padding: "0 64",
+        padding: "0 24px",
         verticalAlign: "middle",
     },
     hoverHighlight: {
