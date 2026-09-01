@@ -9,10 +9,8 @@ export const NUM_TRADING_POST_TRADES = 2;
 
 export const NUM_TRANSMUTATIONS = 1;
 
-export const HAMMER_BASE_PRICE = 50;
-export const INCENSE_BASE_PRICE = 75;
-export const CONSUMABLE_COST_MULTIPLIER = 1.2;
-export const CONSUMABLE_MULTIPLIER_MAX = 5;
+export const HAMMER_BASE_PRICE = 75;
+export const INCENSE_BASE_PRICE = 100;
 
 export const SHOP_REFRESH_COST = 50;
 

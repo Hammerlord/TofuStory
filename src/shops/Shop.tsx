@@ -14,9 +14,8 @@ import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
-import { CONSUMABLE_COST_MULTIPLIER, CONSUMABLE_MULTIPLIER_MAX, SHOP_REFRESH_COST } from "./constants";
+import { SHOP_REFRESH_COST } from "./constants";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
-import Icon from "../icon/Icon";
 
 const HEADER_BAR = 72;
 
@@ -187,9 +186,7 @@ const ShopView = ({
     };
 
     const getFinalConsumableItemPrice = (item: Item, initPrice: number): number => {
-        let price = applyDiscount(initPrice);
-        const timesMultiplier = Math.min(CONSUMABLE_MULTIPLIER_MAX, purchasedConsumables[item.name] || 0);
-        Array.from({ length: timesMultiplier }).forEach(() => (price *= CONSUMABLE_COST_MULTIPLIER));
+        const price = applyDiscount(initPrice);
         return Math.ceil(price);
     };
 
