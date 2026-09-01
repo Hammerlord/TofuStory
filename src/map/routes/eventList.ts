@@ -232,7 +232,6 @@ export const ITEMS = [
     blackCrystal,
     yellowHat,
     arcStaff,
-    starryBandana,
     garnet,
     emerald,
     sunflower,
@@ -264,7 +263,7 @@ export const CLASS_ITEMS = {
         battleGauntlets,
         redDuke,
     ],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester, phoenixWand, blueChaosRobe, silverSnowboard],
+    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester, phoenixWand, blueChaosRobe, silverSnowboard, starryBandana],
     [PLAYER_CLASSES.BOWMAN]: [
         brokenArrow,
         drakeSkull,

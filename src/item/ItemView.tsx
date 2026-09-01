@@ -11,6 +11,9 @@ import { traverseForNestedPercentages } from "../utils";
 import { KeywordsTooltips, TooltipSection } from "../view/KeywordsTooltip";
 import { Item, RARITIES } from "./types";
 import { cloneDeep } from "lodash";
+import { getCardsTooltipConfig } from "../view/tooltipUtils";
+import { Ability } from "../ability/types";
+import AbilityView from "../ability/AbilityView/AbilityView";
 
 const useStyles = createUseStyles({
     item: {
@@ -78,6 +81,16 @@ const useStyles = createUseStyles({
             minHeight: "200px",
         },
     },
+    cards: {
+        display: "flex",
+        background: "rgba(25, 25, 25, 0.9)",
+        borderRadius: "8px",
+        padding: "16px",
+        marginBottom: 8,
+        "& > .card-container:not(:last-child)": {
+            marginRight: 8,
+        },
+    },
 });
 
 const ItemView = ({
@@ -100,13 +113,27 @@ const ItemView = ({
         ...elementMapping,
     });
 
-    let tooltips;
+    const tooltips = [];
     if (item.overrideTooltip) {
         if (item.tooltip) {
-            tooltips = <TooltipSection {...item.tooltip} />;
+            tooltips.push(<TooltipSection {...item.tooltip} />);
         }
     } else {
-        tooltips = <KeywordsTooltips object={item} />;
+        const cardsToAddMap = getCardsTooltipConfig(item);
+
+        const cardsToAdd = Object.values(cardsToAddMap);
+        if (cardsToAdd.length > 0) {
+            tooltips.push(
+                <div className={classes.cards} key={"cards"}>
+                    {cardsToAdd.map((card: Ability, i) => (
+                        <div className={"card-container"} key={[card.name, i].join("-")}>
+                            <AbilityView ability={card} />
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+        tooltips.push(<KeywordsTooltips object={item} />);
     }
 
     return (

@@ -16,10 +16,10 @@ import {
     thorns,
 } from "../ability/Effects";
 import { lesserBolt } from "../ability/magician/defaultAttacks";
+import { swift } from "../ability/magician/magicianAbilities";
 import { firstExiledArm, fourthExiledArm, secondExiledArm, thirdExiledArm } from "../ability/neutralAbilities";
-import { bide, dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
+import { dustDevilsActiveAbility, furiousStrikeCard } from "../ability/warrior/warriorAbilities";
 import { BATTLE_TYPES, TRIGGER_SOURCE_TYPES } from "../battle/types";
-import { attack } from "../enemy/abilities";
 import {
     AdamantiumPlateImage,
     AdventurerCapeImage,
@@ -2045,16 +2045,14 @@ export const starryBandana: Item = {
     image: YellowStarryBandanaImage,
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.UNCOMMON,
-    description: "When a minion dies, draw a card.",
+    description: "Battle start: Add Swift to your hand.",
     effects: [
         {
             name: "Yellow Starry Bandana Effect",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onFriendlyDeath: {
-                drawCards: {
-                    amount: 1,
-                },
+            onBattleStart: {
+                addCards: [swift],
             },
         },
     ],

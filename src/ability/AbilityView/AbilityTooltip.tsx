@@ -9,6 +9,7 @@ import { Tooltip } from "@mui/material";
 import { ReactElement, useMemo } from "react";
 import { GREEN } from "./constants";
 import classNames from "classnames";
+import { getCardsTooltipConfig } from "../../view/tooltipUtils";
 
 const useTooltipStyles = createUseStyles({
     tooltip: {
@@ -44,13 +45,6 @@ const useTooltipStyles = createUseStyles({
         background: GREEN,
     },
 });
-
-// For filling in the minion card descriptions in the minion preview tooltip because
-// usually this is part of the minion's parent card, not a part of the minion object itself.
-const minionCardLookup = {
-    [soulBlade.name]: soulBlade,
-    [fireSpirit.name]: fireSpirit,
-};
 
 const AbilityTooltip = ({ ability, children }: { ability: Ability; children: ReactElement }) => {
     const classes = useTooltipStyles();
@@ -88,51 +82,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
         tooltips.push(<TooltipSection {...chargedTooltip} key={chargedTooltip.title} />);
     }
 
-    const cardsToAddMap = {};
-
-    const findCardsToAdd = (obj) => {
-        if (Array.isArray(obj)) {
-            obj.forEach(findCardsToAdd);
-        } else if (typeof obj === "object") {
-            const { addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {}, summon, ...other } = obj;
-            const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])].filter(
-                (obj) => obj?.name // Sometimes the addCards object is being grabbed from upgrade properties and isn't a real card
-            );
-
-            if (summon) {
-                const summonCards = summon.reduce((acc, config: ActionSummon) => {
-                    const { minion: baseMinions = [] } = config;
-                    baseMinions.forEach((minion) => {
-                        const card = minionCardLookup[typeof minion === "string" ? minion : minion.name];
-                        if (card) {
-                            acc.push(card);
-                        } else if (typeof minion === "object") {
-                            // Display a "common card" version of the minion which is likely not as comprehensive as the card lookup
-                            // But it's something.
-                            acc.push({ name: minion.name, description: minion.description, minion, actions: [], overrideBodyText: true });
-                        }
-                    });
-
-                    return acc;
-                }, []);
-                cardsToDisplay.push(...summonCards);
-            }
-            cardsToDisplay.forEach((card) => {
-                const key = card.name + JSON.stringify(card.image);
-                if (!cardsToAddMap[key]) {
-                    cardsToAddMap[key] = card; // We only want to display it once
-                    findCardsToAdd(card);
-                }
-            });
-
-            // minion: undefined, do NOT look up minion abilities and treat them as 'cards'.
-            Object.values({ ...other, minion: undefined }).forEach((child) => {
-                findCardsToAdd(child);
-            });
-        }
-    };
-
-    findCardsToAdd(ability);
+    const cardsToAddMap = getCardsTooltipConfig(ability);
 
     const minionTooltip = ability.tooltip?.minion;
     if (minionTooltip) {
