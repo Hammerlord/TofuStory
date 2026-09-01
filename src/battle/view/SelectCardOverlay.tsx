@@ -62,7 +62,7 @@ const useStyles = createUseStyles({
         top: "50%",
         left: "50%",
         transform: "translateX(-50%) translateY(-50%)",
-        width: 125,
+        width: `125px`,
         zIndex: 10,
         filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 1))",
         opacity: 0.75,

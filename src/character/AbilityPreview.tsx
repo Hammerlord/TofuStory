@@ -81,13 +81,13 @@ const useStyles = createUseStyles({
     indicator: {
         position: "absolute",
         left: "50%",
-        top: "-40",
+        top: "-40px",
         transform: "translateX(-50%)",
         animationName: "$indicatorAnimation",
         animationDuration: `${ARROW_ANIMATION_TIME}ms`,
         animationIterationCount: "infinite",
         opacity: 0,
-        width: 90,
+        width: "90px",
     },
     nondeterministicIndicator: {
         filter: "saturate(0.3) brightness(1.5)",
@@ -96,9 +96,9 @@ const useStyles = createUseStyles({
     indicatorBase: {
         position: "absolute",
         left: "50%",
-        top: "-40",
+        top: "-40px",
         transform: "translateX(-50%) translateY(30px)",
-        width: 90,
+        width: "90px",
     },
     statUpdate: {
         display: "inline-block",

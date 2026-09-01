@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
         position: "absolute",
         left: "50%",
         transform: "translateX(-50%)",
-        top: "50",
+        top: "50px",
         backgroundColor: "rgba(20, 20, 20, 0.85)",
         padding: "6px 16px",
         borderRadius: 4,

@@ -77,13 +77,13 @@ const useStyles = createUseStyles({
         display: "inline-block",
         minHeight: "400px",
         verticalAlign: "bottom",
-        margin: 16,
+        margin: "16px",
     },
     itemContainer: {
         display: "inline-block",
         minHeight: "300px",
         verticalAlign: "bottom",
-        margin: "4 8",
+        margin: "4px 8px",
     },
     priceContainer: {
         textAlign: "center",
@@ -98,7 +98,7 @@ const useStyles = createUseStyles({
         margin: "auto",
     },
     priceLabel: {
-        marginLeft: 4,
+        marginLeft: "4px",
         display: "inline-block",
         verticalAlign: "top",
     },
@@ -124,36 +124,23 @@ const useStyles = createUseStyles({
         height: "40px",
     },
     abilityColumn: {
-        maxWidth: 850,
+        maxWidth: "850px",
     },
     column: {
         width: "45%",
         display: "inline-block",
         verticalAlign: "top",
     },
-    sectionHeader: {
-        display: "flex",
-        color: "white",
-        padding: "16 200",
-        "& hr": {
-            borderBottom: "1px solid rgba(255, 255, 255, 0.5)",
-            width: "50%",
-        },
-    },
     free: {
         color: "#25b814",
         fontWeight: "bold",
     },
-    headerText: {
-        padding: "0 24",
-        fontSize: 18,
-    },
     abilityPlaceholder: {
-        width: 168,
+        width: "168px",
     },
     itemPlaceholder: {
-        width: 232,
-        height: 150,
+        width: "232px",
+        height: "150px",
     },
 });
 

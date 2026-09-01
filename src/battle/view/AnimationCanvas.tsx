@@ -64,8 +64,8 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             width: "100%",
         },
         iconProjectile: {
-            width: PROJECTILE_WIDTH,
-            height: PROJECTILE_HEIGHT,
+            width: `${PROJECTILE_WIDTH}px`,
+            height: `${PROJECTILE_HEIGHT}px`,
             position: "fixed",
             zIndex: 5,
             // HACK: we only want projectiles to be visible for the duration of the animation (see opacity properties in animation.ts). So set projectiles to be invisible otherwise.
@@ -115,8 +115,8 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             position: "fixed",
             opacity: 0,
             background: "#176fbd",
-            width: CARD_WIDTH,
-            height: CARD_HEIGHT,
+            width: `${CARD_WIDTH}px`,
+            height: `${CARD_HEIGHT}px`,
             borderRadius: "4px",
             border: "3px solid white",
             boxSizing: "content-box",
@@ -508,10 +508,10 @@ const Projectile = ({
     const props = {
         ref,
         style: {
-            left: actorX - MIN_PROJECTILE_SIZE / 2,
-            top: actorY - MIN_PROJECTILE_SIZE / 2,
-            width: projectileWidth,
-            height: projectileHeight,
+            left: `${actorX - MIN_PROJECTILE_SIZE / 2}px`,
+            top: `${actorY - MIN_PROJECTILE_SIZE / 2}px`,
+            width: `${projectileWidth}px`,
+            height: `${projectileHeight}px`,
         },
     };
 

@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
         },
     },
     placeholder: {
-        width: 24,
+        width: "24px",
     },
 });
 

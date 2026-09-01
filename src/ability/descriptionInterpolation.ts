@@ -36,8 +36,8 @@ import { Ability, CombatAbility } from "./types";
 import { traverseForNestedPercentages } from "../utils";
 
 const iconStyles = {
-    width: 16,
-    height: 16,
+    width: "16px",
+    height: "16px",
     "vertical-align": "bottom",
 };
 
@@ -49,8 +49,8 @@ const styleObjectToString = (object) => {
 
 const cardTypeString = (color) => {
     const properties = {
-        width: 7,
-        height: 7,
+        width: "7px",
+        height: "7px",
         display: "inline-block",
         margin: "2px",
         transform: "rotate(45deg)",
@@ -68,7 +68,7 @@ const styleStrWithShadow = styleObjectToString({
 });
 
 const inlineSvg = (svg: string) =>
-    svg.replace("<svg ", `<svg width="15" height="15" style="vertical-align: middle; ${styleStrWithShadow}" `);
+    svg.replace("<svg ", `<svg width="15px" height="15px" style="vertical-align: middle; ${styleStrWithShadow}" `);
 
 const ICON_INTERPOLATIONS = {
     _offense_: cardTypeString(RED),
@@ -97,7 +97,7 @@ const ICON_INTERPOLATIONS = {
 };
 
 export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass?: PLAYER_CLASSES }) => {
-    const manaStyleStr = styleObjectToString({ ...iconStyles, width: 12 });
+    const manaStyleStr = styleObjectToString({ ...iconStyles, width: "12px" });
 
     const resource =
         {
