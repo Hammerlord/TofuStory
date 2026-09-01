@@ -1,7 +1,7 @@
 import { ClickAwayListener, Popper } from "@mui/material";
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
@@ -9,8 +9,9 @@ import { useAppSelector } from "../hooks";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import Button from "../view/Button";
 import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { Player } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
+import { EventGroup } from "../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -114,15 +115,48 @@ const useStyles = createUseStyles({
 const ITEM_CLASS_NAME = "inventory-item";
 
 const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem: (item: Item) => void }) => {
-    const [menuAnchor, setMenuAnchor] = useState(null);
-    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-    const eventQueue = useAppSelector((state) => state.battle?.eventQueue);
     const playerSide = useAppSelector((state) => state.battle?.playerSide);
 
-    const shouldGlow = (item: Item): boolean => {
-        const event = eventQueue?.[0];
-        return (event?.source?.source as CombatEffect)?.itemSource === item.name;
+    const handleOnUseItem = (item: Item) => {
+        onUseItem(item);
     };
+
+    return inventory.map((item, i) => (
+        <InventoryItem playerSide={playerSide} item={item} key={item.name} onUseItem={handleOnUseItem} player={player} index={i} />
+    ));
+};
+
+const InventoryItem = ({
+    item,
+    playerSide,
+    onUseItem,
+    player,
+    index,
+}: {
+    item: Item;
+    playerSide: (Combatant | null)[];
+    onUseItem: (item: Item) => void;
+    player: Player;
+    index: number;
+}) => {
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [isTriggerHovered, setIsTriggerHovered] = useState(false);
+    const [isPopperHovered, setIsPopperHovered] = useState(false);
+
+    const isOpen = isTriggerHovered || isPopperHovered;
+
+    const classes = useStyles();
+
+    const handleItemUse = () => {
+        onUseItem(item);
+        setIsTriggerHovered(false);
+        setIsPopperHovered(false);
+    };
+
+    const playerClass = player.class;
+    const isItemUsable = item?.type === ITEM_TYPES.CONSUMABLE || item?.upgradeCard;
+    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
+    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
 
     // For example, if an item like Steely is tracking the number of cards that has been drawn before proccing, show how many cards have been drawn.
     // Effects are copied over from the item onto the player during combat. So we need to do a lookup to find the effect instance.
@@ -157,88 +191,72 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
         }
     };
 
-    const handleItemClick = (e, itemIndex: number) => {
-        if (itemIndex === selectedItemIndex) {
-            setSelectedItemIndex(null);
-            setMenuAnchor(null);
-        } else {
-            setSelectedItemIndex(itemIndex);
-            setMenuAnchor(e.currentTarget);
-        }
+    const handleItemClick = (e) => {
+        setMenuAnchor(e.currentTarget);
     };
 
-    const selectedItem = inventory[selectedItemIndex];
-
-    const handleItemUse = () => {
-        onUseItem(selectedItem);
-        setMenuAnchor(null);
-        setSelectedItemIndex(null);
+    const handleItemMouseEnter = (e) => {
+        setMenuAnchor(e.currentTarget);
+        setIsTriggerHovered(true);
     };
 
-    const classes = useStyles();
-
-    const handleClose = (e) => {
-        // Only close the item tooltip if we didn't click an item.
-        // This is to allow the user to consecutively look through item descriptions more easily.
-        if (!e.target?.classList?.contains(ITEM_CLASS_NAME)) {
-            setMenuAnchor(null);
-            setSelectedItemIndex(null);
-        }
+    const handleItemMouseOut = () => {
+        setIsTriggerHovered(false);
     };
-
-    const playerClass = player.class;
-    const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
-    const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
-    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
 
     return (
         <>
-            {inventory.map((item: Item, i: number) => (
-                <button className={classes.itemContainer} key={i}>
-                    <img
-                        src={item.image}
-                        alt={item.name}
-                        onClick={(e) => handleItemClick(e, i)}
-                        className={classNames(ITEM_CLASS_NAME, classes.item, {
-                            [classes.selectedItem]: i === selectedItemIndex,
-                            [classes.glow]: shouldGlow(item) || getCombatCounter(item) === 0,
-                        })}
-                    />
-                    <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
-                    <span className={classes.combatCounter}>{getCombatCounter(item)}</span>
-                </button>
-            ))}
-            {menuAnchor && (
-                <Popper anchorEl={menuAnchor} open={true} placement={"bottom-start"} className={classes.menu} disablePortal={true}>
-                    <ClickAwayListener onClickAway={handleClose}>
-                        <div className={classes.menuInner}>
-                            <div className={classes.itemName}>
-                                {selectedItem.name} {selectedItem.stacks > 1 && `x${selectedItem.stacks}`}
-                            </div>
-                            <div className={classes.rarity}>
-                                <span
-                                    className={classNames(classes.diamond, {
-                                        [classes.common]:
-                                            selectedItem.rarity === RARITIES.COMMON ||
-                                            selectedItem.rarity === RARITIES.STARTER ||
-                                            !selectedItem.rarity,
-                                        [classes.uncommon]: selectedItem.rarity === RARITIES.UNCOMMON,
-                                        [classes.rare]: selectedItem.rarity === RARITIES.RARE,
-                                    })}
-                                />{" "}
-                                {selectedItem.rarity || RARITIES.COMMON}
-                            </div>
-                            {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
-                            <div dangerouslySetInnerHTML={{ __html: interpolateDescription(selectedItem) }} />
-                            <div className={classes.useButtonContainer}>
-                                {isItemUsable && onUseItem && (
-                                    <Button variant="contained" color="primary" onClick={handleItemUse}>
-                                        Use
-                                    </Button>
-                                )}
-                            </div>
+            <button
+                className={classes.itemContainer}
+                onClick={(e) => handleItemClick(e)}
+                onMouseEnter={(e) => handleItemMouseEnter(e)}
+                onMouseLeave={(e) => handleItemMouseOut()}
+            >
+                <img
+                    src={item.image}
+                    alt={item.name}
+                    className={classNames(ITEM_CLASS_NAME, classes.item, {
+                        [classes.selectedItem]: isOpen,
+                        [classes.glow]: getCombatCounter(item) === 0,
+                    })}
+                />
+                <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
+                <span className={classes.combatCounter}>{getCombatCounter(item)}</span>
+            </button>
+            {menuAnchor && isOpen && (
+                <Popper
+                    anchorEl={menuAnchor}
+                    open={isOpen}
+                    placement={"bottom-start"}
+                    className={classes.menu}
+                    disablePortal={true}
+                    onMouseEnter={() => setIsPopperHovered(true)}
+                    onMouseLeave={() => setIsPopperHovered(false)}
+                >
+                    <div className={classes.menuInner}>
+                        <div className={classes.itemName}>
+                            {item.name} {item.stacks > 1 && `x${item.stacks}`}
                         </div>
-                    </ClickAwayListener>
+                        <div className={classes.rarity}>
+                            <span
+                                className={classNames(classes.diamond, {
+                                    [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
+                                    [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
+                                    [classes.rare]: item.rarity === RARITIES.RARE,
+                                })}
+                            />{" "}
+                            {item.rarity || RARITIES.COMMON}
+                        </div>
+                        {item.healing > 0 && `Recover ${item.healing} HP.`}
+                        <div dangerouslySetInnerHTML={{ __html: interpolateDescription(item) }} />
+                        <div className={classes.useButtonContainer}>
+                            {isItemUsable && onUseItem && (
+                                <Button variant="contained" color="primary" onClick={handleItemUse}>
+                                    Use
+                                </Button>
+                            )}
+                        </div>
+                    </div>
                 </Popper>
             )}
         </>
