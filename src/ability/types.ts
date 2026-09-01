@@ -158,6 +158,7 @@ export enum EFFECT_EVENT_KEYS {
     onFriendlyMove = "onFriendlyMove",
     onArmorDecay = "onArmorDecay",
     onTurnDraw = "onTurnDraw", // After the player has drawn cards for the turn
+    onFailedToReceiveHindranceCard = "onFailedToReceiveHindranceCard",
 }
 
 type effectEventKeys = keyof typeof EFFECT_EVENT_KEYS;
@@ -216,8 +217,9 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     excludeEffectOwner?: boolean;
     /** Prevent application of certain effects */
     immunities?: {
-        type: "effect-type" | "effect" | "effect-class";
-        value: EFFECT_TYPES[] | EFFECT_CLASSES[] | string[]; // If string[], provide the names of the effects
+        type: "effect-type" | "effect" | "effect-class" | "hindrance-card";
+        // If immune to an effect, provide a value to filter by. If string[], provide the names of the effects
+        value?: EFFECT_TYPES[] | EFFECT_CLASSES[] | string[];
     };
     preventArmorDecay?: boolean;
     armorReceived?: number; // Increased armor received, that is; ditto for below

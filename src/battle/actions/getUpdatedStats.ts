@@ -35,6 +35,7 @@ export interface UpdatedCombatantStats {
     isArmorDecay?: boolean;
     isArmorBroken?: boolean;
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
+    failedToAddCards?: CombatAbility[];
     overkill?: number;
     context?: ActionContext;
 }

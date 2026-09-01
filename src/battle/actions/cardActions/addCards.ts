@@ -7,6 +7,7 @@ import { ActionContext } from "../../types";
 import { prepareForDiscard } from "./discardCards";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
+import { filterImmunedHindranceCards } from "./hindranceCards";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
@@ -35,7 +36,9 @@ export const checkAddCardsToDeck = ({
     context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
-        const { addCardsToDeck, addCardsToDeckOptions } = action;
+        let { addCardsToDeck, addCardsToDeckOptions } = action;
+        addCardsToDeck = dispatch(filterImmunedHindranceCards({ cardsToAdd: addCardsToDeck, context }));
+
         if (!addCardsToDeck) {
             return;
         }
@@ -91,7 +94,11 @@ export const handleAddCardsToDiscard = ({
     context: ActionContext;
 }) => {
     return (dispatch, getState) => {
-        const cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        let cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
+        if (!cardsToAdd.length) {
+            return;
+        }
 
         dispatch(
             enqueueEvent({
@@ -127,6 +134,12 @@ export const handleAddCardsToHand = ({
 }) => {
     return (dispatch, getState) => {
         let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
+
+        cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
+        if (!cardsToAdd.length) {
+            return;
+        }
+
         cardsToAdd = cardsToAdd
             .map((card: Ability) => ({
                 ...card,

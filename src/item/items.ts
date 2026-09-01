@@ -49,6 +49,7 @@ import {
     BronzeIncenseBurnerImage,
     BroomImage,
     CactusImage,
+    CharmOfTheUndeadImage,
     CoffeePotImage,
     CouponImage,
     CursedDollImage,
@@ -3325,6 +3326,30 @@ export const redDuke: Item = {
                         ...redDukeEffect,
                     },
                 ],
+            },
+        },
+    ],
+};
+
+export const charmOfTheUndead: Item = {
+    name: "Charm Of The Undead",
+    image: CharmOfTheUndeadImage,
+    description: "Negates the first Hindrance card you are afflicted with in battle.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.COMMON,
+    effects: [
+        {
+            name: "Charm Of The Undead",
+            description: "Negates the first Hindrance card you are afflicted with in battle.",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: CharmOfTheUndeadImage,
+            stacks: 1,
+            immunities: {
+                type: "hindrance-card",
+            },
+            onFailedToReceiveHindranceCard: {
+                decrementStacks: 1,
             },
         },
     ],

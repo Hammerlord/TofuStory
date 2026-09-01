@@ -130,6 +130,7 @@ import {
     rock,
     battleGauntlets,
     redDuke,
+    charmOfTheUndead,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -246,6 +247,7 @@ export const ITEMS = [
     steelOre,
     doomSinger,
     forkOnAStick,
+    charmOfTheUndead,
 ];
 
 export const CLASS_ITEMS = {

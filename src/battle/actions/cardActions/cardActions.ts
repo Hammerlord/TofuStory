@@ -4,18 +4,18 @@ import { getLastPlayedCards } from "../../../ability/AbilityView/utils";
 import { Action, AutoPlayCards, CombatAbility, CombatEffect, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { shuffle } from "../../../utils";
-import { MAX_HAND_SIZE, battleWarnings } from "../../constants";
+import { battleWarnings, MAX_HAND_SIZE } from "../../constants";
 import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
 import { usePlayerAbility } from "../playerAbility";
-import { handleDiscardAfterUse, prepareForDiscard } from "./discardCards";
+import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
+import { handleDiscardAfterUse, prepareForDiscard } from "./discardCards";
 import { applyAbilityEventEffects, drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
-import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 
 const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 

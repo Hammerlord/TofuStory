@@ -130,6 +130,7 @@ export { default as CatImage } from "./Cat.gif";
 export { default as ChainLightningSpreadImage } from "./ChainLightningSpread.png";
 export { default as ChanceAttackImage } from "./ChanceAttack.png";
 export { default as ChargedBlastImage } from "./ChargedBlast.png";
+export { default as CharmOfTheUndeadImage } from "./CharmOfTheUndead.png";
 export { default as ChestnutLeafImage } from "./ChestnutLeaf.png";
 export { default as ChickenCouponImage } from "./ChickenCoupon.png";
 export { default as ChickenEggImage } from "./ChickenEgg.png";
