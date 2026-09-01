@@ -133,7 +133,7 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...silence,
-        keys: ["Disables certain buffs."],
+        keys: ["Disables certain buffs.", '"Silence"'],
     },
     {
         ...avenger,
@@ -239,7 +239,7 @@ export const KeywordsTooltips = ({ object }) => {
         const stringified = JSON.stringify(object);
         return keywords.filter(({ name = "", keys }) => {
             if (keys) {
-                return keys.some((key) => stringified.includes(key));
+                return keys.some((key) => stringified.toLowerCase().includes(key.toLowerCase()));
             }
             return stringified.toLowerCase().includes(name.toLowerCase());
         });
