@@ -313,8 +313,8 @@ const generateElite = ({
 
     const affixes = shuffle(affixPool).slice(0, numAffixes);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const hasRagingOrPoison = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
-    const ability = getRandomItem([generateTantrumAttack(baseEnemy), hasRagingOrPoison ? 2 : 3]);
+    const modifyTantrum = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
+    const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
     const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8));
 
     const enemy = {
