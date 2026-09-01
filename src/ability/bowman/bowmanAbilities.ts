@@ -3291,7 +3291,7 @@ export const scavenge: Ability = {
     ],
     upgrades: [
         {
-            description: "Gain {{{ _resource_ }}} and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+            description: "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
             actions: [
                 {
                     drawCards: {
