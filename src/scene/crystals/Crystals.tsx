@@ -22,10 +22,10 @@ import { SCENE_STYLES } from "../constants";
 import classNames from "classnames";
 import { temporaryResist } from "../../enemy/effect";
 
-const crystalA: Minion = {
+export const crystalA: Minion = {
     name: "Crystal Formation",
     image: SanctuaryCrystalAImage,
-    maxHP: 250,
+    maxHP: 200,
     abilities: [],
     effects: [
         temporaryResist,
@@ -42,6 +42,8 @@ const crystalA: Minion = {
                     {
                         ...chill,
                         duration: 1,
+                        maxDuration: 1,
+                        maxStacks: 3,
                     },
                 ],
             },
@@ -49,7 +51,7 @@ const crystalA: Minion = {
     ],
 };
 
-const crystalB: Minion = {
+export const crystalB: Minion = {
     ...crystalA,
     image: SanctuaryCrystalBImage,
 };
@@ -173,7 +175,7 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             battle: {
-                                                totalDamage: 600,
+                                                totalDamage: 499,
                                             },
                                             comparator: "gt",
                                         },
@@ -228,7 +230,7 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             battle: {
-                                                totalDamage: 449,
+                                                totalDamage: 349,
                                             },
                                             comparator: "gt",
                                         },
@@ -276,7 +278,7 @@ export const crystalScene: EventScene = {
                                     conditions: [
                                         {
                                             battle: {
-                                                totalDamage: 299,
+                                                totalDamage: 199,
                                             },
                                             comparator: "gt",
                                         },
