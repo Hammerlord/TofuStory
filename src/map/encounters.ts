@@ -326,6 +326,10 @@ const generateElite = ({
         effects: [...effects, { ...elite, attackPower: elite.attackPower + damageModifier * 2 }, ...affixes],
     };
 
+    if (affixes.some((a) => a.name === swarming.name)) {
+        return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
+    }
+
     return [null, null, enemy, null, null];
 };
 
