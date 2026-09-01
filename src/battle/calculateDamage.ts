@@ -37,6 +37,9 @@ export const calculateDamage = ({
     context?: ActionContext;
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
+    if (action.damage === undefined && !isAttack) {
+        return 0;
+    }
 
     if (
         !action.bypassImmunity &&
