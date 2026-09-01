@@ -189,7 +189,7 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
     const playerClass = player.class;
     const isItemUsable = selectedItem?.type === ITEM_TYPES.CONSUMABLE || selectedItem?.upgradeCard;
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
-    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")(elementMapping);
+    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
 
     return (
         <>
@@ -229,7 +229,7 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
                                 {selectedItem.rarity || RARITIES.COMMON}
                             </div>
                             {selectedItem.healing > 0 && `Recover ${selectedItem.healing} HP.`}
-                            {interpolateDescription(selectedItem)}
+                            <div dangerouslySetInnerHTML={{ __html: interpolateDescription(selectedItem) }} />
                             <div className={classes.useButtonContainer}>
                                 {isItemUsable && onUseItem && (
                                     <Button variant="contained" color="primary" onClick={handleItemUse}>
