@@ -194,6 +194,8 @@ export const startBattle = ({
 export const onBattleStart = () => {
     return (dispatch, getState) => {
         const { playerSide, enemySide, addAbilities = [] } = getState().battle;
+        const playbackCollectorInstance = playbackCollector();
+
         if (addAbilities.length) {
             dispatch(
                 checkCardActions({
@@ -204,6 +206,7 @@ export const onBattleStart = () => {
                         })),
                     },
                     context: {
+                        playbackCollector: playbackCollectorInstance,
                         name: "Battle Start - Add Cards",
                         sourceChain: [
                             {
@@ -216,7 +219,6 @@ export const onBattleStart = () => {
             );
         }
 
-        const playbackCollectorInstance = playbackCollector();
         const context = { name: "Battle Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
         playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart, context }));
