@@ -275,7 +275,7 @@ export const lifeLink: Effect = {
                 // Edge case where if the final ally died on its turn, it can still 'revive' (though at least the battle ends by then)
                 conditions: [
                     {
-                        calculationTarget: TRIGGER_TARGET_TYPES.ACTOR,
+                        calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
                         comparator: "gt",
                         numFriendly: 0,
                     },
