@@ -67,7 +67,7 @@ enum QUEUED_EFFECT_TYPES {
 }
 
 type EffectQueued = {
-    effect: CombatEffect;
+    effect: { id: string; icon?: string; name: string; stacks?: number };
     type: QUEUED_EFFECT_TYPES;
 };
 
@@ -108,9 +108,9 @@ const StatusEffectAnnouncer = ({
         return Object.values(aggregated);
     };
 
-    const animatedEffectsRef: any = useRef({});
+    const animatedEffectsRef = useRef({});
 
-    const getKey = (effect: CombatEffect, type): string => {
+    const getKey = (effect: { id: string }, type: QUEUED_EFFECT_TYPES): string => {
         return [effect.id, type].join("-");
     };
 
@@ -120,16 +120,16 @@ const StatusEffectAnnouncer = ({
         }
 
         // Only display effects that are visible via icon
-        const { effects = [], removedEffects = [], failedToApplyEffects = [] } = statChanges;
+        const { effects = [], removedEffects = [], failedToApplyEffects = [], failedToAddCards } = statChanges;
 
-        const isVisible = (effect: CombatEffect): boolean => effect.icon && !effect.disableDisplayIcon;
+        const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean => effect.icon && !effect.disableDisplayIcon;
 
         const queuedKeys = queue.reduce((acc, item) => {
             acc[getKey(item.effect, item.type)] = true;
             return acc;
         }, {});
 
-        const isAlreadyQueued = (effect: CombatEffect, type): boolean => {
+        const isAlreadyQueued = (effect: { id: string }, type: QUEUED_EFFECT_TYPES): boolean => {
             const key = getKey(effect, type);
             return Boolean(queuedKeys[key] || animatedEffectsRef[key]);
         };
@@ -152,6 +152,16 @@ const StatusEffectAnnouncer = ({
                 newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.IMMUNED });
             }
         });
+
+        // This is currently for immuning Hindrance cards ONLY; the cards are adapted to the effect interface
+        (failedToAddCards || [])
+            .map((c) => ({ id: c.instanceId, icon: c.image, name: c.name }))
+            .forEach((item) => {
+                if (!isAlreadyQueued(item, QUEUED_EFFECT_TYPES.IMMUNED)) {
+                    console.log("push", item);
+                    newQueue.push({ effect: item, type: QUEUED_EFFECT_TYPES.IMMUNED });
+                }
+            });
 
         if (queue.length === newQueue.length) {
             return;

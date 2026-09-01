@@ -3334,13 +3334,13 @@ export const redDuke: Item = {
 export const charmOfTheUndead: Item = {
     name: "Charm Of The Undead",
     image: CharmOfTheUndeadImage,
-    description: "Negates the first Hindrance card you are afflicted with in battle.",
+    description: "Negates the first Hindrance card in each battle.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.COMMON,
     effects: [
         {
             name: "Charm Of The Undead",
-            description: "Negates the first Hindrance card you are afflicted with in battle.",
+            description: "Negates the first Hindrance card in each battle.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: CharmOfTheUndeadImage,

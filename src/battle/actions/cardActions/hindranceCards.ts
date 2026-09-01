@@ -5,6 +5,7 @@ import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { partition } from "ramda";
+import * as uuid from "uuid";
 
 export const filterImmunedHindranceCards = ({
     cardsToAdd: initialCardsToAdd,
@@ -39,10 +40,21 @@ export const filterImmunedHindranceCards = ({
             }
             const stacks = hindranceImmunity.stacks || 1;
             if (stacks) {
-                const removed = hindranceCards.shift();
+                // instanceId: for identification purposes during visual feedback
+                const removed = { ...hindranceCards.shift(), instanceId: uuid.v4() };
                 immuned.push(removed);
 
-                const triggerSource: TriggerSource = { ...source, source: removed, targetId: player.id };
+                const changesToAnnounce: UpdatedCombatantStats = {
+                    combatantId: player.id,
+                    failedToAddCards: immuned,
+                    context,
+                    actorId: source?.actorId,
+                };
+
+                const triggerSource: TriggerSource = { ...source, source: removed, statUpdate: changesToAnnounce, targetId: player.id };
+                const statUpdates = { [player.id]: changesToAnnounce };
+
+                dispatch(enqueueEvent({ context, targetSide: BATTLEFIELD_SIDES.PLAYER_SIDE, statUpdates, options: { alwaysGroup: true } }));
                 dispatch(
                     checkEventTrigger({
                         combatantId: player.id,
@@ -60,21 +72,6 @@ export const filterImmunedHindranceCards = ({
         };
 
         checkImmunity();
-
-        if (immuned.length) {
-            const battle: BattleState = getState().battle;
-            const player = battle.playerSide.find((c) => c?.isPlayer);
-            const changesToAnnounce: UpdatedCombatantStats = {
-                combatantId: player.id,
-                failedToAddCards: immuned,
-                context,
-                actorId: source?.actorId,
-            };
-
-            const statUpdates = { [player.id]: changesToAnnounce };
-
-            // dispatch(enqueueEvent({ context, targetSide: BATTLEFIELD_SIDES.PLAYER_SIDE, statUpdates, options: { alwaysGroup: true } }));
-        }
         return cardsToAdd.concat(hindranceCards);
     };
 };
