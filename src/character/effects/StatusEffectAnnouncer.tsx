@@ -158,14 +158,9 @@ const StatusEffectAnnouncer = ({
             .map((c) => ({ id: c.instanceId, icon: c.image, name: c.name }))
             .forEach((item) => {
                 if (!isAlreadyQueued(item, QUEUED_EFFECT_TYPES.IMMUNED)) {
-                    console.log("push", item);
                     newQueue.push({ effect: item, type: QUEUED_EFFECT_TYPES.IMMUNED });
                 }
             });
-
-        if (queue.length === newQueue.length) {
-            return;
-        }
 
         if (delay) {
             const timeout = setTimeout(() => {
@@ -180,28 +175,46 @@ const StatusEffectAnnouncer = ({
         }
     }, [statChanges, delay]);
 
+    const lastAnimationStartRef = useRef(0);
+
     useEffect(() => {
         if (isInvalidCombatant) {
             return;
         }
+
         queue
             .filter((item) => {
-                // First filter for queue items that can be animated. (Items already animating should not increase the animation delay of array index `i`.)
                 const { effect: e, type } = item;
                 const key = getKey(e, type);
                 const elementRef = ref.current?.[key];
+
                 return elementRef && !animatedEffectsRef.current[key];
             })
-            .forEach((item, i) => {
+            .forEach((item) => {
                 const { effect: e, type } = item;
                 const key = getKey(e, type);
-
                 const elementRef = ref.current?.[key];
 
                 animatedEffectsRef.current[key] = true;
-                const animation = floatAnimation({ object: elementRef, delay: i * (PLAYBACK_TIME / 5) });
+
+                const spacing = PLAYBACK_TIME / 5;
+                const now = performance.now();
+
+                // Don't allow this animation to start too close to
+                // the previous one, even if it was added later.
+                const startTime = Math.max(now, lastAnimationStartRef.current + spacing);
+
+                const delay = startTime - now;
+                lastAnimationStartRef.current = startTime;
+
+                const animation = floatAnimation({
+                    object: elementRef,
+                    delay,
+                });
+
                 animation.onfinish = () => {
                     delete animatedEffectsRef.current[key];
+
                     setQueue((prev) =>
                         prev.filter((item) => {
                             const queueItemKey = getKey(item.effect, item.type);
