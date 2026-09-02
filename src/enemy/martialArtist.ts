@@ -236,6 +236,7 @@ const woodenDummyTechnique2: Effect = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     summon: [{ minion: [bomb] }, { minion: [bomb] }],
+                    playbackTime: 750,
                 },
                 summonWoodenDummyAction,
             ],
@@ -277,7 +278,7 @@ export const martialArtist: Minion = {
         },
         {
             name: "Submission",
-            description: "Destroys the target's armor. If the target has no armor, deals 10 damage.",
+            description: "Destroys the target's armor. If the target has no armor, deals {{ actions.1.bonus.damage }} damage.",
             image: PandaSpecialMoveImage,
             resourceCost: 3,
             castTime: 1,
@@ -292,7 +293,7 @@ export const martialArtist: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     destroyArmor: 1,
                     bonus: {
-                        damage: 10,
+                        damage: 15,
                         conditions: [
                             {
                                 calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
@@ -325,25 +326,21 @@ export const martialArtist: Minion = {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    playbackTime: 300,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    playbackTime: 300,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    playbackTime: 300,
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 3,
-                    playbackTime: 300,
                 },
             ],
         },
