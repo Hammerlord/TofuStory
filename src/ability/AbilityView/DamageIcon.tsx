@@ -25,7 +25,11 @@ export const getDamageStatistics = ({
 } => {
     const { actions = [] } = ability;
     const damageActions = actions.filter(
-        (action) => action.damage !== undefined || action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK
+        (action) =>
+            action.damage !== undefined ||
+            action.flatDamage !== undefined ||
+            action.type === ACTION_TYPES.ATTACK ||
+            action.type === ACTION_TYPES.RANGE_ATTACK
     );
 
     if (damageActions.length === 0) {
@@ -93,12 +97,12 @@ export const getDamageStatistics = ({
         }
 
         return {
-            damage: actorInfo?.combatant ? calculateDamage(damageProps) : action.damage || 0,
+            damage: actorInfo?.combatant ? calculateDamage(damageProps) : action.damage || action.flatDamage || 0,
             secondaryDamage,
         };
     });
 
-    const firstActionDamage = damageActions[0].damage || 0;
+    const firstActionDamage = damageActions[0].damage || damageActions[0].flatDamage || 0;
     // This is the potential to have a multiplier; false when a bonus is being applied
     const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && firstActionDamage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier

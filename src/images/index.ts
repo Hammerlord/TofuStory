@@ -126,6 +126,7 @@ export { default as CallOfTheWildImage } from "./CallOfTheWild.png";
 export { default as CampfireImage } from "./Campfire.png";
 export { default as CardbackImage } from "./Cardback.png";
 export { default as CaseyImage } from "./Casey.png";
+export { default as CastIronImage } from "./CastIron.png";
 export { default as CatImage } from "./Cat.gif";
 export { default as ChainLightningSpreadImage } from "./ChainLightningSpread.png";
 export { default as ChanceAttackImage } from "./ChanceAttack.png";

@@ -2301,12 +2301,12 @@ export const peckingOrder: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: ChickenCouponImage,
     overrideBodyText: true,
-    description: "Deal <b>{{ actions.0.damage }} {{{ _damage_ }}}</b> to a friendly unit. Draw {{ actions.0.drawCards.amount }} cards.",
+    description: "Deal <b>{{ actions.0.flatDamage }} {{{ _damage_ }}}</b> to a friendly unit. Draw {{ actions.0.drawCards.amount }} cards.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
-            damage: 5,
+            flatDamage: 5,
             drawCards: {
                 amount: 3,
             },

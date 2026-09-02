@@ -28,7 +28,7 @@ const useStyles = createUseStyles({
         },
     },
     viewer: {
-        height: "85%",
+        height: "85vh",
         overflowY: "scroll",
     },
 });

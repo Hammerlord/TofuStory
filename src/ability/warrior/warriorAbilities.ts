@@ -17,6 +17,7 @@ import {
     BundleOfNailsImage,
     BurningSoulBladeImage,
     BurningSoulBladeMinionImage,
+    CastIronImage,
     ChanceAttackImage,
     CloseCombatImage,
     CombatMasteryImage,
@@ -267,10 +268,10 @@ export const anger: Ability = {
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description:
-        "Gain <b>{{ actions.0.resources}} {{{ _resource_ }}},</b> but self-inflict <b>{{ actions.0.damage }} {{{ _damage_ }}}.</b>",
+        "Gain <b>{{ actions.0.resources}} {{{ _resource_ }}},</b> but self-inflict <b>{{ actions.0.flatDamage }} {{{ _damage_ }}}.</b>",
     actions: [
         {
-            damage: 5,
+            flatDamage: 5,
             resources: 2,
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -2837,7 +2838,7 @@ const pummelAction = {
     type: ACTION_TYPES.ATTACK,
     target: TARGET_TYPES.HOSTILE,
     secondaryAction: {
-        damage: 2,
+        flatDamage: 2,
     },
 };
 
@@ -2847,7 +2848,7 @@ export const pummel: Ability = {
     image: RedBoxingGloveImage,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Hit x3. Self-inflict <b>{{ actions.0.secondaryAction.damage }}</b> {{{ _damage_ }}} each time.",
+    description: "Hit x3. Self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}} each time.",
     actions: [{ ...pummelAction }, { ...pummelAction }, { ...pummelAction }],
     upgrades: [
         {
@@ -3267,6 +3268,33 @@ export const doombringer: Ability = {
             actions: [
                 {
                     damage: 5,
+                },
+            ],
+        },
+    ],
+};
+
+export const ironBlood: Ability = {
+    name: "Iron Blood",
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    image: CastIronImage,
+    description: "Self-inflict <b>{{ actions.0.flatDamage }} {{{ _damage_ }}}.</b>",
+    actions: [
+        {
+            flatDamage: 2,
+            secondaryAction: {
+                armor: 12,
+            },
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    armor: 4,
                 },
             ],
         },
