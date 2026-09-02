@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, EFFECT_CLASSES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatEffect, CONDITION_TARGETS, EFFECT_CLASSES, TRIGGER_TARGET_TYPES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant, Player } from "../character/types";
 import { HourglassIcon } from "../images/icons";

@@ -15,6 +15,8 @@ import {
 import {
     getCenterCoords,
     playExplodeAnimation,
+    playFadeInAnimation,
+    playHomingAnimation,
     playShakeAnimation,
     playStompAnimation,
     playTossUpAnimation,
@@ -500,18 +502,13 @@ const Projectile = ({
         return getCenterCoords(actorElement);
     }, [actorElement]);
 
-    const scale = Math.max(MIN_PROJECTILE_SIZE / width, MIN_PROJECTILE_SIZE / height);
-
-    const projectileWidth = width * scale;
-    const projectileHeight = height * scale;
-
     const props = {
         ref,
         style: {
             left: `${actorX - MIN_PROJECTILE_SIZE / 2}px`,
             top: `${actorY - MIN_PROJECTILE_SIZE / 2}px`,
-            width: `${projectileWidth}px`,
-            height: `${projectileHeight}px`,
+            width: `${width}px`,
+            height: `${height}px`,
         },
     };
 
@@ -558,13 +555,36 @@ const Projectile = ({
 
             return;
         }
+
+        const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
+        if (animationType === ANIMATION_TYPES.HOMING) {
+            if (Array.isArray(targets)) {
+                targets.forEach((t) => {
+                    playHomingAnimation({
+                        ...options,
+                        to: t,
+                        object,
+                        playbackTime,
+                    });
+                });
+            } else {
+                playHomingAnimation({
+                    ...options,
+                    to: targets,
+                    object,
+                    playbackTime,
+                });
+            }
+
+            return;
+        }
+
         let adjustTimingByDistance = 0;
         if (target && !Array.isArray(target)) {
             const numSpacesAway = Math.abs(target.index - actorIndex);
             adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
         }
 
-        const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
         playTravelAnimation({
             returnToOrigin: animationType === ANIMATION_TYPES.YOYO,
             fadeIn: animationType === ANIMATION_TYPES.BEAM,

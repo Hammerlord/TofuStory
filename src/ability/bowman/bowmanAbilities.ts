@@ -144,14 +144,33 @@ export const aimedShot: Ability = {
     description: "<b>Pierce.</b> Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
     actions: [
         {
+            type: ACTION_TYPES.NONE,
+            target: TARGET_TYPES.HOSTILE,
+            animations: [
+                {
+                    type: ANIMATION_TYPES.HOMING,
+                    image: TargetLockImage,
+                    options: {
+                        width: 100,
+                        height: 100,
+                    },
+                },
+            ],
+            playbackTime: 500,
+        },
+        {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
-            icon: AvengersArrowImage,
+            animations: [
+                {
+                    type: ANIMATION_TYPES.ONE_WAY,
+                    image: AvengersArrowImage,
+                    options: bowmanAnimationOption,
+                },
+            ],
             bypassStealth: true,
             bypassImmunity: true,
             damage: 10,
-            animationOptions: bowmanAnimationOption,
             secondaryAction: {
                 removeEffects: ["Aim"],
             },

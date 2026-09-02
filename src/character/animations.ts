@@ -254,6 +254,7 @@ export const playTravelAnimation = ({
         });
     });
 };
+
 /**
  * Scale up an `object` at the `from` location rapidly to simulate an 'exploding' effect.
  */
@@ -640,7 +641,7 @@ export const playHitAnimation = ({ object, playbackTime = 300, delta, delay = 0 
 };
 
 /**
- * Fade in a new entity that has just appeared, such as a combatrant.
+ * Fade in a new entity that has just appeared, such as a combatant.
  */
 export const playFadeInAnimation = ({
     object,
@@ -694,5 +695,70 @@ export const playExpandContractAnimation = ({ object, playbackTime = 300, max = 
 
     return object.animate(animationFrames, {
         duration: playbackTime,
+    });
+};
+export const playHomingAnimation = ({
+    object,
+    playbackTime = 300,
+    to,
+}: {
+    object: HTMLElement;
+    to: HTMLElement;
+    playbackTime?: number;
+}) => {
+    let { x: toX, y: toY } = getCenterCoords(to);
+
+    // Offset by half the object's dimensions so its center
+    // lands precisely at the target's center.
+    const { width, height } = object.getBoundingClientRect();
+    toX -= width / 2;
+    toY -= height / 2;
+
+    const dist = 150;
+    const jitter = 50;
+    const fromX = toX + getRandomArbitrary(dist + jitter, dist - jitter) * (Math.random() < 0.5 ? -1 : 1);
+    const fromY = toY + getRandomArbitrary(dist + jitter, dist - jitter) * (Math.random() < 0.5 ? -1 : 1);
+
+    object.style.position = "fixed";
+    object.style.left = "0px";
+    object.style.top = "0px";
+
+    const animationFrames = [
+        {
+            transform: `translate(${fromX}px, ${fromY}px)`,
+            opacity: 0,
+            offset: 0,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px)`,
+            opacity: 1,
+            offset: 0.8,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px)`,
+            opacity: 0.75,
+            offset: 0.85,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px)`,
+            opacity: 1,
+            offset: 0.9,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px)`,
+            opacity: 0.75,
+            offset: 0.95,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px)`,
+            opacity: 1,
+            offset: 1,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        easing: "ease-out",
+        fill: "forwards",
     });
 };

@@ -947,6 +947,7 @@ export enum ANIMATION_TYPES {
     SPIN = "spin", // Spin in place
     CONSUMABLE = "consumable", // Eat a consumable
     FIREWORKS = "fireworks",
+    HOMING = "homing", // Display an image on the target
 }
 
 /**
