@@ -137,7 +137,7 @@ const ItemView = ({
     }
 
     return (
-        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500}>
+        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500} disableInteractive>
             <div
                 key={item.name}
                 className={classNames(classes.item, className, {
