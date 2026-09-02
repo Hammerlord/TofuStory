@@ -2765,7 +2765,6 @@ export const sweepingArrows: Ability = {
                         {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                            notProc: true,
                             property: "name",
                             comparator: "eq",
                             value: aimedShot.name,
@@ -2779,7 +2778,6 @@ export const sweepingArrows: Ability = {
                             {
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                 sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                                notProc: true,
                                 property: "name",
                                 comparator: "eq",
                                 value: aimedShot.name,

@@ -257,13 +257,20 @@ const EffectGroupIcon = ({
         uptime,
         class: effectClass,
         extraDisplayOptions,
+        conditions,
     } = effects[0];
 
-    const isConditionsPassed = passesConditions({
-        getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-            calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(battle, owner?.id) : undefined,
-        proc: effects[0],
-    });
+    // A trigger source is an ability or effect that triggers this effect.
+    // Since this effect group display is static and the ability/effect only happens on play,
+    // don't display the effect icon as 'inactive' in that case.
+    const hasTriggerSourceConditions = conditions?.some((c) => c.calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE);
+    const isConditionsPassed =
+        hasTriggerSourceConditions ||
+        passesConditions({
+            getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
+                calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(battle, owner?.id) : undefined,
+            proc: effects[0],
+        });
 
     const extraOptionsIconText = (() => {
         const { property, modulo } = extraDisplayOptions || {};
