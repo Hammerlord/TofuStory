@@ -3249,12 +3249,14 @@ export const battleGauntlets: Item = {
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                        hasEffect: defDown.name,
+                        name: defDown.name,
+                        comparator: "eq",
                     },
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                        hasEffect: stun.name,
+                        name: stun.name,
+                        comparator: "eq",
                     },
                 ],
                 conditionOperator: "or",
@@ -3271,12 +3273,14 @@ export const battleGauntlets: Item = {
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                        hasEffect: defDown.name,
+                        name: defDown.name,
+                        comparator: "eq",
                     },
                     {
                         calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                         sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                        hasEffect: stun.name,
+                        name: stun.name,
+                        comparator: "eq",
                     },
                 ],
                 conditionOperator: "or",
