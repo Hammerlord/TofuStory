@@ -78,10 +78,12 @@ export const onEffectEventTrigger = ({
             ...other
         } = effectEvent;
 
-        // Should all onEffectEventTriggers just be considered procs?
-        // This is currently to prevent Charged interacting with Green Bamboo Hat.
-        context = { ...context, isProc: true };
         const source: TriggerSource = context?.sourceChain?.at(-1);
+        // Should all onEffectEventTriggers from effects just be considered procs?
+        // This is currently to prevent Charged interacting with Green Bamboo Hat. Also be mindful of the bug where
+        // buffs like Sweeping Reach stopped decrementing properly on offense ability.
+        context = { ...context, isProc: source?.type === TRIGGER_SOURCE_TYPES.EFFECT };
+
         const getCalculationTargetIds = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS | undefined): string[] => {
             if (!targetType) {
                 return [ownerId];
