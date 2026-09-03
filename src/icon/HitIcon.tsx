@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
-import { BoomImage } from "../images";
+import { Boom2Image, BoomImage } from "../images";
 import { getRandomInt } from "../utils";
 import { HIT_PLAYBACK } from "./constants";
+import { clamp } from "ramda";
 
 const useStyles = createUseStyles({
     root: {
@@ -17,13 +18,11 @@ const useStyles = createUseStyles({
         transform: "translate(-50%, -50%)",
         filter: "drop-shadow(0px 0px 1px rgba(0, 0, 0, 1)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.8))",
     },
-
     rotationWrapper: {
         position: "absolute",
         inset: 0,
         transformOrigin: "center center",
     },
-
     icon: {
         position: "absolute",
         width: "225%",
@@ -33,7 +32,6 @@ const useStyles = createUseStyles({
         margin: 0,
         transform: "translate(-50%, -50%)",
     },
-
     text: {
         position: "absolute",
         color: "white",
@@ -112,6 +110,11 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
         };
     }, [statChanges]);
 
+    const healthDamage = statChanges?.healthDamage || 0;
+    const isHardHitThreshold = healthDamage > 30;
+    const src = isHardHitThreshold ? Boom2Image : BoomImage;
+    const scale = clamp(0.75, 1.4, 0.6 + Math.ceil(healthDamage / 2) * 0.1);
+
     return (
         <span
             className={classes.root}
@@ -124,12 +127,13 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
                 className={classes.rotationWrapper}
                 style={{
                     transform: `rotate(${rotation}deg)`,
+                    scale,
                 }}
             >
-                <img src={BoomImage} className={classes.icon} ref={iconRef} />
+                <img src={src} className={classes.icon} ref={iconRef} />
             </span>
 
-            <span className={classes.text}>{statChanges.healthDamage}</span>
+            <span className={classes.text}>{healthDamage}</span>
         </span>
     );
 };

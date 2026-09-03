@@ -94,6 +94,7 @@ export { default as BombImage } from "./Bomb.png";
 export { default as BoneHelmImage } from "./BoneHelm.png";
 export { default as BoneWeaponImage } from "./BoneWeapon.png";
 export { default as BoomImage } from "./Boom.png";
+export { default as Boom2Image } from "./Boom2.png";
 export { default as BoulderFragmentImage } from "./BoulderFragment.png";
 export { default as BounceImage } from "./Bounce.png";
 export { default as BouquetImage } from "./Bouquet.png";
