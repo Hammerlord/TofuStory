@@ -695,7 +695,7 @@ export const sweepingReach: Ability = {
                             value: 2,
                         },
                     ],
-                    attackAreaIncrease: 1,
+                    offenseAreaIncrease: 1,
                     stacks: 2,
                     maxApplications: 1,
                     onOffensiveAbility: {

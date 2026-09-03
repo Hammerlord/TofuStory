@@ -137,7 +137,7 @@ const Buffs = ({ ability, player }) => {
                     thorns = 0,
                     healingReceived,
                     defenseDown: attackDamageReceived,
-                    attackAreaIncrease,
+                    offenseAreaIncrease: attackAreaIncrease,
                     turnsTriggerFrequency,
                     drawCardsPerTurn,
                     stacks,

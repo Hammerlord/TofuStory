@@ -396,10 +396,10 @@ export const calculateActionArea = ({
     if (!action) {
         return 0;
     }
-    const { type, area = 0 } = action;
-    const isAttack = type === ACTION_TYPES.ATTACK || type === ACTION_TYPES.RANGE_ATTACK;
+    const { area = 0 } = action;
+    const isOffense = isOffensiveAction(action);
     let totalArea = area;
-    if (isAttack) {
+    if (isOffense) {
         const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
                 return actor;
@@ -410,8 +410,8 @@ export const calculateActionArea = ({
             }
         };
 
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(({ attackAreaIncrease = 0 }) => {
-            totalArea += attackAreaIncrease;
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(({ offenseAreaIncrease = 0 }) => {
+            totalArea += offenseAreaIncrease;
         });
 
         if (action.bonus) {

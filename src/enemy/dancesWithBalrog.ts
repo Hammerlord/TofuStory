@@ -222,7 +222,7 @@ const meteor = {
 const balrogStanceEffect: Effect = {
     name: "Balrog Stance - Overwhelming Power",
     description: "Every 3 abilities, this character casts Meteors.",
-    attackAreaIncrease: 1,
+    offenseAreaIncrease: 1,
     resourcesPerTurn: 1,
     attackPower: 1,
     type: EFFECT_TYPES.NONE,

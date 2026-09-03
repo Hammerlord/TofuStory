@@ -2789,7 +2789,7 @@ export const sweepingArrows: Ability = {
                             value: aimedShot.name,
                         },
                     ],
-                    attackAreaIncrease: 1,
+                    offenseAreaIncrease: 1,
                     stacks: 1,
                     onOffensiveAbility: {
                         decrementStacks: 1,

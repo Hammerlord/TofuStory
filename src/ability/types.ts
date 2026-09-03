@@ -209,8 +209,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     // An 'application' is a individual instance of the status effect (eg. Chill; applications could have varying durations depending on when they were cast)
     // whereas a stack is a number amount within the status effect instance.
     maxApplications?: number;
-    attackAreaIncrease?: number;
-    basicAttackAreaIncrease?: number;
+    offenseAreaIncrease?: number;
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
     /** If true, the effect event does not trigger from actions by the effect owner */
