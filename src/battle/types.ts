@@ -117,6 +117,7 @@ export interface Wave {
         defeatBoss?: boolean;
         surviveRounds?: number;
     };
+    notifications?: { round: number; text: string }[];
 }
 
 export interface CombatantInfo {

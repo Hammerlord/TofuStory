@@ -82,6 +82,12 @@ const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves:
             winCondition: {
                 surviveRounds: 5,
             },
+            notifications: [
+                {
+                    round: 5,
+                    text: "Last turn!",
+                },
+            ],
         },
     ],
 };

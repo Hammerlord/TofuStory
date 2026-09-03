@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_MINION_MODIFIERS, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
-import { BATTLE_TYPES } from "../../battle/types";
+import { BATTLE_TYPES, Wave } from "../../battle/types";
 import { Player } from "../../character/types";
 import { basicDummy } from "../../enemy/dummy";
 import { PerionGroundsImage, Puppetree2Image, PuppetreeImage } from "../../images";
@@ -95,7 +95,7 @@ export const mapleDummy: Minion = {
     ],
 };
 
-const dummiesFight = {
+const dummiesFight: { disableCardRewards: boolean; waves: Wave[]; type: BATTLE_TYPES; backgroundMusic: string } = {
     waves: [
         {
             description: [<>Destroy as many dummies as you can in 5 turns!</>],
@@ -103,6 +103,12 @@ const dummiesFight = {
             winCondition: {
                 surviveRounds: 5,
             },
+            notifications: [
+                {
+                    round: 5,
+                    text: "Last turn!",
+                },
+            ],
         },
     ],
     disableCardRewards: true,

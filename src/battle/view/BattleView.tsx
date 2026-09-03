@@ -588,35 +588,47 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    const showWaveDescription = ({
-        description,
-        i = 0,
-        delay = 2500,
-    }: {
-        description?: string | string[] | ReactElement | ReactElement[];
-        i?: number;
-        delay?: number;
-    }) => {
-        setTimeout(() => {
-            dispatch(
-                setNotification({
-                    text: Array.isArray(description) ? description[i] : description,
-                    id: uuid.v4(),
-                })
-            );
-            if (Array.isArray(description) && description[i + 1]) {
-                showWaveDescription({ description, i: i + 1, delay: 7500 });
-            }
-        }, delay);
-    };
-
     const battleStateRef: RefObject<BATTLE_STATES | undefined> = useRef(null);
 
     usePreloadImages(playerSide, enemySide, hand, deck, discard);
 
     useEffect(() => {
+        const showWaveDescription = ({
+            description,
+            i = 0,
+            delay = 2500,
+        }: {
+            description?: string | string[] | ReactElement | ReactElement[];
+            i?: number;
+            delay?: number;
+        }) => {
+            setTimeout(() => {
+                dispatch(
+                    setNotification({
+                        text: Array.isArray(description) ? description[i] : description,
+                        id: uuid.v4(),
+                    })
+                );
+                if (Array.isArray(description) && description[i + 1]) {
+                    showWaveDescription({ description, i: i + 1, delay: 7500 });
+                }
+            }, delay);
+        };
+
         showWaveDescription({ description: waveDescription });
     }, [currentWaveIndex]);
+
+    useEffect(() => {
+        const notification = waves[currentWaveIndex]?.notifications?.find((n) => n.round === round);
+        if (notification) {
+            dispatch(
+                setNotification({
+                    text: notification.text,
+                    id: uuid.v4(),
+                })
+            );
+        }
+    }, [currentWaveIndex, round]);
 
     const handleBattlePhase = () => {
         if (isWinConditionTriggered) {

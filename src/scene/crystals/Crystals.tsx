@@ -65,6 +65,12 @@ const crystalsFight: { disableCardRewards: boolean; waves: Wave[] } = {
             winCondition: {
                 surviveRounds: 5,
             },
+            notifications: [
+                {
+                    round: 5,
+                    text: "Last turn!",
+                },
+            ],
         },
     ],
 };
