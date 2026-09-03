@@ -35,9 +35,9 @@ const useStyles = createUseStyles({
     },
     scene: {
         position: "relative",
-        background: `url(${KerningSewerFullImage}) no-repeat`, // placeholder...
-        width: "1000",
-        height: "600",
+        background: `url(${KerningSewerFullImage}) no-repeat`,
+        width: "1000px",
+        height: "600px",
     },
     character: {
         position: "absolute",
@@ -45,15 +45,15 @@ const useStyles = createUseStyles({
         cursor: "pointer",
     },
     lakelis: {
-        top: 313,
-        left: lakelisX,
+        top: "313px",
+        left: `${lakelisX}px`,
     },
     flip: {
         transform: "scale(-1, 1)",
     },
     bystander: {
-        top: 313,
-        width: 48,
+        top: "313px",
+        width: "48px",
     },
     speechBubble: {
         "&&": {
@@ -63,8 +63,8 @@ const useStyles = createUseStyles({
     clickIndicator: {
         position: "fixed",
         zIndex: 10000,
-        top: 265,
-        left: lakelisX + 30,
+        top: "265px",
+        left: `${lakelisX + 30}px`,
         transform: "translateX(-50%)",
     },
     spinLeft: {
@@ -77,8 +77,8 @@ const useStyles = createUseStyles({
     },
 });
 
-const MAX_BYSTANDERS = 8;
-const CLICKS_TO_COMPLETE = 7;
+const MAX_BYSTANDERS = 5;
+const CLICKS_TO_COMPLETE = 5;
 
 const LakelisClickQuest = ({ onComplete }: SceneProps) => {
     const [clickedLakelisTimes, setClickedLakelisTimes] = useState(0);
@@ -105,9 +105,9 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
         const interval = setInterval(() => {
             const doFlip = (left: number, flipped: boolean) => {
                 if (flipped) {
-                    return Math.random() < (left - lakelisX) / 3000;
+                    return Math.random() < (left - lakelisX) / 2000;
                 } else {
-                    return Math.random() < (lakelisX - left) / 3000;
+                    return Math.random() < (lakelisX - left) / 7000;
                 }
             };
             const newBystanders = bystanders
@@ -136,7 +136,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
 
             const newTimer = timer + intervalTime;
             if (newTimer >= 700) {
-                if (bystanders.length <= MAX_BYSTANDERS) {
+                if (bystanders.length < MAX_BYSTANDERS) {
                     const numBystandersToGenerate = getRandomInt(1, Math.min(MAX_BYSTANDERS - bystanders.length, 3));
                     for (let i = 0; i < numBystandersToGenerate; ++i) {
                         newBystanders.push(makeBystander());
@@ -205,7 +205,7 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                                         [classes.flip]: flip && !clicked,
                                         [classes.spinLeft]: clicked,
                                     })}
-                                    style={{ left, top }}
+                                    style={{ left: `${left}px`, top: `${top}px` }}
                                     onClick={() => handleClickBystander(id)}
                                     key={id}
                                 />
