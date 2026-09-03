@@ -212,6 +212,9 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     offenseAreaIncrease?: number;
     resourcesPerTurn?: number;
     drawCardsPerTurn?: number;
+
+    // If true, does not trigger any effect event checks.
+    disableEffectEvents?: boolean;
     /** If true, the effect event does not trigger from actions by the effect owner */
     excludeEffectOwner?: boolean;
     /** Prevent application of certain effects */

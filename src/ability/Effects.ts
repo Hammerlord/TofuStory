@@ -751,12 +751,14 @@ export const directDamageTaken: Effect = {
     maxDuration: 1,
 };
 
+// Hidden effect flag that allows us to track whether the character took direct HP damage in the last turn
 export const directDamageTakenTrigger: Effect = {
     name: "Direct Damage Taken Trigger",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.NONE,
     maxApplications: 1,
     maxStacks: 1,
+    disableEffectEvents: true,
     onReceiveHealthDamage: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         effects: [directDamageTaken],
