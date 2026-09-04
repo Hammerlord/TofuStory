@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import {
     AdvancedWeaponMasteryImage,
+    AnvilImage,
     AvengersArrowImage,
     BallistaImage,
     BareBladeImage,
@@ -110,6 +111,7 @@ import {
     EFFECT_CLASSES,
     EFFECT_TYPES,
     Effect,
+    Minion,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -3297,6 +3299,71 @@ export const ironBlood: Ability = {
                     armor: 4,
                 },
             ],
+        },
+    ],
+};
+
+const anvilForgeAbility: Ability = {
+    name: "Forge",
+    image: AnvilImage,
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            flatDamage: 1,
+            animations: [
+                {
+                    image: AnvilImage,
+                    type: ANIMATION_TYPES.SHOUT,
+                },
+            ],
+            applyAbilityEffects: {
+                pile: CARD_PILE_TYPES.HAND,
+                amount: 1,
+                abilityEffects: [
+                    {
+                        upgradedByLevels: 1,
+                    },
+                ],
+            },
+        },
+    ],
+};
+
+const anvilMinion: Minion = {
+    name: "Anvil",
+    maxHP: 5,
+    abilities: [anvilForgeAbility],
+    image: AnvilImage,
+    cantMove: true,
+    effects: [
+        {
+            name: "Anvil",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: AnvilImage,
+            description: "Every turn, Upgrades a card in your hand until that card is discarded. Self-deals 1 {{{ _damage_ }}} each time.",
+            onTurnStart: {
+                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                ability: anvilForgeAbility,
+            },
+        },
+    ],
+};
+
+export const anvil: Ability = {
+    name: "Anvil",
+    rarity: RARITIES.RARE,
+    description:
+        "<b>Inert.</b> Every turn, temporarily <b>Upgrades</b> a card in your hand and takes <b>{{ minion.effects.0.onTurnStart.ability.actions.0.flatDamage }} {{{ _damage_ }}}</b>.",
+    minion: anvilMinion,
+    resourceCost: 1,
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+            },
         },
     ],
 };

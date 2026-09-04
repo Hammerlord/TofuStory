@@ -11,6 +11,7 @@ export { default as AncientFairyImage } from "./AncientFairy.png";
 export { default as AncientMixedGolemImage } from "./AncientMixedGolem.gif";
 export { default as AncientTreeSapImage } from "./AncientTreeSap.png";
 export { default as AnonymushroomImage } from "./Anonymushroom.png";
+export { default as AnvilImage } from "./Anvil.png";
 export { default as AquamarineImage } from "./Aquamarine.png";
 export { default as ArcaneAimImage } from "./ArcaneAim.png";
 export { default as ArcaneOverdriveImage } from "./ArcaneOverdrive.png";

@@ -1,6 +1,7 @@
 import { hardy, lupinCurse, poison, taunt } from "../ability/Effects";
 import {
     ACTION_TYPES,
+    ANIMATION_TYPES,
     CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
@@ -25,6 +26,7 @@ import {
     SapOfNependeathImage,
     ShiningFairyImage,
     SkeletonOfHorrorImage,
+    SkullStrikerImage,
     SnailShellImage,
     StumpyBatImage,
     TreeBranchImage,
@@ -620,6 +622,12 @@ export const doomEffect: Effect = {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
                     damage: 40,
+                    animations: [
+                        {
+                            type: ANIMATION_TYPES.ACTION_EXPLODE,
+                            image: SkullStrikerImage,
+                        },
+                    ],
                 },
             ],
         },

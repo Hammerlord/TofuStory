@@ -156,6 +156,7 @@ import {
 
 import {
     anger,
+    anvil,
     arsenal,
     ballista,
     battlelord,
@@ -399,6 +400,7 @@ export const JOB_CARD_MAP = {
             sprint,
             doombringer,
             ironBlood,
+            anvil,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },
