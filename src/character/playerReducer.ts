@@ -64,6 +64,7 @@ export type CharacterState = {
     };
     rolledBosses: { [townName: string]: string };
     numNormalEncountersSinceLoot: number;
+    rareCardBonusChance?: number; // Rare card drop pity system that scales with battles completed
 };
 
 const getRolledBosses = () => {
@@ -95,6 +96,7 @@ const INITIAL_STATE: CharacterState = {
     purchasedConsumables: {},
     rolledBosses: {}, // For randomly generated bosses, set the chosen boss here
     numNormalEncountersSinceLoot: 0, // To normalize the rate of normal encounter loot drops
+    rareCardBonusChance: -0.05, // Pity system for rare cards
 };
 
 export type ActivityHistoryLog = {
@@ -472,6 +474,18 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 numNormalEncountersSinceLoot: action.payload,
+            };
+        },
+        resetRareCardChance: (state) => {
+            return {
+                ...state,
+                rareCardBonusChance: 0,
+            };
+        },
+        increaseRareCardChance: (state) => {
+            return {
+                ...state,
+                rareCardBonusChance: state.rareCardBonusChance + 0.1,
             };
         },
     },

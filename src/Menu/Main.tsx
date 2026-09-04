@@ -121,6 +121,8 @@ const {
     setRoute,
     setTown,
     setNumNormalEncountersSinceLoot,
+    resetRareCardChance,
+    increaseRareCardChance,
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
@@ -162,11 +164,10 @@ const Main = () => {
         currentTown: town,
         battleHistory = [],
         numNormalEncountersSinceLoot = 0,
+        rareCardBonusChance,
     } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
-
-    const transitionRef: MutableRefObject<ReturnType<typeof setTimeout> | null> = useRef(null);
 
     const resetTravels = () => {
         dispatch(newGame());
@@ -352,8 +353,18 @@ const Main = () => {
     };
 
     // Opens item rewards if applicable.
-    const handleCloseCardRewards = () => {
+    const handleCloseCardRewards = (rolledAbilities: Ability[]) => {
         setCardRewardsOpen(false);
+
+        if (!battle.isTutorial) {
+            const isRolledRare = rolledAbilities.some((a) => a.rarity === RARITIES.RARE);
+            if (isRolledRare) {
+                resetRareCardChance();
+            } else {
+                increaseRareCardChance();
+            }
+        }
+
         if (battle?.disableItemRewards) {
             handleExitBattle();
             return;
@@ -617,6 +628,7 @@ const Main = () => {
                             rewardType={battle.type}
                             disableRarities={(battle.isTutorial && [RARITIES.RARE]) || undefined}
                             disableIgnoreButton={battle.isTutorial}
+                            rareCardBonusChance={rareCardBonusChance}
                         />
                     )}
                     {itemRewardsOptions && (

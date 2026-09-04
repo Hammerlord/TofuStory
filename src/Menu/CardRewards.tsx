@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
-import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability, CombatAbility } from "../ability/types";
@@ -16,13 +15,12 @@ import {
     NUM_CARD_CHOICES,
     RARE_CARD_CHOICE_UPGRADE_RATE,
 } from "../constants";
-import { Item, RARITIES } from "../item/types";
+import { RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
-import { getRandomItem, shuffle } from "../utils";
+import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "./utils";
-import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 
 const useStyles = createUseStyles({
     inner: {
@@ -82,11 +80,12 @@ const CardRewards = ({
     disableIgnoreButton,
     disableUpgradesForRarities = [],
     rarityRollMode,
+    rareCardBonusChance = 0,
 }: {
     deck: CombatAbility[];
     player: Player;
     updateDeck;
-    onClose;
+    onClose: (rolledAbilities: Ability[]) => void;
     cardRewardOptions?: Ability[];
     rewardType?: BATTLE_TYPES;
     maxAmount?: number;
@@ -95,6 +94,7 @@ const CardRewards = ({
     disableIgnoreButton?: boolean;
     // Whether the rarity roll applies to all cards, or each card individually rolls its own rarity
     rarityRollMode?: "all" | "individual";
+    rareCardBonusChance?: number;
 }) => {
     const rolledAbilities = useMemo(() => {
         const potentialAbilities = getCardPool(player, deck);
@@ -108,12 +108,12 @@ const CardRewards = ({
 
         const numChoices = NUM_CARD_CHOICES + numChoicesFromItems;
         disableRarities = (disableRarities || []).slice();
-        let bonuses = { rare: 0, uncommon: 0 };
+        let bonuses = { rare: rareCardBonusChance, uncommon: 0 };
         if (rewardType === BATTLE_TYPES.BOSS) {
-            bonuses = { rare: BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = { rare: rareCardBonusChance + BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
             disableRarities.push(RARITIES.COMMON);
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-            bonuses = { rare: ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = { rare: rareCardBonusChance + ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
         }
 
         const overallRarity = rollRarity({ player, bonuses, disableRarities });
@@ -155,7 +155,7 @@ const CardRewards = ({
     const handleSelectClick = () => {
         const cards = selectedAbilityIndices.map((index) => rolledAbilities[index]);
         updateDeck([...cards, ...deck]);
-        onClose();
+        onClose(rolledAbilities);
     };
 
     const handleCardClick = (index) => {
