@@ -148,7 +148,13 @@ export const useHandAbility = ({
             dispatch(removeAbilityFromHand(selectedAbilityId));
         }
 
-        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability }));
+        const playbackCollectorInstance = playbackCollector();
+        const context: ActionContext = {
+            name: "Use Player Ability",
+            playbackCollector: playbackCollectorInstance,
+        };
+        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability, context }));
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 
@@ -157,16 +163,17 @@ export const usePlayerAbility = ({
     selectedTargetSide,
     ability,
     isProc,
+    context,
 }: {
     selectedTargetIndex?: number;
     selectedTargetSide?: BATTLEFIELD_SIDES;
     ability: CombatAbility;
     isProc?: boolean;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         const { playerSide } = getState().battle;
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const playbackCollectorInstance = playbackCollector();
 
         dispatch(
             useAbility({
@@ -175,7 +182,7 @@ export const usePlayerAbility = ({
                 side: selectedTargetSide,
                 actorId: actor?.id,
                 isProc,
-                context: { name: "Use Player Ability", playbackCollector: playbackCollectorInstance },
+                context: { ...context, name: "Use Player Ability" },
             })
         );
 
@@ -187,6 +194,7 @@ export const usePlayerAbility = ({
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onPlayCard,
                         context: {
+                            ...context,
                             name: "On Play Card",
                             triggerHistory: [],
                             sourceChain: [
@@ -198,7 +206,6 @@ export const usePlayerAbility = ({
                                 },
                             ],
                             isProc,
-                            playbackCollector: playbackCollectorInstance,
                         },
                     })
                 );
@@ -209,7 +216,6 @@ export const usePlayerAbility = ({
         dispatch(recalculateEffectsFromAbilities());
         dispatch(checkValidEnemyNextAbility());
         dispatch(checkValidEnemyTargeting());
-        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 

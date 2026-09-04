@@ -62,7 +62,7 @@ export const checkCardActions = ({
         const source = context?.sourceChain.at(-1);
 
         if (playCards) {
-            dispatch(handleAutoPlayCards(playCards));
+            dispatch(handleAutoPlayCards(playCards, context));
         }
 
         if (cardsToDraw) {
@@ -175,7 +175,7 @@ export const checkCardActions = ({
     };
 };
 
-const handleAutoPlayCards = (playCards: AutoPlayCards) => {
+const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) => {
     return (dispatch, getState) => {
         const { amount, filters } = playCards;
         const { deck } = getState().battle;
@@ -202,7 +202,7 @@ const handleAutoPlayCards = (playCards: AutoPlayCards) => {
 
         cardsToPlay.forEach((ability) => {
             // Cards played from an action are considered procs, atm for the sole purpose of not allowing Charged to proc from Yellow Hat.
-            dispatch(usePlayerAbility({ ability, isProc: true }));
+            dispatch(usePlayerAbility({ ability, isProc: true, context }));
             dispatch(handleDiscardAfterUse(ability));
         });
     };
