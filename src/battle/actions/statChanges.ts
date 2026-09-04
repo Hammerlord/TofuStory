@@ -264,6 +264,7 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
 };
 
 /**
+ * Checks and applies cases where an incoming effect should be applied to an existing effect, rather than creating a new effect.
  * When an effect reaches max stacks, the existing effect with the shortest duration gets its duration extended by the duration of the incoming effect.
  */
 const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects: CombatEffect[]): CombatEffect[] => {
@@ -271,7 +272,26 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
 
     incomingEffects.forEach((incomingEffect: CombatEffect) => {
         if (!incomingEffect.maxApplications) {
-            updatedEffects.push(incomingEffect);
+            const existingEffectIndex = updatedEffects.findIndex(
+                (effect: CombatEffect) =>
+                    effect.name === incomingEffect.name &&
+                    effect.stacks < (effect.maxStacks || Infinity) &&
+                    (effect.duration || Infinity) === (incomingEffect.duration || Infinity)
+            );
+
+            const existingEffect = updatedEffects[existingEffectIndex];
+            if (!existingEffect) {
+                updatedEffects.push(incomingEffect);
+                return;
+            }
+
+            const { stacks = 1, maxStacks = Infinity, applierId } = existingEffect;
+            updatedEffects[existingEffectIndex] = {
+                ...existingEffect,
+                stacks: Math.min(maxStacks, stacks + (incomingEffect.stacks || 1)),
+                // The last character who applies the DoT gets the applier attribution, eg. for effects like Tauromacis Horn.
+                applierId: incomingEffect.applierId || applierId,
+            };
             return;
         }
 
