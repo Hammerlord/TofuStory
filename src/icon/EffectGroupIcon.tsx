@@ -17,6 +17,8 @@ import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
 import Tooltip from "../view/Tooltip";
 import Icon from "./Icon";
+import { traverseForNestedPercentages } from "../utils";
+import { cloneDeep } from "lodash";
 
 const indicatorSize = 8;
 
@@ -177,14 +179,15 @@ const EffectGroupTooltipContent = ({
     stackCount: number;
     disabled: boolean;
 }) => {
-    const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effects[0];
+    const effect = useMemo(() => traverseForNestedPercentages(cloneDeep(effects[0])), [effects[0]]);
+    const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effect;
 
     const playerClass = (owner as Player)?.class;
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
 
     const interpolatedDescription = Handlebars.compile(description || "")({
         ...elementMapping,
-        ...effects[0],
+        ...effect,
     });
     const classes = useStyles();
 
