@@ -95,6 +95,21 @@ export const enqueueEvent = ({
             addCards,
         };
 
+        const isEmptyEvent =
+            !action &&
+            !actorId &&
+            !allTargetIndices?.length &&
+            !actionParent &&
+            !targetSide &&
+            !newCombatants &&
+            !displacements &&
+            !addCards?.length &&
+            !statUpdates;
+
+        if (isEmptyEvent) {
+            return;
+        }
+
         if (collector) {
             collector.collect(event, options?.alwaysGroup);
             return;
