@@ -447,12 +447,12 @@ const AbilityView = forwardRef(
         const cornerIcons = (() => {
             const icons = [];
             if (baseDamage !== undefined) {
-                icons.push(<DamageIcon damageStatistics={damageStatistics} />);
+                icons.push(<DamageIcon damageStatistics={damageStatistics} key="damage" />);
             }
 
             if (armorTotal > 0) {
                 armorCornerIcon = true;
-                icons.push(<ArmorIcon armorStatistics={armorStatistics} />);
+                icons.push(<ArmorIcon armorStatistics={armorStatistics} key="armor" />);
             }
 
             if (healing > 0) {
@@ -464,15 +464,16 @@ const AbilityView = forwardRef(
                         className={classNames({
                             [classes.highlightText]: hasMultiplier,
                         })}
+                        key="healing"
                     />
                 );
             }
 
             if (showCritical) {
-                const CriticalIcon = <Icon icon={CriticalShotImage} highlightIcon size="sm" />;
+                const CriticalIcon = <Icon icon={CriticalShotImage} highlightIcon size="sm" key="critical" />;
                 icons.push(CriticalIcon);
             } else {
-                icons.push(<div className={classes.iconPlaceholder} />);
+                icons.push(<div className={classes.iconPlaceholder} key="placeholder" />);
             }
             return icons;
         })();
