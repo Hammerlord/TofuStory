@@ -742,6 +742,7 @@ export { default as SteelArrowImage } from "./SteelArrow.png";
 export { default as SteelMisselImage } from "./SteelMissel.png";
 export { default as SteelOreImage } from "./SteelOre.png";
 export { default as SteelPlateImage } from "./SteelPlate.png";
+export { default as SteelTriggerImage } from "./SteelTrigger.png";
 export { default as SteelyImage } from "./Steely.png";
 export { default as StefaImage } from "./Stefa.png";
 export { default as StefaRopeImage } from "./StefaRope.png";

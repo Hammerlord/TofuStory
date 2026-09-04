@@ -74,6 +74,7 @@ import {
     SpikedMaceImage,
     SprintImage,
     SquareHammerImage,
+    SteelTriggerImage,
     TornadoImage,
     WarLeapImage,
     WarMushBattleLordImage,
@@ -3364,6 +3365,64 @@ export const anvil: Ability = {
             minion: {
                 maxHP: 2,
             },
+        },
+    ],
+};
+
+const warstrideProc: Effect = {
+    name: "Warstride",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.BUFF,
+    icon: SteelTriggerImage,
+    description: "When you play an Upgraded card, draw a card.",
+    duration: 1,
+    onPlayCard: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                property: "level",
+                comparator: "gt",
+                value: 1,
+            },
+        ],
+        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+        drawCards: {
+            amount: 1,
+        },
+        removeEffect: true,
+    },
+};
+
+export const warstride: Ability = {
+    name: "Warstride",
+    image: SteelTriggerImage,
+    description: "The first time you play an <b>Upgraded</b> card on your turn, draw a card.",
+    overrideBodyText: true,
+    depletedOnUse: true,
+    resourceCost: 1,
+    rarity: RARITIES.UNCOMMON,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            effects: [
+                {
+                    name: "Warstride",
+                    type: EFFECT_TYPES.NONE,
+                    class: EFFECT_CLASSES.BUFF,
+                    onTurnStart: {
+                        targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                        effects: [warstrideProc],
+                    },
+                },
+                warstrideProc,
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            preemptive: true,
         },
     ],
 };
