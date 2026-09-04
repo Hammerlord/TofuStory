@@ -212,9 +212,10 @@ export const performAction = ({
                     return acc;
                 }, {});
 
+                // Since this is a non-priority secondaryAction, the event did not get rolled into the main action's event group. So we need to create a new event for it.
                 dispatch(
                     enqueueEvent({
-                        action,
+                        action: secondaryAction,
                         actionParent: parentSource?.source,
                         actorId,
                         selectedIndex,
