@@ -1217,17 +1217,11 @@ export const doubleTime: Ability = {
     name: "Double Time",
     image: DoubleTimeImage,
     resourceCost: 1,
-    description: "Copy a non-summon card in your hand. It is Ephemeral.",
+    description: "Create an Ephemeral copy of a card in your hand.",
     depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     selectCards: {
         type: SELECT_CARD_TYPES.COPY_FROM_HAND,
-        filters: [
-            {
-                hasMinion: true,
-                comparator: "not",
-            },
-        ],
         effects: [
             {
                 removeParentCardAfterTurn: true,
@@ -3297,7 +3291,9 @@ export const ironBlood: Ability = {
         {
             actions: [
                 {
-                    armor: 4,
+                    secondaryAction: {
+                        armor: 4,
+                    },
                 },
             ],
         },
