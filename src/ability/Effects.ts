@@ -704,7 +704,7 @@ export const stashCardEffect: Effect = {
 
 export const bideEffect: Effect = {
     name: "Bide",
-    description: "Gain <b>1 {{{ _resource_ }}}</b> per stack next turn.",
+    description: "Gain <b>1 {{{ _resource_ }}}</b> next turn.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: LeafImage,

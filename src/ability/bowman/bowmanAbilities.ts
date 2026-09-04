@@ -98,6 +98,7 @@ import {
     attackDown,
     attackPower,
     avenger,
+    bideEffect,
     bleed,
     burn,
     chill,
@@ -1042,16 +1043,12 @@ export const focus: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Focusing",
-                    icon: FocusImage,
-                    resourcesPerTurn: 1,
-                    type: EFFECT_TYPES.NONE,
-                    class: EFFECT_CLASSES.BUFF,
-                    duration: 2,
+                    ...bideEffect,
                 },
                 {
-                    name: "Critical",
-                    icon: BullseyeIcon,
+                    name: "Critical Bonus",
+                    description: "Gain +{{ criticalChance }} Critical Chance.",
+                    icon: CriticalShotImage,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     criticalChance: 0.2,
@@ -1531,7 +1528,7 @@ export const roar: Ability = {
     depletedOnUse: true,
     resourceCost: 0,
     description:
-        "Gain {{{ _resource_ }}}. Draw a card. For <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b> + an extra {{{ _resource_ }}} and card draw.",
+        "Gain {{{ _resource_ }}}. Draw a card. For <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>, gain <b>+{{ actions.0.effects.0.criticalChance }} Critical</b>, <b>Bide</b> and 1 card draw.",
     overrideBodyText: true,
     actions: [
         {
