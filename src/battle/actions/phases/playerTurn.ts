@@ -4,7 +4,7 @@ import { checkWinCondition } from "../../checkWinCondition";
 import { getMaxResources } from "../playerAbility";
 import { battleStateSlice } from "../../reducer";
 import { BATTLEFIELD_SIDES } from "../../types";
-import { prepareForDiscard } from "../cardActions/discardCards";
+import { prepareForDiscard } from "../cardActions/utils";
 import { drawCards } from "../cardActions/drawCards";
 import { findCombatantData, updateCombatants } from "../combatantData";
 import { playbackCollector } from "../playbackCollector";

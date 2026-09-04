@@ -12,8 +12,9 @@ import { depleteAbilities } from "./cardActions/depleteCards";
 import { applyAbilityEffectsOnDraw } from "./cardActions/drawCards";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { useAbility } from "./useAbility";
+import { triggerAddCardsToHandEvent } from "./cardActions/cardActions";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 export const checkHandleAutoCast = ({
     autoCastAbilities,
@@ -113,7 +114,8 @@ export const checkHandleAutoCast = ({
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                         dispatch(depleteAbilities({ actorId: actor.id, abilities: [card] }));
                     } else {
-                        dispatch(updateBattle({ hand: [card, ...hand] }));
+                        dispatch(addCardsToHand([card]));
+                        dispatch(triggerAddCardsToHandEvent(cards.length, context));
                     }
                 }
             }

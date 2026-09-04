@@ -6,10 +6,11 @@ import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types"
 import { playbackCollector } from "../playbackCollector";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { depleteAbilities } from "./depleteCards";
-import { prepareForDiscard } from "./discardCards";
-import { applyAbilityEventEffects, drawCards, handleOnDrawEvents } from "./drawCards";
+import { prepareForDiscard } from "./utils";
+import { drawCards, handleOnDrawEvents } from "./drawCards";
+import { applyAbilityEventEffects } from "./utils";
 
-const { updateBattle, promptPlayerSelectCards, pushEventQueue } = battleStateSlice?.actions || {};
+const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
@@ -29,7 +30,7 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 export const selectCardsAction =
     ({ type, selectedAbilities, player, effects = [], abilityQueued }) =>
     (dispatch, getState) => {
-        const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        const { deck, hand, discard } = getState().battle;
         const playbackCollectorInstance = playbackCollector();
         const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
 
@@ -120,12 +121,12 @@ export const selectCardsAction =
 
             dispatch(
                 updateBattle({
-                    hand: [...cardsToAdd, ...hand],
                     deck: updatedDeck,
                     discard: updatedDiscard,
                 })
             );
 
+            dispatch(addCardsToHand(cardsToAdd));
             triggerAddCardsEvent();
             dispatch(handleOnDrawEvents({ cardsToDraw: cardsToAdd, context }));
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -133,12 +134,7 @@ export const selectCardsAction =
             return;
         }
 
-        dispatch(
-            updateBattle({
-                hand: [...selectedAbilities, ...hand],
-            })
-        );
-
+        dispatch(addCardsToHand(selectedAbilities));
         triggerAddCardsEvent();
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
@@ -194,7 +190,7 @@ export const handleSelectCards = ({
             const updatedDeck = [...cards, ...deck];
             dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));
         } else {
-            dispatch(updateBattle({ hand: [...cards, ...hand] }));
+            dispatch(addCardsToHand(cards));
             dispatch(triggerAddCardsToHandEvent(cards.length, context));
         }
 

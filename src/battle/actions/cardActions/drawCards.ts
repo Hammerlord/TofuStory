@@ -1,11 +1,9 @@
 import _ from "lodash";
-import * as uuid from "uuid";
 import { aggregateAbilityEffects } from "../../../Menu/utils";
 import {
     ACTION_TYPES,
     Ability,
     AbilityEffect,
-    AbilityEvent,
     Action,
     CardBonus,
     CombatAbility,
@@ -15,9 +13,8 @@ import {
     TARGET_TYPES,
 } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
-import { getRandomItem, passesChance, shuffle } from "../../../utils";
-import { MAX_HAND_SIZE, battleWarnings } from "../../constants";
-import { passesConditions, passesValueComparison } from "../../passesConditions";
+import { passesChance, shuffle } from "../../../utils";
+import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
@@ -25,9 +22,9 @@ import { getUpdatedStats } from "../getUpdatedStats";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
-import { prepareForDiscard } from "./discardCards";
+import { applyAbilityEventEffects } from "./utils";
 
-const { updateBattle, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 export const drawCards = ({
     effects = [],
@@ -45,7 +42,7 @@ export const drawCards = ({
     isOnTurnDraw?: boolean;
 }) => {
     return (dispatch, getState) => {
-        const { deck, hand, discard, playerSide, enemySide } = getState().battle;
+        const { deck, discard, playerSide, enemySide } = getState().battle;
         const player = playerSide?.find((c) => c?.isPlayer);
         const hasViewDeckInOrder = player?.effects.some((e) => e.viewDeckInOrder);
 
@@ -56,7 +53,6 @@ export const drawCards = ({
         }
 
         let newDeck: Ability[] = deck.slice();
-        let newHand: Ability[] = hand.slice();
         let newDiscard = discard.slice();
         let cardsToDraw: CombatAbility[] = [];
         let deckCycled = false;
@@ -122,31 +118,15 @@ export const drawCards = ({
 
         cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, context, effects, playerSide }));
 
-        let handTooFull = false;
-
-        for (let card of cardsToDraw) {
-            if (newHand.length >= MAX_HAND_SIZE) {
-                const toDiscard = prepareForDiscard([card]);
-                newDiscard.unshift(...toDiscard);
-                handTooFull = true;
-                continue;
-            }
-
-            newHand.unshift(card);
-        }
-
-        if (handTooFull) {
-            dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
-        }
-
         const newState = {
             deck: newDeck,
-            hand: newHand,
             discard: newDiscard,
             deckCycled,
         };
 
         dispatch(updateBattle(newState));
+        dispatch(addCardsToHand(cardsToDraw));
+
         dispatch(handleOnDrawEvents({ cardsToDraw, bonus, context }));
 
         if (deckCycled) {
@@ -188,55 +168,6 @@ export const applyAbilityEffectsOnDraw = ({
         ...drawnCard,
         effects: [...(drawnCard.effects || []), ...effects],
     };
-};
-
-export const applyAbilityEventEffects = ({
-    event,
-    ability,
-    context,
-    bonusChance,
-}: {
-    event: AbilityEvent;
-    ability: CombatAbility;
-    context?: ActionContext;
-    bonusChance?: number;
-}): CombatAbility => {
-    if (!event) {
-        return ability;
-    }
-
-    const { abilityEffects = [], mode, chance } = event || {};
-
-    const totalChance = typeof chance === "number" ? chance + (bonusChance || 0) : undefined;
-    if (!passesChance(totalChance)) {
-        return ability;
-    }
-
-    const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
-
-    const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
-    if (!passesConditions({ context, getCalculationTarget, proc: event })) {
-        return ability;
-    }
-
-    const effects = [...(ability.effects || [])];
-
-    effectsToApply.forEach((e: AbilityEffect) => {
-        const countMap = effects.reduce((acc, e: AbilityEffect) => {
-            if (e.name) {
-                acc[e.name] = (acc[e.name] || 0) + 1;
-            }
-
-            return acc;
-        }, {});
-
-        const { name, maxApplications } = e;
-        if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
-            effects.push(e);
-        }
-    });
-
-    return { ...ability, effects };
 };
 
 /**

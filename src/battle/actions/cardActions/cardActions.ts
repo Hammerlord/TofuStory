@@ -12,12 +12,14 @@ import { ActionContext } from "../../types";
 import { usePlayerAbility } from "../playerAbility";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
-import { handleDiscardAfterUse, prepareForDiscard } from "./discardCards";
-import { applyAbilityEventEffects, drawCards } from "./drawCards";
+import { handleDiscardAfterUse } from "./discardCards";
+import { prepareForDiscard } from "./utils";
+import { drawCards } from "./drawCards";
+import { applyAbilityEventEffects } from "./utils";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
 
-const { updateBattle, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, setNotification, addCardsToHand } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
@@ -141,7 +143,7 @@ export const checkCardActions = ({
 
         if (addLastPlayedCards) {
             const { amount, abilityEffects = [] } = addLastPlayedCards;
-            const { hand, discard, playerSide } = getState().battle;
+            const { playerSide } = getState().battle;
             const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
             const cardsToAdd = getLastPlayedCards({ player, amount }).map((card) =>
@@ -155,22 +157,8 @@ export const checkCardActions = ({
                     context,
                 })
             );
-            let newHand = [...cardsToAdd, ...hand];
-            let newDiscard = [...discard];
 
-            if (newHand.length >= MAX_HAND_SIZE) {
-                const toDiscard = newHand.slice(MAX_HAND_SIZE);
-                newHand = newHand.slice(0, MAX_HAND_SIZE);
-                dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
-                newDiscard.unshift(...prepareForDiscard(toDiscard));
-            }
-
-            dispatch(
-                updateBattle({
-                    hand: newHand,
-                    discard: newDiscard,
-                })
-            );
+            dispatch(addCardsToHand(cardsToAdd));
         }
     };
 };
@@ -225,7 +213,7 @@ export const handleDrawOriginalAbility = ({
             return;
         }
 
-        const { hand, deck, discard, depleted, playerSide, enemySide } = getState().battle;
+        const { hand, deck, discard, depleted, playerSide } = getState().battle;
         let newHand = hand.slice();
         const newDeck = deck.slice();
         const newDiscard = discard.slice();

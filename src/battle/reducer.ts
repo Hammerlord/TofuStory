@@ -6,6 +6,9 @@ import { Combatant } from "../character/types";
 import { Item } from "../item/types";
 import { BATTLE_TYPES, BATTLEFIELD_SIDES, EventGroup, TriggerSource, Wave } from "./types";
 import { getMaxHP } from "./utils";
+import { battleWarnings, MAX_HAND_SIZE } from "./constants";
+import * as uuid from "uuid";
+import { prepareForDiscard } from "./actions/cardActions/utils";
 
 // Text banner notification to display some info during battle
 interface Notification {
@@ -83,6 +86,20 @@ export enum BATTLE_STATES {
     WAVE_END = "wave-end",
     VICTORY = "victory",
     DEFEAT = "defeat",
+}
+
+// Partially to address a weird bug where abilities were duplicated in the hand for some reason
+function dedupeByInstanceId(pile: CombatAbility[]) {
+    const seen = new Set<string>();
+
+    return pile.filter((ability) => {
+        if (seen.has(ability.instanceId)) {
+            return false;
+        }
+
+        seen.add(ability.instanceId);
+        return true;
+    });
 }
 
 /**
@@ -196,6 +213,29 @@ export const battleStateSlice = createSlice({
                 ...state,
                 selectedAllyId: action.payload,
                 selectedHandAbilityId: null,
+            };
+        },
+        addCardsToHand: (state: BattleState, action: PayloadAction<CombatAbility[]>) => {
+            const newCards = action.payload.slice().map((card) => ({ ...card, instanceId: card.instanceId || uuid.v4() }));
+            let newHand: CombatAbility[] = dedupeByInstanceId([...newCards, ...state.hand]);
+            const newDiscard = state.discard.slice();
+
+            if (newHand.length >= MAX_HAND_SIZE) {
+                const toDiscard = newHand.slice(MAX_HAND_SIZE);
+                newHand = newHand.slice(0, MAX_HAND_SIZE);
+                newDiscard.unshift(...prepareForDiscard(toDiscard));
+
+                return {
+                    ...state,
+                    hand: newHand,
+                    notification: { text: battleWarnings.handFull, severity: "warning", id: uuid.v4() },
+                    discard: dedupeByInstanceId(newDiscard),
+                };
+            }
+
+            return {
+                ...state,
+                hand: newHand,
             };
         },
     },

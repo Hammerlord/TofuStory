@@ -41,7 +41,7 @@ import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkCardActions } from "../actions/cardActions/cardActions";
-import { applyAbilityEventEffects } from "../actions/cardActions/drawCards";
+import { applyAbilityEventEffects } from "../actions/cardActions/utils";
 import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/phases/enemyTurn";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
 import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";

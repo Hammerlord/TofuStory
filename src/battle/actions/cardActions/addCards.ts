@@ -1,15 +1,14 @@
 import * as uuid from "uuid";
 import { Ability, Action, CombatAbility } from "../../../ability/types";
 import { getRandomInt } from "../../../utils";
-import { CARD_ADDED_PLAYBACK_SPEED, MAX_HAND_SIZE, battleWarnings } from "../../constants";
+import { CARD_ADDED_PLAYBACK_SPEED } from "../../constants";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext } from "../../types";
-import { prepareForDiscard } from "./discardCards";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { filterImmunedHindranceCards } from "./hindranceCards";
 
-const { updateBattle, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
@@ -132,7 +131,7 @@ export const handleAddCardsToHand = ({
     ownedCards: { [abilityName: string]: true };
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
 
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
@@ -147,23 +146,7 @@ export const handleAddCardsToHand = ({
             }))
             .reverse();
 
-        let newHand = [...cardsToAdd, ...getState().battle.hand];
-        let discard = [...getState().battle.discard];
-
-        if (newHand.length >= MAX_HAND_SIZE) {
-            const toDiscard = newHand.slice(MAX_HAND_SIZE);
-            newHand = newHand.slice(0, MAX_HAND_SIZE);
-            dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
-            discard.unshift(...prepareForDiscard(toDiscard));
-        }
-
-        dispatch(
-            updateBattle({
-                hand: newHand,
-                discard,
-            })
-        );
-
+        dispatch(addCardsToHand(cardsToAdd));
         dispatch(triggerAddCardsToHandEvent(addCards.length, context));
     };
 };

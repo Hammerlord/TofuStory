@@ -27,7 +27,7 @@ import { ActionContext } from "../../types";
 import { performAction } from "../performAction";
 import { checkHandleAutoCast } from "../autoCast";
 import { checkCardActions, handleDrawOriginalAbility } from "../cardActions/cardActions";
-import { applyAbilityEventEffects } from "../cardActions/drawCards";
+import { applyAbilityEventEffects } from "../cardActions/utils";
 import { checkUpdateEffectLifecycle } from "./effectLifecycle";
 import { enqueueEvent } from "../enqueueEvent";
 import { getUpdatedStats } from "../getUpdatedStats";
