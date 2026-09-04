@@ -111,9 +111,9 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
     }, [statChanges]);
 
     const healthDamage = statChanges?.healthDamage || 0;
-    const isHardHitThreshold = healthDamage > 30;
+    const isHardHitThreshold = healthDamage > 20;
     const src = isHardHitThreshold ? Boom2Image : BoomImage;
-    const scale = clamp(0.75, 1.4, 0.6 + Math.ceil(healthDamage / 2) * 0.1);
+    const scale = clamp(0.75, 1.3, 0.6 + Math.ceil(healthDamage / 3) * 0.1);
 
     return (
         <span
