@@ -11,6 +11,7 @@ import { Item } from "../item/types";
 import Button from "../view/Button";
 import { getUpgradeCard } from "./utils";
 import { Checkbox } from "@mui/material";
+import { PLAYER_CLASSES } from "./types";
 
 const useStyles = createUseStyles({
     root: {
@@ -104,21 +105,22 @@ const CardUpgradeGrid = ({
     cards = [],
     onCancel,
     onConfirm,
+    playerClass,
+    playerItems = [],
+    disablePortal = false,
 }: {
     cards: CombatAbility[];
     highlightColour?: string;
     onCancel?: () => void;
     onConfirm?: (updatedDeck: CombatAbility[]) => void;
+    playerClass: PLAYER_CLASSES;
+    playerItems?: Item[];
+    disablePortal?: boolean;
 }) => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
-    const player = useAppSelector((state) => state?.character?.player);
 
     const classes = useGridStyles();
-
-    if (!player) {
-        return null;
-    }
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
@@ -127,13 +129,13 @@ const CardUpgradeGrid = ({
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const upgrade = (card: CombatAbility) => {
-        const isStarter = JOB_CARD_MAP[player.class]?.starters.some(({ name }) => name === card.name);
+        const isStarter = JOB_CARD_MAP[playerClass]?.starters.some(({ name }) => name === card.name);
         let maxUpgradeLevel;
         if (isStarter) {
             maxUpgradeLevel = STARTER_CARD_MAX_LEVEL;
         } else {
             const upgradeLevelBonus =
-                player.items?.reduce((acc, item: Item) => {
+                playerItems.reduce((acc, item: Item) => {
                     const { maxUpgradeLevel = 0, filters } = item.upgradeScreen || {};
 
                     if (maxUpgradeLevel && (!filters || filters.some((filter) => Boolean(filter.isOffense) === isOffensiveAbility(card)))) {
@@ -148,12 +150,12 @@ const CardUpgradeGrid = ({
 
     return (
         <div className={classes.root}>
-            <div className={classes.inner}>
+            <div className={disablePortal ? undefined : classes.inner}>
                 <h3>Upgrade an Ability</h3>
                 <label>
                     <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide duplicates
                 </label>
-                <div className={classes.abilitySection}>
+                <div className={disablePortal ? undefined : classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
                         <div className={classes.tileContainer} key={card.instanceId}>
                             <UpgradeTile

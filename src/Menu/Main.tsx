@@ -650,6 +650,8 @@ const Main = () => {
                     {usingItem?.upgradeCard && (
                         <Overlay>
                             <CardUpgradeGrid
+                                playerClass={player.class}
+                                playerItems={player.items}
                                 cards={deck}
                                 onCancel={() => setUsingItem(null)}
                                 onConfirm={(updatedDeck) => {

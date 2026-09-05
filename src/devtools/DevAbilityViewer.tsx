@@ -91,7 +91,7 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div className={classes.viewer}>
                     <p>Neutral Cards</p>
-                    <Grid cards={formatCards(NEUTRAL_ABILITIES)} />
+                    <Grid playerClass={selectedClass} cards={formatCards(NEUTRAL_ABILITIES)} disablePortal={true} />
                     <hr />
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
@@ -102,7 +102,7 @@ const DevAbilityViewer = ({ onClose }) => {
                                 <p>
                                     {rarity} - {cards.length}
                                 </p>
-                                <Grid cards={cards} />
+                                <Grid playerClass={selectedClass} cards={cards} disablePortal={true} />
                             </Box>
                         );
                     })}

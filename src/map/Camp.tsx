@@ -205,6 +205,8 @@ const Camp = ({
     if (isUpgradingAbility) {
         return (
             <CardUpgradeGrid
+                playerClass={player.class}
+                playerItems={player.items}
                 cards={deck}
                 onCancel={() => setIsUpgradingAbility(false)}
                 onConfirm={(updatedDeck) => {
