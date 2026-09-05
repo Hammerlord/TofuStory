@@ -175,6 +175,12 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
         description: "Character does NOT automatically attack at the end of your turn.",
         keys: ["Inert"],
     },
+    {
+        name: "Debuff",
+        description:
+            "A negative status effect, such as {{{ _bleed_ }}} {{{ _stun_ }}} {{{ _chill_ }}} {{{ _freeze_ }}} {{{ _burn_ }}} {{{ _poison_ }}} {{{ _defDown_ }}} {{{ _attDown_ }}} {{{ _armorDown_ }}}, and more. Indicated by a red border around the status effect icon.",
+        keys: ["debuffs"],
+    },
 ];
 
 const useSectionStyles = createUseStyles({
