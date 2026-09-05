@@ -166,7 +166,7 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
 import { counterEffect, doomEffect } from "./../enemy/effect";
-import { abilityHasChargedCondition, chargedEffect } from "./starterItemEffects";
+import { abilityHasChargedCondition, chargedEffect, useActiveChargeCondition } from "./starterItemEffects";
 
 import { Item, ITEM_TYPES, RARITIES } from "./types";
 
@@ -2951,22 +2951,7 @@ export const blueChaosRobe: Item = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             onRemoveEffect: {
-                conditions: [
-                    abilityHasChargedCondition,
-                    // Can't use disableTriggerFromProc because the effect removal in itself is a proc, so it won't trigger this if the flag is up
-                    {
-                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        comparator: "not",
-                        name: lesserBolt.name,
-                        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                    },
-                    {
-                        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                        comparator: "eq",
-                        name: "Charged",
-                        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
-                    },
-                ],
+                conditions: [...useActiveChargeCondition],
                 conditionOperator: "and",
                 armor: 1,
             },

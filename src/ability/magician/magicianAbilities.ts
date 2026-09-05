@@ -105,7 +105,7 @@ import {
     WrathImage,
 } from "../../images";
 import { SnowflakeIcon } from "../../images/icons";
-import { chargedEffect } from "../../item/starterItemEffects";
+import { chargedEffect, useActiveChargeCondition } from "../../item/starterItemEffects";
 import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
@@ -125,7 +125,20 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../types";
 import { attack } from "./../../enemy/abilities";
-import { armorUp, attackPower, burn, chill, freeze, preventArmorDecayPlayer, stashCardEffect, stun, taunt } from "./../Effects";
+import {
+    armorUp,
+    attackPower,
+    bleed,
+    burn,
+    chill,
+    freeze,
+    poison,
+    preventArmorDecayPlayer,
+    silence,
+    stashCardEffect,
+    stun,
+    taunt,
+} from "./../Effects";
 
 export const magicFang: Ability = {
     name: "Magic Fang",
@@ -1850,7 +1863,7 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "Once per turn, when you use a 2+ cost {{{ _offense_ }}} card, cast a random {{{ _offense_ }}} spell.",
+    description: "Once per turn, when you play an active <b>Charged</b> card, cast a <b>0</b> or <b>1</b>-cost {{{ _offense_ }}} spell.",
     overrideBodyText: true,
     actions: [
         {
@@ -1858,7 +1871,7 @@ export const volatileMagic: Ability = {
             target: TARGET_TYPES.SELF,
             effects: [
                 {
-                    name: "Volatile Magic Effect",
+                    name: "Volatile Magic",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     onTurnStart: {
@@ -1866,22 +1879,21 @@ export const volatileMagic: Ability = {
                         effects: [
                             {
                                 name: "Volatile Magic",
-                                description: "When you use a 2+ cost offense card, cast a random offense spell.",
+                                description: "When you play an active Charged card, cast a random 0 or 1-cost offense spell.",
                                 icon: StarfallMagicSquareImage,
                                 type: EFFECT_TYPES.NONE,
                                 class: EFFECT_CLASSES.BUFF,
                                 onAbility: {
-                                    conditions: [
-                                        {
-                                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                            comparator: "gt",
-                                            resourceCost: 1,
-                                            isOffense: true,
-                                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                                        },
-                                    ],
+                                    conditions: [...useActiveChargeCondition],
                                     autoCastAbilities: {
                                         type: AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS,
+                                        filters: [
+                                            {
+                                                property: "resourceCost",
+                                                comparator: "lt",
+                                                value: 2,
+                                            },
+                                        ],
                                         amount: 1,
                                     },
                                     removeEffect: true,
@@ -1895,7 +1907,8 @@ export const volatileMagic: Ability = {
     ],
     upgrades: [
         {
-            description: "Once per turn, when you use a 2+ cost {{{ _offense_ }}} card, cast a random Upgraded {{{ _offense_ }}} spell.",
+            description:
+                "Once per turn, when you play an active <b>Charged</b> card, cast an <b>Upgraded</b> <b>0</b> or <b>1</b>-cost {{{ _offense_ }}} spell.",
             actions: [
                 {
                     effects: [

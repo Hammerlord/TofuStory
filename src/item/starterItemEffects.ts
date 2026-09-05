@@ -13,6 +13,23 @@ export const abilityHasChargedCondition: Condition = {
     sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
 };
 
+export const useActiveChargeCondition: Condition[] = [
+    abilityHasChargedCondition,
+    // Can't use disableTriggerFromProc because the effect removal in itself is a proc, so it won't trigger this if the flag is up
+    {
+        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+        comparator: "not",
+        name: lesserBolt.name,
+        sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+    },
+    {
+        calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+        comparator: "eq",
+        name: "Charged",
+        sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+    },
+];
+
 export const chargedEffect: Effect = {
     name: "Charged",
     type: EFFECT_TYPES.NONE,
