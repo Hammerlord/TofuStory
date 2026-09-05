@@ -52,6 +52,11 @@ export const aggregateStatUpdates = (
 
             if (typeof value === "number") {
                 base[combatantId][key] = (originalValue || 0) + value;
+                return;
+            }
+
+            if (value !== undefined) {
+                base[combatantId][key] = value;
             }
         });
     });
