@@ -54,6 +54,7 @@ export const getMultiplier = ({
             return target;
         }
     };
+
     const combatantInfo = getCalculationTarget(multiplier.calculationTarget);
     const { combatant, friendly = [] } = combatantInfo || {};
 
@@ -62,23 +63,23 @@ export const getMultiplier = ({
     const numValue = typeof value === "number" ? value : 1;
 
     if (type === MULTIPLIER_TYPES.NUM_AFFECTED_TARGETS) {
-        return allTargets.length * numValue || 1;
+        return allTargets.length * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.NUM_SOURCE_TARGETS) {
-        return sourceTargets.length * numValue || 1;
+        return sourceTargets.length * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.OVERHEALING) {
-        return (source?.statUpdate?.overhealing || 1) * numValue;
+        return (source?.statUpdate?.overhealing || 0) * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.HEALING) {
-        return (source?.statUpdate?.healing || 1) * numValue;
+        return (source?.statUpdate?.healing || 0) * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.DAMAGE) {
-        return (source?.statUpdate?.rawDamage || 1) * numValue;
+        return (source?.statUpdate?.rawDamage || 0) * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.ALL_CARDS || type === MULTIPLIER_TYPES.CARDS_IN_HAND) {
@@ -90,10 +91,9 @@ export const getMultiplier = ({
         if (type === MULTIPLIER_TYPES.ALL_CARDS) {
             cardsToCheck.push(...deck, ...discard);
         }
-        const multValue = typeof value === "number" ? value : 1;
 
         if (!filters) {
-            return Math.floor(cardsToCheck.length * multValue);
+            return Math.floor(cardsToCheck.length * numValue);
         }
 
         let filtered = cardsToCheck.filter((card) => {
@@ -102,7 +102,7 @@ export const getMultiplier = ({
             );
         }).length;
 
-        return Math.floor(filtered * multValue);
+        return Math.floor(filtered * numValue);
     }
 
     if (type === MULTIPLIER_TYPES.EFFECT_STACKS) {
@@ -131,7 +131,7 @@ export const getMultiplier = ({
     }
 
     if (!combatant) {
-        return 1;
+        return 0;
     }
 
     if (type === MULTIPLIER_TYPES.ATTACKS_MADE_IN_TURN) {
@@ -156,7 +156,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.ARMOR) {
-        return combatant.armor || 1;
+        return combatant.armor * numValue;
     }
 
     if (type === MULTIPLIER_TYPES.MAX_HP) {
