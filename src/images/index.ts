@@ -178,6 +178,7 @@ export { default as CutlassImage } from "./Cutlass.png";
 export { default as CynicalOrangeMushroomJumpImage } from "./CynicalOrangeMushroomJump.gif";
 export { default as DancesWithBalrogImage } from "./DancesWithBalrog.gif";
 export { default as DancesWithBalrogSittingImage } from "./DancesWithBalrogSitting.png";
+export { default as DarkArundImage } from "./DarkArund.gif";
 export { default as DarkImpaleImage } from "./DarkImpale.png";
 export { default as DarkLordImage } from "./DarkLord.gif";
 export { default as DarkMarbleImage } from "./DarkMarble.png";

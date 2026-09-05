@@ -26,6 +26,7 @@ import {
     CrossbowImage,
     CrowImage,
     CupOfCoffeeImage,
+    DarkArundImage,
     DeansBagImage,
     DogImage,
     DoubleJumpImage,
@@ -3885,6 +3886,49 @@ export const springload: Ability = {
             actions: [
                 {
                     damage: 3,
+                },
+            ],
+        },
+    ],
+};
+
+export const doomShot: Ability = {
+    name: "Doom Shot",
+    description:
+        "Apply <b>Doom.</b> <br/> <b>Critical:</b> <b>{{ onDraw.abilityEffects.1.resourceCost }} {{{ _resource_ }}}</b> cost this battle. Can stack.",
+    image: DarkArundImage,
+    rarity: RARITIES.RARE,
+    resourceCost: 4,
+    onDraw: {
+        chance: 0,
+        abilityEffects: [
+            {
+                name: CRITICAL_KEYWORD,
+                maxApplications: 1,
+                highlightCard: true,
+            },
+            {
+                resourceCost: -1,
+                removeOnDiscard: false,
+            },
+        ],
+    },
+    actions: [
+        {
+            damage: 10,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            effects: [{ ...doomEffect }],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 5,
                 },
             ],
         },
