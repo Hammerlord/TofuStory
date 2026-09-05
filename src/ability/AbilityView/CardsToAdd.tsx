@@ -8,6 +8,12 @@ const useStyles = createUseStyles({
         maxWidth: "20px",
         verticalAlign: "bottom",
     },
+    cardLevel: {
+        color: "#25b814",
+        textShadow: Array.from({ length: 5 })
+            .map(() => "0 0 2.5px black")
+            .join(", "),
+    },
 });
 
 const CardToAddCount = ({ count, card }) => {
@@ -15,7 +21,15 @@ const CardToAddCount = ({ count, card }) => {
 
     return (
         <span>
-            <img className={classes.cardIcon} src={card.image} /> {card.name} {count > 1 && <>x{count}</>}{" "}
+            <img className={classes.cardIcon} src={card.image} /> {card.name}
+            {card.level > 1 && (
+                <span className={classes.cardLevel}>
+                    {Array.from({ length: card.level })
+                        .map(() => "⋆")
+                        .join("")}
+                </span>
+            )}{" "}
+            {count > 1 && <b>x{count}</b>}{" "}
         </span>
     );
 };

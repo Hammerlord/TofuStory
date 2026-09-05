@@ -790,6 +790,7 @@ export interface AbilityUpgrade {
     actions?: {
         // Numbers should be amount to increase by, not absolute value
         damage?: number;
+        flatDamage?: number;
         healing?: number;
         secondaryDamage?: number;
         resources?: number;

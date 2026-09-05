@@ -293,7 +293,7 @@ export const anger: Ability = {
         {
             actions: [
                 {
-                    damage: -2,
+                    flatDamage: -2,
                 },
             ],
         },
@@ -321,7 +321,7 @@ export const shieldStrike: Ability = {
                 {
                     damage: 3,
                     secondaryAction: {
-                        armor: 3,
+                        armor: 2,
                     },
                 },
             ],
@@ -421,7 +421,7 @@ export const warBanner: Ability = {
     image: FlagImage,
     resourceCost: 1,
     description:
-        "Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} <b>+1</b> {{{ _attUp_ }}} to allies within 2 spaces.",
+        "Grants <b>{{ minion.effects.1.onTurnStart.ability.actions.0.armor }}</b> {{{ _armor_ }}} <b>+1</b> {{{ _attUp_ }}} to allies within <b>2 spaces.</b>",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     minion: {
@@ -814,7 +814,7 @@ export const berserk: Ability = {
     image: PowerStanceImage,
     depletedOnUse: true,
     description:
-        "{{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost <b>3 {{{ _resource_ }}}</b> less until discarded.",
+        "<b>{{ actions.1.applyAbilityEffects.amount }}</b> random cards in your hand cost <b>{{ actions.1.applyAbilityEffects.abilityEffects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -837,7 +837,8 @@ export const berserk: Ability = {
     ],
     upgrades: [
         {
-            description: "Draw a card. {{ actions.1.applyAbilityEffects.amount }} random cards in your hand cost 3 less until discarded.",
+            description:
+                "Draw a card. <b>{{ actions.1.applyAbilityEffects.amount }}</b> random cards in your hand cost <b>{{ actions.1.applyAbilityEffects.abilityEffects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
             actions: [
                 {
                     drawCards: {
@@ -1270,7 +1271,8 @@ export const doubleTime: Ability = {
     ],
     upgrades: [
         {
-            description: "Copy a card in your hand. It is Ephemeral and costs {{ selectCards.effects.0.resourceCost }} less.",
+            description:
+                "Copy a card in your hand. It is Ephemeral and costs <b>{{ selectCards.effects.0.resourceCost }} {{{ _resource_ }}}.</b>",
             selectCards: {
                 effects: [
                     {
@@ -1433,7 +1435,7 @@ export const guillotine: Ability = {
     name: "Guillotine",
     resourceCost: 1,
     image: InstinctualComboImage,
-    description: "<b>On kill:</b> <b>+1 {{{ _resource_ }}}</b> and this stays in your hand.",
+    description: "<b>Kill:</b> Gain <b>1 {{{ _resource_ }}}</b> and this stays in your hand.",
     rarity: RARITIES.RARE,
     actions: [
         {
@@ -3334,13 +3336,8 @@ const anvilForgeAbility: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
+            animation: ANIMATION_TYPES.SHOUT,
             flatDamage: 1,
-            animations: [
-                {
-                    image: AnvilImage,
-                    type: ANIMATION_TYPES.SHOUT,
-                },
-            ],
             applyAbilityEffects: {
                 pile: CARD_PILE_TYPES.HAND,
                 amount: 1,
@@ -3367,8 +3364,10 @@ const anvilMinion: Minion = {
             class: EFFECT_CLASSES.BUFF,
             icon: AnvilImage,
             description: "Every turn, Upgrades a card in your hand until that card is discarded. Self-deals 1 {{{ _damage_ }}} each time.",
-            onTurnStart: {
-                targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+            onTurnInProgress: {
+                ability: anvilForgeAbility,
+            },
+            onSummoned: {
                 ability: anvilForgeAbility,
             },
         },
@@ -3381,6 +3380,7 @@ export const anvil: Ability = {
     description:
         "<b>Inert.</b> Every turn, temporarily <b>Upgrades</b> a card in your hand and takes <b>{{ minion.effects.0.onTurnStart.ability.actions.0.flatDamage }} {{{ _damage_ }}}</b>.",
     minion: anvilMinion,
+    image: AnvilImage,
     resourceCost: 1,
     actions: [],
     upgrades: [
