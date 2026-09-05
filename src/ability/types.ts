@@ -912,6 +912,7 @@ export interface Ability {
         filters?: CardFilterCondition[];
     };
     isUnique?: boolean; // Player cannot obtain more than one of this card
+    effects?: AbilityEffect[];
 }
 
 /**
@@ -919,7 +920,6 @@ export interface Ability {
  */
 export interface CombatAbility extends Ability {
     instanceId?: string;
-    effects?: AbilityEffect[];
 }
 
 export enum ACTION_TYPES {

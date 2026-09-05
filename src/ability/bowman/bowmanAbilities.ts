@@ -92,7 +92,6 @@ import {
     WoodenSlingshotImage,
     WuTienEagleImage,
 } from "../../images";
-import { BullseyeIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import { CRITICAL_KEYWORD } from "../AbilityView/constants";
 import {
@@ -144,7 +143,14 @@ export const aimedShot: Ability = {
     retain: true,
     removeAfterTurn: true,
     isUnique: true,
-    description: "<b>Pierce.</b> Removes all <b>Aim</b> stacks to deal +{{{ _damage_ }}} equal to that amount.",
+    effects: [
+        {
+            name: CRITICAL_KEYWORD,
+            maxApplications: 1,
+            removeOnDiscard: false,
+        },
+    ],
+    description: "<b>Pierce.</b> Removes all <b>Aim</b> to deal +{{{ _damage_ }}} equal to that amount.",
     actions: [
         {
             type: ACTION_TYPES.NONE,
@@ -1766,7 +1772,6 @@ const crowAbility: Ability = {
     image: CrowImage,
     minion: crowMinion,
     resourceCost: 0,
-    removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
     actions: [],
     upgrades: [
@@ -1795,7 +1800,7 @@ export const murderOfCrows: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            addCards: [crowAbility, crowAbility, crowAbility].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [crowAbility, crowAbility, crowAbility],
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.CONSUMABLE,
@@ -2954,7 +2959,7 @@ export const blind: Ability = {
             effects: [
                 {
                     ...attackDown,
-                    stacks: 3,
+                    stacks: 2,
                     duration: 1,
                 },
             ],
@@ -3167,7 +3172,7 @@ const fleetfootProc: Effect = {
 export const fleetFoot: Ability = {
     name: "Fleet Foot",
     overrideBodyText: true,
-    description: "The first time you play an active Critical on your turn, draw a card.",
+    description: "The first time you play an active <b>Critical</b> on your turn, draw a card.",
     image: GreenLeafShoesImage,
     depletedOnUse: true,
     resourceCost: 1,
@@ -3782,7 +3787,7 @@ export const blitz: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "When you play <b>Aimed Shot</b> or an active <b>Critical</b>, one of your minions attacks. <br/> {{ actions.0.effects.0.duration }}{{{ _duration_ }}}",
+        "When you play an active <b>Critical</b>, one of your minions attacks. <br/> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -3791,7 +3796,7 @@ export const blitz: Ability = {
                 {
                     name: "Blitz",
                     icon: GoldenEagleImage,
-                    description: "When you play <b>Aimed Shot or an active <b>Critical</b> card, one of your minions attacks.",
+                    description: "When you play an active <b>Critical</b> card, one of your minions attacks.",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 3,
@@ -3820,13 +3825,7 @@ export const blitz: Ability = {
                                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                                 hasAbilityEffectName: CRITICAL_KEYWORD,
                             },
-                            {
-                                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                                name: aimedShot.name,
-                            },
                         ],
-                        conditionOperator: "or",
                     },
                 },
             ],

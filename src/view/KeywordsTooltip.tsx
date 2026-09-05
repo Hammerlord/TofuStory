@@ -148,7 +148,8 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         name: "Aim",
         icon: TargetLockImage,
-        description: "When you first gain Aim, Aimed Shot is added to the bottom of your deck. Aim stacks empower your Aimed Shot damage.",
+        description:
+            "When you first gain Aim, Aimed Shot is added to the bottom of your deck. Aim stacks empower your Aimed Shot damage. <br/> <br/> Aimed Shot counts as an active Critical.",
         keys: ["Aimed Shot"],
     },
     {
