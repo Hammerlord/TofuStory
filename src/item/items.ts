@@ -3036,7 +3036,7 @@ export const spikyCollar: Item = {
             onFriendlySummon: {
                 targetType: TRIGGER_TARGET_TYPES.TARGET,
                 armor: 10,
-                effects: [{ ...thorns, stacks: 3 }, { ...preventArmorDecayPlayer }, { ...taunt }],
+                effects: [{ ...thorns, stacks: 3 }, { ...preventArmorDecayPlayer }, { ...taunt, maxDuration: Infinity }],
                 removeEffect: true,
             },
         },
