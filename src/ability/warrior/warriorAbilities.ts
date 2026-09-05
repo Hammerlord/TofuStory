@@ -704,7 +704,17 @@ export const sweepingReach: Ability = {
                             comparator: "not",
                             value: 2,
                         },
+                        {
+                            // Doesn't really work as one might expect with numTarget abilities like Hammerang so disable that.
+                            // What happens is that the target area increases but not the number of enemies hit.
+                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                            property: "numTargets",
+                            comparator: "not",
+                            value: undefined
+                        },
                     ],
+                    conditionOperator: "and",
                     offenseAreaIncrease: 1,
                     stacks: 2,
                     maxApplications: 1,

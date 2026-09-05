@@ -238,6 +238,7 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     mesoSteal?: number;
     allowMoveCardFromHandToDeck?: boolean;
     conditions?: Condition[];
+    conditionOperator?: "and" | "or";
     canBeSilenced?: boolean;
     persistsWhenDead?: boolean; // False by default. When the effect owner dies, effects with durations are usually removed. If true, this effect is not removed on death.
     /** Character does not choose and play an ability during its turn */
