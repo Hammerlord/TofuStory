@@ -295,9 +295,15 @@ export const magicClaw: Ability = {
     actions: [
         {
             ...magicClawAction,
+            bonus: {
+                ...magicClawAction.bonus,
+            },
         },
         {
             ...magicClawAction,
+            bonus: {
+                ...magicClawAction.bonus,
+            },
             animationOptions: {
                 ...magicClawAction.animationOptions,
                 mirrorX: true,
@@ -329,6 +335,9 @@ export const magicGuard: Ability = {
     resourceCost: 1,
     image: MagicGuardImage,
     rarity: RARITIES.COMMON,
+    overrideBodyText: true,
+    description:
+        "<b>Turn End:</b> Gain <b>{{ actions.0.effects.0.onTurnEnd.armor }} {{{ _armor_ }}}</b>. <br/> <br/> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     actions: [
         {
             target: TARGET_TYPES.FRIENDLY,
@@ -502,7 +511,7 @@ export const teleport: Ability = {
     resourceCost: 1,
     image: TeleportImage,
     rarity: RARITIES.COMMON,
-    description: "Draw {{ actions.0.drawCards.amount }} cards.",
+    description: "Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -819,7 +828,7 @@ const fallingStar: Action = {
     animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
     target: TARGET_TYPES.RANDOM_HOSTILE,
     icon: StarImage,
-    damage: 2,
+    damage: 3,
 };
 
 export const wishUponAStar: Ability = {
@@ -855,7 +864,7 @@ export const wishUponAStar: Ability = {
                             actions: [{ ...fallingStar }],
                         },
                     },
-                    duration: 5,
+                    duration: 4,
                 },
             ],
         },
@@ -1665,7 +1674,7 @@ export const greatestBolt: Ability = {
     overrideBodyText: true,
     actions: [
         {
-            damage: 14,
+            damage: 12,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.RANGE_ATTACK,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1689,7 +1698,7 @@ export const greatestBolt: Ability = {
         {
             actions: [
                 {
-                    damage: 5,
+                    damage: 4,
                 },
             ],
         },
@@ -2530,7 +2539,8 @@ export const icicles: Ability = {
     image: IciclesPortraitImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "The next {{ actions.0.effects.0.stacks }} times you play a <b>1+ {{{ _resource }}}</b> cost card, summon an Icicle.",
+    description:
+        "The next <b>{{ actions.0.effects.0.stacks }}</b> times you play a <b>1+ {{{ _resource }}}</b> cost card, summon an <b>Icicle.</b>",
     resourceCost: 1,
     actions: [
         {
@@ -3303,7 +3313,8 @@ export const wrath: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: WrathImage,
     resourceCost: 1,
-    description: "Reduces the cost of a random card in hand by <b>1 {{{ _resource_ }}}</b> until discarded.",
+    description:
+        "<b>Play:</b> A random card in hand costs <b>{{ actions.1.applyAbilityEffects.abilityEffects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     actions: [
         {
             damage: 7,
