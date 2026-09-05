@@ -1,13 +1,22 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
 import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Action } from "../types";
+import { ACTION_TYPES, Action, CombatAbility } from "../types";
+
+export interface DamageStats {
+    baseDamage: number;
+    secondaryDamage: number;
+    hasMultiplier: boolean;
+    hasBonus: boolean;
+    hasConditionFulfilled: boolean;
+    isAdditive: boolean;
+}
 
 export const getDamageStatistics = ({
     ability,
@@ -15,14 +24,13 @@ export const getDamageStatistics = ({
     deck = [],
     hand = [],
     discard = [],
-}): {
-    baseDamage: number;
-    secondaryDamage: number;
-    hasMultiplier: boolean;
-    hasBonus: boolean;
-    hasConditionFulfilled: boolean;
-    isAdditive: boolean;
-} => {
+}: {
+    ability: CombatAbility;
+    actorInfo?: CombatantInfo;
+    hand?: CombatAbility[];
+    deck?: CombatAbility[];
+    discard?: CombatAbility[];
+}): DamageStats => {
     const { actions = [] } = ability;
     const damageActions = actions.filter(
         (action) =>
@@ -107,7 +115,17 @@ export const getDamageStatistics = ({
     const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && firstActionDamage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
     const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
-    const hasUnfulfilledBonus = withBonus[0].damage === firstActionDamage && damageActions.some(({ bonus }) => bonus?.damage);
+
+    const hasUnfulfilledBonus =
+        withBonus[0].damage === firstActionDamage &&
+        damageActions.some(({ bonus }) => {
+            if (Array.isArray(bonus)) {
+                return bonus.some((b) => b.damage);
+            }
+
+            return bonus?.damage;
+        });
+
     const hasAdditiveDamage = withAttackPower.some(({ secondaryDamage, damage }) => {
         return secondaryDamage > 0 || (damage && damage !== withAttackPower[0].damage);
     });
@@ -138,7 +156,7 @@ const useStyles = createUseStyles({
 /**
  * The damage icon that displays on the top left of an ability card
  */
-const DamageIcon = ({ damageStatistics }) => {
+const DamageIcon = ({ damageStatistics, highlightText }: { damageStatistics: DamageStats; highlightText?: boolean }) => {
     const { baseDamage, hasMultiplier, isAdditive, hasBonus } = damageStatistics || {};
     const classes = useStyles();
 
@@ -150,7 +168,7 @@ const DamageIcon = ({ damageStatistics }) => {
             icon={<CrossedSwordsIcon />}
             text={`${baseDamage}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames(classes.damageIconRoot, {
-                [classes.highlightText]: hasBonus,
+                [classes.highlightText]: hasBonus || highlightText,
             })}
         />
     );

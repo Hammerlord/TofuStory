@@ -1,3 +1,4 @@
+import { Checkbox } from "@mui/material";
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -6,12 +7,12 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { CombatAbility } from "../ability/types";
-import { useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import Button from "../view/Button";
-import { getUpgradeCard } from "./utils";
-import { Checkbox } from "@mui/material";
 import { PLAYER_CLASSES } from "./types";
+import { getUpgradeCard } from "./utils";
+import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
+import { getArmorStatistics } from "../ability/AbilityView/ArmorIcon";
 
 const useStyles = createUseStyles({
     root: {
@@ -51,6 +52,12 @@ const UpgradeTile = ({
         return null;
     }
 
+    const baseDmgStats = getDamageStatistics({ ability: card });
+    const upgradedDmgStats = getDamageStatistics({ ability: upgrade });
+
+    const baseArmorStats = getArmorStatistics({ ability: card });
+    const upgradedArmorStats = getArmorStatistics({ ability: upgrade });
+
     return (
         <div onClick={onClick} className={classes.root}>
             <div className={classNames(classes.abilityContainer)}>
@@ -64,7 +71,12 @@ const UpgradeTile = ({
                     [classes.highlighted]: isSelected,
                 })}
             >
-                <AbilityView ability={upgrade} />
+                <AbilityView
+                    ability={upgrade}
+                    highlightDamage={upgradedDmgStats.baseDamage > baseDmgStats.baseDamage}
+                    highlightArmor={upgradedArmorStats.base > baseArmorStats.base}
+                    highlightResource={upgrade.resourceCost < card.resourceCost}
+                />
             </div>
         </div>
     );

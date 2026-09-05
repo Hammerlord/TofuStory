@@ -8,26 +8,28 @@ import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
 import { CombatAbility } from "../types";
 
-export const getArmorStatistics = ({
-    ability,
-    playerInfo,
-    deck,
-    hand,
-    discard,
-}: {
-    ability: CombatAbility;
-    playerInfo: CombatantInfo;
-    deck: CombatAbility[];
-    hand: CombatAbility[];
-    discard: CombatAbility[];
-}): {
+export interface ArmorStats {
     base: number;
     hasMultiplier: boolean;
     hasConditionFulfilled: boolean;
     hasBonus: boolean;
     hasPenalty: boolean;
     isAdditive: boolean;
-} => {
+}
+
+export const getArmorStatistics = ({
+    ability,
+    playerInfo,
+    deck = [],
+    hand = [],
+    discard = [],
+}: {
+    ability: CombatAbility;
+    playerInfo?: CombatantInfo;
+    deck?: CombatAbility[];
+    hand?: CombatAbility[];
+    discard?: CombatAbility[];
+}): ArmorStats => {
     const { actions: primaryActions = [] } = ability;
 
     const calcArmorFromActions = (actions = []) => {
@@ -138,7 +140,7 @@ const useStyles = createUseStyles({
 /**
  * The armor icon that displays on the top left of an ability card
  */
-const ArmorIcon = ({ armorStatistics }) => {
+const ArmorIcon = ({ armorStatistics, highlightText }: { armorStatistics: ArmorStats; highlightText?: boolean }) => {
     const { base, hasMultiplier, isAdditive, hasBonus, hasPenalty } = armorStatistics;
     const classes = useStyles();
 
@@ -151,7 +153,7 @@ const ArmorIcon = ({ armorStatistics }) => {
             icon={<ShieldIcon />}
             text={`${base}${hasMultiplier ? "x" : ""}${isAdditive ? "+" : ""}`}
             className={classNames(classes.armorIconRoot, {
-                [classes.highlightText]: hasBonus,
+                [classes.highlightText]: hasBonus || highlightText,
                 [classes.negative]: hasPenalty,
             })}
         />

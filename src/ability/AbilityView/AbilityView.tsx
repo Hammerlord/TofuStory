@@ -268,11 +268,27 @@ interface AbilityViewProps {
     // If true, the backside of the card is shown
     flipped?: boolean;
     style?: any;
+    highlightResource?: boolean;
+    highlightDamage?: boolean;
+    highlightArmor?: boolean;
 }
 
 const AbilityView = forwardRef(
     (
-        { onClick, onMouseDown, isSelected, ability, className, disableGlow, disableBattleBonuses, flipped, ...other }: AbilityViewProps,
+        {
+            onClick,
+            onMouseDown,
+            isSelected,
+            ability,
+            className,
+            disableGlow,
+            disableBattleBonuses,
+            flipped,
+            highlightResource,
+            highlightDamage,
+            highlightArmor,
+            ...other
+        }: AbilityViewProps,
         ref
     ) => {
         const classes = useStyles();
@@ -447,12 +463,12 @@ const AbilityView = forwardRef(
         const cornerIcons = (() => {
             const icons = [];
             if (baseDamage !== undefined) {
-                icons.push(<DamageIcon damageStatistics={damageStatistics} key="damage" />);
+                icons.push(<DamageIcon damageStatistics={damageStatistics} key="damage" highlightText={highlightDamage} />);
             }
 
             if (armorTotal > 0) {
                 armorCornerIcon = true;
-                icons.push(<ArmorIcon armorStatistics={armorStatistics} key="armor" />);
+                icons.push(<ArmorIcon armorStatistics={armorStatistics} key="armor" highlightText={highlightArmor} />);
             }
 
             if (healing > 0) {
@@ -573,8 +589,7 @@ const AbilityView = forwardRef(
                                     ability={ability}
                                     player={player}
                                     disableBattleIndicators={disableBattleBonuses || !battle}
-                                    /** Only play the 'resource cost changed' animation if it's the same card */
-                                    key={ability?.instanceId}
+                                    highlightResourceCount={highlightResource}
                                 />
                             </span>
                             <div className={classes.portraitContainer}>{imageNode}</div>

@@ -45,10 +45,12 @@ const AbilityResourceIcon = ({
     ability,
     player,
     disableBattleIndicators,
+    highlightResourceCount,
 }: {
     ability: Ability | CombatAbility;
     player: Player;
     disableBattleIndicators?: boolean;
+    highlightResourceCount?: boolean;
 }) => {
     const classes = useStyles();
     const ref = useRef(null);
@@ -91,9 +93,13 @@ const AbilityResourceIcon = ({
     let className;
     if (!disableBattleIndicators) {
         className = {
-            [classes.bonus]: resourceCostFromEffects < 0,
+            [classes.bonus]: resourceCostFromEffects < 0 || highlightResourceCount,
             [classes.penalty]: resourceCostFromEffects > 0,
             [classes.cannotUse]: totalResourceCost === "X" ? playerResources === 0 : totalResourceCost > playerResources,
+        };
+    } else if (highlightResourceCount) {
+        className = {
+            [classes.bonus]: true,
         };
     }
     return <Icon text={totalResourceCost} className={classNames(className)} ref={ref} />;
