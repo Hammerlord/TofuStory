@@ -1,49 +1,71 @@
 import { Box } from "@mui/material";
 import { Action } from "../ability/types";
-import { MesoCoinImage, MesoImage } from "../images";
+import { MesoCoinImage, MesoImage, MesoStackImage } from "../images";
+import { Combatant } from "./types";
+import { useEffect, useRef } from "react";
+import { playTossUpAnimation } from "./animations";
+import { createUseStyles } from "react-jss";
 
-const coinAnimation = {
-    "@keyframes coinFloat": {
-        "0%": {
-            transform: "translate(-50%, 100px)",
-            opacity: 1,
-        },
-        "50%": {
-            easing: "ease-in-out",
-            transform: "translate(-50%, -100px) ",
-            opacity: 1,
-        },
-        "100%": {
-            transform: "translate(-50%, 100px)",
-            opacity: 0,
-        },
-    },
+const getMoneyImage = (amount: number) => {
+    if (amount >= 25) {
+        return MesoStackImage;
+    } else if (amount >= 10) {
+        return MesoCoinImage;
+    } else {
+        return MesoImage;
+    }
 };
 
-const Coin = ({ action }: { action?: Action }) => {
-    const mesos = action?.mesos;
-    if (!mesos) {
+const useStyles = createUseStyles({
+    coin: {
+        opacity: 0,
+    },
+});
+
+const Coin = ({
+    action,
+    playbackDelay,
+    combatant,
+    isDeathBlow = false,
+}: {
+    action?: Action;
+    playbackDelay: number;
+    combatant: Combatant;
+    isDeathBlow: boolean;
+}) => {
+    const amount = action?.mesos || (isDeathBlow && combatant?.mesos);
+    const ref = useRef(null);
+    const classes = useStyles();
+
+    useEffect(() => {
+        if (!amount || !ref.current) {
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            playTossUpAnimation({ from: ref.current, spin: false });
+        }, playbackDelay || 500);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [amount]);
+
+    if (!amount) {
         return;
     }
 
-    let moneyImage;
-    if (mesos > 10) {
-        moneyImage = MesoCoinImage;
-    } else {
-        moneyImage = MesoImage;
-    }
+    const moneyImage = getMoneyImage(amount);
 
     return (
         <Box
             sx={{
-                ...coinAnimation,
                 position: "absolute",
                 left: "50%",
                 bottom: "50%",
-                width: 40,
-                height: 40,
-                animation: "coinFloat 500ms ease-out forwards",
-                zIndex: 100,
+                transform: "translate(-50%, 0)",
+                width: 30,
+                height: 30,
                 pointerEvents: "none",
 
                 "& img": {
@@ -53,7 +75,7 @@ const Coin = ({ action }: { action?: Action }) => {
                 },
             }}
         >
-            <img src={moneyImage} alt="meso" />
+            <img src={moneyImage} alt="meso" ref={ref} className={classes.coin} />
         </Box>
     );
 };

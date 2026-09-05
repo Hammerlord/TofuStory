@@ -64,7 +64,7 @@ export type CharacterState = {
     };
     rolledBosses: { [townName: string]: string };
     numNormalEncountersSinceLoot: number;
-    rareCardBonusChance?: number; // Rare card drop pity system that scales with battles completed
+    rareCardBonusChance: number; // Rare card drop pity system that scales with battles completed
 };
 
 const getRolledBosses = () => {

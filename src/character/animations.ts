@@ -309,11 +309,13 @@ export const playTossUpAnimation = ({
     object,
     playbackTime = 750,
     delay,
+    spin = true,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     playbackTime?: number;
     delay?: number;
+    spin?: boolean;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
@@ -325,13 +327,13 @@ export const playTossUpAnimation = ({
             easing: "ease-out",
         },
         {
-            transform: "translateY(-300%) rotate(360deg)",
+            transform: spin ? "translateY(-300%) rotate(360deg)" : "translateY(-300%)",
             opacity: 1,
             filter: "brightness(1.5)",
             easing: "ease-in-out",
         },
         {
-            transform: "translateY(0) rotate(720deg)",
+            transform: spin ? "translateY(0) rotate(720deg)" : "translateY(0)",
             opacity: 0,
             filter: "brightness(1.5)",
             easing: "ease-in",

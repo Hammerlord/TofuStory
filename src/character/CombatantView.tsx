@@ -576,7 +576,7 @@ const CombatantView = ({
                                     <BlockIcon statChanges={eventStatChanges} delay={hitPlaybackDelay} />
                                     <HitIcon statChanges={eventStatChanges} delay={hitPlaybackDelay} />
                                 </span>
-                                <Coin action={action} />
+                                <Coin action={action} combatant={combatant} isDeathBlow={isDeathBlow} playbackDelay={hitPlaybackDelay} />
                             </>
                         )}
                     </div>
