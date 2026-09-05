@@ -202,6 +202,7 @@ export const TooltipSection = ({
     icon,
     title,
     description,
+    ...other
 }: {
     icon?: any;
     title?: string | ReactElement;
@@ -213,7 +214,7 @@ export const TooltipSection = ({
 
     let content;
     if (typeof description === "string") {
-        const interpolatedDescription = Handlebars.compile(description || "")(elementMapping);
+        const interpolatedDescription = Handlebars.compile(description || "")({ ...elementMapping, ...other });
         content = <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />;
     } else {
         content = description;
@@ -248,7 +249,13 @@ export const KeywordsTooltips = ({ object }) => {
     return (
         <div>
             {tooltipConfigs.map((config, i) => (
-                <TooltipSection icon={config.icon} title={config.name} description={config.description} key={`${config.name}-${i}`} />
+                <TooltipSection
+                    {...config}
+                    icon={config.icon}
+                    title={config.name}
+                    description={config.description}
+                    key={`${config.name}-${i}`}
+                />
             ))}
         </div>
     );

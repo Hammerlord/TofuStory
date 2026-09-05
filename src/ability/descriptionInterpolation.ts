@@ -38,7 +38,7 @@ import { traverseForNestedPercentages } from "../utils";
 const iconStyles = {
     width: "16px",
     height: "16px",
-    "vertical-align": "bottom",
+    "vertical-align": "middle",
 };
 
 const styleObjectToString = (object) => {

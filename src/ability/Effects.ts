@@ -307,7 +307,7 @@ export const avenger: Effect = {
     class: EFFECT_CLASSES.BUFF,
     icon: JapaneseOgreAlternateIcon,
     description:
-        "Gains Armor and <b>{{ onFriendlyDeath.effects.0.attackPower }} {{{ _attUp_ }}} ATT Up</b> when one of its allies falls in combat. Lasts <b>{{ onFriendlyDeath.effects.0.duration }} {{{ _duration_ }}}.</b>",
+        "Gains {{{ _armor_ }}} and <b>{{ onFriendlyDeath.effects.0.attackPower }} {{{ _attUp_ }}} ATT Up</b> when an ally falls in combat. Lasts <b>{{ onFriendlyDeath.effects.0.duration }}{{{ _duration_ }}}.</b>",
     onFriendlyDeath: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         usableWhileStunned: true,
