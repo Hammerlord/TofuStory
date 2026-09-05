@@ -55,6 +55,7 @@ import {
     PunctureImage,
     RageImage,
     RagingBlowImage,
+    RecklessChargeImage,
     RedBoxingGloveImage,
     RedFistOfFuryImage,
     RisingRageImage,
@@ -3417,6 +3418,64 @@ export const warstride: Ability = {
     upgrades: [
         {
             preemptive: true,
+        },
+    ],
+};
+
+export const recklessLeap: Ability = {
+    name: "Reckless Leap",
+    description:
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}, but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}}.<br/> <b>Draw:</b> Play this.",
+    resourceCost: 1,
+    image: RecklessChargeImage,
+    rarity: RARITIES.UNCOMMON,
+    overrideBodyText: true,
+    onDraw: {
+        ability: {
+            name: "Reckless Leap",
+            image: RecklessChargeImage,
+            actions: [
+                {
+                    damage: 5,
+                    target: TARGET_TYPES.HOSTILE,
+                    type: ACTION_TYPES.ATTACK,
+                    effects: [{ ...bleed, stacks: 2 }],
+                    secondaryAction: {
+                        flatDamage: 1,
+                    },
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            damage: 5,
+            secondaryAction: {
+                flatDamage: 1,
+            },
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            effects: [{ ...bleed, stacks: 2 }],
+        },
+    ],
+    upgrades: [
+        {
+            onDraw: {
+                ability: {
+                    actions: [
+                        {
+                            damage: 2,
+                            effects: [{ stacks: 1 }],
+                        },
+                    ],
+                },
+            },
+            actions: [
+                {
+                    damage: 2,
+                    effects: [{ stacks: 1 }],
+                },
+            ],
         },
     ],
 };

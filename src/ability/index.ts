@@ -236,6 +236,7 @@ import {
     worldReaver,
     yell,
     zan,
+    recklessLeap,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -404,6 +405,7 @@ export const JOB_CARD_MAP = {
             ironBlood,
             anvil,
             warstride,
+            recklessLeap,
         ],
         starters: [charge, cleave, cleave, cleave, slam, slam, slam, block, block, block],
     },
