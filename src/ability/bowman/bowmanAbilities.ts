@@ -3322,7 +3322,7 @@ export const sidepack: Ability = {
     retain: true,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck.",
+    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Bide.</b>",
     image: DeansBagImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -3334,6 +3334,7 @@ export const sidepack: Ability = {
             target: TARGET_TYPES.SELF,
             icon: DeansBagImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
+            effects: [bideEffect],
         },
     ],
     upgrades: [

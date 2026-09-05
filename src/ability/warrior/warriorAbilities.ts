@@ -177,18 +177,25 @@ export const bash: Ability = {
     name: "Bash",
     resourceCost: 0,
     image: BrickImage,
+    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _bleed_ }}}</b>",
     actions: [
         {
-            damage: 5,
+            damage: 3,
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.ATTACK,
+            effects: [{ ...bleed, stacks: 1 }],
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    damage: 2,
+                    damage: 1,
+                    effects: [
+                        {
+                            stacks: 1,
+                        },
+                    ],
                 },
             ],
         },
@@ -568,8 +575,7 @@ export const bunchOBricks: Ability = {
 export const hammerang: Ability = {
     name: "Hammerang",
     resourceCost: 1,
-    description:
-        " <b>Echo.</b> Bounces to <b>{{ actions.0.numTargets }}</b> other targets within <b>{{ actions.0.targetArea }} spaces</b>.",
+    description: "<b>Echo.</b> Hits <b>{{ actions.0.numTargets }}</b> other targets within <b>{{ actions.0.targetArea }} spaces</b>.",
     overrideBodyText: true,
     image: HammerImage,
     rarity: RARITIES.COMMON,
@@ -1098,13 +1104,14 @@ export const cross: Ability = {
     resourceCost: 0,
     image: BlueFistOfFuryImage,
     depletedOnUse: true,
-    rarity: RARITIES.UNCOMMON,
-    description: "<b>Search</b> for an attack. It costs 1 less until discarded.",
+    rarity: RARITIES.RARE,
+    description:
+        "<b>Search</b> for an attack. It costs <b>{{ actions.1.selectCards.effects.0.resourceCost }} {{{ _resource_ }}}</b> until discarded.",
     actions: [
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 7,
+            damage: 8,
         },
         {
             type: ACTION_TYPES.EFFECT,
@@ -1128,7 +1135,16 @@ export const cross: Ability = {
         {
             actions: [
                 {
-                    damage: 4,
+                    damage: 3,
+                },
+                {
+                    selectCards: {
+                        effects: [
+                            {
+                                resourceCost: -1,
+                            },
+                        ],
+                    },
                 },
             ],
         },
@@ -1270,7 +1286,7 @@ export const arsenal: Ability = {
     name: "Arsenal",
     resourceCost: 1,
     image: AdvancedWeaponMasteryImage,
-    description: "Discover a {{{ _offense_ }}} card for your class. It costs 1 less and is Ephemeral",
+    description: "<b>Discover</b> a {{{ _offense_ }}} card for your class. It costs <b>-1 {{{ _resource_ }}}</b> and is Ephemeral.",
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     actions: [
@@ -1315,7 +1331,7 @@ export const sledge: Ability = {
     name: "Sledge",
     resourceCost: 2,
     image: GiganticSledgeImage,
-    description: "<b>Deplete</b> a card. Destroy all {{{ _armor_ }}} on the target.",
+    description: "<b>Deplete</b> a card. Deals <b>x2 {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     selectCards: {
@@ -1325,8 +1341,17 @@ export const sledge: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 15,
-            destroyArmor: 1,
+            damage: 16,
+            bonus: {
+                damage: 16,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        armor: 0,
+                        comparator: "gt",
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
@@ -1334,6 +1359,9 @@ export const sledge: Ability = {
             actions: [
                 {
                     damage: 5,
+                    bonus: {
+                        damage: 5,
+                    },
                 },
             ],
         },
@@ -1345,7 +1373,7 @@ export const bladedArmor: Ability = {
     resourceCost: 1,
     image: MetalAxeImage,
     description:
-        "When you lose armor, hurl a <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} axe at a random enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+        "When you lose {{{ _armor_ }}}, deal <b>{{ nestedAbility.actions.0.damage }}</b> {{{ _damage_ }}} to an enemy. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     rarity: RARITIES.COMMON,
     actions: [
@@ -1356,7 +1384,7 @@ export const bladedArmor: Ability = {
                 {
                     name: "Bladed Armor",
                     icon: MetalAxeImage,
-                    duration: 5,
+                    duration: 4,
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     onArmorLoss: {
@@ -1369,7 +1397,7 @@ export const bladedArmor: Ability = {
                                     animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                                     target: TARGET_TYPES.RANDOM_HOSTILE,
                                     icon: MetalAxeImage,
-                                    damage: 2,
+                                    damage: 3,
                                 },
                             ],
                         },
@@ -1520,7 +1548,7 @@ export const poundOfNails: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             effects: [{ ...thorns, stacks: 5 }],
             type: ACTION_TYPES.EFFECT,
         },
@@ -2004,7 +2032,7 @@ export const judgment: Ability = {
     resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Deal damage equal to your {{{ _armor_ }}}. Your {{{ _armor_ }}} decays by half.",
+    description: "Deal {{{ _damage_ }}} equal to your {{{ _armor_ }}}. Your {{{ _armor_ }}} decays by half.",
     actions: [
         {
             damage: 1,

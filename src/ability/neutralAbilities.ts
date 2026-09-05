@@ -214,7 +214,7 @@ export const stomp: Ability = {
         {
             type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            damage: 8,
+            damage: 9,
             moveCards: {
                 from: CARD_PILE_TYPES.DISCARD,
                 to: CARD_PILE_TYPES.DECK,

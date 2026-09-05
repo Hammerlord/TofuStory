@@ -237,6 +237,7 @@ import {
     yell,
     zan,
     recklessLeap,
+    bash,
 } from "./warrior/warriorAbilities";
 
 export const JOB_CARD_MAP = {
@@ -393,7 +394,8 @@ export const JOB_CARD_MAP = {
             shieldCharge,
             ballista,
             pummel,
-            smack,
+            //smack,
+            bash,
             punish,
             incite,
             suddenDeath,
