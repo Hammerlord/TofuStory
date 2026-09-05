@@ -3453,7 +3453,7 @@ export const warstride: Ability = {
 export const recklessLeap: Ability = {
     name: "Reckless Leap",
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}, but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}}.<br/> <b>Draw:</b> Play this.",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b>{{{ _bleed_ }}}, but self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}}.<br/> <b>Draw:</b> Trigger this.",
     resourceCost: 1,
     image: RecklessChargeImage,
     rarity: RARITIES.UNCOMMON,

@@ -818,6 +818,7 @@ export { default as TreeBranchImage } from "./TreeBranch.png";
 export { default as TriangularZamadarImage } from "./TriangularZamadar.png";
 export { default as TriboltImage } from "./Tribolt.png";
 export { default as TrunkNestImage } from "./TrunkNest.png";
+export { default as TrustyAndFaithfulImage } from "./TrustyAndFaithful.png";
 export { default as TurtleCardImage } from "./TurtleCard.png";
 export { default as TwilightPerionImage } from "./TwilightPerion.png";
 export { default as TwilitForestImage } from "./TwilitForest.png";

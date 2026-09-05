@@ -84,6 +84,7 @@ import {
     ThrustImage,
     TortieShellImage,
     TragosImage,
+    TrustyAndFaithfulImage,
     UltimateStrafeImage,
     VengeanceImage,
     WeaponMasteryLGImage,
@@ -3737,7 +3738,7 @@ export const callCompanion: Ability = {
 
 export const headshot: Ability = {
     name: "Headshot",
-    description: "<b>On kill:</b> <b>+1 {{{ _resource_ }}} +{{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b>",
+    description: "<b>Kill:</b> <b>+1 {{{ _resource_ }}} +{{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b>",
     resourceCost: 2,
     image: PuppetImage,
     rarity: RARITIES.COMMON,
@@ -3751,7 +3752,7 @@ export const headshot: Ability = {
             damage: 17,
             secondaryAction: {
                 resources: 1,
-                healing: 2,
+                healing: 1,
                 conditions: [
                     {
                         healthPercentage: 0,
@@ -3839,6 +3840,51 @@ export const blitz: Ability = {
                             duration: 1,
                         },
                     ],
+                },
+            ],
+        },
+    ],
+};
+
+export const springload: Ability = {
+    name: "Springload",
+    description: "<b>Draw:</b> {{{ _defDown_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}{{{ _duration_ }}}</b> an enemy.",
+    rarity: RARITIES.UNCOMMON,
+    image: TrustyAndFaithfulImage,
+    resourceCost: 1,
+    onDraw: {
+        ability: {
+            name: "Springload",
+            image: TrustyAndFaithfulImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.EFFECT,
+                    target: TARGET_TYPES.HOSTILE,
+                    effects: [
+                        {
+                            ...defDown,
+                            duration: 2,
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            damage: 7,
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 3,
                 },
             ],
         },
