@@ -100,6 +100,7 @@ import {
     taunt,
     thorns,
     ward,
+    defDown,
 } from "../Effects";
 import {
     ACTION_TYPES,
@@ -492,7 +493,7 @@ export const yell: Ability = {
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description:
-        "<b>Radiate {{{ _attDown_}}}.</b> </br> Gain <b>Taunt.</b> <br/> </br> <b>{{ actions.0.effects.0.duration }}<b/>{{{ _duration_ }}}",
+        "<b>Radiate {{{ _attDown_ }}} {{{ _defDown_ }}}.</b> </br> Gain <b>Taunt.</b> <br/> </br> <b>{{ actions.0.effects.0.duration }}<b/>{{{ _duration_ }}}",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -501,7 +502,10 @@ export const yell: Ability = {
             effects: [{ ...taunt, duration: 3, maxApplications: 1 }],
             radiate: {
                 area: 2,
-                effects: [{ ...attackDown, duration: 3 }],
+                effects: [
+                    { ...attackDown, duration: 3 },
+                    { ...defDown, duration: 3 },
+                ],
             },
         },
     ],
@@ -517,6 +521,9 @@ export const yell: Ability = {
                     radiate: [
                         {
                             effects: [
+                                {
+                                    duration: 1,
+                                },
                                 {
                                     duration: 1,
                                 },

@@ -220,7 +220,8 @@ export const onBattleStart = () => {
         }
 
         const context = { name: "Battle Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
-        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
+        // Enemies go first so that eg. enemy mutates don't negate player's on battle status effects
+        enemySide.concat(playerSide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart, context }));
         });
 
@@ -233,7 +234,9 @@ export const onWaveStart = () => {
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "Wave Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
         const { playerSide, enemySide } = getState().battle;
-        playerSide.concat(enemySide).forEach((combatant: Combatant | null) => {
+
+        // Enemies go first so that eg. enemy mutates don't negate player's on wave status effects
+        enemySide.concat(playerSide).forEach((combatant: Combatant | null) => {
             dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart, context }));
         });
         dispatch(pushEventQueue(playbackCollectorInstance.get()));

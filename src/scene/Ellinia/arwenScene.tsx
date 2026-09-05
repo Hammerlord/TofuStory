@@ -60,7 +60,7 @@ const sickLupin: Minion = {
             name: "Infected",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            onWaveStart: {
+            onBattleStart: {
                 ability: {
                     name: "Mutate",
                     actions: [

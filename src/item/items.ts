@@ -1693,7 +1693,7 @@ const blueJeanShortsEffect: Effect = {
     class: EFFECT_CLASSES.NONE,
     onSupportAbility: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-        resources: 1,
+        effects: [{ ...bideEffect }],
         triggerFrequencyFromSum: 3,
         disableTriggerFromProcs: true,
         removeEffect: true,
@@ -1706,7 +1706,7 @@ const blueJeanShortsEffect: Effect = {
 export const blueJeanShorts: Item = {
     name: "Blue Jean Shorts",
     description:
-        "When you play {{ effects.0.onTurnStart.effects.0.onSupportAbility.triggerFrequencyFromSum }} support cards in one turn, gain 1 {{{ _resource_ }}}.",
+        "When you play {{ effects.0.onTurnStart.effects.0.onSupportAbility.triggerFrequencyFromSum }} support cards in one turn, gain Bide.",
     type: ITEM_TYPES.EQUIPMENT,
     image: BlueJeanShortsImage,
     effects: [
@@ -2835,13 +2835,13 @@ export const blackDragonRobe: Item = {
     image: BlackDragonRobeImage,
     rarity: RARITIES.UNCOMMON,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "While you have Taunt, gain +1 {{{ _armorUp_ }}} Armor Up.",
+    description: "While you have Taunt, gain +{{ effects.0.armorReceived }} {{{ _armorUp_ }}} Armor Up.",
     effects: [
         {
             name: "Black Dragon Robe",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
-            armorReceived: 1,
+            armorReceived: 2,
             conditions: [
                 {
                     calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,

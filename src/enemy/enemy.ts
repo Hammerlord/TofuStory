@@ -1701,6 +1701,7 @@ export const zombieLupin: Minion = {
                 },
             ],
         },
+        loaf,
         {
             name: "Throw Banana",
             image: MonkeyBananaImage,
