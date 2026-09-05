@@ -433,20 +433,21 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     };
 
     const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        const type = selectedAbilityFromHand?.selectCards?.type;
+        const { type } = selectedAbilityFromHand?.selectCards || {};
 
         if (hand.length <= 1) {
             if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                 warn(battleWarnings.depleteMinCardInHand);
                 return;
-            } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK || type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
+            } else if (type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
                 warn(battleWarnings.minCardInHand);
                 return;
             }
         }
 
         // Wayfind does not require a discard to benefit from the +1 extra card draw, so don't show an empty overlay in that case
-        if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand.length === 1) {
+        const skipOverlayTypes = [SELECT_CARD_TYPES.DISCARD_TO_DRAW, SELECT_CARD_TYPES.HAND_TO_TOP_DECK];
+        if (skipOverlayTypes.includes(type) && hand.length === 1) {
             handleAbilityUse({ selectedIndex, side });
             return;
         }
