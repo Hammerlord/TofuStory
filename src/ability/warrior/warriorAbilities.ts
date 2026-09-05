@@ -711,7 +711,7 @@ export const sweepingReach: Ability = {
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             property: "numTargets",
                             comparator: "not",
-                            value: undefined
+                            value: undefined,
                         },
                     ],
                     conditionOperator: "and",
@@ -1696,6 +1696,7 @@ export const comboFury: Ability = {
     name: "Combo Fury",
     resourceCost: 0,
     image: ComboFuryImage,
+    rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
     description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     actions: [
@@ -2903,53 +2904,33 @@ export const smack: Ability = {
     ],
 };
 
-export const wallOfSpikes: Ability = {
-    name: "Wall of Spikes",
+export const punish: Ability = {
+    name: "Punish",
     image: SharpSpikedPauldronImage,
-    rarity: RARITIES.UNCOMMON,
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} {{{ _thorns_ }}}</b>. Until your next turn, <b>x2</b> your {{{ _thorns_ }}}.",
+    rarity: RARITIES.COMMON,
+    description: "Gain <b>{{{ _thorns_ }}}</b>",
     overrideBodyText: true,
     resourceCost: 1,
     actions: [
         {
-            target: TARGET_TYPES.FRIENDLY,
-            effects: [{ ...thorns, stacks: 2 }],
-            type: ACTION_TYPES.EFFECT,
-        },
-        {
-            target: TARGET_TYPES.FRIENDLY,
-            bonus: {
-                effects: [{ ...thorns, stacks: 1, duration: 2, onTurnStart: { removeEffect: true } }],
-                multiplier: {
-                    type: MULTIPLIER_TYPES.EFFECT_STACKS,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    filters: [
-                        {
-                            property: "thorns",
-                            comparator: "gt",
-                            value: 0,
-                        },
-                    ],
-                },
-                conditions: [
+            damage: 9,
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.ATTACK,
+            secondaryAction: {
+                effects: [
                     {
-                        hasEffect: "Thorns",
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
+                        ...thorns,
+                        stacks: 1,
                     },
                 ],
             },
-            type: ACTION_TYPES.EFFECT,
         },
     ],
     upgrades: [
         {
             actions: [
                 {
-                    effects: [
-                        {
-                            stacks: 1,
-                        },
-                    ],
+                    damage: 3,
                 },
             ],
         },
