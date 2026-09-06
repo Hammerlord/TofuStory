@@ -155,7 +155,13 @@ export const useAbility = ({
         const actorInfo = findCombatantData(getState().battle, actorId);
         // Due to morph, the combatant may no longer exist
         if (actorInfo) {
-            dispatch(onUseAbility({ actorInfo, context: parentContext, ability, isAutoCast }));
+            // Hack: onUseAbility events may still need access to the action source (see Sweeping Reach's non-interaction with Hammerang)
+            // but this is at the ability level, not the individual actions level. Just provide the first action in that case
+            const actionContext = {
+                ...parentContext,
+                sourceChain: [...parentContext.sourceChain, { actorId, source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION }],
+            };
+            dispatch(onUseAbility({ actorInfo, context: actionContext, ability, isAutoCast }));
         }
 
         if (echo) {
