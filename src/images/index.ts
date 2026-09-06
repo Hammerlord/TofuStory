@@ -499,6 +499,7 @@ export { default as MesoCoinImage } from "./MesoCoin.png";
 export { default as MesoStackImage } from "./MesoStack.png";
 export { default as MetalAxeImage } from "./MetalAxe.png";
 export { default as MetalBucketSnowmanImage } from "./MetalBucketSnowman.png";
+export { default as MidnightMagicianCapeImage } from "./MidnightMagicianCape.png";
 export { default as MiniBeanImage } from "./MiniBean.gif";
 export { default as MiniKargoImage } from "./MiniKargo.gif";
 export { default as MonkeyBananaImage } from "./MonkeyBanana.png";

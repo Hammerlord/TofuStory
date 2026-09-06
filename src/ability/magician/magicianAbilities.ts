@@ -65,6 +65,7 @@ import {
     ManaImage,
     MeditationImage,
     MetalBucketSnowmanImage,
+    MidnightMagicianCapeImage,
     MysticDoorImage,
     NimbleJewelCImage,
     NimbleJewelImage,
@@ -3751,7 +3752,7 @@ export const wyvernAbility: Ability = {
     rarity: RARITIES.RARE,
     minion: wyvernMinion,
     resourceCost: 2,
-    description: "<b>Controllable.</b> Applies {{{ _chill_ }}}, {{{ _burn_ }}} OR {{{ _stun_ }}}, changing each attack.",
+    description: "<b>Controllable.</b> Applies {{{ _burn_ }}}, {{{ _stun_ }}}, or {{{ _chill_ }}}, changing each attack.",
     actions: [],
     upgrades: [
         {
@@ -3769,6 +3770,55 @@ export const wyvernAbility: Ability = {
                     },
                 ],
             },
+        },
+    ],
+};
+
+export const chromatic: Ability = {
+    name: "Chromatic Blast",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 3,
+    image: MidnightMagicianCapeImage,
+    description:
+        "Apply <b>Doom</b>, {{{ _chill_ }}} and <b>{{ actions.0.effects.2.stacks }}</b> {{{ _burn_ }}} {{{ _poison_ }}} {{{ _bleed_ }}}.",
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.EFFECT,
+            animations: [
+                {
+                    image: MidnightMagicianCapeImage,
+                    type: ANIMATION_TYPES.BEAM,
+                },
+            ],
+            effects: [
+                { ...doomEffect },
+                {
+                    ...chill,
+                    duration: 2,
+                },
+                {
+                    ...burn,
+                    stacks: 1,
+                },
+                {
+                    ...poison,
+                    stacks: 1,
+                },
+                {
+                    ...bleed,
+                    stacks: 1,
+                },
+            ],
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    effects: [{}, {}, { stacks: 1 }, { stacks: 1 }, { stacks: 1 }],
+                },
+            ],
         },
     ],
 };

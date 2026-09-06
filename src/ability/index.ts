@@ -155,6 +155,7 @@ import {
     wrath,
     zap,
     volatileMagic,
+    chromatic,
 } from "./magician/magicianAbilities";
 
 import {
@@ -323,6 +324,7 @@ export const JOB_CARD_MAP = {
             doomAbility,
             thunderSpear,
             wyvernAbility,
+            chromatic,
         ],
         starters: [empower, energyBolt, energyBolt, energyBolt, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },
