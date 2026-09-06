@@ -278,6 +278,7 @@ export const dyle: Minion = {
     abilities: [
         {
             name: "Chomp",
+            description: "Applies {{{ _bleed_ }}}.",
             image: BloodIcon,
             actions: [
                 {
@@ -295,13 +296,6 @@ export const dyle: Minion = {
         },
         {
             ...attack,
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    hasEffect: "Underwater",
-                    comparator: "not",
-                },
-            ],
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -403,12 +397,19 @@ export const dyle: Minion = {
         {
             name: "Big Chomp",
             resourceCost: 3,
+            description: "Hits x2. Applies {{{ _bleed_ }}}.",
             image: BloodIcon,
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
+                    effects: [
+                        {
+                            ...bleed,
+                            stacks: 1,
+                        },
+                    ],
                 },
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -417,6 +418,7 @@ export const dyle: Minion = {
                     effects: [
                         {
                             ...bleed,
+                            stacks: 1,
                         },
                     ],
                 },
