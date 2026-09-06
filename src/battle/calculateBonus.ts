@@ -60,7 +60,17 @@ export const calculateBonus = ({
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
             if (passesConditions({ getCalculationTarget, proc: bonus, context }) && isValidTarget) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
-                const { damage = 0, secondaryDamage, healing = 0, armor = 0, effects = [], area = 0, drawCards, chance = 1 } = acc;
+                const {
+                    damage = 0,
+                    secondaryDamage,
+                    healing = 0,
+                    armor = 0,
+                    effects = [],
+                    area = 0,
+                    drawCards,
+                    chance = 1,
+                    resources = 0,
+                } = acc;
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
                 const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;
 
@@ -78,6 +88,7 @@ export const calculateBonus = ({
                     armor: armor + (bonus.armor || 0) * multiplier,
                     destroyArmor: (bonus.destroyArmor || 0) + (acc.destroyArmor || 0),
                     effects: [...effects, ...totalBonusEffects],
+                    resources: resources + bonus.resources || 0,
                     drawCards: drawCardsObj,
                     chance: chance + (bonus.bonusChance || 0),
                 } as Action;
