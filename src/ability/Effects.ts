@@ -772,7 +772,7 @@ export const tributeSummonBuff: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     attackPower: 1,
-    maxHP: 1,
+    maxHP: 2,
 };
 
 export const lupinCurse: Effect = {
