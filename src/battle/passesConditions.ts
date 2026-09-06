@@ -87,120 +87,16 @@ export const passesConditions = ({
             isElite,
             numAbilitiesUsed,
             sourceType,
-            resourceCost,
             HP,
-            isOffense,
             numFriendly,
             otherCalculationTarget,
             property,
             value,
-            notProc,
             filters,
-            hasAbilityEffectName,
         } = condition;
 
-        const isProc = context?.isProc;
-        const sourceChain = [...(context?.sourceChain || [])].reverse();
-        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
-
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
-            if (notProc !== undefined) {
-                if (notProc && isProc) {
-                    return false;
-                }
-            }
-
-            if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
-                const sourcePayload = abilitySource?.source || {};
-                const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
-
-                if (name) {
-                    const names = Array.isArray(name) ? name : [name];
-                    if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
-                        return false;
-                    }
-                }
-
-                if (resourceCost !== undefined) {
-                    if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
-                        return false;
-                    }
-                }
-
-                if (isOffense !== undefined) {
-                    return isOffense === isOffensiveAbility(sourcePayload as CombatAbility);
-                }
-
-                if (property !== undefined) {
-                    const propertyVal = _.get(sourcePayload, property);
-                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
-                }
-
-                if (hasAbilityEffectName !== undefined) {
-                    return ((sourcePayload as CombatAbility)?.effects || []).some((e) => e.name === hasAbilityEffectName);
-                }
-
-                return true;
-            }
-
-            if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
-                const actionSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ACTION);
-                const sourcePayload = actionSource?.source || {};
-                if (property !== undefined) {
-                    const propertyVal = _.get(sourcePayload, property);
-                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
-                }
-
-                return true;
-            }
-
-            if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
-                const effectSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.EFFECT);
-                const sourcePayload = effectSource?.source || {};
-                const { type: effectType, class: effectClass, name: effectName }: Effect = sourcePayload as Effect;
-
-                if (hasEffectType !== undefined) {
-                    if (comparator === "not") {
-                        if (hasEffectType.includes(effectType)) {
-                            return false;
-                        }
-                    } else if (!hasEffectType.includes(effectType)) {
-                        return false;
-                    }
-                }
-
-                if (hasEffectClass !== undefined) {
-                    if (comparator === "not") {
-                        if (effectClass === hasEffectClass) {
-                            return false;
-                        }
-                    } else if (effectClass !== hasEffectClass) {
-                        return false;
-                    }
-                }
-
-                if (property !== undefined) {
-                    const propertyVal = _.get(sourcePayload, property);
-                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
-                }
-
-                if (name) {
-                    const names = Array.isArray(name) ? name : [name];
-                    if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: effectName, comparator }))) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            if (!sourceType) {
-                console.warn(
-                    // @ts-ignore
-                    `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`
-                );
-                return false;
-            }
+            return passesTriggerSourceCondition({ condition, context });
         }
 
         if (calculationTarget === CONDITION_TARGETS.BATTLE) {
@@ -225,6 +121,10 @@ export const passesConditions = ({
         if (Array.isArray(effectOwner)) {
             effectOwner = effectOwner[0];
         }
+
+        // Reverse to get the order of most recent to least
+        const sourceChain = [...(context?.sourceChain || [])].reverse();
+        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
 
         const checkPass = (calcTarget: CombatantInfo) => {
             const { combatant, index, friendly = [] } = calcTarget || {};
@@ -266,7 +166,7 @@ export const passesConditions = ({
             }
 
             const procId = (proc as CombatEffect)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
-            const otherEffects = procId ? combatant?.effects.filter((e) => e.id !== procId) : combatant.effects;
+            const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
 
             if (hasEffectType !== undefined) {
                 if (comparator === "not") {
@@ -435,4 +335,125 @@ export const passesConditions = ({
     // @ts-ignore -- conditionOperator is 'or' by default and we have a fallback here
     const { conditions = [], conditionOperator = "or" } = proc || {};
     return !conditions.length || (conditionOperator === "or" ? conditions.some(passesCondition) : conditions.every(passesCondition));
+};
+
+const passesTriggerSourceCondition = ({ condition, context }: { condition: Condition; context?: ActionContext }): boolean => {
+    const {
+        hasEffectType,
+        hasEffectClass,
+        comparator,
+        name,
+        sourceType,
+        resourceCost,
+        isOffense,
+        property,
+        value,
+        notProc,
+        hasAbilityEffectName,
+    } = condition;
+
+    const isProc = context?.isProc;
+    // Reverse to get the order of most recent to least
+    const sourceChain = [...(context?.sourceChain || [])].reverse();
+    const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
+
+    if (notProc !== undefined) {
+        if (notProc && isProc) {
+            return false;
+        }
+    }
+
+    if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
+        const sourcePayload = abilitySource?.source || {};
+        const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
+
+        if (name) {
+            const names = Array.isArray(name) ? name : [name];
+            if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
+                return false;
+            }
+        }
+
+        if (resourceCost !== undefined) {
+            if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
+                return false;
+            }
+        }
+
+        if (isOffense !== undefined) {
+            return isOffense === isOffensiveAbility(sourcePayload as CombatAbility);
+        }
+
+        if (property !== undefined) {
+            const propertyVal = _.get(sourcePayload, property);
+            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        }
+
+        if (hasAbilityEffectName !== undefined) {
+            return ((sourcePayload as CombatAbility)?.effects || []).some((e) => e.name === hasAbilityEffectName);
+        }
+
+        return true;
+    }
+
+    if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
+        const actionSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ACTION);
+        const sourcePayload = actionSource?.source || {};
+        if (property !== undefined) {
+            const propertyVal = _.get(sourcePayload, property);
+            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        }
+
+        return true;
+    }
+
+    if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
+        const effectSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.EFFECT);
+        const sourcePayload = effectSource?.source || {};
+        const { type: effectType, class: effectClass, name: effectName }: Effect = sourcePayload as Effect;
+
+        if (hasEffectType !== undefined) {
+            if (comparator === "not") {
+                if (hasEffectType.includes(effectType)) {
+                    return false;
+                }
+            } else if (!hasEffectType.includes(effectType)) {
+                return false;
+            }
+        }
+
+        if (hasEffectClass !== undefined) {
+            if (comparator === "not") {
+                if (effectClass === hasEffectClass) {
+                    return false;
+                }
+            } else if (effectClass !== hasEffectClass) {
+                return false;
+            }
+        }
+
+        if (property !== undefined) {
+            const propertyVal = _.get(sourcePayload, property);
+            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        }
+
+        if (name) {
+            const names = Array.isArray(name) ? name : [name];
+            if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: effectName, comparator }))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    if (!sourceType) {
+        console.warn(
+            // @ts-ignore
+            `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`
+        );
+        return false;
+    }
+
+    return true;
 };
