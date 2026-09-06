@@ -2733,15 +2733,6 @@ export const retribute: Ability = {
             target: TARGET_TYPES.HOSTILE,
             damage: 5,
             area: 2,
-            bonus: {
-                conditions: [
-                    {
-                        calculationTarget: CONDITION_TARGETS.ACTOR,
-                        hasEffect: directDamageTaken.name,
-                        comparator: "eq",
-                    },
-                ],
-            },
             secondaryAction: {
                 bonus: {
                     resources: 1,

@@ -84,6 +84,7 @@ export const getUpdatedStats = ({
             hand,
             discard,
         });
+
         const {
             resources = 0,
             destroyArmor = 0,
