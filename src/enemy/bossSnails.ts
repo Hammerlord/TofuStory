@@ -17,6 +17,7 @@ import {
     ACTION_TYPES,
     ANIMATION_TYPES,
     Ability,
+    CONDITION_TARGETS,
     EFFECT_CLASSES,
     EFFECT_TYPES,
     MORPH_TYPES,
@@ -155,6 +156,13 @@ const whip = {
                     disableAbilities: [ACTION_TYPES.EFFECT, ACTION_TYPES.NONE],
                 },
             ],
+        },
+    ],
+    conditions: [
+        {
+            numFriendly: 1,
+            comparator: "gt",
+            calculationTarget: CONDITION_TARGETS.ACTOR,
         },
     ],
 };
