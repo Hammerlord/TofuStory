@@ -17,6 +17,7 @@ import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
 import { onEndTurnTriggers } from "./phases";
 import { requeueRecentlyUsedAbility } from "./phases";
+import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
@@ -55,10 +56,14 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
 const minionAutoAttack = () => {
     return (dispatch, getState) => {
-        const { playerSide } = getState().battle;
+        const { playerSide, round } = getState().battle;
 
         const playbackCollectorInstance = playbackCollector();
-        playerSide.forEach((combatant: Combatant | null) => {
+        const moveOrderIds = getCombatantMoveOrder({ combatants: playerSide, round });
+        moveOrderIds.forEach((id: string) => {
+            const combatantInfo = findCombatantData(getState().battle, id);
+            const combatant = combatantInfo?.combatant;
+
             if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
                 return;
             }

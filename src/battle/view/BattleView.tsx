@@ -42,7 +42,8 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/utils";
-import { endEnemyTurn, enemyMoves, getEnemyMoveOrder, startEnemyTurn } from "../actions/phases/enemyTurn";
+import { endEnemyTurn, enemyMoves, startEnemyTurn } from "../actions/phases/enemyTurn";
+import { getCombatantMoveOrder } from "../actions/phases/getCombatantMoveOrder";
 import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
 import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
 import { useHandAbility } from "../actions/playerAbility";
@@ -944,7 +945,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const targetMap = {};
 
         let previousCombatantStates = previewAbilityCombatants;
-        getEnemyMoveOrder({ enemies: enemySide, round }).forEach((enemyId) => {
+        getCombatantMoveOrder({ combatants: enemySide, round }).forEach((enemyId) => {
             const enemyInfo = findCombatantData({ ...battle, ...previousCombatantStates }, enemyId);
             const enemy = enemyInfo?.combatant;
             const { targeting, HP, cantMove } = enemy || {};

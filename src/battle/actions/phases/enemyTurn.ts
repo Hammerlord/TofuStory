@@ -1,4 +1,3 @@
-import { isSupportAbility } from "../../../ability/AbilityView/utils";
 import { ACTION_TYPES, Ability, CONDITION_TARGETS, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
 import { previewAction } from "../../../character/getAbilityPreviews";
 import { Combatant } from "../../../character/types";
@@ -21,6 +20,7 @@ import { useItem } from "../useItem";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
+import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 import { onEndTurnTriggers, requeueRecentlyUsedAbility } from "./phases";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
@@ -239,7 +239,7 @@ export const endEnemyTurn = () => {
 
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: getState().battle.enemySide, round: round + 1 });
+        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: getState().battle.enemySide, round: round + 1 });
 
         nextMoveOrderIds.forEach((combatantId) => {
             const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
@@ -331,7 +331,7 @@ export const enemyMoves = () => {
         };
 
         const { enemySide, round } = getState().battle;
-        const moveOrderIds = getEnemyMoveOrder({ enemies: enemySide, round });
+        const moveOrderIds = getCombatantMoveOrder({ combatants: enemySide, round });
         moveOrderIds.forEach(makeEnemyMove);
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
@@ -362,42 +362,6 @@ const checkUseItem = (combatant: Combatant): number | undefined => {
     if (Math.random() > HP / maxHP) {
         return getRandomInt(0, consumablesWorthUsing.length - 1);
     }
-};
-
-/**
- * Get the order in which enemies move on their turn.
- */
-export const getEnemyMoveOrder = ({
-    enemies,
-    round,
-    ignoreSupport,
-}: {
-    enemies: (Combatant | null)[];
-    round: number;
-    ignoreSupport?: boolean;
-}): string[] => {
-    const isEvenRound = round % 2 === 0;
-    if (isEvenRound) {
-        enemies = enemies.slice().reverse();
-    }
-
-    return enemies
-        .filter((v) => v)
-        .sort((a, b) => {
-            const aVal = isSupportAbility(a.targeting?.ability) ? 1 : -1;
-            const bVal = isSupportAbility(b.targeting?.ability) ? 1 : -1;
-            const compareSupport = aVal - bVal;
-            if (!ignoreSupport && compareSupport !== 0) {
-                return compareSupport;
-            }
-
-            const middle = 2;
-            const aIndex = enemies.findIndex((enemy: Combatant | null) => enemy?.id === a.id);
-            const bIndex = enemies.findIndex((enemy: Combatant | null) => enemy?.id === b.id);
-
-            return Math.abs(aIndex - middle) - Math.abs(bIndex - middle);
-        })
-        .map((e) => e.id);
 };
 
 const clearTurnHistory = (character: Combatant): Combatant => {

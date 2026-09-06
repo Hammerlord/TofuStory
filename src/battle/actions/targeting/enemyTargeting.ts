@@ -6,7 +6,8 @@ import { BattleState } from "../../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
 import { performAction } from "../performAction";
-import { getEnemyMoveOrder, getUpdatedBattleActionTargets } from "../phases/enemyTurn";
+import { getUpdatedBattleActionTargets } from "../phases/enemyTurn";
+import { getCombatantMoveOrder } from "../phases/getCombatantMoveOrder";
 import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./targeting";
 
 /**
@@ -23,7 +24,7 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
             targetSwitch = findCombatantData(battle, validTargetSwitchId);
         }
 
-        const enemyOrderIds = getEnemyMoveOrder({ enemies: battle.enemySide, round: battle.round });
+        const enemyOrderIds = getCombatantMoveOrder({ combatants: battle.enemySide, round: battle.round });
         enemyOrderIds.forEach((enemyId: string) => {
             const enemyInfo = findCombatantData(battle, enemyId);
             const combatant = enemyInfo?.combatant;

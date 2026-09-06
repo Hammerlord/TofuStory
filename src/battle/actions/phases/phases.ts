@@ -18,7 +18,8 @@ import { playbackCollector } from "../playbackCollector";
 import { tickDownStatusEffects } from "../statusEffect/effectLifecycle";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
-import { getEnemyMoveOrder, getUseAbilityIndex } from "./enemyTurn";
+import { getUseAbilityIndex } from "./enemyTurn";
+import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
@@ -242,7 +243,7 @@ export const onWaveStart = () => {
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
         const battle: BattleState = getState().battle;
-        const nextMoveOrderIds = getEnemyMoveOrder({ enemies: getState().battle.enemySide, round: battle.round });
+        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: getState().battle.enemySide, round: battle.round });
 
         nextMoveOrderIds.forEach((combatantId) => {
             const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
