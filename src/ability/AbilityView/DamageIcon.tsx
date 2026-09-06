@@ -8,6 +8,7 @@ import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
 import { ACTION_TYPES, Action, CombatAbility } from "../types";
+import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 
 export interface DamageStats {
     baseDamage: number;
@@ -68,7 +69,11 @@ export const getDamageStatistics = ({
         });
     });
 
-    const withAttackPower = withBonus.map((action: Action) => {
+    const withArea = withBonus.map((action) => {
+        return { ...action, area: calculateActionArea({ action, actor: actorInfo, context }) };
+    });
+
+    const withAttackPower = withArea.map((action: Action) => {
         const multiplier = getMultiplier({
             actor: actorInfo,
             multiplier: action.multiplier,

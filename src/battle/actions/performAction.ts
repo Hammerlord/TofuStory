@@ -72,7 +72,7 @@ export const performAction = ({
             allTargetIds: [combatants[selectedIndex]?.id].filter((v) => v),
         };
 
-        const targetIndices = calculateTargetIndices({
+        const { targetedIndices, allIndices, area } = calculateTargetIndices({
             action,
             selectedIndex,
             side,
@@ -83,7 +83,7 @@ export const performAction = ({
             isPreviewMode: parentContext?.isPreviewMode,
         });
 
-        const targetIds = targetIndices.targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
+        const targetIds = targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
 
         // Don't try to target things that are all gone/dead.
         // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
@@ -91,8 +91,10 @@ export const performAction = ({
             return;
         }
 
+        action = { ...action, area };
         const source: TriggerSource = {
             ...targetSource,
+            source: action,
             targetId: combatants[selectedIndex]?.id || targetIds[0],
             allTargetIds: targetIds,
         };
@@ -138,8 +140,6 @@ export const performAction = ({
             updatedSecondary = triggerSecondaryAction();
         }
 
-        const area = calculateActionArea({ action, actor: actorData, target, context });
-
         const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
         const movementDisplacements: Displacement = dispatch(
             checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, context: context })
@@ -180,7 +180,7 @@ export const performAction = ({
         });
 
         // HACK: ensure that the selected index is hit first in playback
-        const allTargetIndices = uniq([selectedIndex, ...targetIndices.allIndices]);
+        const allTargetIndices = uniq([selectedIndex, ...allIndices]);
 
         dispatch(
             enqueueEvent({
