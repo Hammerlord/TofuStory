@@ -31,6 +31,7 @@ import PortraitStatusEffects from "./effects/PortraitStatusEffects";
 import StatusEffectAnnouncer from "./effects/StatusEffectAnnouncer";
 import { useEntranceAnimation } from "./hooks/useEntranceAnimation";
 import { Combatant, Player } from "./types";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 
 const useStyles = createUseStyles({
     "@keyframes highlightAnimation": {
@@ -363,7 +364,7 @@ const CombatantView = ({
     const weaponRef = useRef(null);
     const characterImageRef = useRef(null);
 
-    const eventStatChanges = currentEventGroup?.statUpdates?.[combatant?.id];
+    const eventStatChanges: UpdatedCombatantStats = currentEventGroup?.statUpdates?.[combatant?.id];
     const isDeathBlow = eventStatChanges?.isDeathBlow;
     // We want the damage number etc. to appear only at the (approximate) time that character is hit by the attack
     const hitPlaybackDelay = currentEventGroup?.playbackTime ? currentEventGroup?.playbackTime / 2 : 500;
@@ -576,7 +577,13 @@ const CombatantView = ({
                                     <BlockIcon statChanges={eventStatChanges} delay={hitPlaybackDelay} />
                                     <HitIcon statChanges={eventStatChanges} delay={hitPlaybackDelay} />
                                 </span>
-                                <Coin action={action} combatant={combatant} isDeathBlow={isDeathBlow} playbackDelay={hitPlaybackDelay} />
+                                <Coin
+                                    action={action}
+                                    statChanges={eventStatChanges}
+                                    combatant={combatant}
+                                    isDeathBlow={isDeathBlow}
+                                    playbackDelay={hitPlaybackDelay}
+                                />
                             </>
                         )}
                     </div>

@@ -344,7 +344,7 @@ const getHitEffects = ({
         return [];
     }
 
-    const results = [];
+    const results: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[][] = [];
     const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo, context }).reduce(
         (acc, { lifeOnHit = 0, stacks = 1 }) => acc + lifeOnHit * stacks,
         0
@@ -389,7 +389,7 @@ const getHitEffects = ({
     }
 
     const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce(
-        (acc, { mesoSteal = 0, stacks }) => acc + mesoSteal * stacks,
+        (acc, { mesoSteal = 0, stacks = 1 }) => acc + mesoSteal * stacks,
         0
     );
 

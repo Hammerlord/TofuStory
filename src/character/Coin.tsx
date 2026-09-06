@@ -5,6 +5,7 @@ import { Combatant } from "./types";
 import { useEffect, useRef } from "react";
 import { playTossUpAnimation } from "./animations";
 import { createUseStyles } from "react-jss";
+import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 
 const getMoneyImage = (amount: number) => {
     if (amount >= 25) {
@@ -24,16 +25,20 @@ const useStyles = createUseStyles({
 
 const Coin = ({
     action,
+    statChanges,
     playbackDelay,
     combatant,
     isDeathBlow = false,
 }: {
     action?: Action;
+    statChanges: UpdatedCombatantStats;
     playbackDelay: number;
     combatant: Combatant;
     isDeathBlow: boolean;
 }) => {
-    const amount = action?.mesos || (isDeathBlow && combatant?.mesos);
+    let amount = action?.mesos || action?.stealMesos || statChanges?.mesos || (isDeathBlow && combatant?.mesos);
+    amount = Math.abs(amount);
+
     const ref = useRef(null);
     const classes = useStyles();
 
@@ -43,7 +48,7 @@ const Coin = ({
         }
 
         const timeout = setTimeout(() => {
-            playTossUpAnimation({ from: ref.current, spin: false });
+            playTossUpAnimation({ from: ref.current, spin: false, flash: false });
         }, playbackDelay || 500);
 
         return () => {

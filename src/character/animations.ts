@@ -309,12 +309,14 @@ export const playTossUpAnimation = ({
     object,
     playbackTime = 750,
     delay,
+    flash = true,
     spin = true,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
     playbackTime?: number;
     delay?: number;
+    flash?: boolean;
     spin?: boolean;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
@@ -339,6 +341,12 @@ export const playTossUpAnimation = ({
             easing: "ease-in",
         },
     ];
+
+    if (!flash) {
+        animationFrames.forEach((frame) => {
+            delete frame.filter;
+        });
+    }
 
     return elementsToAnimate.map((el, i) => {
         return el.animate(animationFrames, {
