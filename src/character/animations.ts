@@ -311,6 +311,7 @@ export const playTossUpAnimation = ({
     delay,
     flash = true,
     spin = true,
+    flipY: flipY = false,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
@@ -318,24 +319,27 @@ export const playTossUpAnimation = ({
     delay?: number;
     flash?: boolean;
     spin?: boolean;
+    flipY?: boolean;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
 
     const animationFrames = [
         {
-            transform: "translateY(0)",
+            transform: `translateY(0)${flipY ? " rotateY(0deg)" : ""}`,
             filter: "brightness(1)",
             opacity: 1,
             easing: "ease-out",
         },
         {
-            transform: spin ? "translateY(-300%) rotate(360deg)" : "translateY(-300%)",
+            transform: [spin ? "translateY(-300%) rotate(360deg)" : "translateY(-300%)", flipY ? "rotateY(180deg)" : ""]
+                .filter(Boolean)
+                .join(" "),
             opacity: 1,
             filter: "brightness(1.5)",
             easing: "ease-in-out",
         },
         {
-            transform: spin ? "translateY(0) rotate(720deg)" : "translateY(0)",
+            transform: [spin ? "translateY(0) rotate(720deg)" : "translateY(0)", flipY ? "rotateY(360deg)" : ""].filter(Boolean).join(" "),
             opacity: 0,
             filter: "brightness(1.5)",
             easing: "ease-in",

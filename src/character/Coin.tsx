@@ -99,6 +99,7 @@ const CoinInstance = ({
             from: ref.current,
             spin: false,
             flash: false,
+            flipY: [MesoImage, MesoCoinImage].includes(moneyImage),
         });
 
         animations.forEach((animation) => {
