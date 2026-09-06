@@ -1402,6 +1402,7 @@ export const aurora: Ability = {
     resourceCost: 5,
     rarity: RARITIES.UNCOMMON,
     onAbility: {
+        inPile: ["hand"],
         abilityEffects: [
             {
                 resourceCost: -1,

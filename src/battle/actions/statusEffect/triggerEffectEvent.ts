@@ -1,8 +1,10 @@
 import {
     ACTION_TYPES,
     Ability,
+    AbilityEvent,
     Action,
     CONDITION_TARGETS,
+    CardPileType,
     CombatAbility,
     CombatEffect,
     EFFECT_EVENT_KEYS,
@@ -532,42 +534,71 @@ export const checkEventTrigger = ({
             }
         });
 
-        // Trigger hand effects if it is not a proc.
         if (combatant.isPlayer && !fromProc) {
-            const { playerSide, hand } = getState().battle;
-            const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === source?.actorId);
-            if (actorIsPlayer) {
-                hand.forEach((card: CombatAbility) => {
-                    const cardEvent = card[effectEventKey];
-                    if (!cardEvent) {
-                        return;
-                    }
+            dispatch(triggerCardEffectEvents({ effectEventKey, context, source }));
+        }
+    };
+};
 
-                    const ability = cardEvent.ability;
-                    if (ability && passesChance(cardEvent.chance)) {
-                        dispatch(
-                            useAbility({
-                                ability: card[effectEventKey].ability,
-                                actorId: source?.actorId,
-                                isProc: true,
-                                context,
-                            })
-                        );
-                    }
-                });
+const triggerCardEffectEvents = ({
+    effectEventKey,
+    context,
+    source,
+}: {
+    effectEventKey: EFFECT_EVENT_KEYS;
+    context: ActionContext;
+    source: TriggerSource;
+}) => {
+    return (dispatch, getState) => {
+        const { playerSide, hand } = getState().battle;
+        const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === source?.actorId);
+        if (!actorIsPlayer) {
+            return;
+        }
 
+        hand.forEach((card: CombatAbility) => {
+            const cardEvent = card[effectEventKey];
+            if (!cardEvent) {
+                return;
+            }
+
+            const ability = cardEvent.ability;
+            if (ability && passesChance(cardEvent.chance)) {
                 dispatch(
-                    updateBattle({
-                        hand: getState().battle.hand.map((card: CombatAbility) => {
-                            return applyAbilityEventEffects({
-                                event: card[effectEventKey],
-                                ability: card,
-                                context,
-                            });
-                        }),
+                    useAbility({
+                        ability: card[effectEventKey].ability,
+                        actorId: source?.actorId,
+                        isProc: true,
+                        context,
                     })
                 );
             }
-        }
+        });
+
+        const applyEffects = (pileName: CardPileType) => {
+            const pile = getState().battle[pileName];
+
+            return pile.map((card: CombatAbility) => {
+                const event: AbilityEvent = card[effectEventKey];
+                if (!event || (event?.inPile && !event.inPile.includes(pileName))) {
+                    return card;
+                }
+
+                return applyAbilityEventEffects({
+                    event,
+                    ability: card,
+                    context,
+                });
+            });
+        };
+
+        dispatch(
+            updateBattle({
+                hand: applyEffects("hand"),
+                deck: applyEffects("deck"),
+                discard: applyEffects("discard"),
+                depleted: applyEffects("depleted"),
+            })
+        );
     };
 };

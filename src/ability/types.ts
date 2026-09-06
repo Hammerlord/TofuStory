@@ -841,6 +841,8 @@ export interface AbilityEvent {
     conditions?: Condition[];
     // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
     mode?: "random-pick";
+    // If supplied, the ability event can only apply if the card is located in the specified card piles (hand, deck, etc.)
+    inPile?: CardPileType[];
 }
 
 export interface Ability {
@@ -971,6 +973,7 @@ export interface AbilityEffect {
     maxApplications?: number;
     // Whether this effect should be cleared if the card is discarded. True by default.
     removeOnDiscard?: boolean;
+    removeOnPlay?: boolean;
     reusable?: boolean; // The card becomes reusable while this effect persists.
     isLocked?: boolean; // The card becomes unplayable.
     highlightCard?: boolean; // A visual effect that gives the card a yellow border (the visual effect for a passing condition).

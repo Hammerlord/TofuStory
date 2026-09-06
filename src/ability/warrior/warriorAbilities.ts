@@ -2802,6 +2802,7 @@ export const shieldCharge: Ability = {
         abilityEffects: [
             {
                 resourceCost: -1,
+                maxApplications: 1,
                 reusable: true,
                 highlightCard: true,
             },
