@@ -33,6 +33,8 @@ const airBubbleCard: Ability = {
     resourceCost: 0,
     image: TwinklingOrbImage,
     depletedOnUse: true,
+    description: "Gain {{{ _resource_ }}}. Draw a card.",
+    overrideBodyText: true,
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -121,6 +123,7 @@ const dyleRealGarbage2: Minion = {
 export const harpoonCard: Ability = {
     name: "Harpoon",
     resourceCost: 0,
+    overrideBodyText: true,
     description: "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> against {{{ _armor_ }}} targets.",
     isUnique: true,
     image: HarpoonGunImage,
