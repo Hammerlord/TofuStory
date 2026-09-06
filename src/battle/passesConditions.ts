@@ -71,29 +71,7 @@ export const passesConditions = ({
 }): boolean => {
     const passesCondition = (condition: Condition) => {
         // Silence does not affect conditions, but should it?
-        const {
-            numBuffs,
-            numDebuffs,
-            hasEffectType,
-            hasEffectClass,
-            hasEffect,
-            healthPercentage,
-            resourcePercentage,
-            armor,
-            comparator,
-            calculationTarget,
-            name,
-            proximity,
-            isElite,
-            numAbilitiesUsed,
-            sourceType,
-            HP,
-            numFriendly,
-            otherCalculationTarget,
-            property,
-            value,
-            filters,
-        } = condition;
+        const { comparator, calculationTarget, property, value } = condition;
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
             return passesTriggerSourceCondition({ condition, context });
@@ -122,212 +100,8 @@ export const passesConditions = ({
             effectOwner = effectOwner[0];
         }
 
-        // Reverse to get the order of most recent to least
-        const sourceChain = [...(context?.sourceChain || [])].reverse();
-        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
-
         const checkPass = (calcTarget: CombatantInfo) => {
-            const { combatant, index, friendly = [] } = calcTarget || {};
-            if (!combatant) {
-                return false;
-            }
-
-            if (otherCalculationTarget) {
-                let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType) as
-                    | CombatantInfo
-                    | CombatantInfo[];
-                if (!otherCalcTargets) {
-                    return false;
-                }
-
-                if (!Array.isArray(otherCalcTargets)) {
-                    otherCalcTargets = [otherCalcTargets];
-                }
-
-                const prop = otherCalculationTarget.property;
-                if (
-                    otherCalcTargets.some(
-                        (targetInfo) => !passesValueComparison({ val: combatant[prop], otherVal: targetInfo?.combatant[prop], comparator })
-                    )
-                ) {
-                    return false;
-                }
-            }
-
-            if (
-                healthPercentage !== undefined &&
-                !passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator })
-            ) {
-                return false;
-            }
-
-            if (armor !== undefined && !passesValueComparison({ val: combatant.armor, otherVal: armor, comparator })) {
-                return false;
-            }
-
-            const procId = (proc as CombatEffect)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
-            const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
-
-            if (hasEffectType !== undefined) {
-                if (comparator === "not") {
-                    if (!otherEffects.every(({ type }) => !hasEffectType.includes(type))) {
-                        return false;
-                    }
-                } else if (!otherEffects.some(({ type }) => hasEffectType.includes(type))) {
-                    return false;
-                }
-            }
-
-            if (hasEffectClass !== undefined) {
-                if (comparator === "not") {
-                    if (!otherEffects.every(({ class: effectClass }) => effectClass !== hasEffectClass)) {
-                        return false;
-                    }
-                } else if (!otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass)) {
-                    return false;
-                }
-            }
-
-            if (hasEffect) {
-                if (comparator === "not") {
-                    if (!otherEffects.every(({ name }) => name !== hasEffect)) {
-                        return false;
-                    }
-                } else if (!otherEffects.some(({ name }) => name === hasEffect)) {
-                    return false;
-                }
-            }
-
-            if (typeof numDebuffs === "number") {
-                const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.DEBUFF).length;
-
-                if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numDebuffs, comparator })) {
-                    return false;
-                }
-            }
-
-            if (typeof numBuffs === "number") {
-                const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.BUFF).length;
-
-                if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numBuffs, comparator })) {
-                    return false;
-                }
-            }
-
-            if (name) {
-                const names = Array.isArray(name) ? name : [name];
-                if (names.every((n: string) => !passesValueComparison({ val: combatant.name, otherVal: n, comparator }))) {
-                    return false;
-                }
-            }
-
-            if (proximity !== undefined) {
-                const effectOwnerIndex = (effectOwner as CombatantInfo)?.index;
-                if (effectOwnerIndex === undefined || index === undefined) {
-                    return false;
-                }
-
-                if (!passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator })) {
-                    return false;
-                }
-            }
-
-            if (resourcePercentage !== undefined) {
-                if (
-                    !passesValueComparison({
-                        val: combatant.resources / getMaxResources(combatant),
-                        otherVal: resourcePercentage,
-                        comparator,
-                    })
-                ) {
-                    return false;
-                }
-            }
-
-            if (HP !== undefined) {
-                if (
-                    !passesValueComparison({
-                        val: combatant.HP,
-                        otherVal: HP,
-                        comparator,
-                    })
-                ) {
-                    return false;
-                }
-            }
-
-            if (numAbilitiesUsed !== undefined) {
-                const { amount: required = numAbilitiesUsed, type = [] } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
-                const abilityMatchesType = (ability: Ability) => {
-                    return !type || ability?.actions?.some((action: Action) => type.some((t) => t === action.type));
-                };
-
-                const used = combatant.abilityHistory.filter(abilityMatchesType).length;
-                const sourceMatchesType = !abilitySource?.source || abilityMatchesType(abilitySource?.source as Ability);
-
-                if (
-                    !passesValueComparison({
-                        val: used,
-                        otherVal: required,
-                        comparator,
-                    }) ||
-                    !sourceMatchesType
-                ) {
-                    return false;
-                }
-            }
-
-            if (sourceType !== undefined) {
-                if (
-                    !passesValueComparison({
-                        val: context?.sourceChain?.at(-1)?.type,
-                        otherVal: sourceType,
-                        comparator,
-                    })
-                ) {
-                    return false;
-                }
-            }
-
-            if (isElite !== undefined && Boolean(combatant.isBoss || combatant.isElite) !== isElite) {
-                return false;
-            }
-
-            if (numFriendly !== undefined) {
-                const calculatedNumFriendly = friendly.filter((combatant) => {
-                    if (!combatant?.HP) {
-                        return false;
-                    }
-
-                    if (filters) {
-                        return filters.some((filter) => {
-                            const { property, comparator, value } = filter;
-                            return passesValueComparison({ val: combatant[property], otherVal: value, comparator });
-                        });
-                    }
-
-                    return true;
-                }).length;
-
-                if (
-                    !passesValueComparison({
-                        val: calculatedNumFriendly,
-                        otherVal: numFriendly,
-                        comparator,
-                    })
-                ) {
-                    return false;
-                }
-            }
-
-            if (property !== undefined) {
-                const propertyVal = _.get(combatant, property);
-                if (!passesValueComparison({ val: propertyVal, otherVal: value, comparator })) {
-                    return false;
-                }
-            }
-
-            return true;
+            return passesCombatantCondition({ condition, calcTarget, getCalculationTarget, context, proc, effectOwner });
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
@@ -453,6 +227,250 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
             `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`
         );
         return false;
+    }
+
+    return true;
+};
+
+const passesCombatantCondition = ({
+    condition,
+    calcTarget,
+    getCalculationTarget,
+    context,
+    proc,
+    effectOwner,
+}: {
+    condition: Condition;
+    calcTarget?: CombatantInfo;
+    getCalculationTarget;
+    context?: ActionContext;
+    effectOwner?: CombatantInfo;
+    proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" };
+}) => {
+    const { combatant, index, friendly = [] } = calcTarget || {};
+    if (!combatant) {
+        return false;
+    }
+
+    const {
+        numBuffs,
+        numDebuffs,
+        hasEffectType,
+        hasEffectClass,
+        hasEffect,
+        healthPercentage,
+        resourcePercentage,
+        armor,
+        comparator,
+        name,
+        proximity,
+        isElite,
+        numAbilitiesUsed,
+        sourceType,
+        HP,
+        numFriendly,
+        otherCalculationTarget,
+        property,
+        value,
+        filters,
+    } = condition;
+
+    if (otherCalculationTarget) {
+        let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType) as
+            | CombatantInfo
+            | CombatantInfo[];
+        if (!otherCalcTargets) {
+            return false;
+        }
+
+        if (!Array.isArray(otherCalcTargets)) {
+            otherCalcTargets = [otherCalcTargets];
+        }
+
+        const prop = otherCalculationTarget.property;
+        if (
+            otherCalcTargets.some(
+                (targetInfo) => !passesValueComparison({ val: combatant[prop], otherVal: targetInfo?.combatant[prop], comparator })
+            )
+        ) {
+            return false;
+        }
+    }
+
+    if (
+        healthPercentage !== undefined &&
+        !passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator })
+    ) {
+        return false;
+    }
+
+    if (armor !== undefined && !passesValueComparison({ val: combatant.armor, otherVal: armor, comparator })) {
+        return false;
+    }
+
+    const procId = (proc as CombatEffect)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
+    const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
+
+    if (hasEffectType !== undefined) {
+        if (comparator === "not") {
+            if (!otherEffects.every(({ type }) => !hasEffectType.includes(type))) {
+                return false;
+            }
+        } else if (!otherEffects.some(({ type }) => hasEffectType.includes(type))) {
+            return false;
+        }
+    }
+
+    if (hasEffectClass !== undefined) {
+        if (comparator === "not") {
+            if (!otherEffects.every(({ class: effectClass }) => effectClass !== hasEffectClass)) {
+                return false;
+            }
+        } else if (!otherEffects.some(({ class: effectClass }) => effectClass === hasEffectClass)) {
+            return false;
+        }
+    }
+
+    if (hasEffect) {
+        if (comparator === "not") {
+            if (!otherEffects.every(({ name }) => name !== hasEffect)) {
+                return false;
+            }
+        } else if (!otherEffects.some(({ name }) => name === hasEffect)) {
+            return false;
+        }
+    }
+
+    if (typeof numDebuffs === "number") {
+        const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.DEBUFF).length;
+
+        if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numDebuffs, comparator })) {
+            return false;
+        }
+    }
+
+    if (typeof numBuffs === "number") {
+        const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.BUFF).length;
+
+        if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numBuffs, comparator })) {
+            return false;
+        }
+    }
+
+    if (name) {
+        const names = Array.isArray(name) ? name : [name];
+        if (names.every((n: string) => !passesValueComparison({ val: combatant.name, otherVal: n, comparator }))) {
+            return false;
+        }
+    }
+
+    if (proximity !== undefined) {
+        const effectOwnerIndex = (effectOwner as CombatantInfo)?.index;
+        if (effectOwnerIndex === undefined || index === undefined) {
+            return false;
+        }
+
+        if (!passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator })) {
+            return false;
+        }
+    }
+
+    if (resourcePercentage !== undefined) {
+        if (
+            !passesValueComparison({
+                val: combatant.resources / getMaxResources(combatant),
+                otherVal: resourcePercentage,
+                comparator,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (HP !== undefined) {
+        if (
+            !passesValueComparison({
+                val: combatant.HP,
+                otherVal: HP,
+                comparator,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (numAbilitiesUsed !== undefined) {
+        const { amount: required = numAbilitiesUsed, type = [] } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
+        const abilityMatchesType = (ability: Ability) => {
+            return !type || ability?.actions?.some((action: Action) => type.some((t) => t === action.type));
+        };
+
+        // Reverse to get the order of most recent to least
+        const sourceChain = [...(context?.sourceChain || [])].reverse();
+        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
+        const used = combatant.abilityHistory.filter(abilityMatchesType).length;
+        const sourceMatchesType = !abilitySource?.source || abilityMatchesType(abilitySource?.source as Ability);
+
+        if (
+            !passesValueComparison({
+                val: used,
+                otherVal: required,
+                comparator,
+            }) ||
+            !sourceMatchesType
+        ) {
+            return false;
+        }
+    }
+
+    if (sourceType !== undefined) {
+        if (
+            !passesValueComparison({
+                val: context?.sourceChain?.at(-1)?.type,
+                otherVal: sourceType,
+                comparator,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (isElite !== undefined && Boolean(combatant.isBoss || combatant.isElite) !== isElite) {
+        return false;
+    }
+
+    if (numFriendly !== undefined) {
+        const calculatedNumFriendly = friendly.filter((combatant) => {
+            if (!combatant?.HP) {
+                return false;
+            }
+
+            if (filters) {
+                return filters.some((filter) => {
+                    const { property, comparator, value } = filter;
+                    return passesValueComparison({ val: combatant[property], otherVal: value, comparator });
+                });
+            }
+
+            return true;
+        }).length;
+
+        if (
+            !passesValueComparison({
+                val: calculatedNumFriendly,
+                otherVal: numFriendly,
+                comparator,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (property !== undefined) {
+        const propertyVal = _.get(combatant, property);
+        if (!passesValueComparison({ val: propertyVal, otherVal: value, comparator })) {
+            return false;
+        }
     }
 
     return true;
