@@ -90,7 +90,7 @@ export const handleAddCardsToDiscard = ({
 }: {
     addCardsToDiscard: Ability[];
     ownedCards: { [cardName: string]: boolean };
-    context: ActionContext;
+    context?: ActionContext;
 }) => {
     return (dispatch, getState) => {
         let cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);

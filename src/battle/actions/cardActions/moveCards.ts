@@ -131,9 +131,9 @@ export const handleRetrieveDepletedCards = ({
     return (dispatch, getState) => {
         const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
         // Prevent eg. Bag From Beyond from pulling itself back out (it can still pull out other Bags From Beyond)
-        const eligible = shuffle([...getState().battle.depleted.filter((card) => card.instanceId !== sourceAbilityId)]);
+        const eligible = shuffle([...getState().battle.depleted.filter((card: CombatAbility) => card.instanceId !== sourceAbilityId)]);
         if (eligible.length > 0) {
-            const cardsToHand = [];
+            const cardsToHand: CombatAbility[] = [];
             Array.from({ length: amount }).forEach(() => {
                 const retrieved = eligible.pop();
 
@@ -145,7 +145,7 @@ export const handleRetrieveDepletedCards = ({
             dispatch(
                 updateBattle({
                     hand: [...getState().battle.hand, ...cardsToHand],
-                    depleted: getState().battle.depleted.filter((card) =>
+                    depleted: getState().battle.depleted.filter((card: CombatAbility) =>
                         cardsToHand.every(({ instanceId }) => instanceId !== card.instanceId)
                     ),
                 })

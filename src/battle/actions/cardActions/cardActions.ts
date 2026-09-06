@@ -60,7 +60,7 @@ export const checkCardActions = ({
             discardCardsFromHand,
             playCards,
         } = action;
-        const source = context?.sourceChain.at(-1);
+        const source = context?.sourceChain?.at(-1);
 
         if (playCards) {
             dispatch(handleAutoPlayCards(playCards, context));
@@ -190,7 +190,7 @@ const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) 
             })
         );
 
-        cardsToPlay.forEach((ability) => {
+        cardsToPlay.forEach((ability: CombatAbility) => {
             // Cards played from an action are considered procs, atm for the sole purpose of not allowing Charged to proc from Yellow Hat.
             dispatch(usePlayerAbility({ ability, isProc: true, context }));
             dispatch(handleDiscardAfterUse(ability));
@@ -234,7 +234,7 @@ export const handleDrawOriginalAbility = ({
         let foundCard;
         if (!found) {
             // This card can still enter the hand even if it was supposed to be ephemeral. Look up the player's ability history to see if it's there.
-            const player = playerSide.find((combatant) => combatant?.isPlayer);
+            const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
             const card = player.abilityHistory.find((ability: CombatAbility) => ability.instanceId === effect.originalAbilityId);
             if (!card) {
                 return;

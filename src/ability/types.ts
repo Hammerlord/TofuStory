@@ -371,7 +371,7 @@ export interface Bonus {
     healing?: number;
     armor?: number;
     effects?: Effect[];
-    drawCards?;
+    drawCards?: CardsAction;
     area?: number;
     destroyArmor?: number;
     resources?: number;
@@ -628,6 +628,13 @@ export type ActionAnimation = {
     options?: AnimationOptions;
 };
 
+export type CardsAction = {
+    amount: number;
+    effects?: AbilityEffect[];
+    filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
+    bonus?: CardBonus[];
+};
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -690,12 +697,7 @@ export type Action = {
         effects?: AbilityEffect[];
         filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
     };
-    drawCards?: {
-        amount: number;
-        effects?: AbilityEffect[];
-        filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
-        bonus?: CardBonus[];
-    };
+    drawCards?: CardsAction;
     // Auto-play the top `amount` cards from your deck/discard
     playCards?: AutoPlayCards;
     selectCards?: SelectCards;
@@ -719,7 +721,7 @@ export type Action = {
         effects?: Effect[];
         icon?: string;
         animation?: ANIMATION_TYPES;
-        animationOptions?;
+        animationOptions?: AnimationOptions;
         playbackTime?: number;
         bonus?: Bonus;
     };
@@ -770,65 +772,26 @@ export interface AddCardUpgradeOptions {
     appendCards?: number;
 }
 
-export interface AbilityUpgrade {
-    description?: string;
-    preemptive?: boolean;
-    resourceCost?: number;
-    depletedOnUse?: boolean;
-    minion?;
-    selectCards?;
-    onDraw?;
+export type ActionUpgrade = {
+    [key in keyof Action]?: any;
+} & {
+    addCardOptions?: AddCardUpgradeOptions;
+    addCardsToDeckOptions?: AddCardUpgradeOptions;
+    selectCardOptions?: AddCardUpgradeOptions;
+};
+
+export type AbilityUpgrade = {
+    [key in keyof Omit<Ability, "actions" | "upgrades">]?: any;
+} & {
+    actions?: ActionUpgrade[];
     addActions?: {
-        // If true, instead of .pushing to actions, the action will be prepended
         prepend?: boolean;
         actions: Action[];
     };
-    // Eg. the first item maps to action[0]
-    // See Action interface for comprehensive available properties
-    actions?: {
-        // Numbers should be amount to increase by, not absolute value
-        damage?: number;
-        flatDamage?: number;
-        healing?: number;
-        secondaryDamage?: number;
-        resources?: number;
-        armor?: number;
-        numTargets?: number;
-        // If provided, maps to action[0].effects[0]
-        effects?: {
-            [key in EFFECT_EVENT_KEYS]?: {
-                ability?;
-            };
-        }[] &
-            { attackPower?: number; stacks?: number; duration?: number }[];
-        drawCards?: {
-            amount?: number;
-            effects?: AbilityEffect[];
-            filters?: ACTION_TYPES[]; // Force it to draw a certain type of card
-            bonus?: CardBonus[];
-        };
-
-        area?: number;
-
-        selectCards?;
-        addCards?;
-        addCardsToDeck?;
-        addCardsToDiscard?;
-        bonus?: { [key in keyof Bonus]?: Bonus[key] } | { [key in keyof Bonus]?: Bonus[key] }[];
-        radiate?;
-        multiplier?;
-
-        addCardOptions?: AddCardUpgradeOptions;
-        addCardsToDeckOptions?: AddCardUpgradeOptions;
-        selectCardOptions?: AddCardUpgradeOptions; // Only applicable if the card has selectCards.cards
-        autoCastAbilities?;
-        secondaryAction?;
-        moveCards?;
-        summon?;
-        addLastPlayedCards?;
-        chance?;
-    }[];
-}
+    addCardOptions?: AddCardUpgradeOptions;
+    addCardsToDeckOptions?: AddCardUpgradeOptions;
+    selectCardOptions?: AddCardUpgradeOptions;
+};
 
 export interface AbilityEvent {
     // Percentage-based likelihood of the AbilityEvent proccing (0 - 1).

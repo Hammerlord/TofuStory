@@ -5,6 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
+    "strict": true,
 
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

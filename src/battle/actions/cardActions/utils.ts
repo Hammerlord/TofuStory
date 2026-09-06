@@ -53,7 +53,7 @@ export const applyAbilityEventEffects = ({
     context,
     bonusChance,
 }: {
-    event: AbilityEvent;
+    event?: AbilityEvent | undefined;
     ability: CombatAbility;
     context?: ActionContext;
     bonusChance?: number;
