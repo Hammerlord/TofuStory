@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { Action } from "../ability/types";
 import { MesoCoinImage, MesoImage, MesoStackImage } from "../images";
 import { Combatant } from "./types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { playTossUpAnimation } from "./animations";
 import { createUseStyles } from "react-jss";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
@@ -36,31 +36,77 @@ const Coin = ({
     combatant: Combatant;
     isDeathBlow: boolean;
 }) => {
-    let amount = action?.mesos || action?.stealMesos || statChanges?.mesos || (isDeathBlow && combatant?.mesos);
-    amount = Math.abs(amount);
-
-    const ref = useRef(null);
     const classes = useStyles();
 
+    const amount = Math.abs(action?.mesos || action?.stealMesos || statChanges?.mesos || (isDeathBlow && combatant?.mesos) || 0);
+
+    const [coins, setCoins] = useState<number[]>([]);
+    const nextCoinId = useRef(0);
+
     useEffect(() => {
-        if (!amount || !ref.current) {
+        if (!amount) {
             return;
         }
 
         const timeout = setTimeout(() => {
-            playTossUpAnimation({ from: ref.current, spin: false, flash: false });
+            setCoins((current) => [...current, nextCoinId.current++]);
         }, playbackDelay || 500);
 
         return () => {
             clearTimeout(timeout);
         };
-    }, [amount]);
+    }, [amount, playbackDelay]);
 
     if (!amount) {
-        return;
+        return null;
     }
 
     const moneyImage = getMoneyImage(amount);
+
+    return (
+        <>
+            {coins.map((coinId) => (
+                <CoinInstance
+                    key={coinId}
+                    moneyImage={moneyImage}
+                    classes={classes}
+                    onComplete={() => {
+                        setCoins((current) => current.filter((id) => id !== coinId));
+                    }}
+                />
+            ))}
+        </>
+    );
+};
+
+const CoinInstance = ({
+    moneyImage,
+    classes,
+    onComplete,
+}: {
+    moneyImage: string;
+    classes: ReturnType<typeof useStyles>;
+    onComplete: () => void;
+}) => {
+    const ref = useRef<HTMLImageElement>(null);
+
+    useEffect(() => {
+        if (!ref.current) {
+            return;
+        }
+
+        const animations = playTossUpAnimation({
+            from: ref.current,
+            spin: false,
+            flash: false,
+        });
+
+        animations.forEach((animation) => {
+            if (animation?.finished) {
+                animation.finished.then(onComplete).catch(() => {});
+            }
+        });
+    }, [onComplete]);
 
     return (
         <Box
