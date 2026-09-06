@@ -12,10 +12,10 @@ import {
     Effect,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { BattleState } from "./reducer";
-import { CombatantInfo, TRIGGER_SOURCE_TYPES, ActionContext, TriggerSource } from "./types";
-import { getMaxHP } from "./utils";
 import { getMaxResources } from "./actions/playerAbility";
+import { BattleState } from "./reducer";
+import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./types";
+import { getMaxHP } from "./utils";
 
 export const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: Comparator }): boolean => {
     switch (comparator) {
@@ -129,7 +129,6 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
     const isProc = context?.isProc;
     // Reverse to get the order of most recent to least
     const sourceChain = [...(context?.sourceChain || [])].reverse();
-    const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
 
     if (notProc !== undefined) {
         if (notProc && isProc) {
@@ -138,6 +137,7 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
     }
 
     if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
+        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
         const sourcePayload = abilitySource?.source || {};
         const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
 
@@ -158,9 +158,8 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
             return isOffense === isOffensiveAbility(sourcePayload as CombatAbility);
         }
 
-        if (property !== undefined) {
-            const propertyVal = _.get(sourcePayload, property);
-            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        if (!passesPropertyCheck({ property, object: sourcePayload, value, comparator })) {
+            return false;
         }
 
         if (hasAbilityEffectName !== undefined) {
@@ -172,10 +171,8 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
 
     if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
         const actionSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ACTION);
-        const sourcePayload = actionSource?.source || {};
-        if (property !== undefined) {
-            const propertyVal = _.get(sourcePayload, property);
-            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        if (!passesPropertyCheck({ property, object: actionSource?.source, value, comparator })) {
+            return false;
         }
 
         return true;
@@ -206,9 +203,8 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
             }
         }
 
-        if (property !== undefined) {
-            const propertyVal = _.get(sourcePayload, property);
-            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+        if (!passesPropertyCheck({ property, object: sourcePayload, value, comparator })) {
+            return false;
         }
 
         if (name) {
@@ -466,12 +462,32 @@ const passesCombatantCondition = ({
         }
     }
 
-    if (property !== undefined) {
-        const propertyVal = _.get(combatant, property);
-        if (!passesValueComparison({ val: propertyVal, otherVal: value, comparator })) {
-            return false;
-        }
+    if (!passesPropertyCheck({ property, object: combatant, value, comparator })) {
+        return false;
     }
 
     return true;
+};
+
+const passesPropertyCheck = ({
+    property,
+    object,
+    value,
+    comparator,
+}: {
+    property: string | undefined;
+    object?: object;
+    value: any;
+    comparator: Comparator;
+}) => {
+    if (property === undefined) {
+        return true;
+    }
+
+    if (!object) {
+        return false;
+    }
+
+    const propertyVal = _.get(object, property);
+    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
 };
