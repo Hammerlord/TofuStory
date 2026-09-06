@@ -7,13 +7,11 @@ import { ActionContext, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; context: ActionContext }) => {
     return (dispatch, getState) => {
         const { from, to, amount = 1, moveType, filters } = moveCards;
-        const battle: BattleState = getState().battle;
-        const toPile: CombatAbility[] = battle[to]?.slice() || [];
         if (from === to) {
             return;
         }
@@ -62,12 +60,14 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
                     return;
                 }
 
+                const battle: BattleState = getState().battle;
                 const pile = battle[fromPileName];
                 const { updatedFromPile, movedCards } = moveFromPile(pile);
                 updatedCardPiles[fromPileName] = updatedFromPile;
                 cardsToMove.push(...movedCards);
             });
         } else {
+            const battle: BattleState = getState().battle;
             const fromPile = battle[from];
             const { updatedFromPile, movedCards } = moveFromPile(fromPile);
             updatedCardPiles[from] = updatedFromPile;
@@ -78,13 +78,6 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
             return;
         }
 
-        if (moveType === "append") {
-            toPile.push(...cardsToMove);
-        } else {
-            cardsToMove.reverse();
-            toPile.unshift(...cardsToMove);
-        }
-
         dispatch(
             enqueueEvent({
                 newCards: cardsToMove,
@@ -93,16 +86,36 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
             })
         );
 
+        if (to === CARD_PILE_TYPES.HAND) {
+            if (moveType !== "append") {
+                cardsToMove.reverse();
+            }
+
+            // TODO this doesn't support append
+            dispatch(addCardsToHand(cardsToMove));
+            triggerAddCardsToHandEvent(cardsToMove.length, context);
+            dispatch(
+                updateBattle({
+                    ...updatedCardPiles,
+                })
+            );
+            return;
+        }
+
+        const toPile: CombatAbility[] = getState().battle[to]?.slice();
+        if (moveType === "append") {
+            toPile.push(...cardsToMove);
+        } else {
+            cardsToMove.reverse();
+            toPile.unshift(...cardsToMove);
+        }
+
         dispatch(
             updateBattle({
                 ...updatedCardPiles,
                 [to]: toPile,
             })
         );
-
-        if (to === CARD_PILE_TYPES.HAND) {
-            triggerAddCardsToHandEvent(cardsToMove.length, context);
-        }
     };
 };
 
