@@ -48,7 +48,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const maxArea = 5;
+const maxArea = 4;
 
 const Area = ({
     ability,

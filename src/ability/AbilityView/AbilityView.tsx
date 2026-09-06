@@ -273,6 +273,26 @@ interface AbilityViewProps {
     highlightArmor?: boolean;
 }
 
+const LevelView = ({ level }: { level: number }) => {
+    level = level || 1;
+    const classes = useStyles();
+
+    if (level === 1) {
+        return null;
+    }
+
+    if (level > 10) {
+        return <span className={classes.abilityLevel}>lvl {level}</span>;
+    }
+    return (
+        <span className={classes.abilityLevel}>
+            {Array.from({ length: level })
+                .map(() => "⋆")
+                .join("")}
+        </span>
+    );
+};
+
 const AbilityView = forwardRef(
     (
         {
@@ -576,14 +596,7 @@ const AbilityView = forwardRef(
                                         uncommon: ability.rarity === RARITIES.UNCOMMON,
                                     })}
                                 >
-                                    {name}{" "}
-                                    {ability.level > 1 && (
-                                        <span className={classes.abilityLevel}>
-                                            {Array.from({ length: ability.level })
-                                                .map(() => "⋆")
-                                                .join("")}
-                                        </span>
-                                    )}
+                                    {name} <LevelView level={ability.level} />
                                 </span>
                                 <AbilityResourceIcon
                                     ability={ability}
