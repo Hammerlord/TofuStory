@@ -40,7 +40,11 @@ const AbilityTypeView = ({ targetType, type, minion }: { targetType: TARGET_TYPE
     } else if (type === ACTION_TYPES.HINDER) {
         typeLabel = "Hindrance";
     } else if (targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE) {
-        typeLabel = "Offensive";
+        if (type === ACTION_TYPES.EFFECT) {
+            typeLabel = "Offense - Effect";
+        } else {
+            typeLabel = "Offense - Attack";
+        }
     } else if (targetType === TARGET_TYPES.FRIENDLY) {
         typeLabel = "Support - Ally";
     } else if (targetType === TARGET_TYPES.SELF) {
