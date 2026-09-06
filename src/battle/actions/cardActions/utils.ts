@@ -3,7 +3,8 @@ import { passesChance, getRandomItem } from "../../../utils";
 import { passesConditions } from "../../passesConditions";
 import { ActionContext } from "../../types";
 
-export const prepareForDiscard = (cards: CombatAbility[]) => {
+// isPlayed: set to true if the card was discarded after being played.
+export const prepareForDiscard = (cards: CombatAbility[], isPlayed: boolean = false) => {
     return cards
         .filter((ability: CombatAbility) => !ability.removeAfterTurn)
         .map((ability: CombatAbility) => {
@@ -12,8 +13,16 @@ export const prepareForDiscard = (cards: CombatAbility[]) => {
                 ability: {
                     ...ability,
                     effects: (ability.effects || []).filter((e) => {
-                        const { removeOnDiscard = true } = e;
-                        return !removeOnDiscard;
+                        const { removeOnDiscard = true, removeOnPlay = true } = e;
+                        if (removeOnDiscard) {
+                            return true;
+                        }
+
+                        if (removeOnPlay) {
+                            return isPlayed;
+                        }
+
+                        return false;
                     }),
                 },
             });

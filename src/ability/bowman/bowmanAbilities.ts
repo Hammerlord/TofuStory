@@ -1572,26 +1572,43 @@ export const roar: Ability = {
 
 export const snipe: Ability = {
     name: "Snipe",
-    resourceCost: 2,
+    resourceCost: 5,
     image: SnipeImage,
-    description: "+ {{{ _damage_ }}} equal to total attack damage of other {{{ _offense_ }}} cards in your hand.",
+    description:
+        "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim.</b> Whenever you play an active <b>Critical</b>, this costs <b>{{ onAbility.abilityEffects.0.resourceCost }} {{{ _resource_ }}}</b> until played.",
     overrideBodyText: true,
     rarity: RARITIES.RARE,
+    onAbility: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                hasAbilityEffectName: CRITICAL_KEYWORD,
+            },
+        ],
+        abilityEffects: [
+            {
+                resourceCost: -1,
+                removeOnDiscard: false,
+                removeOnPlay: true,
+            },
+        ],
+    },
     actions: [
         {
-            damage: 0,
+            damage: 20,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
-
-            bonus: {
-                damage: 1,
-                multiplier: {
-                    type: MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND,
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                },
+            secondaryAction: {
+                effects: [
+                    {
+                        ...aimEffect,
+                        stacks: 10,
+                    },
+                ],
             },
         },
     ],
@@ -1599,7 +1616,14 @@ export const snipe: Ability = {
         {
             actions: [
                 {
-                    damage: 3,
+                    damage: 7,
+                    secondaryAction: {
+                        effects: [
+                            {
+                                stacks: 3,
+                            },
+                        ],
+                    },
                 },
             ],
         },
@@ -2634,7 +2658,7 @@ export const concentrate: Ability = {
                 {
                     effects: [
                         {
-                            stacks: 4,
+                            stacks: 5,
                         },
                     ],
                 },

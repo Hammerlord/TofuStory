@@ -13,11 +13,10 @@ import { usePlayerAbility } from "../playerAbility";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
 import { handleDiscardAfterUse } from "./discardCards";
-import { prepareForDiscard } from "./utils";
 import { drawCards } from "./drawCards";
-import { applyAbilityEventEffects } from "./utils";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
+import { applyAbilityEventEffects } from "./utils";
 
 const { updateBattle, setNotification, addCardsToHand } = battleStateSlice?.actions || {};
 
