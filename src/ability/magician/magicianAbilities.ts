@@ -3439,8 +3439,8 @@ export const flameWall: Ability = {
 };
 
 export const boltTag: Ability = {
-    name: "Bolt Tag",
-    description: "Command a random summoned minion to attack.",
+    name: "Tag Bolt",
+    description: "Command a random minion to follow-up attack.",
     image: ChainLightningSpreadImage,
     rarity: RARITIES.COMMON,
     resourceCost: 1,
@@ -3455,12 +3455,11 @@ export const boltTag: Ability = {
                 rotate: -45,
                 rotateToFaceTarget: true,
             },
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.RANDOM_FRIENDLY,
-            excludeActor: true,
-            induceCombatantAttack: true,
+            secondaryAction: {
+                target: TARGET_TYPES.RANDOM_FRIENDLY,
+                excludeActor: true,
+                induceCombatantAttack: true,
+            },
         },
     ],
     upgrades: [

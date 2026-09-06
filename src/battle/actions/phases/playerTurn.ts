@@ -59,7 +59,7 @@ const minionAutoAttack = () => {
         const { playerSide, round } = getState().battle;
 
         const playbackCollectorInstance = playbackCollector();
-        const moveOrderIds = getCombatantMoveOrder({ combatants: playerSide, round });
+        const moveOrderIds = getCombatantMoveOrder({ combatants: playerSide, round, ignoreSupport: true });
         moveOrderIds.forEach((id: string) => {
             const combatantInfo = findCombatantData(getState().battle, id);
             const combatant = combatantInfo?.combatant;

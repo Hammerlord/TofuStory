@@ -5,7 +5,7 @@ import { CrossedSwordsImage } from "../../images";
 import { shuffle } from "../../utils";
 import { INDUCED_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
-import { TRIGGER_SOURCE_TYPES } from "../types";
+import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
 import { isStunnedOrFrozen } from "../utils";
 import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
@@ -28,11 +28,34 @@ export const checkInduce = ({
 }) => {
     return (dispatch, getState) => {
         const { induceCombatant, induceCombatantAttack } = action;
+
+        const getInitialTargetIndex = (combatantData: CombatantInfo): number | undefined => {
+            const combatant = combatantData?.combatant;
+            const enemyAutoTargeting = combatant?.targeting?.actionTargets?.[0];
+            if (enemyAutoTargeting) {
+                return enemyAutoTargeting.index;
+            }
+
+            if (Array.isArray(parentContext?.sourceChain)) {
+                // Try to target the same enemy struck earlier in the chain, if applicable
+                for (const source of parentContext.sourceChain) {
+                    if (source?.type !== TRIGGER_SOURCE_TYPES.ABILITY) {
+                        continue;
+                    }
+
+                    const targetData = findCombatantData(getState().battle, source.targetId);
+                    if (typeof targetData?.index === "number" && targetData?.friendlySide !== combatantData.friendlySide) {
+                        return targetData.index;
+                    }
+                }
+            }
+        };
+
         if (induceCombatant) {
             const { mode, action: actions } = induceCombatant;
 
             const handleInduceAction = (action) => {
-                if (mode === "random") {
+                if (mode === "standard") {
                     affectedTargetIds = shuffle(affectedTargetIds);
                 } else if (mode === "right-to-left") {
                     affectedTargetIds = affectedTargetIds.slice().reverse();
@@ -69,36 +92,39 @@ export const checkInduce = ({
                         battle: getState().battle,
                     });
 
-                    if (typeof index === "number") {
-                        dispatch(
-                            performAction({
-                                action,
-                                actorId: id,
-                                parentContext,
-                                selectedIndex: index,
-                                side,
-                            })
-                        );
-
-                        const context: ActionContext = {
-                            ...parentContext,
-                            name: "Induced Action",
-                            sourceChain: [
-                                ...(parentContext?.sourceChain || []),
-                                { actorId: id, source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
-                            ],
-                        };
-                        dispatch(
-                            onUseAbility({
-                                actorInfo: findCombatantData(getState().battle, id),
-                                context,
-                                ability: {
-                                    name: "Induced Ability",
-                                    actions: [action],
-                                },
-                            })
-                        );
+                    if (typeof index !== "number") {
+                        return;
                     }
+
+                    dispatch(
+                        performAction({
+                            action,
+                            actorId: id,
+                            parentContext,
+                            selectedIndex: index,
+                            side,
+                        })
+                    );
+
+                    const context: ActionContext = {
+                        ...parentContext,
+                        name: "Induced Action",
+                        sourceChain: [
+                            ...(parentContext?.sourceChain || []),
+                            { actorId: id, source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
+                        ],
+                    };
+
+                    dispatch(
+                        onUseAbility({
+                            actorInfo: findCombatantData(getState().battle, id),
+                            context,
+                            ability: {
+                                name: "Induced Ability",
+                                actions: [action],
+                            },
+                        })
+                    );
                 });
             };
 
@@ -111,7 +137,8 @@ export const checkInduce = ({
 
         if (induceCombatantAttack) {
             shuffle(affectedTargetIds).forEach((id) => {
-                const { combatant } = findCombatantData(getState().battle, id) || {};
+                const combatantData = findCombatantData(getState().battle, id);
+                const { combatant } = combatantData || {};
                 if (!combatant.HP || isStunnedOrFrozen(combatant)) {
                     return;
                 }
@@ -121,6 +148,8 @@ export const checkInduce = ({
                 dispatch(
                     useAbility({
                         ability: attackAbility,
+                        selectedIndex: getInitialTargetIndex(combatantData),
+                        side: combatantData.hostileSide,
                         actorId: id,
                         isProc: true,
                         context: parentContext,

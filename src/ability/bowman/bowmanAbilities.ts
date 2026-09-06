@@ -126,6 +126,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
+import { BullseyeIcon } from "../../images/icons";
 
 const bowmanAnimationOption = {
     rotateToFaceTarget: true,
@@ -1208,7 +1209,7 @@ export const coveringFire: Ability = {
 
 export const tagShot: Ability = {
     name: "Tag Shot",
-    description: "Command a random summoned minion to attack.",
+    description: "Command a random minion to follow-up attack.",
     rarity: RARITIES.COMMON,
     resourceCost: 1,
     image: HamstringImage,
@@ -1220,19 +1221,11 @@ export const tagShot: Ability = {
             animation: ANIMATION_TYPES.ONE_WAY,
             icon: AvengersArrowImage,
             animationOptions: bowmanAnimationOption,
-        },
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.RANDOM_FRIENDLY,
-            excludeActor: true,
-            induceCombatantAttack: true,
-            conditions: [
-                {
-                    numFriendly: 1, // Including the actor itself
-                    comparator: "gt",
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                },
-            ],
+            secondaryAction: {
+                target: TARGET_TYPES.RANDOM_FRIENDLY,
+                excludeActor: true,
+                induceCombatantAttack: true,
+            },
         },
     ],
     upgrades: [
@@ -1619,7 +1612,7 @@ export const lockOn: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     description:
-        "<b>Pierce.</b> Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> + <b>Priority</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>. Command a friendly unit to attack.</b>",
+        "<b>Pierce.</b> Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> <b>{{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>. Command a follow-up attack.</b>",
     actions: [
         {
             target: TARGET_TYPES.HOSTILE,
@@ -1633,6 +1626,8 @@ export const lockOn: Ability = {
                 },
                 {
                     name: "Locked On",
+                    icon: BullseyeIcon,
+                    description: "Auto attacks will prioritize this unit.",
                     type: EFFECT_TYPES.PRIORITY_TARGET,
                     class: EFFECT_CLASSES.DEBUFF,
                     bypassImmunity: true,

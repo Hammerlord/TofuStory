@@ -735,7 +735,7 @@ export type Action = {
     // When cast on a combatant, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     induceCombatant?: {
-        mode?: "random" | "left-to-right" | "right-to-left";
+        mode?: "standard" | "left-to-right" | "right-to-left";
         action: Action | Action[];
     };
     mesos?: number;
