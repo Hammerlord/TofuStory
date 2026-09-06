@@ -346,7 +346,7 @@ export interface Minion {
     bypassDisableTribute?: boolean;
 }
 
-export type Comparator = "eq" | "lt" | "gt" | "not" | "modulo" | "includes" | "not-includes";
+export type Comparator = "eq" | "lt" | "lte" | "gt" | "gte" | "not" | "modulo" | "includes" | "not-includes";
 
 export interface Multiplier {
     type: MULTIPLIER_TYPES;

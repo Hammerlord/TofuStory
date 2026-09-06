@@ -23,8 +23,12 @@ export const passesValueComparison = ({ val, otherVal, comparator }: { val: any;
             return val === otherVal;
         case "lt":
             return val < otherVal;
+        case "lte":
+            return val <= otherVal;
         case "gt":
             return val > otherVal;
+        case "gte":
+            return val >= otherVal;
         case "not":
             return val !== otherVal;
         case "modulo":
