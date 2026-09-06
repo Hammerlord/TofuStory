@@ -104,6 +104,12 @@ export const passesConditions = ({
         const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
 
         if (calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE) {
+            if (notProc !== undefined) {
+                if (notProc && isProc) {
+                    return false;
+                }
+            }
+
             if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
                 const sourcePayload = abilitySource?.source || {};
                 const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
@@ -117,12 +123,6 @@ export const passesConditions = ({
 
                 if (resourceCost !== undefined) {
                     if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
-                        return false;
-                    }
-                }
-
-                if (notProc !== undefined) {
-                    if (notProc && isProc) {
                         return false;
                     }
                 }
@@ -175,12 +175,6 @@ export const passesConditions = ({
                             return false;
                         }
                     } else if (effectClass !== hasEffectClass) {
-                        return false;
-                    }
-                }
-
-                if (notProc !== undefined) {
-                    if (notProc && isProc) {
                         return false;
                     }
                 }
