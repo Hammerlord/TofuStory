@@ -81,36 +81,36 @@ export const calculateDamage = ({
     let maximumDamage = action.maxDamage;
 
     if (isAttack && actor) {
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(
-            ({
+        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach((effect) => {
+            const {
                 attackPower = 0,
                 skillBonus = [],
                 excludeEffectOwner,
                 minimumAttackDamage = 0,
                 stacks = 1,
                 multiplier: multiplierConfig,
-            }) => {
-                if (excludeEffectOwner) {
-                    return;
-                }
-
-                const effectMultiplier = getMultiplier({
-                    actor,
-                    target,
-                    allTargets: [target],
-                    multiplier: multiplierConfig,
-                    // TODO needs access to deck, hand, discard for multiplier to work for those.
-                    deck: [],
-                    hand: [],
-                    discard: [],
-                });
-                totalSkillBonus += getSkillBonusDamage({ ability: actionParent as CombatAbility, skillBonus }) * stacks;
-                totalAttackPower += attackPower * effectMultiplier * stacks;
-                if (minimumAttackDamage > minimumDamage) {
-                    minimumDamage = minimumAttackDamage;
-                }
+            } = effect;
+            if (excludeEffectOwner) {
+                return;
             }
-        );
+
+            const effectMultiplier = getMultiplier({
+                actor,
+                target,
+                allTargets: [target],
+                multiplier: multiplierConfig,
+                // TODO needs access to deck, hand, discard for multiplier to work for those.
+                deck: [],
+                hand: [],
+                discard: [],
+            });
+
+            totalSkillBonus += getSkillBonusDamage({ ability: actionParent as CombatAbility, skillBonus }) * stacks;
+            totalAttackPower += attackPower * effectMultiplier * stacks;
+            if (minimumAttackDamage > minimumDamage) {
+                minimumDamage = minimumAttackDamage;
+            }
+        });
     }
 
     let totalDefDown = 0;

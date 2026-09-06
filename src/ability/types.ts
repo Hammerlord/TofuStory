@@ -425,8 +425,6 @@ export interface Condition {
     name?: string | string[];
     /** How far away the target/actor are from each other. Similar to area. 0 = directly across from each other. */
     proximity?: number;
-    // Only applicable to source type action
-    area?: number;
     /** If the character is an elite enemy or boss */
     isElite?: boolean;
     numAbilitiesUsed?:

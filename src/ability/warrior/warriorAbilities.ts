@@ -717,7 +717,7 @@ export const sweepingReach: Ability = {
                             calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                             sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
                             property: "numTargets",
-                            comparator: "not",
+                            comparator: "eq",
                             value: undefined,
                         },
                     ],

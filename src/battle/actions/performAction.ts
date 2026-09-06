@@ -84,6 +84,8 @@ export const performAction = ({
 
         const source: TriggerSource = {
             ...parentSource,
+            source: action,
+            type: TRIGGER_SOURCE_TYPES.ACTION,
             actorId,
             targetId: combatants[selectedIndex]?.id || targetIds[0],
             allTargetIds: targetIds,

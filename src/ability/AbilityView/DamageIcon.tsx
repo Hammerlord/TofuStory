@@ -53,6 +53,8 @@ export const getDamageStatistics = ({
 
     const context: ActionContext = { name: "Damage Statistics", sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
     const withBonus = damageActions.map((action) => {
+        const actionContext = { ...context, sourceChain: [...context.sourceChain, { source: action, type: TRIGGER_SOURCE_TYPES.ACTION }] };
+
         return calculateBonus({
             action,
             actor: actorInfo,
@@ -62,7 +64,7 @@ export const getDamageStatistics = ({
             deck,
             hand,
             discard,
-            context,
+            context: actionContext,
         });
     });
 
@@ -88,7 +90,10 @@ export const getDamageStatistics = ({
 
         const context: ActionContext = {
             name: "Damage Statistics",
-            sourceChain: [{ source: parent, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+            sourceChain: [
+                { source: parent, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                { source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
+            ],
         };
 
         const damageProps = {

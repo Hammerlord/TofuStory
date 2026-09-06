@@ -3011,7 +3011,8 @@ export const forkOnAStick: Item = {
                     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
                     sourceType: TRIGGER_SOURCE_TYPES.ACTION,
                     comparator: "gt",
-                    area: 1,
+                    property: "area",
+                    value: 1,
                     isOffense: true,
                     // Do we need to do this similar to how Fruit Knife does it?
                     notProc: true,
