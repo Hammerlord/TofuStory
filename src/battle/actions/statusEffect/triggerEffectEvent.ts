@@ -428,55 +428,20 @@ export const checkEventTrigger = ({
 
             // Dead characters generally cannot trigger effects except in case of killing blows
             const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
+            if (!usable) {
+                return;
+            }
 
             const excludeEffectOwner =
                 effectEvent.excludeEffectOwner && (source?.actorId === combatantId || source?.targetId === combatantId);
-            if (!usable || excludeEffectOwner) {
+            if (excludeEffectOwner) {
                 return;
             }
 
             const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
-
-            // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
-            const currentEffects = findCombatantData(getState().battle, combatantId)?.combatant?.effects || [];
             const triggerSum = (effectEvent.triggerSum || 0) + (context?.trackSumAmount || 1);
-            /**
-             * Update the number of times this effect event triggered (regardless of whether the actual effects went through or not).
-             * @see topaz for an example of what uses this metric
-             */
-            dispatch(
-                updateCombatant({
-                    combatantId,
-                    newProperties: {
-                        effects: currentEffects.map((e) => {
-                            if (e.id !== id) {
-                                return e;
-                            }
 
-                            const effectEvent = e[effectEventKey];
-                            if (Array.isArray(effectEvent)) {
-                                return {
-                                    ...e,
-                                    [effectEventKey]: effectEvent.map((effectEvent) => ({
-                                        ...effectEvent,
-                                        eventTriggeredTimes,
-                                        triggerSum,
-                                    })),
-                                };
-                            }
-
-                            return {
-                                ...e,
-                                [effectEventKey]: {
-                                    ...effectEvent,
-                                    eventTriggeredTimes,
-                                    triggerSum,
-                                },
-                            };
-                        }),
-                    },
-                })
-            );
+            dispatch(updateEffectEventTriggeredTimes({ combatantId, effectEventKey, eventTriggeredTimes, triggerSum, effectId: id }));
 
             const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
             const parentContext: Action | CombatEffect | Ability | Item = source?.source;
@@ -537,6 +502,62 @@ export const checkEventTrigger = ({
         if (combatant.isPlayer && !fromProc) {
             dispatch(triggerCardEffectEvents({ effectEventKey, context, source }));
         }
+    };
+};
+
+/**
+ * Update the number of times an effect event triggered (regardless of whether the actual effects went through or not).
+ */
+const updateEffectEventTriggeredTimes = ({
+    combatantId,
+    effectEventKey,
+    eventTriggeredTimes,
+    triggerSum,
+    effectId,
+}: {
+    combatantId: string;
+    effectEventKey: EFFECT_EVENT_KEYS;
+    eventTriggeredTimes: number;
+    triggerSum: number;
+    effectId: string;
+}) => {
+    return (dispatch, getState) => {
+        // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
+        const currentEffects = findCombatantData(getState().battle, combatantId)?.combatant?.effects || [];
+
+        dispatch(
+            updateCombatant({
+                combatantId,
+                newProperties: {
+                    effects: currentEffects.map((e) => {
+                        if (e.id !== effectId) {
+                            return e;
+                        }
+
+                        const effectEvent = e[effectEventKey];
+                        if (Array.isArray(effectEvent)) {
+                            return {
+                                ...e,
+                                [effectEventKey]: effectEvent.map((effectEvent) => ({
+                                    ...effectEvent,
+                                    eventTriggeredTimes,
+                                    triggerSum,
+                                })),
+                            };
+                        }
+
+                        return {
+                            ...e,
+                            [effectEventKey]: {
+                                ...effectEvent,
+                                eventTriggeredTimes,
+                                triggerSum,
+                            },
+                        };
+                    }),
+                },
+            })
+        );
     };
 };
 
