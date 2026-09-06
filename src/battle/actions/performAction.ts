@@ -63,6 +63,15 @@ export const performAction = ({
         const combatants = getState().battle[side];
         const parentSource = parentContext?.sourceChain.at(-1);
 
+        const targetSource: TriggerSource = {
+            ...parentSource,
+            source: action,
+            type: TRIGGER_SOURCE_TYPES.ACTION,
+            actorId,
+            targetId: combatants[selectedIndex]?.id,
+            allTargetIds: [combatants[selectedIndex]?.id].filter((v) => v),
+        };
+
         const targetIndices = calculateTargetIndices({
             action,
             selectedIndex,
@@ -70,7 +79,7 @@ export const performAction = ({
             actorData,
             targetData: target,
             battle: getState().battle,
-            context: parentContext,
+            context: { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), targetSource] },
             isPreviewMode: parentContext?.isPreviewMode,
         });
 
@@ -83,13 +92,11 @@ export const performAction = ({
         }
 
         const source: TriggerSource = {
-            ...parentSource,
-            source: action,
-            type: TRIGGER_SOURCE_TYPES.ACTION,
-            actorId,
+            ...targetSource,
             targetId: combatants[selectedIndex]?.id || targetIds[0],
             allTargetIds: targetIds,
         };
+
         const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
 
         const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
