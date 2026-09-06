@@ -98,7 +98,7 @@ export const playerEndTurn = () => {
 
         dispatch(
             updateBattle({
-                discard: [...prepareForDiscard(cardsToDiscard), ...discard],
+                discard: [...prepareForDiscard({ cards: cardsToDiscard }), ...discard],
                 hand: newHand,
             })
         );

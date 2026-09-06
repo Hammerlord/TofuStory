@@ -16,7 +16,7 @@ import { handleDiscardAfterUse } from "./discardCards";
 import { drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
-import { applyAbilityEventEffects } from "./utils";
+import { applyAbilityEventEffects, prepareForDiscard } from "./utils";
 
 const { updateBattle, setNotification, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -74,7 +74,7 @@ export const checkCardActions = ({
             const { amount } = discardCardsFromHand;
             const { hand, discard } = getState().battle;
 
-            const cardsDiscarded = shuffle(hand).slice(0, amount);
+            const cardsDiscarded = prepareForDiscard({ cards: shuffle(hand).slice(0, amount), alwaysKeepRetain: true });
             const newHand = hand.filter((card) => cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId));
 
             dispatch(

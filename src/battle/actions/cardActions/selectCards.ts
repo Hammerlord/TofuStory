@@ -69,7 +69,7 @@ export const selectCardsAction =
             const updatedDiscard = [...discard];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDiscard.unshift(...prepareForDiscard([ability]));
+                    updatedDiscard.unshift(...prepareForDiscard({ cards: [ability] }));
                 } else {
                     updatedHand.push(ability);
                 }

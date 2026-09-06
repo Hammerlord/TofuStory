@@ -3,10 +3,28 @@ import { passesChance, getRandomItem } from "../../../utils";
 import { passesConditions } from "../../passesConditions";
 import { ActionContext } from "../../types";
 
-// isPlayed: set to true if the card was discarded after being played.
-export const prepareForDiscard = (cards: CombatAbility[], isPlayed: boolean = false) => {
+export const prepareForDiscard = ({
+    cards,
+    isPlayed = false,
+    // Eg. Bounce does not get rid of Furious Strike
+    alwaysKeepRetain = false,
+}: {
+    cards: CombatAbility[];
+    // isPlayed: set to true if the card was discarded after being played.
+    isPlayed?: boolean;
+    alwaysKeepRetain?: boolean;
+}) => {
     return cards
-        .filter((ability: CombatAbility) => !ability.removeAfterTurn)
+        .filter((ability: CombatAbility) => {
+            if (ability.removeAfterTurn) {
+                if (ability.retain) {
+                    return !alwaysKeepRetain;
+                }
+                return false;
+            }
+
+            return true;
+        })
         .map((ability: CombatAbility) => {
             return applyAbilityEventEffects({
                 event: ability.onLeaveHand,

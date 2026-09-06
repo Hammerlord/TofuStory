@@ -223,7 +223,7 @@ export const battleStateSlice = createSlice({
             if (newHand.length >= MAX_HAND_SIZE) {
                 const toDiscard = newHand.slice(MAX_HAND_SIZE);
                 newHand = newHand.slice(0, MAX_HAND_SIZE);
-                newDiscard.unshift(...prepareForDiscard(toDiscard));
+                newDiscard.unshift(...prepareForDiscard({ cards: toDiscard }));
 
                 return {
                     ...state,

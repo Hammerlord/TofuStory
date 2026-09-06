@@ -19,7 +19,7 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
         if (depletedOnUse) {
             newDepleted.push(ability);
         } else if (!minion && !removeAfterTurn) {
-            const discarded = prepareForDiscard([ability], true).map((card) => {
+            const discarded = prepareForDiscard({ cards: [ability], isPlayed: true }).map((card) => {
                 return applyAbilityEventEffects({
                     event: card.onUse,
                     ability: card,
