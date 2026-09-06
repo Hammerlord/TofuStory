@@ -37,6 +37,7 @@
         "@babel/core": "^7.23.2",
         "@types/lodash": "^4.17.25",
         "@types/node": "^22.13.0",
+        "@types/ramda": "^0.32.0",
         "@types/react": "^19.2.17",
         "@vitejs/plugin-react": "^4.3.4",
         "gh-pages": "^3.2.3",
