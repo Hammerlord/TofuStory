@@ -85,21 +85,24 @@ export const checkCardActions = ({
             );
         }
 
-        const { hand, deck, discard } = getState().battle as BattleState;
+        // A new instance of owned cards in case they become stale in between actions
+        const getOwnedCards = () => {
+            const { hand, deck, discard } = getState().battle as BattleState;
 
-        const ownedCards = [...hand, ...deck, ...discard].reduce((acc, card) => {
-            acc[card.name] = true;
-            return acc;
-        }, {});
+            return [...hand, ...deck, ...discard].reduce((acc, card) => {
+                acc[card.name] = true;
+                return acc;
+            }, {});
+        };
 
         if (addCards) {
-            dispatch(handleAddCardsToHand({ addCards, ownedCards, context }));
+            dispatch(handleAddCardsToHand({ addCards, ownedCards: getOwnedCards(), context }));
         }
 
-        dispatch(checkAddCardsToDeck({ action, ownedCards, context }));
+        dispatch(checkAddCardsToDeck({ action, ownedCards: getOwnedCards(), context }));
 
         if (addCardsToDiscard) {
-            dispatch(handleAddCardsToDiscard({ addCardsToDiscard, ownedCards, context }));
+            dispatch(handleAddCardsToDiscard({ addCardsToDiscard, ownedCards: getOwnedCards(), context }));
         }
 
         if (typeof retrieveDepletedCards?.amount === "number") {
