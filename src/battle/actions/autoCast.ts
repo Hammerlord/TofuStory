@@ -1,11 +1,11 @@
 import { getUpgradeCard } from "../../Menu/utils";
 import { JOB_CARD_MAP } from "../../ability";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { AUTO_CAST_ABILITY_TYPES, AutoCastAbility, CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
+import { AUTO_CAST_ABILITY_TYPES, AutoCastAbility, CombatAbility, EFFECT_EVENT_KEYS, SELECT_CARD_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { getRandomItem } from "../../utils";
+import { getRandomItem, shuffle } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import getCardSelection from "../selectCardUtils";
 import { ActionContext } from "./../types";
 import { depleteAbilities } from "./cardActions/depleteCards";
@@ -13,6 +13,7 @@ import { applyAbilityEffectsOnDraw } from "./cardActions/drawCards";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { useAbility } from "./useAbility";
 import { triggerAddCardsToHandEvent } from "./cardActions/cardActions";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -44,6 +45,10 @@ export const checkHandleAutoCast = ({
             cards = (JOB_CARD_MAP[actor.class]?.all || []).filter(isOffensiveAbility);
         } else if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
             cards = getState().battle.deck.slice();
+            if (!cards.length) {
+                dispatch(cycleDeck(context));
+                cards = getState().battle.deck.slice();
+            }
         }
 
         if (filters) {
@@ -148,6 +153,29 @@ export const checkHandleAutoCast = ({
                     context,
                 })
             );
+        });
+    };
+};
+
+const cycleDeck = (context: ActionContext) => {
+    return (dispatch, getState) => {
+        const battle: BattleState = getState().battle;
+        const { playerSide, enemySide, discard } = battle;
+        updateBattle({
+            discard: [],
+            deck: shuffle(discard.slice()),
+        });
+
+        playerSide.concat(enemySide).forEach((combatant) => {
+            if (combatant) {
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle,
+                        context: context,
+                    })
+                );
+            }
         });
     };
 };
