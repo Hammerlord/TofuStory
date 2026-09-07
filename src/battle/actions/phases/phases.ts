@@ -1,18 +1,19 @@
-import * as uuid from "uuid";
 import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
 import { elite, eruptive, raging, thorns, warding } from "../../../ability/Effects";
-import { Ability, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
+import { createCombatAbility } from "../../../ability/createCombatAbility";
+import { Ability, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
+import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 import { pushBattleHistory, updatePlayer } from "../../../character/actions";
 import { Combatant, Player } from "../../../character/types";
 import { createCombatant } from "../../../enemy/createEnemy";
 import { poisonous, sneaky } from "../../../enemy/effect";
 import { Item } from "../../../item/types";
+import { AppDispatch, RootState } from "../../../store";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BASE_MAX_RESOURCES, BOSS_MUSIC } from "../../constants";
 import { battleStateSlice } from "../../reducer";
 import { BATTLE_STATES } from "../../states";
-import { BattleState } from "../../types";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
+import { BATTLE_TYPES, BATTLEFIELD_SIDES, BattleState, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
 import { checkCardActions } from "../cardActions/cardActions";
 import { findCombatantData, updateCombatant } from "../combatantData";
@@ -22,9 +23,6 @@ import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
 import { getUseAbilityIndex } from "./enemyTurn";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
-import { getNextTelegraphedAbility } from "../../../character/Telegraph";
-import { AppDispatch, RootState } from "../../../store";
-import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
@@ -71,9 +69,14 @@ export const onWaveClear = () => {
             return;
         }
 
+        const playbackCollectorInstance = playbackCollector();
+        const context = { name: "Wave Clear", sourceChain: [], playbackCollector: playbackCollectorInstance };
+
         playerSide.forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear }));
+            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear, context }));
         });
+
+        dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
 

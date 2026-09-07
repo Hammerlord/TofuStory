@@ -4,7 +4,7 @@ import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TR
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BattleState } from "../../types";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatCharacterInfo, TriggerSource } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
@@ -392,7 +392,7 @@ export const calculateActionArea = ({
     battle,
 }: {
     action?: Action;
-    actor: CombatantInfo | NonCombatPlayerInfo;
+    actor: CombatantInfo | NonCombatCharacterInfo;
     target?: CombatantInfo;
     context?: ActionContext;
     battle?: BattleState | null;

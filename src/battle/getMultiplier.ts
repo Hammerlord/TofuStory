@@ -17,6 +17,7 @@ import { getMaxHP } from "./utils";
 import { calculateDamage } from "./calculateDamage";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
 import { isOffensiveAbility, isAttackAction } from "../ability/AbilityView/utils";
+import { Combatant } from "../character/types";
 
 export const getMultiplier = ({
     actor,
@@ -46,7 +47,7 @@ export const getMultiplier = ({
     }
 
     const combatantInfo = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? actor : target;
-    const oppositeInfo = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? target : actor;
+
     const { combatant, friendly = [] } = combatantInfo || {};
 
     const { value, type, filters, filterUnique, filterOutProcs } = multiplier;
@@ -162,9 +163,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.DEBUFFS) {
-        let debuffs = getEnabledEffects({ combatantInfo, targetInfo: oppositeInfo }).filter(
-            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF
-        );
+        let debuffs = getEnabledEffects({ combatantInfo }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF);
 
         if (filters) {
             debuffs = debuffs.filter((effect) => {
@@ -179,9 +178,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.BUFFS) {
-        let buffs = getEnabledEffects({ combatantInfo, targetInfo: oppositeInfo }).filter(
-            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF
-        );
+        let buffs = getEnabledEffects({ combatantInfo }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF);
 
         if (filters) {
             buffs = buffs.filter((effect) => {
@@ -221,7 +218,7 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.NUM_ALLIES) {
         // Excluding itself
-        const totalAllies = (friendly || []).filter((combatant) => combatant && combatant.HP >= 0).length;
+        const totalAllies = (friendly || []).filter((combatant: Combatant | null) => combatant && combatant.HP >= 0).length;
         return Math.max(totalAllies - 1, 0);
     }
 

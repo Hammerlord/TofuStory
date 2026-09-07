@@ -1,5 +1,5 @@
 import { compose } from "ramda";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, RefObject, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../../ability/types";
 import Tooltip from "../../view/Tooltip";
@@ -75,7 +75,17 @@ const useStyles = createUseStyles({
 
 const DECK_SIZE_CHANGE_SPEED = 50; // ms
 
-const Discard = ({ discard = [], depleted = [], discardRef, depleteRef }) => {
+const Discard = ({
+    discard = [],
+    depleted = [],
+    discardRef,
+    depleteRef,
+}: {
+    discard: CombatAbility[];
+    depleted: CombatAbility[];
+    discardRef: RefObject<HTMLDivElement | null>;
+    depleteRef: RefObject<HTMLDivElement | null>;
+}) => {
     const classes = useStyles();
     const [discardSize, setDiscardSize] = useState(discard.length); // This is purely for display animation purposes
 

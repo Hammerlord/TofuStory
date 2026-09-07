@@ -13,6 +13,7 @@ import getCardSelection from "../selectCardUtils";
 import { AshesImage } from "../../images";
 import { Box } from "@mui/material";
 import { selectCardsAction } from "../actions/cardActions/selectCards";
+import { getCardByInstanceId } from "../actions/playerAbility";
 
 const useStyles = createUseStyles({
     inner: {
@@ -86,7 +87,7 @@ const SelectCardOverlay = ({
     deck: CombatAbility[];
     discard: CombatAbility[];
 }) => {
-    const [selectedAbilityIds, setSelectedAbilityIds] = useState([]);
+    const [selectedAbilityIds, setSelectedAbilityIds] = useState<string[]>([]);
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
     const { type, maxAmount: configuredMax, effects } = selectCards;
@@ -107,7 +108,11 @@ const SelectCardOverlay = ({
     const [hide, setHide] = useState(false);
 
     const handleSelectClick = () => {
-        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued }));
+        if (!abilityQueued) {
+            return;
+        }
+
+        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued: abilityQueued.selectedAbility }));
         onSelect();
     };
 

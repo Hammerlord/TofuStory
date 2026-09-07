@@ -46,7 +46,7 @@ export const isWithinPlayerAbilityArea = ({
 };
 
 /** Returns a card with aura effects applied, if any. */
-export const getCardByInstanceId = (hand: CombatAbility[], id: string | null): CombatAbility | undefined => {
+export const getCardByInstanceId = (hand: CombatAbility[], id?: string | null): CombatAbility | undefined => {
     if (!id) {
         return;
     }
@@ -107,30 +107,28 @@ export const canUsePlayerAbility = (player: Player | undefined, ability?: Combat
 export const useHandAbility = ({
     selectedTargetIndex,
     selectedTargetSide,
-    selectedAbilityId,
+    selectedAbility,
 }: {
     selectedTargetIndex: number;
     selectedTargetSide: BATTLEFIELD_SIDES;
-    selectedAbilityId: string;
+    selectedAbility: CombatAbility;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const battle = getState().battle!;
         const { hand, playerSide } = battle;
         const player = playerSide.find((c) => c?.isPlayer) as Player;
         dispatch(selectHandAbility(null));
-        // Why not just pass ability object from BattleView instead of performing a lookup again?
-        const ability = getCardByInstanceId(hand, selectedAbilityId);
-        if (!ability) {
+        if (!selectedAbility) {
             return;
         }
 
-        const isReusable = ability.reusable || ability.effects?.some((effect) => effect.reusable);
+        const isReusable = selectedAbility.reusable || selectedAbility.effects?.some((effect) => effect.reusable);
         if (isReusable) {
             // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
             dispatch(
                 updateBattle({
                     hand: hand.map((card: CombatAbility) => {
-                        if (card.instanceId === selectedAbilityId) {
+                        if (card.instanceId === selectedAbility.instanceId) {
                             card = applyAbilityEventEffects({
                                 event: card.onUse,
                                 ability: card,
@@ -150,7 +148,7 @@ export const useHandAbility = ({
                 })
             );
         } else {
-            dispatch(removeAbilityFromHand(selectedAbilityId));
+            dispatch(removeAbilityFromHand(selectedAbility.instanceId));
         }
 
         const playbackCollectorInstance = playbackCollector();
@@ -158,7 +156,7 @@ export const useHandAbility = ({
             name: "Use Player Ability",
             playbackCollector: playbackCollectorInstance,
         };
-        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability, context }));
+        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability: selectedAbility, context }));
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };

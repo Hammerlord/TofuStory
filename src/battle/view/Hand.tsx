@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import AbilityView from "../../ability/AbilityView/AbilityView";
-import { CombatAbility } from "../../ability/types";
+import { AbilityEffect, CombatAbility } from "../../ability/types";
 import { cardPassesFilterCondition } from "../selectCardUtils";
-import { useMemo } from "react";
+import { RefObject, useMemo } from "react";
 import { CARD_WIDTH } from "../../ability/AbilityView/constants";
 
-export const getHandAuraEffects = (hand: CombatAbility[]) => {
-    const auraEffects = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
+export const getHandAuraEffects = (hand: CombatAbility[]): AbilityEffect[][] => {
+    const auraEffects: AbilityEffect[][] = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
     hand.forEach((card: CombatAbility, i) => {
         if (!card.aura) {
             return;
@@ -44,9 +44,9 @@ const Hand = ({
 }: {
     hand: CombatAbility[];
     onAbilityClick: Function;
-    selectedAbilityId: string;
+    selectedAbilityId?: string | null;
     className: string;
-    cardRefs;
+    cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
 }) => {
     const handleAbilityMouseDown = (event, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {

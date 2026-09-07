@@ -20,7 +20,7 @@ import {
     BATTLEFIELD_SIDES,
     CombatantInfo,
     Displacement,
-    NonCombatPlayerInfo,
+    NonCombatCharacterInfo,
     TRIGGER_SOURCE_TYPES,
     TriggerSource,
 } from "../types";
@@ -565,7 +565,7 @@ const handleSecondaryAction = ({
     parentContext: ActionContext;
     updatedStatsProps: any;
     isAutoCast: boolean;
-    primaryActionTarget: CombatantInfo | NonCombatPlayerInfo | undefined;
+    primaryActionTarget: CombatantInfo | NonCombatCharacterInfo | undefined;
     battle: BattleState;
 }) => {
     return (

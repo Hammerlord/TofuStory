@@ -4,7 +4,7 @@ import { calculateArmor } from "../../battle/calculateArmor";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { BattleState } from "../../battle/types";
-import { ActionContext, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, NonCombatCharacterInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
 import { Action, CombatAbility } from "../types";
@@ -27,7 +27,7 @@ export const getArmorStatistics = ({
     battle,
 }: {
     ability: CombatAbility;
-    playerInfo?: NonCombatPlayerInfo;
+    playerInfo?: NonCombatCharacterInfo;
     deck?: CombatAbility[];
     hand?: CombatAbility[];
     discard?: CombatAbility[];

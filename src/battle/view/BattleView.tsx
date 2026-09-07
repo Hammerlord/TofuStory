@@ -254,9 +254,30 @@ const movementAbility: Ability = {
     ],
 };
 
+// Look up special effects that allow the player to do extra actions on the battlefield
+export const getPlayerSpecialMovementEffects = (player?: Player | null) => {
+    const moveCardFromHandToDeckEffects: CombatEffect[] = [];
+    let allowFriendlyMovement = false;
+
+    if (player?.effects) {
+        for (const effect of player.effects as CombatEffect[]) {
+            if (effect.allowMoveCardFromHandToDeck) {
+                moveCardFromHandToDeckEffects.push(effect);
+            }
+            if (effect.allowFriendlyMovement) {
+                allowFriendlyMovement = true;
+            }
+        }
+    }
+
+    return { moveCardFromHandToDeckEffects, allowFriendlyMovement };
+};
+
 const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void }) => {
     const dispatch = useAppDispatch();
-    const battle: BattleState = useAppSelector((state) => state.battle);
+    // This component only renders if there is a battle state.
+    const battle: BattleState = useAppSelector((state) => state.battle)!;
+
     const {
         deck,
         discard,
@@ -280,45 +301,31 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     } = battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
-    const allyRefs: RefObject<HTMLDivElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
-    const enemyRefs: RefObject<HTMLDivElement>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const allyRefs: RefObject<HTMLDivElement | null>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const enemyRefs: RefObject<HTMLDivElement | null>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
     const handRef = useRef({});
-    const battlefieldRef: RefObject<HTMLDivElement> = useRef(null);
-    const deckRef: RefObject<HTMLDivElement> = useRef(null);
-    const discardRef: RefObject<HTMLDivElement> = useRef(null);
-    const depleteRef: RefObject<HTMLDivElement> = useRef(null);
+    const battlefieldRef: RefObject<HTMLDivElement | null> = useRef(null);
+    const deckRef: RefObject<HTMLDivElement | null> = useRef(null);
+    const discardRef: RefObject<HTMLDivElement | null> = useRef(null);
+    const depleteRef: RefObject<HTMLDivElement | null> = useRef(null);
 
     const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
     const [showWaveClear, setShowWaveClear] = useState(false);
-    const [hoveredCombatant, setHoveredCombatant]: [{ side: BATTLEFIELD_SIDES; index: number; id: string }, Function] = useState(null);
+    const [hoveredCombatant, setHoveredCombatant] = useState<{ side: BATTLEFIELD_SIDES; index: number; id: string | null } | null>(null);
     const classes = useStyles({ backgroundImage } as any);
     const { description: waveDescription } = waves[currentWaveIndex] || {};
 
     const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
 
-    // Look up special effects that allow the player to do extra actions on the battlefield
-    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(() => {
-        return player?.effects.reduce(
-            (acc, effect: CombatEffect) => {
-                const moveCardFromHandToDeckEffects = [...acc.moveCardFromHandToDeckEffects];
-                if (effect.allowMoveCardFromHandToDeck) {
-                    moveCardFromHandToDeckEffects.push(effect);
-                }
-                return {
-                    ...acc,
-                    moveCardFromHandToDeckEffects,
-                    allowFriendlyMovement: effect.allowFriendlyMovement || acc.allowFriendlyMovement,
-                };
-            },
-            { moveCardFromHandToDeckEffects: [], allowFriendlyMovement: false }
-        );
-    }, [player]);
+    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(() => getPlayerSpecialMovementEffects(player), [player]);
 
     const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
 
     const isWinConditionTriggered = checkWinCondition({ battle });
 
-    const disableActions = !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt;
+    const disableActions: boolean = Boolean(
+        !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt
+    );
     const selectedMinion = playerSide.find((combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId);
 
     const selectedAbilityFromHand = getCardByInstanceId(hand, selectedHandAbilityId);
@@ -328,7 +335,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const actorId: string | undefined = actor?.id;
     const currentEventGroup: EventGroup = eventGroups[0];
 
-    const isEligibleToAttack = (ally: Combatant): boolean => {
+    const isEligibleToAttack = (ally: Combatant | null): boolean => {
         if (!ally || ally.isPlayer || ally.HP === 0 || !ally.controllable || !ally.abilities?.length) {
             return false;
         }
@@ -336,7 +343,10 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const totalDamage =
             getDamageStatistics({
                 ability: ally.abilities[0],
-                actorInfo: findCombatantData(battle, ally.id),
+                actorInfo: findCombatantData(battle, ally.id)!,
+                hand,
+                deck,
+                discard,
             })?.baseDamage || 0;
         return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
     };
@@ -376,6 +386,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
         dispatch(selectAlly(null));
         const ability = getCardByInstanceId(hand, id);
+        if (!ability) {
+            return;
+        }
 
         if (!allowMoveCardFromHandToDeck) {
             const isUnplayable = ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
@@ -401,14 +414,14 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     };
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
-        if (!selectedHandAbilityId) {
+        if (!selectedAbilityFromHand) {
             return;
         }
 
         dispatch(
             useHandAbility({
                 selectedTargetIndex: selectedIndex,
-                selectedAbilityId: selectedHandAbilityId,
+                selectedAbility: selectedAbilityFromHand,
                 selectedTargetSide: side,
             })
         );
@@ -463,8 +476,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
         dispatch(
             promptPlayerSelectCards({
-                selectCards: selectedAbilityFromHand.selectCards,
-                abilityQueued: { selectedAbilityId: selectedHandAbilityId, selectedTargetSide: side, selectedTargetIndex: selectedIndex },
+                selectCards: selectedAbilityFromHand?.selectCards,
+                abilityQueued: {
+                    selectedAbilityId: selectedHandAbilityId,
+                    selectedAbility: selectedAbilityFromHand,
+                    selectedTargetSide: side,
+                    selectedTargetIndex: selectedIndex,
+                },
             } as PlayerSelectCardsPrompt)
         );
     };
@@ -809,7 +827,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         if (!actorInfo) {
             return false;
         }
-        return isWithinPlayerAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i });
+        return isWithinPlayerAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i, battle });
     };
 
     /**
@@ -1058,7 +1076,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     );
 
     const handleEnemyMouseEnter = useCallback(
-        (combatant: Combatant | null, i: number) => {
+        (combatant: Combatant | null | undefined, i: number) => {
             if (!shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)) {
                 return;
             }
@@ -1073,7 +1091,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     );
 
     const handleAllyMouseEnter = useCallback(
-        (combatant: Combatant | null, i: number) => {
+        (combatant: Combatant | null | undefined, i: number) => {
             if (!shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)) {
                 return;
             }
@@ -1196,7 +1214,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                 key={`ally-slot-${i}`}
                                                 currentEventGroup={currentEventGroup}
                                                 eventGroupQueue={eventGroups}
-                                                isHighlighted={isPlayerTurn && selectedAllyId === null && isEligibleToAttack(ally)}
+                                                isHighlighted={Boolean(isPlayerTurn && selectedAllyId === null && isEligibleToAttack(ally))}
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 selectedAbility={abilityToUse}
                                                 characterRef={allyRefs[i]}

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, CombatantInfo, NonCombatCharacterInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
@@ -28,7 +28,7 @@ export const getDamageStatistics = ({
 }: {
     ability: Ability | CombatAbility;
     // If we are out of combat, we don't have index, etc.
-    actorInfo: NonCombatPlayerInfo;
+    actorInfo: NonCombatCharacterInfo;
     hand?: CombatAbility[];
     deck?: CombatAbility[];
     discard?: CombatAbility[];

@@ -2,7 +2,7 @@ import { Action, Bonus, CombatAbility, CONDITION_TARGETS } from "../ability/type
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
 import { BattleState } from "./types";
-import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, NonCombatCharacterInfo } from "./types";
 
 export const calculateBonus = ({
     action,
@@ -19,9 +19,9 @@ export const calculateBonus = ({
 }: {
     action: Action; // The action to apply the bonus to
     // If we are out of combat, we don't have index, etc.
-    target?: NonCombatPlayerInfo;
-    allTargets: NonCombatPlayerInfo[];
-    actor?: NonCombatPlayerInfo;
+    actor?: NonCombatCharacterInfo | CombatantInfo;
+    target?: NonCombatCharacterInfo | CombatantInfo;
+    allTargets?: NonCombatCharacterInfo[] | CombatantInfo[];
     isTargetSelected: boolean;
     actionParent?: ActionParent;
     context?: ActionContext;

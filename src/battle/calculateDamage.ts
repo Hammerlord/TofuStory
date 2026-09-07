@@ -104,7 +104,7 @@ export const calculateDamage = ({
     }
 
     let totalDefDown = 0;
-    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, targetInfo: actor, context });
+    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, context });
 
     targetEnabledEffects.forEach((effect: CombatEffect) => {
         const { maxDamageTaken, excludeEffectOwner, defenseDown: defDown = 0, stacks = 1 } = effect;

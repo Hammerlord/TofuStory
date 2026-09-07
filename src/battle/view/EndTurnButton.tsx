@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const EndTurnButton = ({ disabled, onClick, highlight }) => {
+const EndTurnButton = ({ disabled, onClick, highlight }: { disabled: boolean; highlight: boolean }) => {
     const classes = useStyles();
     return (
         <button

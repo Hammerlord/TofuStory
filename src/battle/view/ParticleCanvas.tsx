@@ -48,7 +48,7 @@ const ParticleCanvas = ({
     allyRefs?: RefObject<HTMLDivElement | null>[];
     enemyRefs?: RefObject<HTMLDivElement | null>[];
 }) => {
-    const { events = [], id: eventId, playbackTime, statUpdates } = eventGroup || {};
+    const { events = [], id: eventId, playbackTime = 0, statUpdates } = eventGroup || {};
     // For the EventGroup refactoring we're just taking the first event here, but we probably want to aggregate it similar to other Event/EventGroup properties
     const { targetSide, allTargetIndices = [], action } = events[0] || {};
     const container = useRef<HTMLDivElement>(null);
@@ -66,6 +66,10 @@ const ParticleCanvas = ({
     }, []);
 
     useEffect(() => {
+        if (!targetSide) {
+            return;
+        }
+
         const targetElements = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
 
         if (action?.animation === ANIMATION_TYPES.FIREWORKS) {
@@ -84,7 +88,7 @@ const ParticleCanvas = ({
         }
 
         if (statUpdates) {
-            const sideCombatants = eventGroup[targetSide];
+            const sideCombatants = eventGroup?.[targetSide];
             if (!sideCombatants) {
                 return;
             }

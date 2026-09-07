@@ -17,8 +17,12 @@ export const getAllEffects = (ability: Ability): (Effect | string)[] => {
         .concat(ability.minion?.effects || []);
 };
 
-export const getAbilityColor = (ability: Ability): string | undefined => {
-    const { actions = [], minion } = ability || {};
+export const getAbilityColor = (ability?: Ability): string | undefined => {
+    if (!ability) {
+        return;
+    }
+
+    const { actions = [], minion } = ability;
     const { target: targetType, type } = actions[0] || {};
 
     if (minion) {

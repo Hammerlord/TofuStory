@@ -7,7 +7,7 @@ import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/states";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
+import { ActionContext, CombatantInfo, NonCombatCharacterInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
 import { Combatant, Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -357,7 +357,7 @@ const AbilityView = forwardRef(
             );
         }
 
-        let playerInfo: NonCombatPlayerInfo | CombatantInfo | undefined;
+        let playerInfo: NonCombatCharacterInfo | CombatantInfo | undefined;
         if (disableBattleBonuses || !battle) {
             if (character.player) {
                 playerInfo = { combatant: character.player };

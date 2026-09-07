@@ -2,7 +2,7 @@ import { AbilityEffect, CombatAbility, SELECT_CARD_TYPES, SelectCards } from "..
 import { Combatant, Player } from "../../../character/types";
 import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
-import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { playbackCollector } from "../playbackCollector";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { depleteAbilities } from "./depleteCards";

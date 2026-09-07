@@ -334,13 +334,13 @@ const CombatantView = ({
     previewTargetedBy?: PreviewStatUpdate;
     selectedAbility?: Ability | CombatAbility;
     index: number;
-    enemySideRefs: RefObject<HTMLElement>[];
-    playerSideRefs: RefObject<HTMLElement>[];
+    enemySideRefs: RefObject<HTMLElement | null>[];
+    playerSideRefs: RefObject<HTMLElement | null>[];
     isHoveringCombatant?: boolean; // If any Combatant is being hovered, not just this one
     onMouseEnter?: (combatant: Combatant | null | undefined, index: number) => void;
     onMouseDown?: (event: React.MouseEvent, index: number) => void;
     onMouseLeave?: (event: any) => void;
-    characterRef: RefObject<HTMLDivElement>;
+    characterRef: RefObject<HTMLDivElement | null>;
 }) => {
     const battle = useAppSelector((state) => state.battle);
 

@@ -890,8 +890,7 @@ export interface Ability {
  * Includes resourceCost/damage changes that only last for the duration that the ability exists in the player's hand
  */
 export interface CombatAbility extends Ability {
-    // Procced/synthetic abilities sometimes don't have instance IDs.
-    instanceId?: string;
+    instanceId: string;
     effects: AbilityEffect[];
     level: number;
 }

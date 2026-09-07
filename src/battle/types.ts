@@ -75,6 +75,12 @@ export enum TRIGGER_SOURCE_TYPES {
     NONE = "none",
 }
 
+export interface AbilityQueued {
+    selectedAbilityId: string;
+    selectedTargetIndex: number;
+    selectedTargetSide: BATTLEFIELD_SIDES;
+}
+
 export interface TriggerSource {
     source?: Action | CombatEffect | CombatAbility | Ability | Item;
     // The amount of, eg. block, healing, overhealing done by the source
@@ -135,7 +141,7 @@ export interface CombatantInfo {
 
 export type NonCombatPlayerInfo = {
     combatant: Player;
-} & { [key in keyof CombatantInfo]?: CombatantInfo[key] };
+};
 
 export enum BATTLE_TYPES {
     ENCOUNTER = "encounter",
@@ -146,6 +152,7 @@ export enum BATTLE_TYPES {
 // Logs combatants who moved or were displaced (eg. by vacuum) during an action. `from` and `to` are the index positions.
 // What do we need the side for if combatantIds never change sides? Just to have the info handy?
 export type Displacement = { [combatantId: string]: { from: number; to: number; side?: BATTLEFIELD_SIDES } };
+
 export interface BattleState {
     enemySide: (Combatant | null)[];
     playerSide: (Combatant | null)[];
@@ -153,7 +160,7 @@ export interface BattleState {
     discard: CombatAbility[];
     hand: CombatAbility[];
     depleted: CombatAbility[];
-    isPlayerTurn: boolean | null;
+    isPlayerTurn: boolean;
     eventQueue: EventGroup[];
     playerActionQueue: object[];
     charactersAttackedThisTurn: string[];
@@ -187,6 +194,7 @@ export interface PlayerSelectCardsPrompt {
     isAutoCast?: boolean;
     abilityQueued?: {
         selectedAbilityId: string;
+        selectedAbility: CombatAbility;
         selectedTargetIndex: number;
         selectedTargetSide: BATTLEFIELD_SIDES;
     };
