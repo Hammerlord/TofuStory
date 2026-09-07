@@ -2,12 +2,14 @@ import { cloneDeep } from "lodash";
 import { tributeSummonBuff } from "../../../ability/Effects";
 import {
     ACTION_TYPES,
+    Ability,
     Action,
     ActionSummon,
     CombatAbility,
     EFFECT_EVENT_KEYS,
     Effect,
     Minion,
+    TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
@@ -259,7 +261,7 @@ export const checkSummonMinion = ({
 }: {
     side: BATTLEFIELD_SIDES;
     selectedIndex?: number;
-    ability: CombatAbility;
+    ability: Ability | CombatAbility;
     actorId: string;
     parentContext: ActionContext;
     isAutoCast?: boolean;
@@ -366,6 +368,7 @@ const tributeKill = ({
         const action = {
             flatDamage: Infinity,
             type: ACTION_TYPES.NONE,
+            target: TARGET_TYPES.FRIENDLY,
             playbackTime: 750,
             secondaryAction: tributeSummon
                 ? {

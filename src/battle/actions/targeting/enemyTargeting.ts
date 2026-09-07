@@ -16,7 +16,7 @@ import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./target
  */
 export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: string }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        let battle: BattleState = getState().battle;
+        let battle: BattleState = getState().battle!;
         const validTargetSwitchId: string = options?.validTargetSwitchId;
         let targetSwitch: CombatantInfo | undefined;
 
@@ -107,13 +107,13 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
  */
 export const checkValidEnemyNextAbility = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        let battle = getState().battle;
+        let battle = getState().battle!;
         battle.enemySide.forEach((enemy: Combatant | null) => {
             if (!enemy) {
                 return;
             }
 
-            const actorInfo = findCombatantData(getState().battle, enemy.id);
+            const actorInfo = findCombatantData(getState().battle!, enemy.id);
             if (!actorInfo) {
                 return;
             }
@@ -166,7 +166,7 @@ export const updateEnemyTargetingAfterEffectsApplied = ({
             return;
         }
 
-        const combatant = findCombatantData(getState().battle, combatantId);
+        const combatant = findCombatantData(getState().battle!, combatantId);
         if (combatant.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
             dispatch(checkValidEnemyTargeting({ validTargetSwitchId: combatantId }));
         }

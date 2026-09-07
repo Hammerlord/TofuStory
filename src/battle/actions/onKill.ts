@@ -174,7 +174,7 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onHostileDeath);
         });
 
-        const { playerSide } = getState().battle;
+        const { playerSide } = getState().battle!;
 
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
         if (player.HP <= 0) {
@@ -217,19 +217,19 @@ const checkUpdatePlayerMoneyOnKill = ({
             type: ACTION_TYPES.NONE,
         };
 
-        const battle: BattleState = getState().battle;
+        const battle: BattleState = getState().battle!;
         const player = battle.playerSide.find((c) => c?.isPlayer);
         if (!player) {
             return;
         }
 
         const updated = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             targetIds: [player.id],
             actorId: deadCombatantInfo,
             action: moneyAction,
             context: context,
-            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
+            getCombatantById: (id: string) => findCombatantData(getState().battle!, id),
         });
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
     };

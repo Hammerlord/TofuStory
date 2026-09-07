@@ -19,10 +19,10 @@ export const getCombatantMoveOrder = ({
     }
 
     return combatants
-        .filter((v) => v)
+        .filter((v): v is Combatant => v !== undefined)
         .sort((a, b) => {
-            const aVal = isSupportAbility(a.targeting?.ability) ? 1 : -1;
-            const bVal = isSupportAbility(b.targeting?.ability) ? 1 : -1;
+            const aVal = isSupportAbility(a?.targeting?.ability) ? 1 : -1;
+            const bVal = isSupportAbility(b?.targeting?.ability) ? 1 : -1;
             const compareSupport = aVal - bVal;
             if (!ignoreSupport && compareSupport !== 0) {
                 return compareSupport;
@@ -34,5 +34,5 @@ export const getCombatantMoveOrder = ({
 
             return Math.abs(aIndex - middle) - Math.abs(bIndex - middle);
         })
-        .map((e) => e.id);
+        .map((e) => e?.id);
 };

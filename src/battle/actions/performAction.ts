@@ -317,7 +317,7 @@ export const performAction = ({
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext, actionParent: parentSource?.source }));
         dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentContext }));
         if (retreat) {
-            const { friendly, friendlySide } = findCombatantData(getState().battle, actorId);
+            const { friendly, friendlySide } = findCombatantData(getState().battle!, actorId);
             dispatch(
                 updateBattle({
                     [friendlySide]: friendly.map((combatant) => {
@@ -350,7 +350,7 @@ const getHitEffects = ({
         return [];
     }
 
-    const actorInfo = findCombatantData(getState().battle, actorId);
+    const actorInfo = findCombatantData(getState().battle!, actorId);
     const { combatant: actor, index } = actorInfo || {};
     if (!actor || actor?.HP <= 0) {
         return [];
@@ -364,7 +364,7 @@ const getHitEffects = ({
 
     if (lifeOnHit) {
         const updated = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             actorId: actor.id,
             targetIds: [actor.id],
             selectedIndex: index,
@@ -373,28 +373,28 @@ const getHitEffects = ({
                 healing: lifeOnHit * affectedTargets.length,
             },
             context: context,
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
         results.push(updated);
     }
 
     const totalThorns = affectedTargets.reduce((acc, id: string) => {
-        const combatantData = findCombatantData(getState().battle, id);
+        const combatantData = findCombatantData(getState().battle!, id);
         getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0, stacks = 1 }) => (acc += thorns * stacks));
         return acc;
     }, 0);
 
     if (totalThorns) {
         const updated = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             targetIds: [actor.id],
             action: {
                 type: ACTION_TYPES.EFFECT,
                 flatDamage: totalThorns,
             },
             context: context,
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
         results.push(updated);
@@ -407,7 +407,7 @@ const getHitEffects = ({
 
     if (totalMesoSteal) {
         const updatedTargets = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             actorId: actor.id,
             targetIds: affectedTargets,
             selectedIndex: index,
@@ -416,7 +416,7 @@ const getHitEffects = ({
                 stealMesos: totalMesoSteal * affectedTargets.length,
             },
             context: context,
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
         const totalMesosGained = updatedTargets.reduce((acc, { statUpdate }) => {
@@ -424,7 +424,7 @@ const getHitEffects = ({
         }, 0);
 
         const updatedActor = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             actorId: actor.id,
             targetIds: [actor.id],
             selectedIndex: index,
@@ -433,7 +433,7 @@ const getHitEffects = ({
                 mesos: totalMesosGained,
             },
             context: context,
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
         results.push(updatedTargets, updatedActor);
@@ -495,7 +495,7 @@ const handleOnReceiveAction = ({
 const onAction = ({ action, context: context }: { action: Action; context?: ActionContext }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorId = context?.sourceChain?.at(-1)?.actorId;
-        const { combatant, hostile } = findCombatantData(getState().battle, actorId) || {};
+        const { combatant, hostile } = findCombatantData(getState().battle!, actorId) || {};
 
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(

@@ -14,7 +14,7 @@ export const useItem = ({
     playbackCollector: PlaybackCollector;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { index, friendlySide, combatant } = findCombatantData(getState().battle, actorId) || {};
+        const { index, friendlySide, combatant } = findCombatantData(getState().battle!, actorId) || {};
         if (!friendlySide) {
             return;
         }
@@ -52,7 +52,7 @@ export const useItem = ({
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    items: findCombatantData(getState().battle, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
+                    items: findCombatantData(getState().battle!, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
                 },
             })
         );

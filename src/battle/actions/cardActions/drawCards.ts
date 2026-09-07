@@ -219,7 +219,7 @@ export const handleOnDrawEvents = ({
 
                 if (ability) {
                     const player = getState().battle!.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
-                    dispatch(useAbility({ ability, actorId: player.id, isProc: true }));
+                    dispatch(useAbility({ ability, actorId: player.id, isProc: true, context }));
                 }
 
                 if (effects) {
@@ -364,7 +364,7 @@ const handleCardActionBonus = ({
             context: {
                 ...context,
             },
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
     };

@@ -61,7 +61,7 @@ export const isSupportAction = (action: Action): boolean => {
     );
 };
 
-export const isSupportAbility = (ability: Ability): boolean => {
+export const isSupportAbility = (ability?: Ability): boolean => {
     return (ability?.actions || []).some(isSupportAction);
 };
 

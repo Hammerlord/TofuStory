@@ -14,7 +14,7 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { removeAfterTurn, depletedOnUse, minion } = ability;
 
-        const { discard, depleted } = getState().battle;
+        const { discard, depleted } = getState().battle!;
         const newDiscard = discard.slice();
         const newDepleted = depleted.slice();
         if (depletedOnUse) {
@@ -33,7 +33,7 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
         if (depletedOnUse) {
             dispatch(
                 enqueueEvent({
-                    ...getState().battle,
+                    ...getState().battle!,
                     id: uuid.v4(),
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
