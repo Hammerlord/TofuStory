@@ -125,6 +125,7 @@ export const checkInduce = ({
                                 ability: {
                                     name: "Induced Ability",
                                     actions: [action],
+                                    effects: [],
                                 },
                             })
                         );

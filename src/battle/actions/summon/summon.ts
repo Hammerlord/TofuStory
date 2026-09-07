@@ -48,7 +48,7 @@ export const checkHandleActionSummon = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
-        const actorData = findCombatantData(getState().battle, actorId);
+        const actorData = findCombatantData(getState().battle! as BattleState, actorId);
         if (!actorData) {
             return;
         }
@@ -117,6 +117,8 @@ export const checkHandleActionSummon = ({
 
                 if (indices.length > 0) {
                     pos = getRandomItem(indices);
+                    pos = pos as number;
+
                     if ((friendly[pos]?.HP || 0) > 0) {
                         dispatch(
                             tributeKill({
@@ -154,7 +156,7 @@ export const checkHandleActionSummon = ({
                     }
 
                     return acc;
-                }, []);
+                }, [] as number[]);
 
                 pos = getRandomItem(existingMinionIndices);
                 if (typeof pos === "number") {
@@ -185,7 +187,7 @@ export const checkHandleActionSummon = ({
                         acc.push(...(item.effects || []));
                     }
                     return acc;
-                }, []);
+                }, [] as Effect[]);
                 minionEffects.push(...itemEffects);
             }
 

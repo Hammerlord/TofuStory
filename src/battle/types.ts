@@ -122,7 +122,7 @@ export interface Wave {
 
 export interface CombatantInfo {
     combatant: Combatant | Player;
-    index?: number;
+    index: number;
     friendly: (Combatant | null)[];
     hostile: (Combatant | null)[];
     friendlySide: BATTLEFIELD_SIDES;
@@ -136,4 +136,5 @@ export enum BATTLE_TYPES {
 }
 
 // Logs combatants who moved or were displaced (eg. by vacuum) during an action. `from` and `to` are the index positions.
-export type Displacement = { [combatantId: string]: { from: number; to: number; side: BATTLEFIELD_SIDES } };
+// What do we need the side for if combatantIds never change sides? Just to have the info handy?
+export type Displacement = { [combatantId: string]: { from: number; to: number; side?: BATTLEFIELD_SIDES } };

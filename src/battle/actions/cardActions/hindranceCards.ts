@@ -1,3 +1,6 @@
+import { ThunkAction, UnknownAction } from "@reduxjs/toolkit";
+import { partition } from "ramda";
+import * as uuid from "uuid";
 import { Ability, ACTION_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { AppDispatch, RootState } from "../../../store";
 import { BattleState } from "../../reducer";
@@ -5,19 +8,18 @@ import { ActionContext, BATTLEFIELD_SIDES, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { partition } from "ramda";
-import * as uuid from "uuid";
 
 export const filterImmunedHindranceCards = ({
     cardsToAdd: initialCardsToAdd,
     context,
 }: {
     cardsToAdd?: Ability[];
-    context?: ActionContext;
-}) => {
+    context: ActionContext;
+    // This is a thunk that returns Ability[]... how to make TS happy for the callers?
+}): any => {
     return (dispatch: AppDispatch, getState: () => RootState): Ability[] => {
-        const [hindranceCards, cardsToAdd] = partition(
-            (card: CombatAbility) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),
+        const [hindranceCards, cardsToAdd]: [Ability[], Ability[]] = partition(
+            (card: Ability) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),
             initialCardsToAdd || []
         );
 
@@ -46,7 +48,8 @@ export const filterImmunedHindranceCards = ({
             const stacks = hindranceImmunity.stacks || 1;
             if (stacks) {
                 // instanceId: for identification purposes during visual feedback
-                const removed = { ...hindranceCards.shift(), instanceId: uuid.v4() };
+                const hindrance: Ability = hindranceCards.shift()!;
+                const removed: CombatAbility = { ...hindrance, instanceId: uuid.v4(), effects: hindrance?.effects || [] };
                 immuned.push(removed);
 
                 const changesToAnnounce: UpdatedCombatantStats = {

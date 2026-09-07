@@ -25,6 +25,7 @@ import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../phases/phases";
 import { enqueueEvent } from "../enqueueEvent";
 import { getPossibleSummonIndices, onSummonTriggers } from "./summon";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -49,9 +50,9 @@ export const checkHandleMorph = ({
             return;
         }
 
-        const targets = morphTargetIds
+        const targets: CombatantInfo[] = morphTargetIds
             .map((id: string) => findCombatantData(getState().battle, id))
-            .filter((combatantInfo) => action.morph.resurrect || combatantInfo.combatant?.HP > 0);
+            .filter((combatantInfo) => action.morph?.resurrect || (combatantInfo?.combatant?.HP || 0) > 0);
 
         if (!targets.length) {
             return;
@@ -135,7 +136,7 @@ export const getMorphMerge = ({
     }
 
     const combatants = friendly.map((combatant: Combatant | null) => {
-        if (targetIds.includes(combatant?.id)) {
+        if (combatant?.id && targetIds.includes(combatant.id)) {
             return null;
         }
         return combatant;
@@ -218,9 +219,9 @@ export const getMorphMap = ({
         return null;
     }
 
-    const summons = [];
-    const combatants = friendly.map((combatant: Combatant, i) => {
-        if (!targetIds.includes(combatant?.id)) {
+    const summons: Combatant[] = [];
+    const combatants = friendly.map((combatant: Combatant | null) => {
+        if (!combatant || !targetIds.includes(combatant.id)) {
             return combatant;
         }
 

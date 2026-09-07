@@ -290,7 +290,7 @@ const getStatusEffectDiff = ({
                 !filters ||
                 filters.every((filter) => {
                     const { value, property, comparator } = filter;
-                    return passesValueComparison({ val: incomingEffect[property], otherVal: value, comparator });
+                    return passesValueComparison({ val: incomingEffect[property as keyof Effect], otherVal: value, comparator });
                 })
             ) {
                 return acc + amount;
@@ -365,7 +365,13 @@ const getStatusEffectDiff = ({
             .filter((effect) => {
                 if (isImmuneTo(effect)) {
                     // ID for differentiation purposes when announcing that the effect failed to apply
-                    failedToApplyEffects.push({ ...effect, applierId: actor?.combatant?.id, id: uuid.v4(), uptime: 0 });
+                    failedToApplyEffects.push({
+                        ...effect,
+                        applierId: actor?.combatant?.id,
+                        id: uuid.v4(),
+                        uptime: 0,
+                        stacks: effect.stacks || 1,
+                    });
                     return false;
                 }
 
@@ -394,6 +400,7 @@ const getStatusEffectDiff = ({
                     applierId: actor?.combatant?.id,
                     originalAbilityId: (actionParent as CombatAbility)?.instanceId,
                     originalDuration: duration,
+                    stacks: effect.stacks || 1,
                 };
             });
 

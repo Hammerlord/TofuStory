@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import { Ability, Action, CombatAbility } from "../../../ability/types";
 import { getRandomInt } from "../../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED } from "../../constants";
-import { battleStateSlice } from "../../reducer";
+import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
@@ -15,7 +15,8 @@ const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
  * Remove a card from existence based on its id.
  */
 export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const { hand, deck, discard } = getState().battle;
+    const battle: BattleState = getState().battle!;
+    const { hand, deck, discard } = battle;
 
     dispatch(
         updateBattle({
@@ -33,44 +34,46 @@ export const checkAddCardsToDeck = ({
 }: {
     action: Action;
     ownedCards: { [abilityName: string]: true };
-    context?: ActionContext;
+    context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        let { addCardsToDeck, addCardsToDeckOptions } = action;
-        addCardsToDeck = dispatch(filterImmunedHindranceCards({ cardsToAdd: addCardsToDeck, context }));
+        let { addCardsToDeck: initialCardsToDeck, addCardsToDeckOptions } = action;
+        const addCardsToDeck: Ability[] | undefined = dispatch(filterImmunedHindranceCards({ cardsToAdd: initialCardsToDeck, context }));
 
         if (!addCardsToDeck) {
             return;
         }
 
-        const updatedDeck = [...getState().battle.deck];
+        const battle: BattleState = getState().battle!;
+        const updatedDeck = [...battle.deck];
         const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
-        cardsToAdd.forEach((card: Ability) => {
-            const combatCard = {
-                ...card,
-                instanceId: uuid.v4(),
-            };
+        const combatCards: CombatAbility[] = cardsToAdd.map((card) => ({
+            ...card,
+            effects: card.effects || [],
+            instanceId: uuid.v4(),
+        }));
 
+        combatCards.forEach((card) => {
             const moveType = addCardsToDeckOptions?.moveType || "random";
             if (moveType === "random") {
                 const index = getRandomInt(1, updatedDeck.length - 1);
-                updatedDeck.splice(index, 0, combatCard);
+                updatedDeck.splice(index, 0, card);
                 return;
             }
 
             if (moveType === "append") {
-                updatedDeck.push(combatCard);
+                updatedDeck.push(card);
                 return;
             }
 
             if (moveType === "prepend") {
-                updatedDeck.unshift(combatCard);
+                updatedDeck.unshift(card);
             }
         });
 
         dispatch(
             enqueueEvent({
-                newCards: cardsToAdd,
+                newCards: combatCards,
                 cardsAddedTo: "deck",
                 context,
             })
@@ -91,7 +94,7 @@ export const handleAddCardsToDiscard = ({
 }: {
     addCardsToDiscard: Ability[];
     ownedCards: { [cardName: string]: boolean };
-    context?: ActionContext;
+    context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         let cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
@@ -100,24 +103,24 @@ export const handleAddCardsToDiscard = ({
             return;
         }
 
+        const combatCards = cardsToAdd.map((card: Ability) => ({
+            ...card,
+            instanceId: uuid.v4(),
+        })) as CombatAbility[];
+
         dispatch(
             enqueueEvent({
                 playbackTime: CARD_ADDED_PLAYBACK_SPEED,
-                newCards: cardsToAdd,
+                newCards: combatCards,
                 cardsAddedTo: "discard",
                 context: context,
             })
         );
 
+        const battle: BattleState = getState().battle!;
         dispatch(
             updateBattle({
-                discard: [
-                    ...getState().battle.discard,
-                    ...cardsToAdd.map((card: Ability) => ({
-                        ...card,
-                        instanceId: uuid.v4(),
-                    })),
-                ],
+                discard: [...combatCards, ...battle.discard],
             })
         );
     };
@@ -130,7 +133,7 @@ export const handleAddCardsToHand = ({
 }: {
     addCards: Ability[];
     ownedCards: { [abilityName: string]: true };
-    context?: ActionContext;
+    context: ActionContext;
 }) => {
     return (dispatch: AppDispatch) => {
         let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);

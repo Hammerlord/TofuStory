@@ -32,6 +32,7 @@ import { checkHandleMorph } from "./summon/morphMerge";
 import { checkHandleActionSummon } from "./summon/summon";
 import { autoSelectActionTarget, calculateActionArea, calculateTargetIndices } from "./targeting/targeting";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
+import { AppDispatch, RootState } from "../../store";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -41,27 +42,28 @@ export const performAction = ({
     side,
     actorId,
     parentContext,
-    isAutoCast,
+    isAutoCast = false,
 }: {
     action: Action;
     selectedIndex: number;
     side: BATTLEFIELD_SIDES;
     actorId: string;
-    parentContext?: ActionContext;
-    isAutoCast?: boolean;
+    parentContext: ActionContext;
+    isAutoCast: boolean;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const actorData: CombatantInfo | undefined = findCombatantData(getState().battle, actorId);
+        const battle = getState().battle! as BattleState;
+        const actorData: CombatantInfo | undefined = findCombatantData(battle, actorId);
         if (!actorData || !side) {
             return;
         }
 
-        const battleSide = getState().battle[side];
-        const target = findCombatantData(getState().battle, battleSide[selectedIndex]?.id);
+        const battleSide = battle[side];
+        const target = findCombatantData(battle, battleSide[selectedIndex]?.id);
 
         const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
-        const combatants = getState().battle[side];
-        const parentSource = parentContext?.sourceChain.at(-1);
+        const combatants = battle[side];
+        const parentSource = parentContext?.sourceChain?.at(-1);
 
         const targetSource: TriggerSource = {
             ...parentSource,
@@ -69,7 +71,7 @@ export const performAction = ({
             type: TRIGGER_SOURCE_TYPES.ACTION,
             actorId,
             targetId: combatants[selectedIndex]?.id,
-            allTargetIds: [combatants[selectedIndex]?.id].filter((v) => v),
+            allTargetIds: [combatants[selectedIndex]?.id].filter((v) => v !== undefined),
         };
 
         const { targetedIndices, allIndices, area } = calculateTargetIndices({
@@ -78,12 +80,12 @@ export const performAction = ({
             side,
             actorData,
             targetData: target,
-            battle: getState().battle,
+            battle,
             context: { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), targetSource] },
-            isPreviewMode: parentContext?.isPreviewMode,
+            isPreviewMode: Boolean(parentContext?.isPreviewMode),
         });
 
-        const targetIds = targetedIndices.map((i: number) => combatants[i]?.id).filter(Boolean);
+        const targetIds = targetedIndices.map((i: number) => combatants[i]?.id).filter((v) => v !== undefined);
 
         // Don't try to target things that are all gone/dead.
         // Amendment: unless it is a friendly-side ability such as a summon. There was an issue where the Dark Lord clone reveal was broken by this.
@@ -101,24 +103,29 @@ export const performAction = ({
 
         const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
 
-        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo => {
+        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo | BattleState | undefined => {
+            const battle = getState().battle! as BattleState;
             if (targetType === CONDITION_TARGETS.TARGET) {
                 // This is the primary target only
-                return findCombatantData(getState().battle, combatants[selectedIndex]?.id);
-            } else if (targetType === CONDITION_TARGETS.ACTOR) {
-                return findCombatantData(getState().battle, actorId);
+                return findCombatantData(battle, combatants[selectedIndex]?.id);
+            }
+            if (targetType === CONDITION_TARGETS.ACTOR) {
+                return findCombatantData(battle, actorId);
+            }
+            if (targetType === CONDITION_TARGETS.BATTLE) {
+                return battle;
             }
         };
 
         const updatedStatsProps = {
-            ...getState().battle,
+            ...(getState().battle! as BattleState),
             selectedIndex,
             action,
             targetIds,
             actorId,
             actionParent: parentSource?.source,
             context,
-            getCombatantById: (id: string) => findCombatantData(getState().battle, id),
+            getCombatantById: (id: string) => findCombatantData(getState().battle! as BattleState, id),
         };
 
         let updatedSecondary: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined;
@@ -531,7 +538,7 @@ const handleSecondaryAction = ({
     updatedStatsProps,
     isAutoCast,
 }: {
-    secondaryAction: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
+    secondaryAction: (ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean }) | undefined;
     actorId: string;
     getCalculationTarget: (
         calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
@@ -544,33 +551,40 @@ const handleSecondaryAction = ({
     return (
         dispatch: AppDispatch,
         getState: () => RootState
-    ): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
-        const source = context?.sourceChain.at(-1);
+    ): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined => {
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, context })) {
             return;
         }
 
-        const actorData = findCombatantData(getState().battle, actorId);
-        secondaryAction = {
-            ...secondaryAction,
-            type: secondaryAction.type || ACTION_TYPES.NONE,
-            target: secondaryAction.target || TARGET_TYPES.SELF,
-        };
+        const actorData = findCombatantData(getState().battle! as BattleState, actorId);
+        if (!actorData) {
+            return;
+        }
 
         const combatant = actorData?.combatant;
         if (!combatant?.HP) {
             return;
         }
 
-        const battle = getState().battle;
+        secondaryAction = {
+            ...secondaryAction,
+            type: secondaryAction.type || ACTION_TYPES.NONE,
+            target: secondaryAction.target || TARGET_TYPES.SELF,
+        };
+
+        const battle: BattleState = getState().battle!;
 
         const target = autoSelectActionTarget({
             action: secondaryAction,
-            actorId: actorData?.combatant.id,
+            actorId: combatant.id,
             battle,
         });
 
-        const targetId = battle[target?.side]?.[target.index]?.id;
+        if (!target) {
+            return;
+        }
+
+        const targetId = battle[target.side]?.[target.index]?.id;
         const targetData = findCombatantData(battle, targetId);
         if (!targetData) {
             return [];
@@ -583,15 +597,19 @@ const handleSecondaryAction = ({
             actorData,
             targetData,
             battle,
-            isPreviewMode: context?.isPreviewMode,
+            isPreviewMode: Boolean(context?.isPreviewMode),
             context,
         });
 
-        const recipientIds = recipientIndices.targetedIndices.map((i: number) => targetData.friendly[i]?.id).filter(Boolean);
+        const recipientIds: string[] = recipientIndices.targetedIndices
+            .map((i: number) => targetData.friendly[i]?.id)
+            .filter((id): id is string => id !== undefined && id !== null);
+
+        const source = context?.sourceChain?.at(-1);
         const updatedSecondary = getUpdatedStats({
             ...updatedStatsProps,
             actorId,
-            targetIds: source.allTargetIds,
+            targetIds: source?.allTargetIds || [],
             recipientIds,
             selectedIndex: target.index,
             action: secondaryAction,
@@ -601,24 +619,27 @@ const handleSecondaryAction = ({
         if (secondaryAction.returnParentCardToHand) {
             // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
             const ability: CombatAbility | undefined = source?.source as CombatAbility;
-            dispatch(deleteCard(ability.instanceId));
-            const cardCopy: CombatAbility = {
-                ...ability,
-                effects: ability?.effects.filter((e: AbilityEffect) => {
-                    // TODO retain upgrades, but look for a less hard-baked way to do this
-                    return e.upgradedByLevels;
-                }),
-            };
 
-            dispatch(
-                checkCardActions({
-                    action: {
-                        type: ACTION_TYPES.EFFECT,
-                        addCards: [cardCopy],
-                    },
-                    context: parentContext,
-                })
-            );
+            if (ability) {
+                ability.instanceId && dispatch(deleteCard(ability.instanceId));
+                const cardCopy: CombatAbility = {
+                    ...ability,
+                    effects: ability.effects.filter((e: AbilityEffect) => {
+                        // TODO retain upgrades, but look for a less hard-baked way to do this
+                        return e.upgradedByLevels;
+                    }),
+                };
+
+                dispatch(
+                    checkCardActions({
+                        action: {
+                            type: ACTION_TYPES.EFFECT,
+                            addCards: [cardCopy],
+                        },
+                        context: parentContext,
+                    })
+                );
+            }
         }
         dispatch(
             triggerStatChangeEvents(
@@ -654,6 +675,13 @@ const checkCastRadiate = ({
         if (!action.radiate) {
             return;
         }
+
+        const battle: BattleState = getState().battle!;
+        const actorId = battle[side][selectedIndex]?.id;
+        if (!actorId) {
+            return;
+        }
+
         dispatch(
             performAction({
                 action: {
@@ -662,7 +690,7 @@ const checkCastRadiate = ({
                 },
                 selectedIndex,
                 side: side === BATTLEFIELD_SIDES.PLAYER_SIDE ? BATTLEFIELD_SIDES.ENEMY_SIDE : BATTLEFIELD_SIDES.PLAYER_SIDE, // Radiate is always to the side opposite of the combatant casting it
-                actorId: getState().battle[side][selectedIndex]?.id,
+                actorId,
                 parentContext: parentContext,
             })
         );

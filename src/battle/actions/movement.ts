@@ -1,7 +1,8 @@
 import { Action, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
+import { AppDispatch, RootState } from "../../store";
 import { getRandomItem } from "../../utils";
-import { battleStateSlice } from "../reducer";
+import { BattleState, battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, Displacement } from "../types";
 import { ActionContext } from "./../types";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
@@ -14,7 +15,7 @@ export const checkHandleVacuum = ({
     selectedIndex,
     area,
 }: {
-    vacuum: number;
+    vacuum: number | undefined;
     side: BATTLEFIELD_SIDES;
     selectedIndex: number;
     area: number;
@@ -24,8 +25,9 @@ export const checkHandleVacuum = ({
             return;
         }
 
+        const battle = getState().battle! as BattleState;
         const { updatedCharacters, displacements } = applyVacuum({
-            characters: getState().battle[side],
+            characters: battle[side],
             index: selectedIndex,
             area,
             distance: vacuum,
@@ -61,7 +63,8 @@ export const checkHandleMovement = ({
             return;
         }
 
-        const characters = getState().battle[side];
+        const battle = getState().battle! as BattleState;
+        const characters = battle[side];
         // to === from: this is legacy from when enemies use a movement ability.
         // It's classified as a "self" ability, so they target themselves when they cast it, hence `to` and `from` indices will be the same for them.
         // Make them move randomly still, if that's the case.
@@ -92,7 +95,7 @@ export const checkHandleMovement = ({
             }
         });
 
-        const displacements = {};
+        const displacements: Displacement = {};
         if (newCharacters[from]?.id) {
             displacements[newCharacters[from].id] = { from: to, to: from, side };
         }
@@ -125,7 +128,7 @@ export const applyVacuum = ({
         return !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
     };
 
-    const displacements = {};
+    const displacements: Displacement = {};
 
     for (let i = 1; i <= area; ++i) {
         if (characters[index + i]) {

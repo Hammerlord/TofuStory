@@ -53,7 +53,7 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
         };
 
         const cardsToMove = [];
-        const updatedCardPiles = {};
+        const updatedCardPiles: { [pileName: string]: CombatAbility[] } = {};
 
         if (from === FROM_CARD_PILE_TYPES.ANYWHERE) {
             (["hand", "deck", "discard", "depleted"] as (keyof BattleState)[]).forEach((fromPileName) => {
@@ -128,7 +128,7 @@ export const handleRetrieveDepletedCards = ({
 }: {
     amount: number;
     source?: TriggerSource | undefined;
-    context?: ActionContext;
+    context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;

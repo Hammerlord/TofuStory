@@ -92,7 +92,8 @@ export const passesConditions = ({
         if (calculationTarget === CONDITION_TARGETS.BATTLE) {
             if (property !== undefined) {
                 const battle = getCalculationTarget(calculationTarget) as BattleState;
-                return passesValueComparison({ val: battle[property], otherVal: value, comparator });
+                const val = _.get(battle, property);
+                return passesValueComparison({ val, otherVal: value, comparator });
             }
 
             console.warn(`property must be configured for calculation target BATTLE to work properly. None was configured.`);

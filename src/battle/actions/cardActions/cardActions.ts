@@ -2,7 +2,7 @@ import _ from "lodash";
 import * as uuid from "uuid";
 import { getLastPlayedCards } from "../../../ability/AbilityView/utils";
 import { Action, AutoPlayCards, CombatAbility, CombatEffect, EFFECT_EVENT_KEYS } from "../../../ability/types";
-import { Combatant } from "../../../character/types";
+import { Combatant, Player } from "../../../character/types";
 import { shuffle } from "../../../utils";
 import { battleWarnings, MAX_HAND_SIZE } from "../../constants";
 import { passesValueComparison } from "../../passesConditions";
@@ -42,11 +42,11 @@ export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getStat
  */
 export const checkCardActions = ({
     action,
-    context: context,
+    context,
     isAutoCast,
 }: {
     action: { [key in keyof Action]?: Action[key] };
-    context?: ActionContext;
+    context: ActionContext;
     isAutoCast?: boolean;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
@@ -90,13 +90,16 @@ export const checkCardActions = ({
 
         // A new instance of owned cards in case they become stale in between actions
         const getOwnedCards = () => {
-             const battle: BattleState = getState().battle!;
+            const battle: BattleState = getState().battle!;
             const { hand, deck, discard } = battle;
 
-            return [...hand, ...deck, ...discard].reduce((acc, card) => {
-                acc[card.name] = true;
-                return acc;
-            }, {});
+            return [...hand, ...deck, ...discard].reduce(
+                (acc, card) => {
+                    acc[card.name] = true;
+                    return acc;
+                },
+                {} as { [cardName: string]: true }
+            );
         };
 
         if (addCards) {
@@ -116,16 +119,20 @@ export const checkCardActions = ({
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
         if (applyAbilityEffects) {
             const { amount = Infinity, pile: pileKey, filters } = applyAbilityEffects;
-            const pile = getState().battle[pileKey];
+            const battle = getState().battle! as BattleState;
+            const pile = battle[pileKey];
             const affectedCards = shuffle(pile)
                 .filter((card) => {
                     return cardPassesFilterCondition(card, filters);
                 })
                 .slice(0, amount)
-                .reduce((acc, ability: CombatAbility) => {
-                    acc[ability.instanceId] = true;
-                    return acc;
-                }, {});
+                .reduce(
+                    (acc, ability: CombatAbility) => {
+                        acc[ability.instanceId] = true;
+                        return acc;
+                    },
+                    {} as { [cardId: string]: true }
+                );
 
             dispatch(
                 updateBattle({
@@ -149,8 +156,12 @@ export const checkCardActions = ({
 
         if (addLastPlayedCards) {
             const { amount, abilityEffects = [] } = addLastPlayedCards;
-            const { playerSide } = getState().battle;
-            const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+            const { playerSide } = getState().battle! as BattleState;
+            const player: Player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
+
+            if (!player) {
+                return;
+            }
 
             const cardsToAdd = getLastPlayedCards({ player, amount }).map((card) =>
                 applyAbilityEventEffects({
@@ -172,7 +183,7 @@ export const checkCardActions = ({
 const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { amount, filters } = playCards;
-        const { deck } = getState().battle;
+        const { deck } = getState().battle! as BattleState;
         const cardsToPlay = deck
             .filter((card) => {
                 return (
@@ -219,7 +230,7 @@ export const handleDrawOriginalAbility = ({
             return;
         }
 
-        const { hand, deck, discard, depleted, playerSide } = getState().battle;
+        const { hand, deck, discard, depleted, playerSide } = getState().battle! as BattleState;
         let newHand = hand.slice();
         const newDeck = deck.slice();
         const newDiscard = discard.slice();
@@ -238,7 +249,7 @@ export const handleDrawOriginalAbility = ({
         let foundCard;
         if (!found) {
             // This card can still enter the hand even if it was supposed to be ephemeral. Look up the player's ability history to see if it's there.
-            const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+            const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
             const card = player.abilityHistory.find((ability: CombatAbility) => ability.instanceId === effect.originalAbilityId);
             if (!card) {
                 return;
@@ -252,7 +263,7 @@ export const handleDrawOriginalAbility = ({
         if (newHand.length >= MAX_HAND_SIZE) {
             newHand = newHand.slice(0, MAX_HAND_SIZE);
             dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
-            if (!foundCard.removeAfterTurn) {
+            if (foundCard && !foundCard.removeAfterTurn) {
                 newDiscard.unshift(foundCard);
             }
         }
@@ -268,13 +279,13 @@ export const handleDrawOriginalAbility = ({
     };
 };
 
-export const triggerAddCardsToHandEvent = (amount: number, context?: ActionContext) => {
+export const triggerAddCardsToHandEvent = (amount: number, context: ActionContext) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         if (amount === 0) {
             return;
         }
 
-        const { playerSide, enemySide } = getState().battle;
+        const { playerSide, enemySide } = getState().battle! as BattleState;
         playerSide.concat(enemySide).forEach((combatant) => {
             if (combatant) {
                 dispatch(

@@ -8,7 +8,7 @@ import { Combatant } from "../types";
 
 const PLAYBACK_TIME = 3000;
 
-const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }) => {
+const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }: { object: HTMLElement; delay: number; playbackTime: number }) => {
     const animationFrames: any[] = [
         {
             opacity: 0.5,
@@ -67,7 +67,7 @@ enum QUEUED_EFFECT_TYPES {
 }
 
 type EffectQueued = {
-    effect: { id: string; icon?: string; name: string; stacks?: number };
+    effect: { id: string; icon?: string; name: string; stacks: number };
     type: QUEUED_EFFECT_TYPES;
 };
 
@@ -129,10 +129,13 @@ const StatusEffectAnnouncer = ({
         const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean =>
             Boolean(effect.icon && !effect.disableDisplayIcon);
 
-        const queuedKeys = queue.reduce((acc, item) => {
-            acc[getKey(item.effect, item.type)] = true;
-            return acc;
-        }, {});
+        const queuedKeys = queue.reduce(
+            (acc, item) => {
+                acc[getKey(item.effect, item.type)] = true;
+                return acc;
+            },
+            {} as { [key: string]: true }
+        );
 
         const isAlreadyQueued = (effect: { id: string }, type: QUEUED_EFFECT_TYPES): boolean => {
             const key = getKey(effect, type);
@@ -159,8 +162,9 @@ const StatusEffectAnnouncer = ({
         });
 
         // This is currently for immuning Hindrance cards ONLY; the cards are adapted to the effect interface
+        // The instance ID is added at filterImmunedHindranceCards
         (failedToAddCards || [])
-            .map((c) => ({ id: c.instanceId, icon: c.image, name: c.name }))
+            .map((c) => ({ id: c.instanceId!, icon: c.image, name: c.name }))
             .forEach((item) => {
                 if (!isAlreadyQueued(item, QUEUED_EFFECT_TYPES.IMMUNED)) {
                     newQueue.push({ effect: item, type: QUEUED_EFFECT_TYPES.IMMUNED });

@@ -31,13 +31,13 @@ export const calculateTargetIndices = ({
 }): {
     allIndices: number[];
     targetedIndices: number[];
-    area: number
+    area: number;
 } => {
     const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, context });
 
-    let extraTargetIndices = getValidTargetIndices(battle[side], action.area, {
+    let extraTargetIndices = getValidTargetIndices(battle[side], action.area || 0, {
         excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
     }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
@@ -66,13 +66,13 @@ export const calculateTargetIndices = ({
         return inArea;
     };
 
-    const isTargetableCombatant = (combatant: Combatant): boolean => {
-        return combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters);
+    const isTargetableCombatant = (combatant: Combatant | null): boolean => {
+        return Boolean(combatant && (combatant?.HP > 0 || resurrect || affectsDeadCharacters));
     };
 
     const combatants = battle[side];
-    const allIndices = [];
-    const targetedIndices = [];
+    const allIndices: number[] = [];
+    const targetedIndices: number[] = [];
 
     combatants.forEach((combatant: Combatant | null, i: number) => {
         if (isAffected(combatant, i)) {
@@ -86,7 +86,7 @@ export const calculateTargetIndices = ({
     return {
         allIndices,
         targetedIndices,
-        area
+        area,
     };
 };
 
@@ -126,7 +126,7 @@ export const autoSelectActionTarget = ({
     if (indices.length > 1) {
         const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
         if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
-            const index = pickHostileIndex({ targetIndices: indices.map((item) => item.index), actorData });
+            const index = pickHostileIndex({ targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined), actorData });
             return { index, side: indices[0].side };
         }
         return getRandomItem(indices);
@@ -177,7 +177,7 @@ export const getValidTargetIndicesForAction = ({
             onlyTaunt: true,
             onlyPriorityTarget: true,
         }).filter((i) => {
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
         });
 
         if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
@@ -201,7 +201,7 @@ export const getValidTargetIndicesForAction = ({
             onlyPriorityTarget: true,
         })
             .filter((i) => {
-                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+                return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
             })
             .map((index) => ({ index, side: hostileSide }));
     }
@@ -209,7 +209,7 @@ export const getValidTargetIndicesForAction = ({
     if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
         const targetIndices = getValidTargetIndices(hostile, action.area, { onlyTaunt: true, onlyPriorityTarget: true })
             .filter((i) => {
-                return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+                return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
             })
             .map((index) => ({ index, side: hostileSide }));
 
@@ -235,7 +235,7 @@ export const getValidTargetIndicesForAction = ({
                 return false;
             }
 
-            return Math.abs(i - initialSelectedIndex || 0) <= (area || Infinity);
+            return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
         });
 
         return [
@@ -314,7 +314,7 @@ const pickHostileIndex = ({ targetIndices, actorData }: { targetIndices: number[
  */
 export const getValidTargetIndices = (
     characters: (Combatant | null)[],
-    area: number,
+    area: number | undefined,
     options: {
         excludeStealth?: boolean;
         excludeIndex?: number;
@@ -326,7 +326,7 @@ export const getValidTargetIndices = (
     const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
 
     const getIndicesForEffectType = (effectType: EFFECT_TYPES) => {
-        const effectIndices = [];
+        const effectIndices: number[] = [];
         characters.forEach((character: Combatant | null, i: number) => {
             const notExcluded = excludeIndex !== i;
             if (character?.effects?.some((effect) => effect.type === effectType) && character?.HP > 0 && notExcluded) {
@@ -337,7 +337,7 @@ export const getValidTargetIndices = (
         return effectIndices;
     };
 
-    let priorityIndices;
+    let priorityIndices: number[] | undefined;
     if (onlyPriorityTarget) {
         priorityIndices = getIndicesForEffectType(EFFECT_TYPES.PRIORITY_TARGET);
     }
@@ -362,7 +362,7 @@ export const getValidTargetIndices = (
     }
 
     area = area || 0;
-    const indices = {};
+    const indices: { [index: string]: true } = {};
     characters.forEach((character: Combatant | null, i: number) => {
         const hp = character?.HP || 0;
         if (hp > 0) {
