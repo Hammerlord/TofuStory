@@ -41,7 +41,7 @@ export const drawCards = ({
     context?: ActionContext;
     isOnTurnDraw?: boolean;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { deck, discard, playerSide, enemySide } = getState().battle;
         const player = playerSide?.find((c) => c?.isPlayer);
         const hasViewDeckInOrder = player?.effects.some((e) => e.viewDeckInOrder);
@@ -176,7 +176,7 @@ export const applyAbilityEffectsOnDraw = ({
  * @see greaterBolt for an example
  */
 export const recalculateEffectsFromAbilities = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, deck, hand, discard } = getState().battle;
         const player = playerSide.find((combatant) => combatant?.isPlayer);
         if (!player) {
@@ -204,7 +204,7 @@ export const handleOnDrawEvents = ({
     bonus?: CardBonus[];
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, enemySide } = getState().battle;
 
         cardsToDraw.forEach((card: CombatAbility) => {
@@ -248,7 +248,7 @@ export const handleOnDrawEvents = ({
 };
 
 const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: CombatAbility; effects: Effect[] }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
         const parentSourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
         const updated = getUpdatedStats({
@@ -303,7 +303,7 @@ const handleCardActionBonus = ({
     targetCards: CombatAbility[];
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!bonus) {
             return;
         }

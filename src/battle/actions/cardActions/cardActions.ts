@@ -17,14 +17,16 @@ import { drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
 import { handleSelectCards } from "./selectCards";
 import { applyAbilityEventEffects, prepareForDiscard } from "./utils";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, setNotification, addCardsToHand } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch, getState) => {
-    const { hand, deck, discard } = getState().battle;
+export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+    const battle: BattleState = getState().battle!;
+    const { hand, deck, discard } = battle;
 
     dispatch(
         updateBattle({
@@ -47,7 +49,7 @@ export const checkCardActions = ({
     context?: ActionContext;
     isAutoCast?: boolean;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const {
             drawCards: cardsToDraw,
             addCards,
@@ -72,7 +74,8 @@ export const checkCardActions = ({
 
         if (discardCardsFromHand) {
             const { amount } = discardCardsFromHand;
-            const { hand, discard } = getState().battle;
+            const battle: BattleState = getState().battle!;
+            const { hand, discard } = battle;
 
             const cardsDiscarded = prepareForDiscard({ cards: shuffle(hand).slice(0, amount), alwaysKeepRetain: true });
             const newHand = hand.filter((card) => cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId));
@@ -87,7 +90,8 @@ export const checkCardActions = ({
 
         // A new instance of owned cards in case they become stale in between actions
         const getOwnedCards = () => {
-            const { hand, deck, discard } = getState().battle as BattleState;
+             const battle: BattleState = getState().battle!;
+            const { hand, deck, discard } = battle;
 
             return [...hand, ...deck, ...discard].reduce((acc, card) => {
                 acc[card.name] = true;
@@ -166,7 +170,7 @@ export const checkCardActions = ({
 };
 
 const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { amount, filters } = playCards;
         const { deck } = getState().battle;
         const cardsToPlay = deck
@@ -210,7 +214,7 @@ export const handleDrawOriginalAbility = ({
     effect: CombatEffect;
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!drawOriginalAbility || !effect.originalAbilityId) {
             return;
         }
@@ -265,7 +269,7 @@ export const handleDrawOriginalAbility = ({
 };
 
 export const triggerAddCardsToHandEvent = (amount: number, context?: ActionContext) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (amount === 0) {
             return;
         }

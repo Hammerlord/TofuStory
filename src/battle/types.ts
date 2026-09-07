@@ -123,10 +123,10 @@ export interface Wave {
 export interface CombatantInfo {
     combatant: Combatant | Player;
     index?: number;
-    friendly?: (Combatant | null)[];
-    hostile?: (Combatant | null)[];
-    friendlySide?: BATTLEFIELD_SIDES;
-    hostileSide?: BATTLEFIELD_SIDES;
+    friendly: (Combatant | null)[];
+    hostile: (Combatant | null)[];
+    friendlySide: BATTLEFIELD_SIDES;
+    hostileSide: BATTLEFIELD_SIDES;
 }
 
 export enum BATTLE_TYPES {

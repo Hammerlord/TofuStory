@@ -17,7 +17,7 @@ const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const handleOnKill = (context: ActionContext) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const source = context?.sourceChain?.at(-1);
         if (!source) {
             return;
@@ -95,7 +95,7 @@ export const handleOnKill = (context: ActionContext) => {
 };
 
 export const onCombatantDeath = ({ combatantId, context }: { combatantId: string; context?: ActionContext }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const deadCombatant = findCombatantData(getState().battle, combatantId);
         const { friendly, hostile, combatant, friendlySide } = deadCombatant || {};
         const source = context?.sourceChain?.at(-1);
@@ -181,7 +181,7 @@ const checkUpdatePlayerMoneyOnKill = ({
     deadCombatantInfo: CombatantInfo;
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!deadCombatantInfo) {
             return;
         }

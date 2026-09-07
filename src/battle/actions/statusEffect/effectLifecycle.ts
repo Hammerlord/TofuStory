@@ -23,7 +23,7 @@ export const checkUpdateEffectLifecycle =
         context: ActionContext;
         ownerId: string;
     }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         const { removeEffect, decrementStacks = 0, incrementStacks = 0, resetDuration } = effectEvent;
 
         const { combatant } = findCombatantData(getState().battle, ownerId) || {};
@@ -62,7 +62,7 @@ export const checkUpdateEffectLifecycle =
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
 export const tickDownStatusEffects = (combatantId: string, context?: ActionContext) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { combatant } = findCombatantData(getState().battle, combatantId) || {};
         if (!combatant) {
             return;

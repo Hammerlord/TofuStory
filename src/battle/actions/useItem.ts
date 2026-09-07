@@ -13,7 +13,7 @@ export const useItem = ({
     actorId: string;
     playbackCollector: PlaybackCollector;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { index, friendlySide, combatant } = findCombatantData(getState().battle, actorId) || {};
         if (!friendlySide) {
             return;

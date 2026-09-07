@@ -15,7 +15,7 @@ const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } 
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch, getState) => {
+export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
     const { hand, deck, discard } = getState().battle;
 
     dispatch(
@@ -29,7 +29,7 @@ export const deleteCard = (abilityId: string) => (dispatch, getState) => {
 
 export const selectCardsAction =
     ({ type, selectedAbilities, player, effects = [], abilityQueued }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         const { deck, hand, discard } = getState().battle;
         const playbackCollectorInstance = playbackCollector();
         const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
@@ -150,7 +150,7 @@ export const handleSelectCards = ({
     source?: TriggerSource;
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!isAutoCast) {
             dispatch(
                 promptPlayerSelectCards({

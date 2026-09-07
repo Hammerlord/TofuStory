@@ -1,5 +1,6 @@
 import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
+import { AppDispatch, RootState } from "../../store";
 import { BattleState, battleStateSlice } from "../reducer";
 import { CombatantInfo, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
@@ -9,11 +10,21 @@ const { updateBattle } = battleStateSlice?.actions || {};
 /**
  * Updates a combatant given its ID. This overwrites the combatant.
  */
-export const updateCombatant = ({ combatantId, newProperties }: { combatantId: string; newProperties: any }) => {
-    return (dispatch, getState) => {
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(getState().battle, combatantId) || {};
+export const updateCombatant = ({
+    combatantId,
+    newProperties,
+}: {
+    combatantId: string;
+    newProperties: { [key in keyof Combatant]?: Combatant[key] };
+}) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
+        const combatantData = findCombatantData(getState().battle!, combatantId);
+        if (!combatantData) {
+            return;
+        }
+        const { combatant: oldCombatant, friendlySide, friendly } = combatantData;
         // Due to morph, the combatant may no longer exist
-        if (!oldCombatant) {
+        if (!oldCombatant || !friendlySide || !friendly) {
             return;
         }
 
@@ -39,7 +50,7 @@ export const findCombatantData = (battle: BattleState, combatantId?: string): Co
 
     const { playerSide, enemySide } = battle;
     const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (enemyIndex > -1) {
+    if (enemySide[enemyIndex]) {
         return {
             combatant: enemySide[enemyIndex],
             index: enemyIndex,
@@ -51,7 +62,7 @@ export const findCombatantData = (battle: BattleState, combatantId?: string): Co
     }
 
     const index = playerSide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (index > -1) {
+    if (playerSide[index]) {
         return {
             combatant: playerSide[index],
             index,

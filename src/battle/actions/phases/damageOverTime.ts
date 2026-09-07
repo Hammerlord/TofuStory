@@ -15,7 +15,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
  */
 export const handleDoTs =
     ({ combatantIds, side, context }: { combatantIds: string[]; side: BATTLEFIELD_SIDES; context: ActionContext }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
             const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] = [];
 

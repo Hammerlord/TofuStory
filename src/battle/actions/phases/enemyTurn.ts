@@ -26,7 +26,7 @@ import { onEndTurnTriggers, requeueRecentlyUsedAbility } from "./phases";
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 
 const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollector) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { combatant } = findCombatantData(getState().battle, combatantId);
         const { ability, castTime = 0, channelDuration } = combatant.casting;
 
@@ -75,7 +75,7 @@ const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollecto
 };
 
 const enemyAction = (combatantId: string, playbackCollector: PlaybackCollector) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData) {
             return;
@@ -178,7 +178,7 @@ export const getUpdatedBattleActionTargets = ({
 };
 
 const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollector) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorData = findCombatantData(getState().battle, combatantId);
         if (!actorData?.combatant) {
             return;
@@ -232,7 +232,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 };
 
 export const endEnemyTurn = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         dispatch(onEndTurnTriggers(BATTLEFIELD_SIDES.ENEMY_SIDE));
 
         const { round } = getState().battle; // Grabbing enemySide state AFTER onEndTurnTriggers have played out
@@ -255,7 +255,7 @@ export const endEnemyTurn = () => {
 };
 
 export const startEnemyTurn = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { enemySide, round } = getState().battle;
 
         dispatch(
@@ -294,7 +294,7 @@ export const startEnemyTurn = () => {
 };
 
 export const enemyMoves = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const getEnemySideInfo = () => {
             return getState().battle.enemySide.map((combatant) => {
                 return findCombatantData(getState().battle, combatant?.id);

@@ -59,7 +59,6 @@ const getCardSelection = ({
 
     if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
         const firstJobCards = JOB_CARD_MAP[player.class]?.all || [];
-        const secondJobCards = JOB_CARD_MAP[player.secondaryClass]?.all || [];
         const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
         const shuffled = shuffle(potentialAbilities);
         return shuffled.slice(0, numOptions).map(createNewOption);

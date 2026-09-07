@@ -57,9 +57,10 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
     const particleAnimationRefs = useRef([]);
     const textRef: RefObject<HTMLSpanElement | null> = useRef(null);
     const textAnimationRef: RefObject<Animation | null> = useRef(null);
+    const healing = statChanges?.healing || 0;
 
     useEffect(() => {
-        if (statChanges?.healing > 0) {
+        if (healing > 0) {
             textAnimationRef.current?.cancel();
             const textAnim = textRef.current?.animate(
                 [
@@ -98,7 +99,7 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
 
             particleAnimationRefs.current = particleAnims;
         }
-    }, [statChanges]);
+    }, [healing]);
 
     return (
         <div className={classes.root}>
@@ -106,9 +107,9 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
                 // @ts-ignore
                 <Icon key={i} icon={<SparklesIcon />} className={classes.icon} style={style} ref={(el) => (particleRefs.current[i] = el)} />
             ))}
-            {statChanges?.healing > 0 && (
+            {healing > 0 && (
                 <span className={classes.text} ref={textRef}>
-                    {statChanges.healing}
+                    {healing}
                 </span>
             )}
         </div>

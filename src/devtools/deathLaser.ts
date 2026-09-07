@@ -9,7 +9,7 @@ export const deathLaser: Ability = {
     actions: [
         {
             damage: 1000,
-            area: 2,
+            area: 0,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             icon: StarfallMagicSquareImage,

@@ -17,7 +17,15 @@ import { BattleState } from "./reducer";
 import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./types";
 import { getMaxHP } from "./utils";
 
-export const passesValueComparison = ({ val, otherVal, comparator }: { val: any; otherVal: any; comparator: Comparator }): boolean => {
+export const passesValueComparison = ({
+    val,
+    otherVal,
+    comparator,
+}: {
+    val: any;
+    otherVal: any;
+    comparator: Comparator | undefined;
+}): boolean => {
     switch (comparator) {
         case "eq":
             return val === otherVal;
@@ -288,10 +296,13 @@ const passesCombatantCondition = ({
         }
 
         const prop = otherCalculationTarget.property;
+        const val = _.get(combatant, prop);
+
         if (
-            otherCalcTargets.some(
-                (targetInfo) => !passesValueComparison({ val: combatant[prop], otherVal: targetInfo?.combatant[prop], comparator })
-            )
+            otherCalcTargets.some((targetInfo) => {
+                const otherVal = _.get(targetInfo?.combatant || {}, prop);
+                return !passesValueComparison({ val, otherVal, comparator });
+            })
         ) {
             return false;
         }
@@ -448,7 +459,8 @@ const passesCombatantCondition = ({
             if (filters) {
                 return filters.some((filter) => {
                     const { property, comparator, value } = filter;
-                    return passesValueComparison({ val: combatant[property], otherVal: value, comparator });
+                    const val = _.get(combatant, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
                 });
             }
 
@@ -482,7 +494,7 @@ const passesPropertyCheck = ({
     property: string | undefined;
     object?: object;
     value: any;
-    comparator: Comparator;
+    comparator: Comparator | undefined;
 }) => {
     if (property === undefined) {
         return true;

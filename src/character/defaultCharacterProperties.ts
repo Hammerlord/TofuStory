@@ -46,6 +46,7 @@ import {
 } from "../images";
 import { chargingStone, honestyStone, rageStone } from "../item/starterItems";
 import { Player } from "./types";
+import { forkOnAStick, fruitKnife } from "../item/items";
 
 // Bows/oblong weapons have a different shape compared to swords and need to be positioned closer to the character
 const bowImageOptions: WeaponImageOptions = {
@@ -83,7 +84,7 @@ const defaultCharacterProperties: Player = {
     armor: 0,
     turnHistory: [],
     abilityHistory: [],
-    mesos: 0,
+    mesos: 100,
     isPlayer: true,
     weapon: OldGladiusImage,
     effects: [],

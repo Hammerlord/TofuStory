@@ -2,6 +2,7 @@ import { isAttackAbility, isOffensiveAbility } from "../../ability/AbilityView/u
 import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { CrossedSwordsImage } from "../../images";
+import { AppDispatch, RootState } from "../../store";
 import { shuffle } from "../../utils";
 import { INDUCED_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
@@ -26,7 +27,7 @@ export const checkInduce = ({
     affectedTargetIds: string[];
     parentContext: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { induceCombatant, induceCombatantAttack } = action;
 
         const getInitialTargetIndex = (combatantData: CombatantInfo): number | undefined => {
@@ -43,7 +44,7 @@ export const checkInduce = ({
                         continue;
                     }
 
-                    const targetData = findCombatantData(getState().battle, source.targetId);
+                    const targetData = findCombatantData(getState().battle!, source.targetId);
                     if (typeof targetData?.index === "number" && targetData?.friendlySide !== combatantData.friendlySide) {
                         return targetData.index;
                     }
@@ -54,7 +55,7 @@ export const checkInduce = ({
         if (induceCombatant) {
             const { mode, action: actions } = induceCombatant;
 
-            const handleInduceAction = (action) => {
+            const handleInduceAction = (action: Action) => {
                 if (mode === "standard") {
                     affectedTargetIds = shuffle(affectedTargetIds);
                 } else if (mode === "right-to-left") {
@@ -62,14 +63,14 @@ export const checkInduce = ({
                 }
 
                 affectedTargetIds.forEach((id) => {
-                    const combatantData = findCombatantData(getState().battle, id);
+                    const combatantData = findCombatantData(getState().battle!, id);
                     if (!combatantData) {
                         return;
                     }
 
                     const combatant = combatantData.combatant;
 
-                    const getCalculationTarget = (type) => {
+                    const getCalculationTarget = (type: TRIGGER_TARGET_TYPES) => {
                         if (type === TRIGGER_TARGET_TYPES.ACTOR) {
                             return combatantData;
                         }
@@ -89,10 +90,10 @@ export const checkInduce = ({
                         actorId: id,
                         initialSelectedIndex: initialIndex,
                         initialSelectedSide: initialSide,
-                        battle: getState().battle,
+                        battle: getState().battle!,
                     });
 
-                    if (typeof index !== "number") {
+                    if (typeof index !== "number" || !side) {
                         return;
                     }
 
@@ -115,16 +116,19 @@ export const checkInduce = ({
                         ],
                     };
 
-                    dispatch(
-                        onUseAbility({
-                            actorInfo: findCombatantData(getState().battle, id),
-                            context,
-                            ability: {
-                                name: "Induced Ability",
-                                actions: [action],
-                            },
-                        })
-                    );
+                    const actorInfo = findCombatantData(getState().battle!, id);
+                    if (actorInfo) {
+                        dispatch(
+                            onUseAbility({
+                                actorInfo,
+                                context,
+                                ability: {
+                                    name: "Induced Ability",
+                                    actions: [action],
+                                },
+                            })
+                        );
+                    }
                 });
             };
 
@@ -137,9 +141,13 @@ export const checkInduce = ({
 
         if (induceCombatantAttack) {
             shuffle(affectedTargetIds).forEach((id) => {
-                const combatantData = findCombatantData(getState().battle, id);
-                const { combatant } = combatantData || {};
-                if (!combatant.HP || isStunnedOrFrozen(combatant)) {
+                const combatantData = findCombatantData(getState().battle!, id);
+                if (!combatantData) {
+                    return;
+                }
+
+                const { combatant } = combatantData;
+                if (!combatant || !combatant.HP || isStunnedOrFrozen(combatant)) {
                     return;
                 }
 

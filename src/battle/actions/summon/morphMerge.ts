@@ -44,7 +44,7 @@ export const checkHandleMorph = ({
     parentContext: ActionContext;
     actionParent: ActionParent;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!action.morph) {
             return;
         }

@@ -7,13 +7,14 @@ import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { filterImmunedHindranceCards } from "./hindranceCards";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch, getState) => {
+export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
     const { hand, deck, discard } = getState().battle;
 
     dispatch(
@@ -34,7 +35,7 @@ export const checkAddCardsToDeck = ({
     ownedCards: { [abilityName: string]: true };
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         let { addCardsToDeck, addCardsToDeckOptions } = action;
         addCardsToDeck = dispatch(filterImmunedHindranceCards({ cardsToAdd: addCardsToDeck, context }));
 
@@ -92,7 +93,7 @@ export const handleAddCardsToDiscard = ({
     ownedCards: { [cardName: string]: boolean };
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         let cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
         if (!cardsToAdd.length) {
@@ -131,7 +132,7 @@ export const handleAddCardsToHand = ({
     ownedCards: { [abilityName: string]: true };
     context?: ActionContext;
 }) => {
-    return (dispatch) => {
+    return (dispatch: AppDispatch) => {
         let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
 
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));

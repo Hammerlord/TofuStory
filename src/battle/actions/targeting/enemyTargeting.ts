@@ -15,7 +15,7 @@ import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./target
  * becomes invalid (eg. applying armor to a Taunt unit that would have died), update the targeting here.
  */
 export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: string }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         let battle: BattleState = getState().battle;
         const validTargetSwitchId: string = options?.validTargetSwitchId;
         let targetSwitch: CombatantInfo | undefined;
@@ -106,7 +106,7 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
  * eg. Grendel should stop casting the Storm Barrier attack if he has no armor.
  */
 export const checkValidEnemyNextAbility = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         let battle = getState().battle;
         battle.enemySide.forEach((enemy: Combatant | null) => {
             if (!enemy) {
@@ -161,7 +161,7 @@ export const updateEnemyTargetingAfterEffectsApplied = ({
     combatantId: string;
     effectsApplied: CombatEffect[];
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (effectsApplied.every((effect) => effect.type !== EFFECT_TYPES.TAUNT)) {
             return;
         }

@@ -10,7 +10,7 @@ import { prepareForDiscard } from "./utils";
 const { updateBattle } = battleStateSlice.actions;
 
 export const handleDiscardAfterUse = (ability: CombatAbility) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { removeAfterTurn, depletedOnUse, minion } = ability;
 
         const { discard, depleted } = getState().battle;

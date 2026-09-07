@@ -117,7 +117,7 @@ export const useHandAbility = ({
     selectedTargetSide: BATTLEFIELD_SIDES;
     selectedAbilityId: string;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { hand } = getState().battle;
         dispatch(selectHandAbility(null));
         // Why not just pass ability object from BattleView instead of performing a lookup again?
@@ -172,7 +172,7 @@ export const usePlayerAbility = ({
     isProc?: boolean;
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide } = getState().battle;
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
@@ -221,7 +221,7 @@ export const usePlayerAbility = ({
 };
 
 export const removeAbilityFromHand = (abilityId: string) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { hand: originalHand } = getState().battle;
         const handWithAbilityUsed: CombatAbility[] = originalHand.slice();
         const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);

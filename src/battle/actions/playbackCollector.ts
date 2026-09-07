@@ -3,7 +3,7 @@ import { Ability, ACTION_TYPES, CombatAbility } from "../../ability/types";
 import { Event, EventGroup } from "../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 
-const isGroupableEvent = (event: Event, previousEvent: Event) => {
+const isGroupableEvent = (event: Event, previousEvent: Event | undefined) => {
     if (!previousEvent) {
         return false;
     }
@@ -71,7 +71,7 @@ export const playbackCollector = (): PlaybackCollector => {
         group.events.push(event);
 
         const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime;
-        group.playbackTime = group.playbackTime || eventPlayback;
+        group.playbackTime = group.playbackTime || eventPlayback || 0;
         group.addCards = [...group.addCards, ...(event.addCards || [])];
         group.newCombatants = [...group.newCombatants, ...(event.newCombatants || [])];
         group.displacements = { ...group.displacements, ...event.displacements };
@@ -82,14 +82,14 @@ export const playbackCollector = (): PlaybackCollector => {
         collect: (event: Event, alwaysGroup: boolean = false) => {
             if (queue.length) {
                 const prevGroup = queue.at(-1);
-                const prevEvent = prevGroup.events?.at(-1);
+                const prevEvent = prevGroup?.events?.at(-1);
                 if (isGroupableEvent(event, prevEvent) || (prevEvent && alwaysGroup)) {
-                    addToGroup(event, prevGroup);
+                    addToGroup(event, prevGroup!);
                     return;
                 }
             }
 
-            const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime;
+            const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime || 0;
 
             queue.push({
                 ...event,

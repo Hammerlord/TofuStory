@@ -1,4 +1,5 @@
-import { Ability, ACTION_TYPES, EFFECT_EVENT_KEYS } from "../../../ability/types";
+import { Ability, ACTION_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
+import { AppDispatch, RootState } from "../../../store";
 import { BattleState } from "../../reducer";
 import { ActionContext, BATTLEFIELD_SIDES, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
@@ -14,9 +15,9 @@ export const filterImmunedHindranceCards = ({
     cardsToAdd?: Ability[];
     context?: ActionContext;
 }) => {
-    return (dispatch, getState): Ability[] => {
+    return (dispatch: AppDispatch, getState: () => RootState): Ability[] => {
         const [hindranceCards, cardsToAdd] = partition(
-            (card) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),
+            (card: CombatAbility) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),
             initialCardsToAdd || []
         );
 
@@ -24,7 +25,7 @@ export const filterImmunedHindranceCards = ({
             return cardsToAdd;
         }
 
-        const immuned = [];
+        const immuned: CombatAbility[] = [];
         const source: TriggerSource | undefined = context?.sourceChain?.at(-1);
 
         const checkImmunity = () => {
@@ -32,8 +33,12 @@ export const filterImmunedHindranceCards = ({
                 return;
             }
 
-            const battle: BattleState = getState().battle;
+            const battle: BattleState = getState().battle!;
             const player = battle.playerSide.find((c) => c?.isPlayer);
+            if (!player) {
+                return;
+            }
+
             const hindranceImmunity = player.effects.find((e) => e.immunities?.type === "hindrance-card");
             if (!hindranceImmunity) {
                 return;

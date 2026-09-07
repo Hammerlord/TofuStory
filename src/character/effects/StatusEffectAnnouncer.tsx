@@ -90,20 +90,24 @@ const StatusEffectAnnouncer = ({
     const isInvalidCombatant =
         !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
 
-    const aggregate = (effects): CombatEffect[] => {
-        const aggregated = effects.reduce((acc, effect) => {
-            const stacks = effect.stacks || 1;
-            if (!acc[effect.name]) {
-                acc[effect.name] = {
-                    ...effect,
-                    stacks,
-                };
-            } else {
-                acc[effect.name].stacks += stacks;
-            }
+    const aggregate = (effects: CombatEffect[]): CombatEffect[] => {
+        const aggregated = effects.reduce(
+            (acc, effect) => {
+                const stacks = effect.stacks || 1;
+                if (!acc[effect.name]) {
+                    acc[effect.name] = {
+                        ...effect,
+                        stacks,
+                    };
+                } else {
+                    const currentStacks = acc[effect.name].stacks || 1;
+                    acc[effect.name].stacks = currentStacks + stacks;
+                }
 
-            return acc;
-        }, {});
+                return acc;
+            },
+            {} as { [effectName: string]: CombatEffect }
+        );
 
         return Object.values(aggregated);
     };
@@ -122,7 +126,8 @@ const StatusEffectAnnouncer = ({
         // Only display effects that are visible via icon
         const { effects = [], removedEffects = [], failedToApplyEffects = [], failedToAddCards } = statChanges;
 
-        const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean => effect.icon && !effect.disableDisplayIcon;
+        const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean =>
+            Boolean(effect.icon && !effect.disableDisplayIcon);
 
         const queuedKeys = queue.reduce((acc, item) => {
             acc[getKey(item.effect, item.type)] = true;

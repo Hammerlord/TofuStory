@@ -11,7 +11,7 @@ const { updateBattle } = battleStateSlice?.actions || {};
  */
 export const depleteAbilities =
     ({ actorId, abilities = [], context }: { actorId: string; abilities: CombatAbility[]; context?: ActionContext }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         const { hand, depleted = [] } = getState().battle;
         dispatch(
             enqueueEvent({

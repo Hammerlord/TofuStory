@@ -26,7 +26,7 @@ const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.act
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const battle: BattleState = getState().battle;
         if (!battle) {
             return;
@@ -62,7 +62,7 @@ export const onBattleEnd = () => {
 };
 
 export const onWaveClear = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide } = getState().battle || {};
         if (!playerSide) {
             return;
@@ -75,7 +75,7 @@ export const onWaveClear = () => {
 };
 
 export const nextWave = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { waves, currentWaveIndex, deck, hand, discard } = getState().battle;
         const { presetDeck, enemies = [] } = waves[currentWaveIndex + 1] || {};
 
@@ -120,7 +120,7 @@ export const startBattle = ({
     disableCardRewards?: boolean;
     disableItemRewards?: boolean;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { character } = getState();
         deck = deck || character?.deck;
         const player = {
@@ -193,7 +193,7 @@ export const startBattle = ({
 };
 
 export const onBattleStart = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, enemySide, addAbilities = [] } = getState().battle;
         const playbackCollectorInstance = playbackCollector();
 
@@ -231,7 +231,7 @@ export const onBattleStart = () => {
 };
 
 export const onWaveStart = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "Wave Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
         const { playerSide, enemySide } = getState().battle;
@@ -272,7 +272,7 @@ export const onWaveStart = () => {
 };
 
 export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "End Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
 
@@ -313,7 +313,7 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
 };
 export const requeueRecentlyUsedAbility =
     ({ combatantId }: { combatantId: string }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         const battle = getState().battle;
         const actorInfo = findCombatantData(battle, combatantId);
         if (!actorInfo?.combatant?.HP || !actorInfo?.combatant?.abilities?.length) {

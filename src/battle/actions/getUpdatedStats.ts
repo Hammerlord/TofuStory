@@ -65,13 +65,13 @@ export const getUpdatedStats = ({
     hand: CombatAbility[];
     discard: CombatAbility[];
 }): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
-    const actor = getCombatantById(actorId);
+    const actor = actorId ? getCombatantById(actorId) : undefined;
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);
     const triggerSource = context?.sourceChain?.at(-1);
 
     return (recipients || targets).map((target: CombatantInfo) => {
-        const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants } = target;
+        const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants = [] } = target;
         const action = calculateBonus({
             action: initialAction,
             target,
@@ -222,9 +222,9 @@ const getStatusEffectDiff = ({
     actionParent,
 }: {
     target: CombatantInfo;
-    actor: CombatantInfo;
+    actor?: CombatantInfo | undefined;
     action: Action;
-    context: ActionContext;
+    context?: ActionContext | undefined;
     multiplier: number;
     actionParent?: ActionParent;
 }) => {
@@ -249,7 +249,7 @@ const getStatusEffectDiff = ({
             const { type, value = [] } = targetEffect.immunities || {};
 
             if (type === "effect-type") {
-                return value.some((type: EFFECT_TYPES) => type === effect.type);
+                return (value as EFFECT_TYPES[]).some((type: EFFECT_TYPES) => type === effect.type);
             }
 
             if (type === "effect") {
@@ -257,7 +257,7 @@ const getStatusEffectDiff = ({
             }
 
             if (type === "effect-class") {
-                return value.some((type: EFFECT_CLASSES) => type === effect.class);
+                return (value as EFFECT_CLASSES[]).some((type: EFFECT_CLASSES) => type === effect.class);
             }
         });
     };
@@ -275,7 +275,7 @@ const getStatusEffectDiff = ({
     const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
 
     const getEffectDuration = (incomingEffect: Effect) => {
-        if (isNaN(incomingEffect.duration) || incomingEffect.duration === Infinity) {
+        if (incomingEffect === undefined || incomingEffect.duration === Infinity) {
             return Infinity;
         }
 
@@ -299,7 +299,7 @@ const getStatusEffectDiff = ({
             return acc;
         }, 0);
 
-        return incomingEffect.duration + totalBonusDuration;
+        return (incomingEffect.duration || 0) + totalBonusDuration;
     };
 
     const effects: CombatEffect[] = [];

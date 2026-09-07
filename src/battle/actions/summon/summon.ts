@@ -1,6 +1,15 @@
 import { cloneDeep } from "lodash";
 import { tributeSummonBuff } from "../../../ability/Effects";
-import { ACTION_TYPES, Action, ActionSummon, CombatAbility, EFFECT_EVENT_KEYS, Minion, TRIGGER_TARGET_TYPES } from "../../../ability/types";
+import {
+    ACTION_TYPES,
+    Action,
+    ActionSummon,
+    CombatAbility,
+    EFFECT_EVENT_KEYS,
+    Effect,
+    Minion,
+    TRIGGER_TARGET_TYPES,
+} from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { enemyNameMap } from "../../../enemy";
 import { createCombatant } from "../../../enemy/createEnemy";
@@ -8,7 +17,7 @@ import { Item } from "../../../item/types";
 import { getRandomItem, passesChance } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
-import { battleStateSlice } from "../../reducer";
+import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
@@ -16,6 +25,7 @@ import { requeueRecentlyUsedAbility } from "../phases/phases";
 import { enqueueEvent } from "../enqueueEvent";
 import { updateEnemyTargetingAfterEffectsApplied } from "../targeting/enemyTargeting";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -36,7 +46,7 @@ export const checkHandleActionSummon = ({
     parentContext: ActionContext;
     actionParent: ActionParent;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
         const actorData = findCombatantData(getState().battle, actorId);
         if (!actorData) {
@@ -62,8 +72,8 @@ export const checkHandleActionSummon = ({
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
         const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = actorData;
-        const mutableFriendly = friendly.slice(); // This gets used to update the battlefield side at the end
-        const mutableHostile = hostile.slice();
+        const mutableFriendly = friendly!.slice(); // This gets used to update the battlefield side at the end
+        const mutableHostile = hostile!.slice();
 
         for (const summon of summons) {
             const {
@@ -78,7 +88,7 @@ export const checkHandleActionSummon = ({
             const mutableSide = side === hostileSide ? mutableHostile : mutableFriendly;
 
             let isTributeKill = false;
-            let pos: number;
+            let pos: number | undefined;
             if (typeof positionIndex === "number" && !mutableSide[positionIndex]?.HP) {
                 pos = positionIndex;
             } else if (placement === "adjacent") {
@@ -98,9 +108,9 @@ export const checkHandleActionSummon = ({
             } else if (placement === "on-top") {
                 pos = actorIndex;
             } else if (Array.isArray(replaceMinionByName)) {
-                const indices = [];
+                const indices: number[] = [];
                 friendly.forEach((f, i) => {
-                    if (replaceMinionByName.includes(f?.name)) {
+                    if (f?.name && replaceMinionByName.includes(f.name)) {
                         indices.push(i);
                     }
                 });
@@ -226,7 +236,7 @@ export const checkHandleActionSummon = ({
         });
 
         minionsSummoned.forEach((minion) => {
-            dispatch(requeueRecentlyUsedAbility({ combatantId: minion.id })) || {};
+            dispatch(requeueRecentlyUsedAbility({ combatantId: minion.id }));
             dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: minion.id, effectsApplied: minion.effects }));
         });
     };
@@ -250,13 +260,14 @@ export const checkSummonMinion = ({
     parentContext: ActionContext;
     isAutoCast?: boolean;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { minion, minionOptions, resourceCost = 0 } = ability;
         if (!minion) {
             return;
         }
 
-        const battlefieldSide = getState().battle[side];
+        const battle: BattleState = getState().battle!;
+        const battlefieldSide = battle[side];
         const pickRandomSummonIndex = () => {
             if (isAutoCast) {
                 const indices = battlefieldSide.map((_, i) => i).filter((_, i) => !battlefieldSide[i]?.isPlayer);
@@ -266,20 +277,21 @@ export const checkSummonMinion = ({
         };
         const index = typeof selectedIndex === "number" ? selectedIndex : pickRandomSummonIndex();
         const previousMinionInSlot = battlefieldSide[index];
-        const isKillPreviousMinion = previousMinionInSlot?.HP > 0;
+        const isKillPreviousMinion = (previousMinionInSlot?.HP || 0) > 0;
         const minionEffects = minion.effects?.slice() || [];
         if (isKillPreviousMinion) {
             minionEffects.push(tributeSummonBuff);
         }
 
-        const actor = findCombatantData(getState().battle, actorId)?.combatant;
+        const actor = findCombatantData(getState().battle!, actorId)?.combatant;
         if (actor?.isPlayer) {
             const itemEffects = actor.items.reduce((acc, item: Item) => {
                 if (item.applyEffectsToSummons) {
                     acc.push(...(item.effects || []));
                 }
                 return acc;
-            }, []);
+            }, [] as Effect[]);
+
             minionEffects.push(...itemEffects);
         }
 
@@ -340,7 +352,7 @@ const tributeKill = ({
     index: number;
     parentContext?: ActionContext;
 }) => {
-    return (dispatch) => {
+    return (dispatch: AppDispatch) => {
         if (typeof index !== "number") {
             return;
         }
@@ -381,7 +393,7 @@ const tributeKill = ({
  */
 export const onSummonTriggers =
     ({ summonedId, summonerId, parentContext }: { summonedId: string; summonerId: string; parentContext: ActionContext }) =>
-    (dispatch, getState) => {
+    (dispatch: AppDispatch, getState: () => RootState) => {
         const context: ActionContext = {
             ...parentContext,
             sourceChain: [...(parentContext?.sourceChain || []), { actorId: summonerId, targetId: summonedId, allTargetIds: [summonedId] }],

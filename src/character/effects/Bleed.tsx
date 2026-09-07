@@ -36,6 +36,10 @@ const useStyles = createUseStyles({
 const Bleed = ({ amount }: { amount?: number }) => {
     const [oldAmount, setOldAmount] = useState(0);
     useEffect(() => {
+        if (!amount) {
+            return;
+        }
+
         let timeout;
         if (amount > oldAmount) {
             timeout = setTimeout(() => {

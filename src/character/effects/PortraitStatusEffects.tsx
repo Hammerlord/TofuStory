@@ -221,7 +221,7 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: 
     const isFeared = hasStatusEffect(EFFECT_TYPES.FEAR);
     const burn = effects.reduce((acc: number, effect: Effect) => {
         if (effect.type === EFFECT_TYPES.BURN) {
-            return acc + effect.stacks || 1;
+            return acc + (effect.stacks || 1);
         }
         return acc;
     }, 0);

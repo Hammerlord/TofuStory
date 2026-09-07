@@ -19,7 +19,7 @@ export const checkHandleVacuum = ({
     selectedIndex: number;
     area: number;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!vacuum) {
             return;
         }
@@ -55,7 +55,7 @@ export const checkHandleMovement = ({
     actorIndex: number;
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { movement } = action;
         if (!movement) {
             return;

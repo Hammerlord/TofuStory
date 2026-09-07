@@ -14,7 +14,8 @@ const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const triggerStatChangeEvents =
-    (statChanges: { statUpdate: UpdatedCombatantStats; context?: ActionContext }[]) => (dispatch, getState) => {
+    (statChanges: { statUpdate: UpdatedCombatantStats; context?: ActionContext }[]) =>
+    (dispatch: AppDispatch, getState: () => RootState) => {
         statChanges.forEach(({ statUpdate, context }) => {
             const {
                 combatantId,
@@ -183,7 +184,7 @@ export const triggerStatChangeEvents =
         });
     };
 
-export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch, getState) => {
+export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch: AppDispatch, getState: () => RootState) => {
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
         const combatantId = statUpdate.combatantId;
@@ -238,7 +239,7 @@ export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: C
     };
 };
 
-const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch, getState) => {
+const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch: AppDispatch, getState: () => RootState) => {
     const battle: BattleState = getState().battle;
     if (isActorPlayerSide({ playerSide: battle.playerSide, source: source })) {
         const statistics: BattleStatistics = {

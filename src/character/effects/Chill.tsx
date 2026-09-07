@@ -4,6 +4,7 @@ import Icon from "../../icon/Icon";
 import { SnowflakeIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import { clamp } from "ramda";
+import { Particle } from "./types";
 
 const ANIMATION_DURATION = 2;
 
@@ -47,9 +48,9 @@ const useStyles = createUseStyles({
     },
 });
 
-const Chill = ({ amount }) => {
+const Chill = ({ amount = 0 }: { amount: number }) => {
     const classes = useStyles();
-    const [particles, setParticles] = useState([]);
+    const [particles, setParticles] = useState<Particle[]>([]);
 
     useEffect(() => {
         if (amount > 0) {

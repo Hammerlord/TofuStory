@@ -6,11 +6,12 @@ import { BattleState, battleStateSlice } from "../../reducer";
 import { ActionContext, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
 export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; context: ActionContext }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { from, to, amount = 1, moveType, filters } = moveCards;
         if (from === to) {
             return;
@@ -55,19 +56,19 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
         const updatedCardPiles = {};
 
         if (from === FROM_CARD_PILE_TYPES.ANYWHERE) {
-            ["hand", "deck", "discard", "depleted"].forEach((fromPileName: string) => {
+            (["hand", "deck", "discard", "depleted"] as (keyof BattleState)[]).forEach((fromPileName) => {
                 if (fromPileName === to) {
                     return;
                 }
 
-                const battle: BattleState = getState().battle;
-                const pile = battle[fromPileName];
+                const battle: BattleState = getState().battle!;
+                const pile: CombatAbility[] = battle[fromPileName] as CombatAbility[];
                 const { updatedFromPile, movedCards } = moveFromPile(pile);
                 updatedCardPiles[fromPileName] = updatedFromPile;
                 cardsToMove.push(...movedCards);
             });
         } else {
-            const battle: BattleState = getState().battle;
+            const battle: BattleState = getState().battle!;
             const fromPile = battle[from];
             const { updatedFromPile, movedCards } = moveFromPile(fromPile);
             updatedCardPiles[from] = updatedFromPile;
@@ -102,7 +103,8 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
             return;
         }
 
-        const toPile: CombatAbility[] = getState().battle[to]?.slice();
+        const battle = getState().battle!;
+        const toPile: CombatAbility[] = (battle[to] as CombatAbility[]).slice();
         if (moveType === "append") {
             toPile.push(...cardsToMove);
         } else {
@@ -125,13 +127,15 @@ export const handleRetrieveDepletedCards = ({
     context,
 }: {
     amount: number;
-    source: TriggerSource;
+    source?: TriggerSource | undefined;
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const sourceAbilityId = source?.source ? (source?.source as CombatAbility)?.instanceId : undefined;
         // Prevent eg. Bag From Beyond from pulling itself back out (it can still pull out other Bags From Beyond)
-        const eligible = shuffle([...getState().battle.depleted.filter((card: CombatAbility) => card.instanceId !== sourceAbilityId)]);
+        const battle: BattleState = getState().battle!;
+        const eligible = shuffle([...battle.depleted.filter((card: CombatAbility) => card.instanceId !== sourceAbilityId)]);
+
         if (eligible.length > 0) {
             const cardsToHand: CombatAbility[] = [];
             Array.from({ length: amount }).forEach(() => {
@@ -144,8 +148,8 @@ export const handleRetrieveDepletedCards = ({
 
             dispatch(
                 updateBattle({
-                    hand: [...getState().battle.hand, ...cardsToHand],
-                    depleted: getState().battle.depleted.filter((card: CombatAbility) =>
+                    hand: [...battle.hand, ...cardsToHand],
+                    depleted: battle.depleted.filter((card: CombatAbility) =>
                         cardsToHand.every(({ instanceId }) => instanceId !== card.instanceId)
                     ),
                 })

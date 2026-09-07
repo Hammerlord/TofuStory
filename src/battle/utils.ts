@@ -27,7 +27,7 @@ export const isSilenced = (character: Combatant): boolean => {
 };
 
 export const canTargetIfStealthed = (actor: Combatant, target: Combatant, action?: Action): boolean => {
-    return !isStealthed(target) || hasTruesight(actor) || action?.bypassStealth;
+    return !isStealthed(target) || hasTruesight(actor) || Boolean(action?.bypassStealth);
 };
 
 export const isStealthed = (character?: Combatant | null): boolean => {

@@ -44,8 +44,7 @@ export interface Combatant extends Minion {
 }
 
 export interface Player extends Combatant {
-    class?: PLAYER_CLASSES;
-    secondaryClass?: string | null;
+    class: PLAYER_CLASSES;
     drawCardsPerTurn: number;
     weaponSkins: { name: string; image: string; weaponImageOptions?: WeaponImageOptions; projectileOverride?: string | string[] }[];
     mesos: number;

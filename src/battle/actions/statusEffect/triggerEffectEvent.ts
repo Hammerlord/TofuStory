@@ -56,7 +56,7 @@ export const onEffectEventTrigger = ({
     ownerId: string;
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!effectEvent) {
             return;
         }
@@ -407,7 +407,7 @@ export const checkEventTrigger = ({
     effectEventKey: EFFECT_EVENT_KEYS;
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!combatantId) {
             return;
         }
@@ -521,7 +521,7 @@ const updateEffectEventTriggeredTimes = ({
     triggerSum: number;
     effectId: string;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
         const currentEffects = findCombatantData(getState().battle, combatantId)?.combatant?.effects || [];
 
@@ -570,7 +570,7 @@ const triggerCardEffectEvents = ({
     context: ActionContext;
     source: TriggerSource;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, hand } = getState().battle;
         const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === source?.actorId);
         if (!actorIsPlayer) {

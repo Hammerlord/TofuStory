@@ -35,7 +35,7 @@ export const useAbility = ({
     isProc?: boolean;
     context?: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = [], echo } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const { combatant, friendlySide } = findCombatantData(getState().battle, actorId) || {};

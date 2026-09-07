@@ -13,6 +13,7 @@ import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
 import { PreviewStatUpdate } from "./AbilityPreview";
 import { Combatant } from "./types";
 import { validate as uuidValidate } from "uuid";
+import { AppDispatch, RootState } from "../store";
 
 export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
 
@@ -22,7 +23,7 @@ export const previewAction = ({
     actionFn,
     battle,
 }: {
-    actionFn: (dispatch, getState) => void;
+    actionFn: (dispatch: AppDispatch, getState: () => RootState) => void;
     battle: BattleState;
 }): { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } } => {
     const statUpdates = {};
@@ -114,7 +115,7 @@ const previewTargetChange = ({
     targetChangeCheckFn,
     battle,
 }: {
-    targetChangeCheckFn: (dispatch, getState) => void;
+    targetChangeCheckFn: (dispatch: AppDispatch, getState: () => RootState) => void;
     battle: BattleState;
 }) => {
     const getState = () => ({

@@ -22,7 +22,7 @@ import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const combatant = findCombatantData(getState().battle, actorId)?.combatant;
         const ability = combatant?.abilities[0];
         if (!ability) {
@@ -55,7 +55,7 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 };
 
 const minionAutoAttack = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, round } = getState().battle;
 
         const playbackCollectorInstance = playbackCollector();
@@ -89,7 +89,7 @@ const minionAutoAttack = () => {
 };
 
 export const playerEndTurn = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         // Order matters: discard first, so that any lingering minion attacks that result in a card draw don't have that card immediately discarded
         // Then, tick down end turn triggers so that buffs don't fall off before minions can attack
         const { discard, hand } = getState().battle;
@@ -109,7 +109,7 @@ export const playerEndTurn = () => {
 };
 
 export const startPlayerTurn = (isNewWave: boolean) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, round, hand } = getState().battle;
         dispatch(
             updateBattle({
@@ -174,7 +174,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
 };
 
 export const initiatePlayerTurnInProgress = () => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide } = getState().battle;
 
         playerSide.forEach((combatant: Combatant | null) => {

@@ -49,7 +49,7 @@ export const enqueueEvent = ({
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
     options?: { alwaysGroup: boolean };
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         playbackTime = action?.playbackTime || playbackTime || 0;
         if (!playbackTime && action) {
             if (action.animationOptions?.ricochet) {

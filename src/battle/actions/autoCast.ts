@@ -30,7 +30,7 @@ export const checkHandleAutoCast = ({
     multiplier?: number;
     context: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!autoCastAbilities || !actor.class) {
             return;
         }
@@ -158,7 +158,7 @@ export const checkHandleAutoCast = ({
 };
 
 const cycleDeck = (context: ActionContext) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const battle: BattleState = getState().battle;
         const { playerSide, enemySide, discard } = battle;
         updateBattle({

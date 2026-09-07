@@ -1,3 +1,4 @@
+import { BattleState } from "../battle/reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 
@@ -570,7 +571,7 @@ export const FROM_CARD_PILE_TYPES = {
     ANYWHERE: "anywhere",
 } as const;
 
-export type CardPileType = (typeof CARD_PILE_TYPES)[keyof typeof CARD_PILE_TYPES];
+export type CardPileType = (typeof CARD_PILE_TYPES)[keyof typeof CARD_PILE_TYPES] & keyof BattleState;
 
 export type FromCardPileType = (typeof FROM_CARD_PILE_TYPES)[keyof typeof FROM_CARD_PILE_TYPES];
 

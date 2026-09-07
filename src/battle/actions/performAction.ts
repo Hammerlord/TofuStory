@@ -50,7 +50,7 @@ export const performAction = ({
     parentContext?: ActionContext;
     isAutoCast?: boolean;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorData: CombatantInfo | undefined = findCombatantData(getState().battle, actorId);
         if (!actorData || !side) {
             return;
@@ -439,7 +439,7 @@ const handleOnReceiveAction = ({
     context?: ActionContext;
     combatants: (Combatant | null)[];
 }) => {
-    return (dispatch) => {
+    return (dispatch: AppDispatch) => {
         const isAttack = (action: Action) => [ACTION_TYPES.RANGE_ATTACK, ACTION_TYPES.ATTACK].includes(action.type);
         const prevSource = context?.sourceChain?.at(-1);
         updatedStats.forEach(({ statUpdate, action }) => {
@@ -481,7 +481,7 @@ const handleOnReceiveAction = ({
 };
 
 const onAction = ({ action, context: context }: { action: Action; context?: ActionContext }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorId = context?.sourceChain?.at(-1)?.actorId;
         const { combatant, hostile } = findCombatantData(getState().battle, actorId) || {};
 
@@ -541,7 +541,10 @@ const handleSecondaryAction = ({
     updatedStatsProps: any;
     isAutoCast: boolean;
 }) => {
-    return (dispatch, getState): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
+    return (
+        dispatch: AppDispatch,
+        getState: () => RootState
+    ): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
         const source = context?.sourceChain.at(-1);
         if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, context })) {
             return;
@@ -647,7 +650,7 @@ const checkCastRadiate = ({
     side: BATTLEFIELD_SIDES;
     parentContext: ActionContext;
 }) => {
-    return (dispatch, getState) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!action.radiate) {
             return;
         }

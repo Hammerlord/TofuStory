@@ -4,6 +4,7 @@ import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Icon from "../../icon/Icon";
 import { FireIcon } from "../../images/icons";
 import { clamp } from "ramda";
+import { Particle } from "./types";
 
 const ANIMATION_DURATION = 2;
 
@@ -46,9 +47,9 @@ const useStyles = createUseStyles({
     },
 });
 
-const Burn = ({ amount }) => {
+const Burn = ({ amount = 0 }: { amount: number }) => {
     const classes = useStyles();
-    const [particles, setParticles] = useState([]);
+    const [particles, setParticles] = useState<Particle[]>([]);
 
     useEffect(() => {
         if (amount > 0) {

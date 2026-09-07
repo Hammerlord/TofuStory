@@ -1,25 +1,44 @@
 import { useEffect, useMemo } from "react";
 
 import { entrenchedFire, guard, shatteringArrow } from "../ability/bowman/bowmanAbilities";
-import { bladedArmor, closeCombat, dustDevils } from "../ability/warrior/warriorAbilities";
+import {
+    bladedArmor,
+    closeCombat,
+    dustDevils,
+    hammerang,
+    slam,
+    sweepingReach,
+    bash,
+    whirlwind,
+    cleave,
+    counterattack,
+    retribute,
+    anger,
+    dash,
+    frenzy,
+} from "../ability/warrior/warriorAbilities";
 import { startBattle } from "../battle/actions/phases/phases";
 import BattlefieldContainer from "../battle/view/BattleView";
-import { bowmanProperties } from "../character/defaultCharacterProperties";
+import defaultCharacterProperties, { bowmanProperties } from "../character/defaultCharacterProperties";
 import { playerStateSlice } from "../character/playerReducer";
 import { devDummy, spikedDummy } from "../enemy/dummy";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { bounce, vault } from "../ability/neutralAbilities";
+import { wanderingBlacksmith } from "../enemy/wanderingBlacksmith";
+import { deathLaser } from "./deathLaser";
+import { mesoThief } from "../enemy/mesoThieves";
 
 const { updatePlayer, updateDeck } = playerStateSlice?.actions || {};
 const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];
-const other = [null, null, spikedDummy, spikedDummy, null];
+const other = [null, null, mesoThief, null, null];
 
 const DevStageBattle = () => {
-    const deck = useMemo(() => [closeCombat, dustDevils, guard, guard, bladedArmor, shatteringArrow, entrenchedFire], []);
+    const deck = useMemo(() => [deathLaser], []);
     const enemies = useMemo(() => other, []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);
     useEffect(() => {
-        dispatch(updatePlayer(bowmanProperties));
+        dispatch(updatePlayer(defaultCharacterProperties));
         dispatch(updateDeck(deck));
         dispatch(startBattle({ deck, waves: [{ enemies }] }));
     }, []);
