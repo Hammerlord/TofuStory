@@ -1,5 +1,5 @@
-import { CombatAbility, SELECT_CARD_TYPES, SelectCards } from "../../../ability/types";
-import { Combatant } from "../../../character/types";
+import { AbilityEffect, CombatAbility, SELECT_CARD_TYPES, SelectCards } from "../../../ability/types";
+import { Combatant, Player } from "../../../character/types";
 import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
@@ -9,6 +9,7 @@ import { depleteAbilities } from "./depleteCards";
 import { prepareForDiscard } from "./utils";
 import { drawCards, handleOnDrawEvents } from "./drawCards";
 import { applyAbilityEventEffects } from "./utils";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -16,7 +17,7 @@ const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } 
  * Remove a card from existence based on its id.
  */
 export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const { hand, deck, discard } = getState().battle;
+    const { hand, deck, discard } = getState().battle!;
 
     dispatch(
         updateBattle({
@@ -28,9 +29,21 @@ export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getStat
 };
 
 export const selectCardsAction =
-    ({ type, selectedAbilities, player, effects = [], abilityQueued }) =>
+    ({
+        type,
+        selectedAbilities,
+        player,
+        effects = [],
+        abilityQueued,
+    }: {
+        type: SELECT_CARD_TYPES;
+        selectedAbilities: CombatAbility[];
+        player: Player;
+        effects?: AbilityEffect[];
+        abilityQueued: CombatAbility;
+    }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
-        const { deck, hand, discard } = getState().battle;
+        const { deck, hand, discard } = getState().battle!;
         const playbackCollectorInstance = playbackCollector();
         const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
 
@@ -43,7 +56,7 @@ export const selectCardsAction =
         const selectedAbilityIds = selectedAbilities.map((ability) => ability.instanceId);
 
         if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-            const updatedHand = [];
+            const updatedHand: CombatAbility[] = [];
             const updatedDeck = [...deck];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
@@ -65,7 +78,7 @@ export const selectCardsAction =
         }
 
         if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
-            const updatedHand = [];
+            const updatedHand: CombatAbility[] = [];
             const updatedDiscard = [...discard];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
@@ -102,7 +115,7 @@ export const selectCardsAction =
         if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
             const updatedDeck = [...deck];
             const updatedDiscard = [...discard];
-            const cardsToAdd = [];
+            const cardsToAdd: CombatAbility[] = [];
 
             selectedAbilityIds.forEach((id) => {
                 const findAndAppendFrom = (pile: CombatAbility[]): boolean => {
@@ -112,6 +125,8 @@ export const selectCardsAction =
                         cardsToAdd.push({ ...card, effects: [...(card?.effects || []), ...effects] });
                         return true;
                     }
+
+                    return false;
                 };
 
                 if (!findAndAppendFrom(updatedDeck)) {
@@ -163,8 +178,8 @@ export const handleSelectCards = ({
         }
         const { type, maxAmount = 1 } = selectCards;
 
-        const { hand, deck, discard, playerSide } = getState().battle;
-        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const { hand, deck, discard, playerSide } = getState().battle!;
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
         const cards = getCardSelection({
             hand,

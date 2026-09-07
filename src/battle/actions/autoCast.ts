@@ -128,7 +128,7 @@ export const checkHandleAutoCast = ({
 
                 if (card) {
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                        dispatch(depleteAbilities({ actorId: actor.id, abilities: [card] }));
+                        dispatch(depleteAbilities({ actorId: actor.id, abilities: [card], context }));
                     } else {
                         dispatch(addCardsToHand([card]));
                         dispatch(triggerAddCardsToHandEvent(cards.length, context));

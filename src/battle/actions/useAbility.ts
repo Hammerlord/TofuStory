@@ -17,6 +17,7 @@ import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
 import { handleAddCardsToHand } from "./cardActions/addCards";
 import { cloneDeep } from "lodash";
+import { AppDispatch, RootState } from "../../store";
 
 export const useAbility = ({
     ability,
@@ -33,16 +34,21 @@ export const useAbility = ({
     actorId: string;
     isAutoCast?: boolean;
     isProc?: boolean;
-    context?: ActionContext;
+    context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
         const { resourceCost = 0, actions = [], effects = [], echo } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
-        const { combatant, friendlySide } = findCombatantData(getState().battle, actorId) || {};
+        const actor = findCombatantData(getState().battle!, actorId);
+        if (!actor) {
+            return;
+        }
+        const { combatant, friendlySide } = actor;
 
         const totalResourceCost = getPlayerAbilityResourceCost({ combatant, resourceCost, effects });
         ability = {
             ...ability,
+            effects: ability.effects || [],
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier
         };
 
@@ -62,13 +68,18 @@ export const useAbility = ({
         // This could become stale between actions but not an issue at the time of implementation. Only Curse Eye applies this effect.
         const isEffectRandomTargeting = combatant.effects?.some((e) => e.hitRandomTarget);
 
-        let prevSelection;
+        let prevSelection: { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } | undefined;
 
         const handleAction = (action: Action, i: number) => {
-            const actorInfo = findCombatantData(getState().battle, actorId);
-            const actor = actorInfo?.combatant;
+            const actorInfo = findCombatantData(getState().battle!, actorId);
+            if (!actorInfo) {
+                return;
+            }
+
+            const actor = actorInfo.combatant;
             // Something could've happened between actions that killed the actor
-            const canAct = actor?.HP > 0 && !isTurnActionPrevented(actorInfo, { bypassPreventTurnAction: action.bypassPreventTurnAction });
+            const canAct =
+                actor?.HP > 0 && !isTurnActionPrevented(actorInfo, { bypassPreventTurnAction: Boolean(action.bypassPreventTurnAction) });
             if (!canAct) {
                 return;
             }
@@ -88,7 +99,7 @@ export const useAbility = ({
                         target: TARGET_TYPES.RANDOM_HOSTILE,
                     },
                     actorId,
-                    battle: getState().battle,
+                    battle: getState().battle!,
                 });
             }
             // If it is a multi-hit ability, the attacks should go to the same target
@@ -100,23 +111,29 @@ export const useAbility = ({
                     initialSelectedSide: initialSide,
                     action,
                     actorId,
-                    battle: getState().battle,
+                    battle: getState().battle!,
                 });
 
                 prevSelection = selection;
             }
 
             const { side, index } = selection;
+            if (side === undefined || index === undefined) {
+                return;
+            }
 
-            const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES): CombatantInfo | BattleState => {
+            const getCalculationTarget = (
+                calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+            ): CombatantInfo | BattleState | undefined => {
+                const battle = getState().battle!;
                 if (calculationTarget === CONDITION_TARGETS.BATTLE) {
-                    return getState().battle;
+                    return battle;
                 }
                 if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                    return findCombatantData(getState().battle, actorId);
+                    return findCombatantData(battle, actorId);
                 }
 
-                return findCombatantData(getState().battle, getState().battle[side]?.[index]?.id);
+                return findCombatantData(battle, battle[side]?.[index]?.id);
             };
 
             if (passesConditions({ getCalculationTarget, proc: action, context: parentContext })) {
@@ -152,20 +169,20 @@ export const useAbility = ({
             dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, context: parentContext }]));
         }
 
-        const actorInfo = findCombatantData(getState().battle, actorId);
+        const actorInfo = findCombatantData(getState().battle!, actorId);
         // Due to morph, the combatant may no longer exist
         if (actorInfo) {
             // Hack: onUseAbility events may still need access to the action source (see Sweeping Reach's non-interaction with Hammerang)
             // but this is at the ability level, not the individual actions level. Just provide the first action in that case
             const actionContext = {
                 ...parentContext,
-                sourceChain: [...parentContext.sourceChain, { actorId, source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION }],
+                sourceChain: [...(parentContext.sourceChain || []), { actorId, source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION }],
             };
             dispatch(onUseAbility({ actorInfo, context: actionContext, ability, isAutoCast }));
         }
 
         if (echo) {
-            const { hand, deck, discard } = getState().battle;
+            const { hand, deck, discard } = getState().battle!;
             const removeEchoRegex = /(?:<b>)?Echo\.?(?:<\/b>)?/g;
             const newDescription = ability.description.replace(removeEchoRegex, "");
             const copy: CombatAbility = { ...cloneDeep(ability), echo: false, removeAfterTurn: true, description: newDescription };

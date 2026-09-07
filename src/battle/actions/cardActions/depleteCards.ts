@@ -1,4 +1,5 @@
 import { CARD_PILE_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
+import { AppDispatch, RootState } from "../../../store";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
@@ -12,7 +13,7 @@ const { updateBattle } = battleStateSlice?.actions || {};
 export const depleteAbilities =
     ({ actorId, abilities = [], context }: { actorId: string; abilities: CombatAbility[]; context?: ActionContext }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
-        const { hand, depleted = [] } = getState().battle;
+        const { hand, depleted = [] } = getState().battle!;
         dispatch(
             enqueueEvent({
                 newCards: abilities,
@@ -38,6 +39,7 @@ export const depleteAbilities =
                     context: {
                         triggerHistory: [],
                         ...context,
+                        name: context?.name || "Deplete Ability",
                         sourceChain: [...(context?.sourceChain || []), { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
                     },
                 })

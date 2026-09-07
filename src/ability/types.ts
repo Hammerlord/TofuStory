@@ -308,6 +308,7 @@ export type CombatEffect = Effect & {
     originalAbilityId?: string; // The id of the CombatAbility that applied this, if applicable
     originalDuration?: number;
     stacks: number;
+    isEffectFromHoldingAbility?: boolean;
 };
 
 export interface WeaponImageOptions {
@@ -650,7 +651,7 @@ export type Action = {
     armor?: number;
     flatArmor?: number; // Armor that is not affected by any modifiers except multiplier
     maxArmor?: number;
-    target?: TARGET_TYPES;
+    target: TARGET_TYPES;
     // If TARGET_TYPES is FRIENDLY_CHARACTER, provide the character's name.
     // Meant for enemies selecting a specific ally to support.
     targetName?: string;

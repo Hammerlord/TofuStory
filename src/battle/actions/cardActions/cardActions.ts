@@ -1,7 +1,7 @@
 import _ from "lodash";
 import * as uuid from "uuid";
 import { getLastPlayedCards } from "../../../ability/AbilityView/utils";
-import { Action, AutoPlayCards, CombatAbility, CombatEffect, EFFECT_EVENT_KEYS } from "../../../ability/types";
+import { Action, ActionOptionalProperties, AutoPlayCards, CombatAbility, CombatEffect, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { Combatant, Player } from "../../../character/types";
 import { shuffle } from "../../../utils";
 import { battleWarnings, MAX_HAND_SIZE } from "../../constants";
@@ -45,7 +45,7 @@ export const checkCardActions = ({
     context,
     isAutoCast,
 }: {
-    action: { [key in keyof Action]?: Action[key] };
+    action: ActionOptionalProperties;
     context: ActionContext;
     isAutoCast?: boolean;
 }) => {
@@ -120,7 +120,7 @@ export const checkCardActions = ({
         if (applyAbilityEffects) {
             const { amount = Infinity, pile: pileKey, filters } = applyAbilityEffects;
             const battle = getState().battle! as BattleState;
-            const pile = battle[pileKey];
+            const pile: CombatAbility[] = battle[pileKey];
             const affectedCards = shuffle(pile)
                 .filter((card) => {
                     return cardPassesFilterCondition(card, filters);
@@ -128,7 +128,9 @@ export const checkCardActions = ({
                 .slice(0, amount)
                 .reduce(
                     (acc, ability: CombatAbility) => {
-                        acc[ability.instanceId] = true;
+                        if (ability.instanceId) {
+                            acc[ability.instanceId] = true;
+                        }
                         return acc;
                     },
                     {} as { [cardId: string]: true }
@@ -137,7 +139,7 @@ export const checkCardActions = ({
             dispatch(
                 updateBattle({
                     [pileKey]: pile.map((card: CombatAbility) => {
-                        if (affectedCards[card.instanceId]) {
+                        if (card.instanceId && affectedCards[card.instanceId]) {
                             return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, context });
                         }
                         return card;

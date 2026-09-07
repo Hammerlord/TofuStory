@@ -4,12 +4,16 @@ import { getUpgradeCard } from "../../Menu/utils";
 import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 
-export const getAllEffects = (ability: Ability): Effect[] => {
-    return ability.actions
-        ?.reduce((acc, { effects = [] }) => {
-            acc.push(...effects);
-            return acc;
-        }, [])
+export const getAllEffects = (ability: Ability): (Effect | string)[] => {
+    const actions = ability.actions || [];
+    return actions
+        .reduce(
+            (acc, { effects = [] }) => {
+                acc.push(...effects);
+                return acc;
+            },
+            [] as (Effect | string)[]
+        )
         .concat(ability.minion?.effects || []);
 };
 
@@ -35,7 +39,7 @@ export const getAbilityColor = (ability: Ability): string | undefined => {
 };
 
 export const isAttackAction = (action: Action): boolean => {
-    return isOffensiveAction(action) && action.damage > 0;
+    return isOffensiveAction(action) && (action.damage || 0) > 0;
 };
 
 export const isOffensiveAction = (action: Action): boolean => {
@@ -72,6 +76,7 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {
         card = {
             ...(getUpgradeCard(card, { ignoreMaxLevel: true }) || card),
+            effects: card.effects || [],
         };
     });
 

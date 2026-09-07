@@ -258,7 +258,7 @@ export const checkSummonMinion = ({
     isAutoCast,
 }: {
     side: BATTLEFIELD_SIDES;
-    selectedIndex: number;
+    selectedIndex?: number;
     ability: CombatAbility;
     actorId: string;
     parentContext: ActionContext;

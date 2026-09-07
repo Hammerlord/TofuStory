@@ -1,5 +1,5 @@
 import * as uuid from "uuid";
-import { Ability, Action, CombatAbility } from "../../../ability/types";
+import { Ability, Action, ActionOptionalProperties, CombatAbility } from "../../../ability/types";
 import { getRandomInt } from "../../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED } from "../../constants";
 import { BattleState, battleStateSlice } from "../../reducer";
@@ -32,7 +32,7 @@ export const checkAddCardsToDeck = ({
     ownedCards,
     context,
 }: {
-    action: Action;
+    action: ActionOptionalProperties;
     ownedCards: { [abilityName: string]: true };
     context: ActionContext;
 }) => {

@@ -18,6 +18,11 @@ export enum BATTLEFIELD_SIDES {
 
 export type ActionParent = Ability | Item | Action | CombatEffect;
 
+export type AddCardsEvent = {
+    cards: Ability[];
+    cardsAddedTo: CardPileType;
+};
+
 /**
  * The results of an action being applied.
  */
@@ -34,10 +39,7 @@ export interface Event {
     enemySide: (Combatant | null)[];
     playbackTime?: number;
     statUpdates?: { [combatantId: string]: UpdatedCombatantStats };
-    addCards?: {
-        cards: Ability[];
-        cardsAddedTo: CardPileType;
-    }[];
+    addCards?: AddCardsEvent[];
     newCombatants: Combatant[];
     displacements?: Displacement;
 }

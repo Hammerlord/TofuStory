@@ -11,8 +11,8 @@ import { ACTION_TYPES, Action, CombatAbility } from "../types";
 import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 
 export interface DamageStats {
-    baseDamage: number;
-    secondaryDamage: number;
+    baseDamage: number | undefined;
+    secondaryDamage: number | undefined;
     hasMultiplier: boolean;
     hasBonus: boolean;
     hasConditionFulfilled: boolean;
@@ -27,7 +27,7 @@ export const getDamageStatistics = ({
     discard = [],
 }: {
     ability: CombatAbility;
-    actorInfo?: CombatantInfo;
+    actorInfo: CombatantInfo;
     hand?: CombatAbility[];
     deck?: CombatAbility[];
     discard?: CombatAbility[];
@@ -52,9 +52,10 @@ export const getDamageStatistics = ({
         };
     }
 
-    const context: ActionContext = { name: "Damage Statistics", sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }] };
+    const sourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
+    const context: ActionContext = { name: "Damage Statistics", sourceChain };
     const withBonus = damageActions.map((action) => {
-        const actionContext = { ...context, sourceChain: [...context.sourceChain, { source: action, type: TRIGGER_SOURCE_TYPES.ACTION }] };
+        const actionContext = { ...context, sourceChain: [...sourceChain, { source: action, type: TRIGGER_SOURCE_TYPES.ACTION }] };
 
         return calculateBonus({
             action,

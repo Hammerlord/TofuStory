@@ -6,6 +6,7 @@ import { enqueueEvent } from "../enqueueEvent";
 import { applyAbilityEventEffects } from "./utils";
 import { battleStateSlice } from "../../reducer";
 import { prepareForDiscard } from "./utils";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle } = battleStateSlice.actions;
 

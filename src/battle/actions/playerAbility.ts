@@ -1,5 +1,6 @@
 import { Ability, AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
+import { AppDispatch, RootState } from "../../store";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
@@ -68,7 +69,7 @@ export const getPlayerAbilityResourceCost = ({
 }: {
     combatant?: Combatant | Player;
     effects: AbilityEffect[];
-    resourceCost: number | "x";
+    resourceCost?: number | "x";
 }) => {
     if (resourceCost === "x") {
         return combatant?.resources || 0;
@@ -81,12 +82,16 @@ export const getPlayerAbilityResourceCost = ({
 };
 
 export const canUsePlayerAbility = (player: Player, ability: CombatAbility | undefined): boolean => {
-    const isUnplayable = ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
-    if (!player || !ability || isUnplayable || ability.effects?.some((e) => e.isLocked)) {
+    if (!ability) {
         return false;
     }
 
-    const { resourceCost = 0, effects = [] } = ability;
+    const { resourceCost = 0, effects = [], unplayable } = ability;
+    const isUnplayable = unplayable && !effects.some((e) => e.bypassUnplayable);
+    if (!player || isUnplayable || effects?.some((e) => e.isLocked)) {
+        return false;
+    }
+
     if (resourceCost === "x") {
         return player.resources > 0;
     }
@@ -118,7 +123,7 @@ export const useHandAbility = ({
     selectedAbilityId: string;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { hand } = getState().battle;
+        const { hand } = getState().battle!;
         dispatch(selectHandAbility(null));
         // Why not just pass ability object from BattleView instead of performing a lookup again?
         const ability: CombatAbility = getCardByInstanceId(hand, selectedAbilityId);
@@ -173,7 +178,7 @@ export const usePlayerAbility = ({
     context?: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide } = getState().battle;
+        const { playerSide } = getState().battle!;
         const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
 
         dispatch(
@@ -187,7 +192,7 @@ export const usePlayerAbility = ({
             })
         );
 
-        const { hostile = [], friendly = [] } = findCombatantData(getState().battle, actor.id) || {};
+        const { hostile = [], friendly = [] } = findCombatantData(getState().battle!, actor.id) || {};
         hostile.concat(friendly).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -222,7 +227,7 @@ export const usePlayerAbility = ({
 
 export const removeAbilityFromHand = (abilityId: string) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { hand: originalHand } = getState().battle;
+        const { hand: originalHand } = getState().battle!;
         const handWithAbilityUsed: CombatAbility[] = originalHand.slice();
         const index = handWithAbilityUsed.findIndex(({ instanceId }) => abilityId === instanceId);
         if (index === -1) {

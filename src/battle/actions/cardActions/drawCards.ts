@@ -12,7 +12,7 @@ import {
     Effect,
     TARGET_TYPES,
 } from "../../../ability/types";
-import { Combatant } from "../../../character/types";
+import { Combatant, Player } from "../../../character/types";
 import { passesChance, shuffle } from "../../../utils";
 import { passesValueComparison } from "../../passesConditions";
 import { BattleState, battleStateSlice } from "../../reducer";
@@ -23,6 +23,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
 import { applyAbilityEventEffects } from "./utils";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -38,12 +39,12 @@ export const drawCards = ({
     filters?: ACTION_TYPES[];
     amount: number;
     bonus?: CardBonus[];
-    context?: ActionContext;
+    context: ActionContext;
     isOnTurnDraw?: boolean;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { deck, discard, playerSide, enemySide } = getState().battle;
-        const player = playerSide?.find((c) => c?.isPlayer);
+        const { deck, discard, playerSide, enemySide } = getState().battle!;
+        const player = playerSide?.find((c) => c?.isPlayer) as Player;
         const hasViewDeckInOrder = player?.effects.some((e) => e.viewDeckInOrder);
 
         // Deck cards are mostly hidden. Eg. don't give away the fact that Sudden Death is going to be drawn
@@ -52,7 +53,7 @@ export const drawCards = ({
             return;
         }
 
-        let newDeck: Ability[] = deck.slice();
+        let newDeck: CombatAbility[] = deck.slice();
         let newDiscard = discard.slice();
         let cardsToDraw: CombatAbility[] = [];
         let deckCycled = false;
@@ -60,7 +61,7 @@ export const drawCards = ({
         amount = sumCardDrawAmount({ effects, source, amount });
 
         const addCardsToDraw = (numCards: number) => {
-            const cards = [];
+            const cards: CombatAbility[] = [];
             if (filters.length) {
                 // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
                 // If there are not enough to fulfill the quota, it just whiffs.
@@ -177,8 +178,8 @@ export const applyAbilityEffectsOnDraw = ({
  */
 export const recalculateEffectsFromAbilities = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, deck, hand, discard } = getState().battle;
-        const player = playerSide.find((combatant) => combatant?.isPlayer);
+        const { playerSide, deck, hand, discard } = getState().battle!;
+        const player = playerSide.find((combatant) => combatant?.isPlayer) as Player;
         if (!player) {
             return;
         }
@@ -205,7 +206,7 @@ export const handleOnDrawEvents = ({
     context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, enemySide } = getState().battle;
+        const { playerSide, enemySide } = getState().battle!;
 
         cardsToDraw.forEach((card: CombatAbility) => {
             const onDraw = card.onDraw;
@@ -217,7 +218,7 @@ export const handleOnDrawEvents = ({
                 }
 
                 if (ability) {
-                    const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+                    const player = getState().battle!.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
                     dispatch(useAbility({ ability, actorId: player.id, isProc: true }));
                 }
 
@@ -249,10 +250,15 @@ export const handleOnDrawEvents = ({
 
 const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: CombatAbility; effects: Effect[] }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const player = getState().battle.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer);
+        const { playerSide, hand, deck, discard } = getState().battle!;
+        const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
         const parentSourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
+        const context = { sourceChain: parentSourceChain, name: "Card Action Bonuses" };
+
         const updated = getUpdatedStats({
-            ...getState().battle,
+            hand,
+            deck,
+            discard,
             action: {
                 type: ACTION_TYPES.EFFECT,
                 target: TARGET_TYPES.SELF,
@@ -261,8 +267,8 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
             actorId: player.id,
             targetIds: [player.id],
             actionParent: ability,
-            context: { sourceChain: parentSourceChain },
-            getCombatantById: (id) => findCombatantData(getState().battle, id),
+            context,
+            getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -271,7 +277,7 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
                 updated.map(({ statUpdate, action }) => ({
                     statUpdate,
                     context: {
-                        name: "Card Action Bonuses",
+                        ...context,
                         sourceChain: [
                             ...parentSourceChain,
                             {
@@ -308,8 +314,8 @@ const handleCardActionBonus = ({
             return;
         }
 
-        const passesConditions = (
-            conditions: {
+        const passes = (
+            conditions?: {
                 property?: string;
                 value?: any;
                 comparator?: Comparator;
@@ -321,28 +327,34 @@ const handleCardActionBonus = ({
             return targetCards.some((card) => {
                 return conditions.some((condition) => {
                     const { property, value, comparator } = condition;
+                    if (!property) {
+                        return false;
+                    }
                     const propertyVal = _.get(card, property);
                     return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
                 });
             });
         };
 
-        const battle: BattleState = getState().battle;
-        const player = battle.playerSide.find((c) => c?.isPlayer);
+        const battle: BattleState = getState().battle!;
 
         const bonusesInEffect = bonus
             .filter((bonus: CardBonus) => {
-                return passesConditions(bonus.conditions);
+                return passes(bonus.conditions);
             })
-            .reduce((acc, cur) => {
-                return {
-                    ...acc,
-                    resources: (acc.resources || 0) + (cur.resources || 0),
-                };
-            }, {});
+            .reduce(
+                (acc, cur) => {
+                    return {
+                        ...acc,
+                        resources: (acc.resources || 0) + (cur.resources || 0),
+                    };
+                },
+                {} as { resources: number }
+            );
 
+        const player = battle.playerSide.find((c) => c?.isPlayer) as Player;
         const updated = getUpdatedStats({
-            ...getState().battle,
+            ...getState().battle!,
             actorId: player.id,
             targetIds: [player.id],
             action: {

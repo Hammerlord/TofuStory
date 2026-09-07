@@ -5,6 +5,7 @@ import { findCombatantData, updateCombatant } from "../combatantData";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerStatChangeEvents } from "../statChanges";
 import { onEffectEventTrigger } from "./triggerEffectEvent";
+import { AppDispatch, RootState } from "../../../store";
 
 /**
  * Handles updating effect lifecycle properties
@@ -26,7 +27,7 @@ export const checkUpdateEffectLifecycle =
     (dispatch: AppDispatch, getState: () => RootState) => {
         const { removeEffect, decrementStacks = 0, incrementStacks = 0, resetDuration } = effectEvent;
 
-        const { combatant } = findCombatantData(getState().battle, ownerId) || {};
+        const { combatant } = findCombatantData(getState().battle!, ownerId) || {};
         if (!combatant) {
             return;
         }
@@ -40,13 +41,13 @@ export const checkUpdateEffectLifecycle =
         };
 
         if (removeEffect || updatedEffect.stacks === 0) {
-            const removedEffects = [];
-            const newEffects = [];
+            const removedEffects: CombatEffect[] = [];
+            const newEffects: CombatEffect[] = [];
             combatant.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
 
             dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, context: context }]));
             dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-            dispatch(enqueueEvent({ actorId: ownerId, context, statUpdates: { [ownerId]: { removedEffects } } }));
+            dispatch(enqueueEvent({ actorId: ownerId, context, statUpdates: { [ownerId]: { removedEffects, combatantId: ownerId } } }));
             return;
         }
 
@@ -61,17 +62,18 @@ export const checkUpdateEffectLifecycle =
 /**
  * Reduces the duration of effects by 1 and removes them if they have run out of time
  */
-export const tickDownStatusEffects = (combatantId: string, context?: ActionContext) => {
+export const tickDownStatusEffects = (combatantId: string, context: ActionContext) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { combatant } = findCombatantData(getState().battle, combatantId) || {};
+        const { combatant } = findCombatantData(getState().battle!, combatantId) || {};
         if (!combatant) {
             return;
         }
         const tickedDown = combatant.effects.map((effect) => {
+            const duration = typeof effect.duration === "number" ? effect.duration : Infinity;
             return {
                 ...effect,
                 uptime: effect.uptime + 1,
-                duration: (isNaN(effect.duration) ? Infinity : effect.duration) - 1,
+                duration: duration - 1,
             };
         });
 
@@ -93,7 +95,7 @@ export const tickDownStatusEffects = (combatantId: string, context?: ActionConte
             enqueueEvent({
                 actorId: combatantId,
                 context,
-                statUpdates: { [combatantId]: { removedEffects: effectsEnded } },
+                statUpdates: { [combatantId]: { removedEffects: effectsEnded, combatantId } },
                 options: { alwaysGroup: true },
             })
         );
@@ -151,7 +153,7 @@ export const tickDownStatusEffects = (combatantId: string, context?: ActionConte
     };
 };
 
-export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }): boolean => {
+export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }: { turnsTriggerFrequency: number; uptime: number }): boolean => {
     if (!turnsTriggerFrequency) {
         return true;
     }

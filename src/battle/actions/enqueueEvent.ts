@@ -8,10 +8,11 @@ import {
     RICOCHET_ACTION_PLAYBACK_SPEED,
 } from "../constants";
 import { BattleState, battleStateSlice } from "../reducer";
-import { ActionParent, BATTLEFIELD_SIDES, Displacement, Event } from "../types";
+import { ActionParent, AddCardsEvent, BATTLEFIELD_SIDES, Displacement, Event } from "../types";
 import { ActionContext } from "./../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { PlaybackCollector } from "./playbackCollector";
+import { AppDispatch, RootState } from "../../store";
 
 const { pushEventQueue } = battleStateSlice?.actions || {};
 
@@ -22,13 +23,13 @@ export const enqueueEvent = ({
     action,
     actorId,
     selectedIndex,
-    allTargetIndices,
+    allTargetIndices = [],
     actionParent,
     targetSide,
     playbackTime,
     newCombatants,
     context,
-    newCards,
+    newCards = [],
     cardsAddedTo,
     displacements,
     statUpdates,
@@ -65,17 +66,17 @@ export const enqueueEvent = ({
         }
 
         const collector: PlaybackCollector | undefined = context?.playbackCollector;
-        const addCards =
-            newCards?.length > 0
-                ? [
-                      {
-                          cards: newCards,
-                          cardsAddedTo,
-                      },
-                  ]
-                : [];
+        let addCards: AddCardsEvent[] = [];
+        if (newCards.length > 0 && cardsAddedTo) {
+            addCards = [
+                {
+                    cards: newCards,
+                    cardsAddedTo,
+                },
+            ];
+        }
 
-        const battle: BattleState = getState().battle;
+        const battle: BattleState = getState().battle!;
         const event: Event = {
             playerSide: battle.playerSide,
             enemySide: battle.enemySide,

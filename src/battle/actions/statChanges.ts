@@ -243,7 +243,7 @@ export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: C
 };
 
 const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const battle: BattleState = getState().battle;
+    const battle: BattleState = getState().battle!;
     if (isActorPlayerSide({ playerSide: battle.playerSide, source: source })) {
         const statistics: BattleStatistics = {
             ...battle.statistics,
@@ -253,7 +253,7 @@ const updateDamageStatistics = (damage: number, source?: TriggerSource) => (disp
             },
         };
 
-        const target = findCombatantData(battle, source.targetId);
+        const target = findCombatantData(battle, source?.targetId);
         const targetName = target?.combatant?.name;
         if (targetName) {
             statistics.damageByEnemyName[targetName] = (statistics.damageByEnemyName[targetName] || 0) + (damage || 0);
@@ -299,7 +299,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             return;
         }
 
-        const idCountMap = {};
+        const idCountMap: { [effectName: string]: { count: number; totalStacks: number; lowestDuration: CombatEffect } } = {};
         updatedEffects.forEach((effect: CombatEffect) => {
             if (!effect.maxApplications || effect.name !== incomingEffect.name) {
                 return;
@@ -316,7 +316,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             }
 
             ++idCountMap[effect.name].count;
-            idCountMap[effect.name].stacks += effect.stacks || 1;
+            idCountMap[effect.name].totalStacks += effect.stacks || 1;
             if (effect.duration < idCountMap[effect.name].lowestDuration?.duration) {
                 idCountMap[effect.name].lowestDuration = effect;
             }

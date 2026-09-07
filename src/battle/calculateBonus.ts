@@ -1,7 +1,7 @@
-import { Ability, Action, ActionOptionalProperties, Bonus, CONDITION_TARGETS } from "../ability/types";
+import { Action, Bonus, CombatAbility, CONDITION_TARGETS } from "../ability/types";
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
-import { ActionContext, ActionParent, CombatantInfo, TriggerSource } from "./types";
+import { ActionContext, ActionParent, CombatantInfo } from "./types";
 
 export const calculateBonus = ({
     action,
@@ -15,17 +15,17 @@ export const calculateBonus = ({
     hand,
     discard,
 }: {
-    action: ActionOptionalProperties; // The action to apply the bonus to
+    action: Action; // The action to apply the bonus to
     target?: CombatantInfo;
     allTargets: CombatantInfo[];
     actor?: CombatantInfo;
     isTargetSelected: boolean;
     actionParent?: ActionParent;
     context?: ActionContext;
-    deck: Ability[];
-    hand: Ability[];
-    discard: Ability[];
-}): ActionOptionalProperties => {
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
+}): Action => {
     if (!action.bonus) {
         return action;
     }
@@ -88,7 +88,7 @@ export const calculateBonus = ({
                     armor: armor + (bonus.armor || 0) * multiplier,
                     destroyArmor: (bonus.destroyArmor || 0) + (acc.destroyArmor || 0),
                     effects: [...effects, ...totalBonusEffects],
-                    resources: resources + bonus.resources || 0,
+                    resources: resources + (bonus.resources || 0),
                     drawCards: drawCardsObj,
                     chance: chance + (bonus.bonusChance || 0),
                 } as Action;

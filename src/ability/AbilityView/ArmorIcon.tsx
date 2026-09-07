@@ -6,7 +6,7 @@ import { calculateBonus } from "../../battle/calculateBonus";
 import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
-import { CombatAbility } from "../types";
+import { Action, CombatAbility } from "../types";
 
 export interface ArmorStats {
     base: number;
@@ -32,8 +32,8 @@ export const getArmorStatistics = ({
 }): ArmorStats => {
     const { actions: primaryActions = [] } = ability;
 
-    const calcArmorFromActions = (actions = []) => {
-        const armorActions = actions.filter((action) => action?.armor > 0);
+    const calcArmorFromActions = (actions: Action[] = []) => {
+        const armorActions = actions.filter((action) => (action?.armor || 0) > 0);
         if (armorActions.length === 0) {
             return {
                 base: 0,
@@ -51,7 +51,7 @@ export const getArmorStatistics = ({
                     action,
                     actor: playerInfo,
                     target: playerInfo, // Fix me: This is only if the ability targets SELF
-                    allTargets: [playerInfo],
+                    allTargets: playerInfo ? [playerInfo] : [],
                     isTargetSelected: false,
                     actionParent: ability,
                     deck,
@@ -88,11 +88,11 @@ export const getArmorStatistics = ({
 
         // Just taking the first one apparently because we don't have more than one armor action in an ability
         const withArmorReceivedArmor = withArmorReceived[0].armor;
-        const armorActionsArmor = armorActions[0].armor;
+        const armorActionsArmor = armorActions[0].armor || 0;
 
         // This is not accurate because of secondaryAction being baked into withArmorReceivedArmor/armorActionsArmor but not the bonus check
         const hasUnfulfilledBonus = withArmorReceivedArmor === armorActionsArmor && armorActions.some(({ bonus }) => bonus);
-        const withBonusArmor = withBonus[0].armor;
+        const withBonusArmor = withBonus[0].armor || 0;
 
         // This is the potential to have a multiplier; false when a bonus is being applied
         const hasMultiplier = armorActions.some((action) => action.multiplier) && armorActionsArmor === withArmorReceivedArmor;
