@@ -18,12 +18,13 @@ import { handleDoTs } from "./damageOverTime";
 import { onEndTurnTriggers } from "./phases";
 import { requeueRecentlyUsedAbility } from "./phases";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
 export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const combatant = findCombatantData(getState().battle, actorId)?.combatant;
+        const combatant = findCombatantData(getState().battle!, actorId)?.combatant;
         const ability = combatant?.abilities[0];
         if (!ability) {
             return;
@@ -45,7 +46,7 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
         dispatch(
             updateBattle({
-                charactersAttackedThisTurn: [...getState().battle.charactersAttackedThisTurn, actorId],
+                charactersAttackedThisTurn: [...getState().battle!.charactersAttackedThisTurn, actorId],
             })
         );
 
@@ -56,12 +57,12 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
 
 const minionAutoAttack = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, round } = getState().battle;
+        const { playerSide, round } = getState().battle!;
 
         const playbackCollectorInstance = playbackCollector();
         const moveOrderIds = getCombatantMoveOrder({ combatants: playerSide, round, ignoreSupport: true });
         moveOrderIds.forEach((id: string) => {
-            const combatantInfo = findCombatantData(getState().battle, id);
+            const combatantInfo = findCombatantData(getState().battle!, id);
             const combatant = combatantInfo?.combatant;
 
             if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
@@ -92,7 +93,7 @@ export const playerEndTurn = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         // Order matters: discard first, so that any lingering minion attacks that result in a card draw don't have that card immediately discarded
         // Then, tick down end turn triggers so that buffs don't fall off before minions can attack
-        const { discard, hand } = getState().battle;
+        const { discard, hand } = getState().battle!;
         const newHand = hand.filter((card: CombatAbility) => card.retain);
         const cardsToDiscard = hand.filter((card: CombatAbility) => !card.retain);
 
@@ -110,7 +111,7 @@ export const playerEndTurn = () => {
 
 export const startPlayerTurn = (isNewWave: boolean) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, round, hand } = getState().battle;
+        const { playerSide, round, hand } = getState().battle!;
         dispatch(
             updateBattle({
                 round: round + 1,
@@ -119,18 +120,18 @@ export const startPlayerTurn = (isNewWave: boolean) => {
             })
         );
 
-        if (checkWinCondition({ battle: getState().battle })) {
+        if (checkWinCondition({ battle: getState().battle! })) {
             return;
         }
 
-        const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v) => v);
+        const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v): v is string => v !== undefined);
 
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "Player Start Turn", playbackCollector: playbackCollectorInstance };
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, context }));
 
         const getPlayerSideInfo = () =>
-            getState().battle.playerSide.map((combatant) => findCombatantData(getState().battle, combatant?.id));
+            getState().battle!.playerSide.map((combatant) => findCombatantData(getState().battle!, combatant?.id));
 
         if (round > 0) {
             dispatch(checkHalveArmor(getPlayerSideInfo(), context));
@@ -146,9 +147,9 @@ export const startPlayerTurn = (isNewWave: boolean) => {
 
         // Drawing cards last so that eg. drawing Zap (stun) can benefit from Star Earrings (draw a card on CC).
         // Maybe I'll regret this ordering for some other reason later.
-        const { battle } = getState();
-        const player: Player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer);
-        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState().battle, player?.id) }).reduce(
+        const battle = getState().battle!;
+        const player: Player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
+        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState().battle!, player?.id) }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
             player.drawCardsPerTurn
         );
@@ -175,7 +176,7 @@ export const startPlayerTurn = (isNewWave: boolean) => {
 
 export const initiatePlayerTurnInProgress = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide } = getState().battle;
+        const { playerSide } = getState().battle!;
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {

@@ -51,8 +51,10 @@ export const checkHandleMorph = ({
         }
 
         const targets: CombatantInfo[] = morphTargetIds
-            .map((id: string) => findCombatantData(getState().battle, id))
-            .filter((combatantInfo) => action.morph?.resurrect || (combatantInfo?.combatant?.HP || 0) > 0);
+            .map((id: string) => findCombatantData(getState().battle!, id))
+            .filter((combatantInfo): combatantInfo is CombatantInfo => {
+                return action.morph?.resurrect || (combatantInfo?.combatant?.HP || 0) > 0;
+            });
 
         if (!targets.length) {
             return;
@@ -67,7 +69,7 @@ export const checkHandleMorph = ({
             morph: action.morph,
             context,
             getState,
-            summoner: findCombatantData(getState().battle, actorId),
+            summoner: findCombatantData(getState().battle!, actorId),
         };
 
         let transformed: { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null = null;
@@ -110,7 +112,7 @@ export const checkHandleMorph = ({
                 })
             );
 
-            dispatch(requeueRecentlyUsedAbility({ combatantId: summon.id })) || {};
+            dispatch(requeueRecentlyUsedAbility({ combatantId: summon.id }));
         });
     };
 }; /**
@@ -125,7 +127,7 @@ export const getMorphMerge = ({
 }: {
     targets: CombatantInfo[];
     morph: Morph;
-    summoner: CombatantInfo;
+    summoner?: CombatantInfo;
 }): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
@@ -161,6 +163,7 @@ export const getMorphMerge = ({
         let value = targets.reduce((acc, targetInfo: CombatantInfo) => {
             return acc + (targetInfo.combatant[property] || 0);
         }, 0); // Default is sum
+
         if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
             value = Math.ceil(value / minions.length);
         } else if (modifierType === MORPH_MINION_MODIFIERS.MULTIPLY) {
@@ -210,7 +213,7 @@ export const getMorphMap = ({
     morph: Morph;
     getState: Function;
     context: ActionContext;
-    summoner: CombatantInfo;
+    summoner?: CombatantInfo;
 }): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
     const { minions, setOriginalHealthPercentage } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
@@ -295,6 +298,7 @@ const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; 
         class: EFFECT_CLASSES.NONE,
         id: uuid.v4(),
         uptime: 1,
+        stacks: 1,
         canBeSilenced: false,
         duration,
         onDeath: reveal,

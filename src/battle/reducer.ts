@@ -102,14 +102,13 @@ function dedupeByInstanceId(pile: CombatAbility[]) {
     });
 }
 
-/**
- * Redux reducer slice for battles
- */
+const initialState: BattleState | null = null as BattleState | null;
+
 export const battleStateSlice = createSlice({
     name: "battle",
-    initialState: null,
+    initialState,
     reducers: {
-        promptPlayerSelectCards: (state, action: PayloadAction<PlayerSelectCardsPrompt>) => {
+        promptPlayerSelectCards: (state: BattleState | null, action: PayloadAction<PlayerSelectCardsPrompt>) => {
             return {
                 ...state,
                 selectCardsPrompt: action.payload,
@@ -160,12 +159,12 @@ export const battleStateSlice = createSlice({
                 state: action.payload,
             };
         },
-        useConsumable: (state, action: PayloadAction<Item>) => {
+        useConsumable: (state: BattleState, action: PayloadAction<Item>) => {
             const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             return {
                 ...state,
-                playerSide: state.playerSide.map((combatant) => {
+                playerSide: state.playerSide.map((combatant: Combatant | null) => {
                     if (!combatant?.isPlayer) {
                         return combatant;
                     }

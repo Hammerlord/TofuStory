@@ -191,13 +191,15 @@ export const checkHandleActionSummon = ({
                 minionEffects.push(...itemEffects);
             }
 
-            const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
-            if (summonedMinion) {
-                minionsSummoned.push(summonedMinion);
-                mutableSide[pos] = summonedMinion;
+            if (typeof pos === "number") {
+                const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
+                if (summonedMinion) {
+                    minionsSummoned.push(summonedMinion);
+                    mutableSide[pos] = summonedMinion;
 
-                if (isTributeKill) {
-                    tributeSummonedMinions.push(summonedMinion.id);
+                    if (isTributeKill) {
+                        tributeSummonedMinions.push(summonedMinion.id);
+                    }
                 }
             }
         }
@@ -309,7 +311,7 @@ export const checkSummonMinion = ({
             playerSide?: (Combatant | null)[];
             enemySide?: (Combatant | null)[];
         } = {
-            [side]: getState().battle[side].map((combatant: Combatant | null, i: number) => {
+            [side]: getState().battle![side].map((combatant: Combatant | null, i: number) => {
                 return i === index ? summonedMinion : combatant;
             }),
         };
@@ -352,7 +354,7 @@ const tributeKill = ({
     actor?: Combatant;
     side: BATTLEFIELD_SIDES;
     index: number;
-    parentContext?: ActionContext;
+    parentContext: ActionContext;
 }) => {
     return (dispatch: AppDispatch) => {
         if (typeof index !== "number") {
@@ -377,6 +379,12 @@ const tributeKill = ({
             type: TRIGGER_SOURCE_TYPES.ACTION,
             source: action,
         };
+
+        if (!actor?.id) {
+            // Actions always need an actor atm.
+            return;
+        }
+
         // The replaced minion dies
         dispatch(
             performAction({
@@ -384,7 +392,7 @@ const tributeKill = ({
                 side,
                 parentContext: { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] },
                 selectedIndex: index,
-                actorId: actor?.id, // The actor is considered to have killed it
+                actorId: actor.id, // The actor is considered to have killed it
             })
         );
     };
@@ -402,7 +410,7 @@ export const onSummonTriggers =
         };
 
         dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, context: context }));
-        const { hostile, friendly } = findCombatantData(getState().battle, summonerId) || {};
+        const { hostile, friendly } = findCombatantData(getState().battle!, summonerId) || {};
         hostile?.forEach((combatant) => {
             if (combatant?.id !== summonedId) {
                 dispatch(

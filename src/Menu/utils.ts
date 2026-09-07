@@ -11,10 +11,11 @@ import { Player } from "../character/types";
 import { getRandomItem } from "../utils";
 import { BATTLE_TYPES } from "../battle/types";
 
-const copyEffect = (e: Effect) => ({
+const copyEffect = (e: Effect): CombatEffect => ({
     ...cloneDeep(e),
     id: uuid.v4(),
     uptime: e.uptime || 1,
+    stacks: e.stacks || 1,
 });
 
 export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
@@ -28,20 +29,21 @@ export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
 };
 
 export const aggregateAbilityEffects = (abilities: CombatAbility[]): CombatEffect[] => {
-    const effects = [];
+    const effects: CombatEffect[] = [];
     abilities.forEach((a: CombatAbility) => {
         const abilityEffects =
             a.effectsWhileOwned?.map((e) => ({
                 ...copyEffect(e),
                 originalAbilityId: a.instanceId,
                 isEffectFromHoldingAbility: true, // Flag to recalculate if a card event occurs
+                stacks: e.stacks || 1,
             })) || [];
         effects.push(...abilityEffects);
     });
     return effects;
 };
 
-export const getUpgradeCard = (card: CombatAbility, options: { ignoreMaxLevel?: boolean; maxLevel?: number } = {}) => {
+export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreMaxLevel?: boolean; maxLevel?: number } = {}) => {
     const { ignoreMaxLevel = false, maxLevel = DEFAULT_CARD_MAX_LEVEL } = options;
     if (!card.upgrades?.length || (card.level && card.level >= maxLevel && !ignoreMaxLevel)) {
         return;

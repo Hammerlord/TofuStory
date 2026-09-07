@@ -3,10 +3,16 @@ import { isStunnedOrFrozen } from "../../utils";
 import { getMaxResources } from "../playerAbility";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { UpdatedCombatantStats } from "../getUpdatedStats";
+import { AppDispatch } from "../../../store";
 
-export const checkTurnResourceGain = (side: (CombatantInfo | null)[], source?: ActionContext) => (dispatch) => {
+export const checkTurnResourceGain = (side: (CombatantInfo | null | undefined)[], context: ActionContext) => (dispatch: AppDispatch) => {
     const statChanges = side
         .map((combatantInfo) => {
+            if (!combatantInfo) {
+                return;
+            }
+
             const combatant = combatantInfo?.combatant;
             if ((combatant?.HP || 0) === 0) {
                 return;
@@ -17,12 +23,12 @@ export const checkTurnResourceGain = (side: (CombatantInfo | null)[], source?: A
                 return;
             }
 
-            return { combatantId: combatant.id, resources, rawResources };
+            return { combatantId: combatant.id, resources, rawResources } as UpdatedCombatantStats;
         })
-        .filter((v) => v);
+        .filter((v): v is UpdatedCombatantStats => v !== undefined);
 
     dispatch(applyStatChanges(statChanges));
-    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, source }))));
+    dispatch(triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, context }))));
 };
 
 const getResourcesPerTurn = (combatantInfo: CombatantInfo): { rawResources: number; resources: number } => {

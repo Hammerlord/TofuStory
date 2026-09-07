@@ -8,6 +8,7 @@ import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { passesValueComparison } from "./passesConditions";
 import _ from "lodash";
+import { PLAYER_CLASSES } from "../Menu/types";
 
 const DEFAULT_NUM_OPTIONS = 3;
 
@@ -58,8 +59,9 @@ const getCardSelection = ({
     }
 
     if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
-        const firstJobCards = JOB_CARD_MAP[player.class]?.all || [];
-        const potentialAbilities = applyFilters([...firstJobCards, ...secondJobCards]);
+        const playerClass: PLAYER_CLASSES = player.class;
+        const firstJobCards = JOB_CARD_MAP[playerClass]?.all || [];
+        const potentialAbilities = applyFilters(firstJobCards);
         const shuffled = shuffle(potentialAbilities);
         return shuffled.slice(0, numOptions).map(createNewOption);
     }

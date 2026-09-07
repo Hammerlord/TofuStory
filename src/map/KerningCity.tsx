@@ -141,6 +141,10 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
     };
 
     const handleClickTradingPost = () => {
+        if (!tradingPost) {
+            return;
+        }
+
         checkVisitPlace(KERNING_PLACES.TRADING_POST);
         if (tradingPost.numTradesRemaining > 0) {
             setIsTradingPostOpen(true);
@@ -171,7 +175,7 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
         }
     };
 
-    const handleClickEvent = (eventKey: string, scene) => {
+    const handleClickEvent = (eventKey: string, scene: EventScene) => {
         if (checkVisitPlace(eventKey)) {
             onClickScene(scene);
         }

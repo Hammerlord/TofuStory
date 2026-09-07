@@ -18,7 +18,7 @@ import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
-    combatantId?: string;
+    combatantId: string;
     actorId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
@@ -40,6 +40,20 @@ export interface UpdatedCombatantStats {
     context?: ActionContext;
 }
 
+export interface UpdatedStatsProps {
+    actorId?: string;
+    targetIds: string[];
+    recipientIds?: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
+    selectedIndex?: number; // Only applicable for abilities with manual selection?
+    action: Action;
+    actionParent?: ActionParent;
+    context?: ActionContext;
+    getCombatantById: (id: string) => CombatantInfo | undefined;
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
+}
+
 export const getUpdatedStats = ({
     actorId,
     targetIds,
@@ -52,19 +66,7 @@ export const getUpdatedStats = ({
     deck,
     hand,
     discard,
-}: {
-    actorId?: string;
-    targetIds: string[];
-    recipientIds?: string[]; // When the recipient of the stat change is different from the targetIds. Used for `secondaryAction`
-    selectedIndex?: number; // Only applicable for abilities with manual selection?
-    action: Action;
-    actionParent?: ActionParent;
-    context?: ActionContext;
-    getCombatantById: (id: string) => CombatantInfo;
-    deck: CombatAbility[];
-    hand: CombatAbility[];
-    discard: CombatAbility[];
-}): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
+}: UpdatedStatsProps): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
     const actor = actorId ? getCombatantById(actorId) : undefined;
     const targets = targetIds.map(getCombatantById).filter((v) => v);
     const recipients = recipientIds?.map(getCombatantById).filter((v) => v);

@@ -25,14 +25,14 @@ export interface Combatant extends Minion {
         ability: Ability;
         channelDuration?: number;
         castTime?: number;
-    };
+    } | null;
     turnHistory: TurnHistoryAction[];
     abilities: CombatAbility[];
     abilityHistory: CombatAbility[];
     maxResources?: number;
-    resourcesPerTurn?: number;
+    resourcesPerTurn: number;
     items: Item[];
-    mesos?: number;
+    mesos: number;
     targeting?: {
         // A targeting object for each ability.action
         actionTargets: {
@@ -40,12 +40,11 @@ export interface Combatant extends Minion {
             index?: number;
         }[];
         ability: Ability;
-    };
+    } | null;
 }
 
 export interface Player extends Combatant {
     class: PLAYER_CLASSES;
     drawCardsPerTurn: number;
     weaponSkins: { name: string; image: string; weaponImageOptions?: WeaponImageOptions; projectileOverride?: string | string[] }[];
-    mesos: number;
 }

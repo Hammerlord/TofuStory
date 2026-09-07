@@ -74,10 +74,7 @@ export const findCombatantData = (battle: BattleState, combatantId?: string): Co
     }
 };
 
-export const updateCombatants = (
-    characters: (Combatant | null)[],
-    updateFn: (character: Combatant | null) => any
-): (Combatant | null)[] => {
+export const updateCombatants = (characters: (Combatant | null)[], updateFn: (character: Combatant) => Combatant): (Combatant | null)[] => {
     return characters.map((character) => {
         if (!character) {
             return character;

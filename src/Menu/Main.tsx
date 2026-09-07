@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Ability, WeaponImageOptions } from "../ability/types";
+import { Ability, CombatAbility, WeaponImageOptions } from "../ability/types";
 import BattlefieldContainer from "../battle/view/BattleView";
 import { startBattle } from "../battle/actions/phases/phases";
 import { passesValueComparison } from "../battle/passesConditions";
@@ -43,9 +43,10 @@ import Header from "./Header";
 import ItemRewards from "./ItemRewards";
 import Sound from "./Sound";
 import { saveGame } from "./gameFiles";
-import { PLAYER_CLASSES } from "./types";
+import { ItemRewardsOptions, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 import { updateCombatant } from "../battle/actions/combatantData";
+import { Player } from "../character/types";
 
 const TRANSITION_TIME = 0.25; // Seconds
 
@@ -138,20 +139,21 @@ enum ACTIVITIES {
 const TRANSITION_OVERLAY_KEY = "transition-overlay";
 
 const Main = () => {
-    const [sceneRegion, setSceneRegion]: [REGIONS, any] = useState(null);
-    const [scene, setScene]: [EventScene | null, Function] = useState(null);
-    const [encounterVictoryCallback, setEncounterVictoryCallback] = useState(null);
-    const [cardRewardsOpen, setCardRewardsOpen] = useState(false);
-    const [itemRewardsOptions, setItemRewardsOptions] = useState(null);
-    const [activity, setActivity] = useState(null);
-    const [showTransitionOverlay, setShowTransitionOverlay] = useState(null);
-    const [usingItem, setUsingItem]: [Item, Function] = useState(null);
+    const [sceneRegion, setSceneRegion] = useState<REGIONS | null>(null);
+    const [scene, setScene] = useState<EventScene | null>(null);
+    const [encounterVictoryCallback, setEncounterVictoryCallback] = useState<(() => void) | null>(null);
+    const [cardRewardsOpen, setCardRewardsOpen] = useState<boolean>(false);
+    const [itemRewardsOptions, setItemRewardsOptions] = useState<ItemRewardsOptions | null>(null);
+    const [activity, setActivity] = useState<ACTIVITIES | null>(null);
+    const [showTransitionOverlay, setShowTransitionOverlay] = useState<boolean | null>(null);
+    const [usingItem, setUsingItem] = useState<Item | null>(null);
     const [treasure, setTreasure] = useState(null);
-    const [isGameOver, setIsGameOver] = useState(false);
+    const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const classes = useStyles();
     const dispatch = useAppDispatch();
     const character = useAppSelector((state) => state.character);
-    const battle = useAppSelector((state) => state.battle);
+    const battle: BattleState | null = useAppSelector((state) => state.battle);
+    const eventQueue = useAppSelector((state) => state.battle?.eventQueue) || [];
 
     const {
         player,
@@ -188,15 +190,19 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
+        if (!player) {
+            return;
+        }
+
         // Check game over when player updates
-        if (player?.HP <= 0 && (battle?.eventQueue || []).length === 0) {
+        if (player.HP <= 0 && eventQueue.length === 0) {
             const timeout = setTimeout(() => {
                 handleTransition(() => setIsGameOver(true));
             }, 1500);
 
             return () => clearTimeout(timeout);
         }
-    }, [player, battle?.eventQueue]);
+    }, [player, eventQueue]);
 
     const onBattleWin = (battle: BattleState) => {
         if (battle?.disableCardRewards) {
@@ -206,7 +212,11 @@ const Main = () => {
         }
     };
 
-    const handleEventNode = (node) => {
+    const handleEventNode = (node: GeneratedRouteNode) => {
+        if (!player) {
+            return;
+        }
+
         const passesConditions = (event: EventScene) => {
             if (!event.conditions) {
                 return true;
@@ -317,7 +327,7 @@ const Main = () => {
             setActivity(ACTIVITIES.CAMP);
         } else {
             const callback = () => {
-                if ([NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
+                if (node.type && [NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
                     handleBattleNode(node);
                 } else if (node.type === NODE_TYPES.EVENT) {
                     handleEventNode(node);
@@ -330,42 +340,47 @@ const Main = () => {
     };
 
     const handleExitBattle = () => {
-        if (battle) {
-            dispatch(incrementEncounterTypeWon(battle.type));
-            dispatch(closeBattle());
-            dispatch(
-                updatePlayer({
-                    effects: aggregateItemEffects(player.items),
-                })
-            );
+        if (!battle || !player) {
+            return;
+        }
 
-            if (encounterVictoryCallback) {
-                encounterVictoryCallback();
-                setEncounterVictoryCallback(null);
-            }
+        dispatch(incrementEncounterTypeWon((battle as BattleState).type));
+        dispatch(closeBattle());
+        dispatch(
+            updatePlayer({
+                effects: aggregateItemEffects(player.items),
+            })
+        );
 
-            // Only if we're not in the middle of a scene (which could consist of multiple battles), save the game.
-            // Otherwise, refreshing or crashing in the middle of the scene could cause some content to get locked out.
-            if (!scene) {
-                saveGame(character);
-            }
+        if (encounterVictoryCallback) {
+            encounterVictoryCallback();
+            setEncounterVictoryCallback(null);
+        }
+
+        // Only if we're not in the middle of a scene (which could consist of multiple battles), save the game.
+        // Otherwise, refreshing or crashing in the middle of the scene could cause some content to get locked out.
+        if (!scene) {
+            saveGame(character);
         }
     };
 
     // Opens item rewards if applicable.
     const handleCloseCardRewards = (rolledAbilities: Ability[]) => {
         setCardRewardsOpen(false);
+        if (!battle) {
+            return;
+        }
 
         if (!battle.isTutorial) {
             const isRolledRare = rolledAbilities.some((a) => a.rarity === RARITIES.RARE);
             if (isRolledRare) {
-                resetRareCardChance();
+                dispatch(resetRareCardChance());
             } else {
-                increaseRareCardChance();
+                dispatch(increaseRareCardChance());
             }
         }
 
-        if (battle?.disableItemRewards) {
+        if (battle.disableItemRewards) {
             handleExitBattle();
             return;
         }
@@ -397,7 +412,7 @@ const Main = () => {
     };
 
     const handleCloseItemRewards = () => {
-        setItemRewardsOptions(false);
+        setItemRewardsOptions(null);
         handleExitBattle();
     };
 
@@ -543,8 +558,8 @@ const Main = () => {
         );
     };
 
-    const setPlayer = (player) => dispatch(updatePlayer(player));
-    const handleUpdateDeck = (deck) => dispatch(updateDeck(deck));
+    const setPlayer = (player: Player) => dispatch(updatePlayer(player));
+    const handleUpdateDeck = (deck: CombatAbility[]) => dispatch(updateDeck(deck));
     const handleSelectWeaponSkin = ({
         weaponSkin,
         weaponImageOptions,

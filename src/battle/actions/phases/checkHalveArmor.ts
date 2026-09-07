@@ -1,10 +1,12 @@
 import { ActionContext, CombatantInfo } from "../../types";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { AppDispatch } from "../../../store";
+import { UpdatedCombatantStats } from "../getUpdatedStats";
 
-export const checkHalveArmor = (side: (CombatantInfo | null)[], context: ActionContext) => (dispatch) => {
-    const statChanges = side
-        .map((combatantInfo: CombatantInfo) => {
+export const checkHalveArmor = (side: (CombatantInfo | null | undefined)[], context: ActionContext) => (dispatch: AppDispatch) => {
+    const statChanges: UpdatedCombatantStats[] = side
+        .map((combatantInfo: CombatantInfo | null | undefined) => {
             if (!combatantInfo?.combatant) {
                 return;
             }
@@ -12,9 +14,9 @@ export const checkHalveArmor = (side: (CombatantInfo | null)[], context: ActionC
             const armor = getHalveArmorAmount(combatantInfo);
             const prevArmor = combatantInfo.combatant.armor || 0;
             const isArmorBroken = prevArmor > 0 && prevArmor + armor === 0;
-            return { combatantId: combatantInfo.combatant.id, armor, isArmorDecay: true, isArmorBroken };
+            return { combatantId: combatantInfo.combatant.id, armor, isArmorDecay: true, isArmorBroken } as UpdatedCombatantStats;
         })
-        .filter((v) => v);
+        .filter((v): v is UpdatedCombatantStats => v !== undefined);
 
     /**
      * Trigger armor decay regardless of whether any armor actually decayed.

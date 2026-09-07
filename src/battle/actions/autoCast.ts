@@ -1,7 +1,14 @@
 import { getUpgradeCard } from "../../Menu/utils";
 import { JOB_CARD_MAP } from "../../ability";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { AUTO_CAST_ABILITY_TYPES, AutoCastAbility, CombatAbility, EFFECT_EVENT_KEYS, SELECT_CARD_TYPES } from "../../ability/types";
+import {
+    Ability,
+    AUTO_CAST_ABILITY_TYPES,
+    AutoCastAbility,
+    CombatAbility,
+    EFFECT_EVENT_KEYS,
+    SELECT_CARD_TYPES,
+} from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
@@ -14,6 +21,8 @@ import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { useAbility } from "./useAbility";
 import { triggerAddCardsToHandEvent } from "./cardActions/cardActions";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
+import { AppDispatch, RootState } from "../../store";
+import _ from "lodash";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -24,7 +33,7 @@ export const checkHandleAutoCast = ({
     multiplier = 1,
     context,
 }: {
-    autoCastAbilities: AutoCastAbility;
+    autoCastAbilities?: AutoCastAbility | undefined;
     actor: Player; // Only the player auto casts (plays random abilities)
     parentAbility?: CombatAbility;
     multiplier?: number;
@@ -36,7 +45,7 @@ export const checkHandleAutoCast = ({
         }
 
         const { type, amount, presetCards = [], filters, upgradeLevels = 0 } = autoCastAbilities;
-        let cards = [];
+        let cards: Ability[] = [];
         if (type === AUTO_CAST_ABILITY_TYPES.FROM_CLASS) {
             cards = JOB_CARD_MAP[actor.class]?.all || [];
         } else if (type === AUTO_CAST_ABILITY_TYPES.PRESET_CARDS) {
@@ -44,18 +53,19 @@ export const checkHandleAutoCast = ({
         } else if (type === AUTO_CAST_ABILITY_TYPES.OFFENSE_FROM_CLASS) {
             cards = (JOB_CARD_MAP[actor.class]?.all || []).filter(isOffensiveAbility);
         } else if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
-            cards = getState().battle.deck.slice();
+            cards = getState().battle!.deck.slice();
             if (!cards.length) {
                 dispatch(cycleDeck(context));
-                cards = getState().battle.deck.slice();
+                cards = getState().battle!.deck.slice();
             }
         }
 
         if (filters) {
-            cards = cards.filter((card) => {
-                return filters.every(({ property, comparator, value }) =>
-                    passesValueComparison({ val: card[property], otherVal: value, comparator })
-                );
+            cards = cards.filter((card: Ability) => {
+                return filters.every(({ property, comparator, value }) => {
+                    const val = _.get(card, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
+                });
             });
         }
 
@@ -64,10 +74,10 @@ export const checkHandleAutoCast = ({
         }
 
         Array.from({ length: amount * multiplier }).forEach(() => {
-            let unmodifiedAbility: CombatAbility;
+            let unmodifiedAbility: CombatAbility | Ability;
 
             if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
-                unmodifiedAbility = cards.shift();
+                unmodifiedAbility = cards.shift()!;
             } else {
                 unmodifiedAbility = getRandomItem(cards);
             }
@@ -76,7 +86,7 @@ export const checkHandleAutoCast = ({
                 return;
             }
 
-            let abilityToCast: CombatAbility = unmodifiedAbility;
+            let abilityToCast: CombatAbility | Ability = unmodifiedAbility;
 
             Array.from({ length: upgradeLevels }).forEach(() => {
                 const upgrade = getUpgradeCard(abilityToCast, { ignoreMaxLevel: true });
@@ -88,9 +98,10 @@ export const checkHandleAutoCast = ({
 
             const drawAbilityEffects = abilityToCast.onDraw?.abilityEffects;
             if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK && drawAbilityEffects) {
-                const playerSide = getState().battle.playerSide;
+                const playerSide = getState().battle!.playerSide;
                 abilityToCast = applyAbilityEffectsOnDraw({
-                    drawnCard: abilityToCast,
+                    // Cards in the deck are always CombatAbility
+                    drawnCard: abilityToCast as CombatAbility,
                     context,
                     playerSide,
                     effects: drawAbilityEffects,
@@ -101,8 +112,8 @@ export const checkHandleAutoCast = ({
             if (selectCards) {
                 const { type } = selectCards;
 
-                const { hand, deck, discard, playerSide } = getState().battle;
-                const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+                const { hand, deck, discard, playerSide } = getState().battle!;
+                const player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
                 const card = getRandomItem(
                     getCardSelection({
@@ -128,13 +139,16 @@ export const checkHandleAutoCast = ({
             // Order matters: if Vault draws another Vault, the upgrades could cause an infinite loop if the card is not
             // removed from the deck before using the ability
             if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK) {
-                const newDeck = getState().battle.deck.filter((card: CombatAbility) => card.instanceId !== unmodifiedAbility.instanceId);
+                const battle: BattleState = getState().battle!;
+                const combatAbility = unmodifiedAbility as CombatAbility; // Cards in the deck are always CombatAbility
+
+                const newDeck = battle.deck.filter((card: CombatAbility) => card.instanceId !== combatAbility.instanceId);
                 dispatch(
                     updateBattle({
                         deck: newDeck,
                     })
                 );
-                dispatch(handleDiscardAfterUse(unmodifiedAbility));
+                dispatch(handleDiscardAfterUse(combatAbility));
             }
             // Auto-casted ability costs 0 unless it is a variable cost ability
             const resourceCost = abilityCost !== "x" ? 0 : abilityCost;
@@ -146,7 +160,7 @@ export const checkHandleAutoCast = ({
                     ability: {
                         ...abilityToCast,
                         resourceCost,
-                        instanceId: type === AUTO_CAST_ABILITY_TYPES.FROM_DECK ? abilityToCast.instanceId : undefined,
+                        instanceId: type === AUTO_CAST_ABILITY_TYPES.FROM_DECK ? (abilityToCast as CombatAbility).instanceId : undefined,
                     },
                     actorId: actor.id,
                     isAutoCast: true,
@@ -159,7 +173,7 @@ export const checkHandleAutoCast = ({
 
 const cycleDeck = (context: ActionContext) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const battle: BattleState = getState().battle;
+        const battle: BattleState = getState().battle!;
         const { playerSide, enemySide, discard } = battle;
         updateBattle({
             discard: [],

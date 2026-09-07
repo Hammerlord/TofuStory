@@ -1,7 +1,7 @@
 import * as uuid from "uuid";
 import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
 import { elite, eruptive, raging, thorns, warding } from "../../../ability/Effects";
-import { Ability, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
+import { Ability, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
 import { playerStateSlice } from "../../../character/playerReducer";
 import { Combatant, Player } from "../../../character/types";
 import { createCombatant } from "../../../enemy/createEnemy";
@@ -21,13 +21,14 @@ import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
 import { getUseAbilityIndex } from "./enemyTurn";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 import { getNextTelegraphedAbility } from "../../../character/Telegraph";
+import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const battle: BattleState = getState().battle;
+        const battle: BattleState = getState().battle!;
         if (!battle) {
             return;
         }
@@ -46,8 +47,8 @@ export const onBattleEnd = () => {
         }
 
         const lifeLinkedEnemies = enemySide.filter((c: Combatant | null) => c?.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK));
-        const lifeLinkMesos = lifeLinkedEnemies.reduce((acc: number, combatant: Combatant) => {
-            return acc + combatant.mesos || 0;
+        const lifeLinkMesos: number = lifeLinkedEnemies.reduce((acc: number, combatant: Combatant | null) => {
+            return acc + (combatant?.mesos || 0);
         }, 0);
 
         const player: Player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
@@ -76,7 +77,7 @@ export const onWaveClear = () => {
 
 export const nextWave = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { waves, currentWaveIndex, deck, hand, discard } = getState().battle;
+        const { waves, currentWaveIndex, deck, hand, discard } = getState().battle!;
         const { presetDeck, enemies = [] } = waves[currentWaveIndex + 1] || {};
 
         dispatch(
@@ -96,7 +97,7 @@ export const nextWave = () => {
 export const startBattle = ({
     waves,
     addAbilities = [], // This adds abilities to the player's deck on battle start
-    deck,
+    deck: deckProp,
     isTutorial,
     backgroundImage,
     backgroundMusic,
@@ -122,15 +123,32 @@ export const startBattle = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { character } = getState();
-        deck = deck || character?.deck;
-        const player = {
-            ...character.player,
-            effects: aggregateItemEffects(character.player.items).concat(aggregateAbilityEffects(deck)),
-        };
+        if (!character) {
+            return;
+        }
+
         const { presetDeck, enemies, generateEliteAffixes } = waves[0];
 
+        const initialDeck = deckProp || presetDeck || character.deck;
+        const deck = initialDeck.map((card) => {
+            if (!("instanceId" in card) || !card.instanceId) {
+                return {
+                    ...card,
+                    effects: card.effects || [],
+                    instanceId: uuid.v4(),
+                };
+            }
+
+            return card;
+        }) as CombatAbility[];
+
+        const player = {
+            ...character.player,
+            effects: aggregateItemEffects(character.player!.items).concat(aggregateAbilityEffects(deck)),
+        } as Player;
+
         const battleObj: BattleState = {
-            enemySide: enemies.map((enemy: Minion) => {
+            enemySide: enemies.map((enemy: Minion | null) => {
                 if (generateEliteAffixes && enemy?.isElite) {
                     const affixes = [thorns, raging, warding, eruptive, sneaky, poisonous];
                     return createCombatant({
@@ -141,24 +159,12 @@ export const startBattle = ({
                 return createCombatant(enemy);
             }),
             playerSide: [null, null, player, null, null],
-            deck: shuffle([...(presetDeck || deck).slice()])
-                .sort((a, b) => {
-                    const aSort = a.preemptive ? 1 : 0;
-                    const bSort = b.preemptive ? 1 : 0;
-                    return bSort - aSort;
-                })
-                .map((card) => {
-                    const { instanceId, name } = card;
-                    if (!instanceId) {
-                        console.warn(name, "did not have an instance id. Generating one.");
-                        return {
-                            ...card,
-                            instanceId: uuid.v4(),
-                        };
-                    }
+            deck: shuffle([...deck.slice()]).sort((a, b) => {
+                const aSort = a.preemptive ? 1 : 0;
+                const bSort = b.preemptive ? 1 : 0;
+                return bSort - aSort;
+            }),
 
-                    return card;
-                }),
             discard: [],
             hand: [],
             depleted: [],
@@ -185,7 +191,7 @@ export const startBattle = ({
                 damageByEnemyName: {},
             },
             charactersAttackedThisTurn: [],
-            addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4() })),
+            addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4(), effects: card.effects || [] })),
         };
 
         dispatch(updateBattle(battleObj));
@@ -194,7 +200,7 @@ export const startBattle = ({
 
 export const onBattleStart = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, enemySide, addAbilities = [] } = getState().battle;
+        const { playerSide, enemySide, addAbilities = [] } = getState().battle!;
         const playbackCollectorInstance = playbackCollector();
 
         if (addAbilities.length) {
@@ -204,6 +210,7 @@ export const onBattleStart = () => {
                         addCardsToDeck: addAbilities.map((card) => ({
                             ...card,
                             instanceId: uuid.v4(),
+                            effects: card.effects || [],
                         })),
                     },
                     context: {
@@ -234,7 +241,7 @@ export const onWaveStart = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "Wave Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
-        const { playerSide, enemySide } = getState().battle;
+        const { playerSide, enemySide } = getState().battle!;
 
         // Enemies go first so that eg. enemy mutates don't negate player's on wave status effects
         enemySide.concat(playerSide).forEach((combatant: Combatant | null) => {
@@ -242,16 +249,20 @@ export const onWaveStart = () => {
         });
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
-        const battle: BattleState = getState().battle;
-        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: getState().battle.enemySide, round: battle.round });
+        const battle = getState().battle!;
+        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: battle.enemySide, round: battle.round });
 
         nextMoveOrderIds.forEach((combatantId) => {
-            const combatant = getState().battle.enemySide.find((enemy) => enemy?.id === combatantId);
+            const combatant = getState().battle!.enemySide.find((enemy) => enemy?.id === combatantId);
             if (!combatant?.HP || !combatant.abilities?.length) {
                 return;
             }
 
             const actorInfo = findCombatantData(battle, combatantId);
+            if (!actorInfo) {
+                return;
+            }
+
             const useAbilityIndex = getUseAbilityIndex(actorInfo);
 
             dispatch(
@@ -276,7 +287,7 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
         const playbackCollectorInstance = playbackCollector();
         const context = { name: "End Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
 
-        getState().battle[side].forEach((combatant: Combatant | null) => {
+        getState().battle![side].forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(
                     checkEventTrigger({
@@ -288,14 +299,14 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
             }
         });
 
-        getState().battle[side].forEach((combatant: Combatant | null) => {
+        getState().battle![side].forEach((combatant: Combatant | null) => {
             if (combatant) {
                 dispatch(tickDownStatusEffects(combatant.id, context));
             }
         });
 
         // Particularly, the player could have overcapped resources during the turn, but the cap must apply afterward.
-        getState().battle[side].forEach((combatant) => {
+        getState().battle![side].forEach((combatant) => {
             if (combatant) {
                 dispatch(
                     updateCombatant({
@@ -314,7 +325,7 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
 export const requeueRecentlyUsedAbility =
     ({ combatantId }: { combatantId: string }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
-        const battle = getState().battle;
+        const battle = getState().battle!;
         const actorInfo = findCombatantData(battle, combatantId);
         if (!actorInfo?.combatant?.HP || !actorInfo?.combatant?.abilities?.length) {
             return;
@@ -377,7 +388,7 @@ export const requeueRecentlyUsedAbility =
                 newProperties: {
                     targeting: {
                         actionTargets: [], // This is updated by checkValidEnemyTargeting() in the function that calls this
-                        ability,
+                        ability: ability!,
                     },
                 },
             })

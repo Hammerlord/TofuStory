@@ -110,7 +110,7 @@ export interface ActionContext {
 
 export interface Wave {
     description?: string | string[] | ReactElement | ReactElement[];
-    enemies: Minion[];
+    enemies: (Minion | null)[];
     presetDeck?: Ability[];
     generateEliteAffixes?: boolean;
     winCondition?: {

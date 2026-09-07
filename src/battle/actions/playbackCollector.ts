@@ -23,6 +23,10 @@ const isGroupableEvent = (event: Event, previousEvent: Event | undefined) => {
     return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
 };
 
+function typedEntries<T extends object>(obj: T) {
+    return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
 export const aggregateStatUpdates = (
     base?: { [combatantId: string]: UpdatedCombatantStats },
     other?: { [combatantId: string]: UpdatedCombatantStats }
@@ -38,7 +42,7 @@ export const aggregateStatUpdates = (
             return;
         }
 
-        Object.entries(stats).forEach(([key, value]) => {
+        typedEntries(stats).forEach(([key, value]) => {
             if (typeof value === "string") {
                 return;
             }
@@ -46,12 +50,12 @@ export const aggregateStatUpdates = (
             const originalValue = base[combatantId][key];
 
             if (Array.isArray(value)) {
-                base[combatantId][key] = [...(originalValue || []), ...value];
+                base[combatantId][key] = [...((originalValue as []) || []), ...value];
                 return;
             }
 
             if (typeof value === "number") {
-                base[combatantId][key] = (originalValue || 0) + value;
+                base[combatantId][key] = ((originalValue as number) || 0) + value;
                 return;
             }
 

@@ -7,6 +7,7 @@ import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats, getUpdatedStats } from "../getUpdatedStats";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { AppDispatch, RootState } from "../../../store";
 
 /**
  * Trigger damage over time (DoT) effects. DoT effects of a class, such as burn, should be rolled into a single instance of damage
@@ -21,7 +22,7 @@ export const handleDoTs =
 
             combatantIds.forEach((combatantId) => {
                 // Perform another lookup on combatant info as it may have changed between effect triggers
-                const combatantInfo = findCombatantData(getState().battle, combatantId);
+                const combatantInfo = findCombatantData(getState().battle!, combatantId);
                 const { combatant, index } = combatantInfo || {};
                 if (!combatant?.HP) {
                     return;
@@ -33,14 +34,18 @@ export const handleDoTs =
                 }
 
                 const dotStacks = matchingDoT.stacks || 1;
-                const damage = dotStacks * dotDamageMap[dotType];
+                const damage = dotStacks * (dotDamageMap[dotType] ?? 0);
 
                 if (!damage) {
                     return;
                 }
 
+                const { hand, deck, discard } = getState().battle!;
+
                 const updated = getUpdatedStats({
-                    ...getState().battle,
+                    hand,
+                    deck,
+                    discard,
                     targetIds: [combatantId],
                     actorId: matchingDoT.applierId,
                     selectedIndex: index,
@@ -49,7 +54,7 @@ export const handleDoTs =
                         flatDamage: damage,
                         bypassArmor: true,
                     },
-                    getCombatantById: (id) => findCombatantData(getState().battle, id),
+                    getCombatantById: (id) => findCombatantData(getState().battle!, id),
                 });
 
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -59,17 +64,21 @@ export const handleDoTs =
             if (!updatedStats.length) {
                 return;
             }
-            const aggregatedStatUpdates = updatedStats.reduce((acc, stats: { statUpdate: UpdatedCombatantStats; action: Action }) => {
-                const { statUpdate } = stats;
-                acc[statUpdate.combatantId] = statUpdate;
-                return acc;
-            }, {});
+            const aggregatedStatUpdates = updatedStats.reduce(
+                (acc, stats: { statUpdate: UpdatedCombatantStats; action: Action }) => {
+                    const { statUpdate } = stats;
+                    acc[statUpdate.combatantId] = statUpdate;
+                    return acc;
+                },
+                {} as { [combatantId: string]: UpdatedCombatantStats }
+            );
 
             dispatch(
                 enqueueEvent({
                     targetSide: side,
                     statUpdates: aggregatedStatUpdates,
                     // Hack: this is for displaying the dot type in the ability notification banner
+                    // @ts-ignore
                     actionParent: dotAbilityMap[dotType],
                     context: context,
                     playbackTime: NORMAL_ACTION_PLAYBACK_SPEED,

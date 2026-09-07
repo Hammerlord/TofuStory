@@ -56,7 +56,7 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
     const particleRefs = useRef([]);
     const particleAnimationRefs = useRef([]);
     const textRef: RefObject<HTMLSpanElement | null> = useRef(null);
-    const textAnimationRef: RefObject<Animation | null> = useRef(null);
+    const textAnimationRef: RefObject<Animation | null | undefined> = useRef(null);
     const healing = statChanges?.healing || 0;
 
     useEffect(() => {

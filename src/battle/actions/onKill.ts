@@ -1,17 +1,16 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant } from "../../character/types";
+import { AppDispatch, RootState } from "../../store";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
-import { findCombatantData } from "./combatantData";
 import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";
+import { findCombatantData, isActorPlayerSide } from "./combatantData";
 import { getUpdatedStats } from "./getUpdatedStats";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
-import { isActorPlayerSide } from "./combatantData";
+import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
-import { checkValidEnemyTargeting } from "./targeting/enemyTargeting";
 
 const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
@@ -23,21 +22,28 @@ export const handleOnKill = (context: ActionContext) => {
             return;
         }
         const { actorId, targetId } = source;
-        const killedByInfo = findCombatantData(getState().battle, actorId);
-        const { combatant: killedBy, index, friendly } = killedByInfo || {};
+        const killedByInfo = findCombatantData(getState().battle!, actorId);
+        if (!killedByInfo) {
+            return;
+        }
+
+        const { combatant: killedBy, index, friendly } = killedByInfo;
         if (!killedBy || killedBy.HP <= 0) {
             return;
         }
 
-        const killedInfo = findCombatantData(getState().battle, targetId);
+        const killedInfo = findCombatantData(getState().battle!, targetId);
         const isKilledTargetThreatening = Boolean(killedInfo?.combatant?.abilities?.[0]);
 
         if (isKilledTargetThreatening) {
             const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+            const { deck, hand, discard } = getState().battle!;
 
             if (lifeOnKill > 0) {
                 const updated = getUpdatedStats({
-                    ...getState().battle,
+                    deck,
+                    hand,
+                    discard,
                     actorId: killedBy.id,
                     targetIds: [killedBy.id],
                     selectedIndex: index,
@@ -48,7 +54,7 @@ export const handleOnKill = (context: ActionContext) => {
                     context: {
                         ...context,
                     },
-                    getCombatantById: (id) => findCombatantData(getState().battle, id),
+                    getCombatantById: (id) => findCombatantData(getState().battle!, id),
                 });
 
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
@@ -94,13 +100,17 @@ export const handleOnKill = (context: ActionContext) => {
     };
 };
 
-export const onCombatantDeath = ({ combatantId, context }: { combatantId: string; context?: ActionContext }) => {
+export const onCombatantDeath = ({ combatantId, context }: { combatantId: string; context: ActionContext }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const deadCombatant = findCombatantData(getState().battle, combatantId);
-        const { friendly, hostile, combatant, friendlySide } = deadCombatant || {};
+        const deadCombatant = findCombatantData(getState().battle!, combatantId);
+        if (!deadCombatant) {
+            return;
+        }
+
+        const { friendly, hostile, combatant, friendlySide } = deadCombatant;
         const source = context?.sourceChain?.at(-1);
-        if (isActorPlayerSide({ playerSide: getState().battle.playerSide, source })) {
-            const currentStatistics: BattleStatistics = getState().battle.statistics;
+        if (isActorPlayerSide({ playerSide: getState().battle!.playerSide, source })) {
+            const currentStatistics: BattleStatistics = getState().battle!.statistics;
             dispatch(
                 updateBattle({
                     statistics: {

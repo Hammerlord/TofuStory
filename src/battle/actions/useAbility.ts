@@ -190,7 +190,7 @@ export const onUseAbility =
         ability: CombatAbility;
         isAutoCast?: boolean;
     }) =>
-    (dispatch) => {
+    (dispatch: AppDispatch) => {
         if (!actorInfo) {
             return;
         }

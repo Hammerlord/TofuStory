@@ -31,6 +31,7 @@ import { TOWNS, TownProperties } from "./types";
 import { getTownPlaces } from "./utils";
 import { miniBean } from "../enemy/miniBean";
 import { athena } from "../enemy/athenaPierce";
+import { EventScene } from "../scene/types";
 
 const useStyles = createUseStyles({
     ...TOWN_STYLES,
@@ -125,7 +126,7 @@ const Henesys = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
         }
     };
 
-    const handleClickEvent = (eventKey, scene) => {
+    const handleClickEvent = (eventKey: string, scene: EventScene) => {
         if (checkVisitPlace(eventKey)) {
             onClickScene(scene);
         }

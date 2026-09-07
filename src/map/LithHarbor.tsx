@@ -356,7 +356,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     const [isExiting, setIsExiting] = useState(false);
     const [showAcquireAbility, setShowAcquireAbility] = useState(0);
     const [showAcquireItem, setShowAcquireItem] = useState(false);
-    const [visited, setVisited] = useState({});
+    const [visited, setVisited] = useState<{ [key: string]: true }>({});
     // You're not supposed to be able to buy anything from the Lith Harbor shop. It's just there as a narrative segment.
     // Due to the special combination of scene/shop background, use custom logic here.
     const [isShopOpen, setIsShopOpen] = useState(false);
@@ -469,6 +469,8 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
         [PLAYER_CLASSES.BOWMAN]: bowmanTutorial,
     };
 
+    const tutorial = tutorialMap[player.class as keyof typeof tutorialMap];
+
     return (
         <div className={classes.root}>
             <div className={classes.bg}>
@@ -478,8 +480,8 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                             <div className={classes.inner}>
                                 <TownNode
                                     icon={CrossedSwordsIcon}
-                                    isVisited={visited[LITH_PLACES.TUTORIAL_BASIC] || !tutorialMap[player.class]}
-                                    label={tutorialMap[player.class] ? "[Tutorial] Basic Combat" : "Not Available"}
+                                    isVisited={visited[LITH_PLACES.TUTORIAL_BASIC] || !tutorial}
+                                    label={tutorial ? "[Tutorial] Basic Combat" : "Not Available"}
                                     nodeEl={
                                         <div>
                                             <img src={LithTutorialImage} alt="Balcony" />
@@ -491,7 +493,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                         if (checkVisitPlace(LITH_PLACES.TUTORIAL_BASIC)) {
                                             onBattle(
                                                 {
-                                                    ...tutorialMap[player.class],
+                                                    ...tutorial,
                                                     backgroundImage: LithHarborCityBGImage,
                                                 },
                                                 () => {}

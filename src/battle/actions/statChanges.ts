@@ -1,6 +1,7 @@
 import { CombatEffect, Effect, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
+import { AppDispatch, RootState } from "../../store";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { ActionContext } from "./../types";
@@ -14,8 +15,7 @@ const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const triggerStatChangeEvents =
-    (statChanges: { statUpdate: UpdatedCombatantStats; context?: ActionContext }[]) =>
-    (dispatch: AppDispatch, getState: () => RootState) => {
+    (statChanges: { statUpdate: UpdatedCombatantStats; context: ActionContext }[]) => (dispatch: AppDispatch) => {
         statChanges.forEach(({ statUpdate, context }) => {
             const {
                 combatantId,
@@ -188,12 +188,15 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
     // Apply the stat updates first before triggering any related events
     statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
         const combatantId = statUpdate.combatantId;
-        const battle: BattleState = getState().battle;
-        const { combatant: oldCombatant, friendlySide, friendly } = findCombatantData(battle, combatantId) || {};
+        const battle = getState().battle!;
+        const data = findCombatantData(battle, combatantId);
+
         // Due to morph, the combatant may no longer exist
-        if (!oldCombatant) {
+        if (!data) {
             return;
         }
+
+        const { combatant: oldCombatant, friendlySide, friendly } = data;
 
         dispatch(
             updateBattle({
@@ -210,7 +213,7 @@ export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispa
         // Updates player money and HP for the state outside of combat.
         // TRICKY: all money operations on the player side affect the PLAYER, even if the minion got the kill, etc.
         if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE && !battle.isTutorial) {
-            const player = friendly.find((p) => p?.isPlayer);
+            const player = friendly.find((p) => p?.isPlayer) as Player;
             const stats = stageStatChanges(statUpdate, player);
             const updatePlayerStats = { mesos: stats.mesos || 0 };
 

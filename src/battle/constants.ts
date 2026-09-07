@@ -36,10 +36,10 @@ export const battleWarnings = {
     untargetable: "That character cannot be targeted.",
 };
 
-export const dotDamageMap = {
+export const dotDamageMap: Partial<Record<EFFECT_TYPES, number>> = {
     [EFFECT_TYPES.BLEED]: 1,
-    [EFFECT_TYPES.POISON]: 1,
-    [EFFECT_TYPES.BURN]: 1,
+    [EFFECT_TYPES.POISON]: 2,
+    [EFFECT_TYPES.BURN]: 3,
 };
 
 export const dotAbilityMap = {

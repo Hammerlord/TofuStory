@@ -96,12 +96,14 @@ export const checkHandleMovement = ({
         });
 
         const displacements: Displacement = {};
-        if (newCharacters[from]?.id) {
-            displacements[newCharacters[from].id] = { from: to, to: from, side };
+        const fromId = newCharacters[from]?.id;
+        if (fromId) {
+            displacements[fromId] = { from: to, to: from, side };
         }
 
-        if (newCharacters[to]?.id) {
-            displacements[newCharacters[to].id] = { from, to, side };
+        const toId = newCharacters[to]?.id;
+        if (toId) {
+            displacements[toId] = { from, to, side };
         }
         return displacements;
     };

@@ -97,9 +97,9 @@ const ItemRewards = ({
     numChoicesOffered?: number;
 }) => {
     const classes = useStyles();
-    const [rewards, setRewards] = useState([]);
-    const [itemChoices, setItemChoices] = useState([]);
-    const [selectedItemIndices, setSelectedItemIndices] = useState([]);
+    const [rewards, setRewards] = useState<Item[]>([]);
+    const [itemChoices, setItemChoices] = useState<Item[]>([]);
+    const [selectedItemIndices, setSelectedItemIndices] = useState<number[]>([]);
 
     useEffect(() => {
         const items = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: overrideItemChoices || [] });
@@ -143,7 +143,7 @@ const ItemRewards = ({
         }
 
         const itemsToBeRewarded = itemRewards.slice();
-        if ([BATTLE_TYPES.BOSS].includes(rewardType) && !disableAttainConsumable) {
+        if (rewardType === BATTLE_TYPES.BOSS && !disableAttainConsumable) {
             if (Math.random() < 0.5) {
                 itemsToBeRewarded.push(goldenHammer);
             } else {
@@ -151,7 +151,7 @@ const ItemRewards = ({
             }
         }
 
-        if ([BATTLE_TYPES.BOSS].includes(rewardType)) {
+        if (rewardType === BATTLE_TYPES.BOSS) {
             itemsToBeRewarded.push(tofu);
         }
 

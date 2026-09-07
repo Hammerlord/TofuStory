@@ -1,13 +1,13 @@
 import { Combatant, Player } from "../character/types";
-import { Action, EFFECT_CLASSES, EFFECT_TYPES, Effect } from "./../ability/types";
+import { Action, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion } from "./../ability/types";
 
-export const getMaxHP = (combatant?: Combatant | null): number => {
+export const getMaxHP = (combatant?: Minion | Combatant | null): number => {
     if (!combatant) {
         return 0;
     }
 
     const silenced = isSilenced(combatant);
-    const enabledEffects = combatant.effects?.filter((effect) => {
+    const enabledEffects = (combatant.effects || []).filter((effect) => {
         const disabled = silenced && effect.canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
         return !disabled;
     });
@@ -22,8 +22,12 @@ export const getMaxHP = (combatant?: Combatant | null): number => {
     );
 };
 
-export const isSilenced = (character: Combatant): boolean => {
-    return character?.effects?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
+export const isSilenced = (character: Minion | Combatant | null): boolean => {
+    if (!character) {
+        return false;
+    }
+
+    return (character?.effects || [])?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };
 
 export const canTargetIfStealthed = (actor: Combatant, target: Combatant, action?: Action): boolean => {

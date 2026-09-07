@@ -1970,6 +1970,7 @@ export const treat: Ability = {
     description: "Gain <b>+1 {{{ _attUp_ }}} {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
     actions: [
         {
+            type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.FRIENDLY,
             icon: MeatImage,
             animation: ANIMATION_TYPES.CONSUMABLE,

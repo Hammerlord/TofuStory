@@ -23,7 +23,7 @@ import { checkHandleAutoCast } from "./autoCast";
 import { checkCardActions, deleteCard } from "./cardActions/cardActions";
 import { findCombatantData, updateCombatant } from "./combatantData";
 import { enqueueEvent } from "./enqueueEvent";
-import { UpdatedCombatantStats, getUpdatedStats } from "./getUpdatedStats";
+import { UpdatedCombatantStats, UpdatedStatsProps, getUpdatedStats } from "./getUpdatedStats";
 import { checkInduce } from "./inducedAction";
 import { checkHandleMovement, checkHandleVacuum } from "./movement";
 import { aggregateStatUpdates } from "./playbackCollector";
@@ -49,7 +49,7 @@ export const performAction = ({
     side: BATTLEFIELD_SIDES;
     actorId: string;
     parentContext: ActionContext;
-    isAutoCast: boolean;
+    isAutoCast?: boolean;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const battle = getState().battle! as BattleState;
@@ -117,8 +117,10 @@ export const performAction = ({
             }
         };
 
-        const updatedStatsProps = {
-            ...(getState().battle! as BattleState),
+        const updatedStatsProps: UpdatedStatsProps = {
+            deck: battle.deck,
+            hand: battle.hand,
+            discard: battle.discard,
             selectedIndex,
             action,
             targetIds,
@@ -147,8 +149,8 @@ export const performAction = ({
             updatedSecondary = triggerSecondaryAction();
         }
 
-        const vacuumDisplacements: Displacement = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
-        const movementDisplacements: Displacement = dispatch(
+        const vacuumDisplacements: Displacement | undefined = dispatch(checkHandleVacuum({ vacuum, side, selectedIndex, area }));
+        const movementDisplacements: Displacement | undefined = dispatch(
             checkHandleMovement({ action, side, actorIndex: actorData.index, selectedIndex, context: context })
         );
         // At the moment there is never both a vacuum AND a movement in one action. It's either one or the other. So we can 'safely' merge the displacement results of both.
@@ -220,13 +222,16 @@ export const performAction = ({
         if (secondaryAction && !secondaryAction.isPriority) {
             updatedSecondary = triggerSecondaryAction();
             if (updatedSecondary) {
-                const statUpdates = updatedSecondary.reduce((acc, payload) => {
-                    const statUpdate = payload.statUpdate;
-                    if (statUpdate) {
-                        acc[statUpdate.combatantId] = statUpdate;
-                    }
-                    return acc;
-                }, {});
+                const statUpdates = updatedSecondary.reduce(
+                    (acc, payload) => {
+                        const statUpdate = payload.statUpdate;
+                        if (statUpdate?.combatantId) {
+                            acc[statUpdate.combatantId] = statUpdate;
+                        }
+                        return acc;
+                    },
+                    {} as { [combatantId: string]: UpdatedCombatantStats }
+                );
 
                 // Since this is a non-priority secondaryAction, the event did not get rolled into the main action's event group. So we need to create a new event for it.
                 dispatch(
@@ -283,7 +288,7 @@ export const performAction = ({
         const multiplier = getMultiplier({
             multiplier: action.multiplier,
             actor: actorData,
-            ...getState().battle,
+            ...(getState().battle! as BattleState),
         });
         dispatch(
             checkHandleAutoCast({
