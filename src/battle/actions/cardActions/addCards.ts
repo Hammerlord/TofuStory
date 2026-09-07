@@ -132,11 +132,11 @@ export const handleAddCardsToHand = ({
     context,
 }: {
     addCards: Ability[];
-    ownedCards: { [abilityName: string]: true };
+    ownedCards?: { [abilityName: string]: true };
     context: ActionContext;
 }) => {
     return (dispatch: AppDispatch) => {
-        let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards || !ownedCards[card.name]);
 
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
         if (!cardsToAdd.length) {

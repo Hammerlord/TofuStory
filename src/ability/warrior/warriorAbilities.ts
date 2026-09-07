@@ -1252,11 +1252,17 @@ export const doubleTime: Ability = {
     name: "Double Time",
     image: DoubleTimeImage,
     resourceCost: 1,
-    description: "Create an Ephemeral copy of a card in your hand.",
+    description: "Create an Ephemeral copy of a non-minion card in your hand.",
     depletedOnUse: true,
     rarity: RARITIES.RARE,
     selectCards: {
         type: SELECT_CARD_TYPES.COPY_FROM_HAND,
+        filters: [
+            {
+                hasMinion: true,
+                comparator: "not",
+            },
+        ],
         effects: [
             {
                 removeParentCardAfterTurn: true,
@@ -1272,7 +1278,7 @@ export const doubleTime: Ability = {
     upgrades: [
         {
             description:
-                "Copy a card in your hand. It is Ephemeral and costs <b>{{ selectCards.effects.0.resourceCost }} {{{ _resource_ }}}.</b>",
+                "Create an Ephemeral copy of a non-minion card in your hand. It costs <b>{{ selectCards.effects.0.resourceCost }} {{{ _resource_ }}}.</b>",
             selectCards: {
                 effects: [
                     {

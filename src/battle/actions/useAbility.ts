@@ -182,15 +182,16 @@ export const useAbility = ({
         }
 
         if (echo) {
-            const { hand, deck, discard } = getState().battle!;
             const removeEchoRegex = /(?:<b>)?Echo\.?(?:<\/b>)?/g;
-            const newDescription = ability.description.replace(removeEchoRegex, "");
-            const copy: CombatAbility = { ...cloneDeep(ability), echo: false, removeAfterTurn: true, description: newDescription };
-            const ownedCards = [...hand, ...deck, ...discard].reduce((acc, card) => {
-                acc[card.name] = true;
-                return acc;
-            }, {});
-            dispatch(handleAddCardsToHand({ addCards: [copy], ownedCards, context }));
+            const newDescription = (ability.description || "").replace(removeEchoRegex, "");
+            const copy: CombatAbility = {
+                ...cloneDeep(ability),
+                echo: false,
+                removeAfterTurn: true,
+                description: newDescription,
+                effects: ability.effects || [],
+            };
+            dispatch(handleAddCardsToHand({ addCards: [copy], context }));
         }
     };
 };
