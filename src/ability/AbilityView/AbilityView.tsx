@@ -1,33 +1,30 @@
+import { Box } from "@mui/material";
 import classNames from "classnames";
 import { FC, forwardRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
+import { findCombatantData } from "../../battle/actions/combatantData";
+import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
+import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
-import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
-import { getMultiplier } from "../../battle/getMultiplier";
-import { findCombatantData } from "../../battle/actions/combatantData";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { CriticalShotImage, MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
+import { interpolateAbilityDescription } from "../descriptionInterpolation";
 import { ACTION_TYPES, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area, { AreaIndicator } from "./AreaView";
 import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
-import BonusView from "./BonusView";
-import Buffs from "./Buffs";
 import CardsToAdd from "./CardsToAdd";
 import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
-import RadiateView from "./RadiateView";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getLastPlayedCards } from "./utils";
-import { Box } from "@mui/material";
-import { interpolateAbilityDescription } from "../descriptionInterpolation";
 
 const useStyles = createUseStyles({
     root: {
@@ -329,7 +326,7 @@ const AbilityView = forwardRef(
             effects = [],
             retain,
         } = ability;
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets, addLastPlayedCards } = actions[0] || {};
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0] || {};
         const cardImage = image || minion?.image;
         let imageNode = null;
 
@@ -517,7 +514,7 @@ const AbilityView = forwardRef(
         const hasBonus = hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
 
         let minionAttackDamage = 0;
-        let minionHostileAction = null;
+        let minionHostileAction: Action | null = null;
         for (const ability of minion?.abilities || []) {
             for (const action of ability.actions) {
                 if (action.target === TARGET_TYPES.RANDOM_HOSTILE || action.target === TARGET_TYPES.HOSTILE) {
@@ -549,7 +546,7 @@ const AbilityView = forwardRef(
 
         const inBattle = battle && battle.state !== BATTLE_STATES.VICTORY;
         const shouldGlow = isAbilityUsable && !disableGlow && !disableConditionGlow && inBattle;
-        const glowStacks = [hasBonus, ...effects.map((e) => e.highlightCard)].reduce((acc, cur: boolean) => {
+        const glowStacks: number = [hasBonus, ...effects.map((e) => e.highlightCard)].reduce((acc, cur: boolean | undefined) => {
             const stacks = cur ? 1 : 0;
             return acc + stacks;
         }, 0);
@@ -596,7 +593,7 @@ const AbilityView = forwardRef(
                                         uncommon: ability.rarity === RARITIES.UNCOMMON,
                                     })}
                                 >
-                                    {name} <LevelView level={ability.level} />
+                                    {name} <LevelView level={ability.level || 1} />
                                 </span>
                                 <AbilityResourceIcon
                                     ability={ability}
@@ -662,13 +659,7 @@ const AbilityView = forwardRef(
                                             </div>
                                         )}
 
-                                        <Buffs ability={ability} player={player} />
-
                                         <CardsToAdd ability={ability} player={player} />
-
-                                        <BonusView ability={ability} player={player} deck={deck} hand={hand} discard={discard} />
-
-                                        <RadiateView ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />
 
                                         {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
                                     </>
@@ -694,7 +685,7 @@ const AbilityView = forwardRef(
                                             {minionHostileEffect && (
                                                 <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
                                             )}
-                                            {minionHostileAction?.area > 0 && (
+                                            {(minionHostileAction?.area || 0) > 0 && (
                                                 <span className={classes.minionAbilityArea}>
                                                     <AreaIndicator {...minionHostileAction} size="sm" />
                                                 </span>
