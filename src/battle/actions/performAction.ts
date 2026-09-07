@@ -5,20 +5,25 @@ import {
     AbilityEffect,
     Action,
     ActionOptionalProperties,
-    CONDITION_TARGETS,
     CombatAbility,
-    CombatEffect,
     EFFECT_EVENT_KEYS,
     TARGET_TYPES,
 } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { passesConditions } from "../passesConditions";
-import { BattleState, battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, CombatantInfo, Displacement, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
+import { AppDispatch, RootState } from "../../store";
 import { getMultiplier } from "../getMultiplier";
-import { TRIGGER_TARGET_TYPES } from "../../ability/types";
-import { ActionContext } from "../types";
+import { passesConditions } from "../passesConditions";
+import { battleStateSlice } from "../reducer";
+import { BattleState } from "../types";
+import {
+    ActionContext,
+    BATTLEFIELD_SIDES,
+    CombatantInfo,
+    Displacement,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+    TriggerSource,
+} from "../types";
 import { checkHandleAutoCast } from "./autoCast";
 import { checkCardActions, deleteCard } from "./cardActions/cardActions";
 import { findCombatantData, updateCombatant } from "./combatantData";
@@ -28,11 +33,11 @@ import { checkInduce } from "./inducedAction";
 import { checkHandleMovement, checkHandleVacuum } from "./movement";
 import { aggregateStatUpdates } from "./playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
+import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { checkHandleMorph } from "./summon/morphMerge";
 import { checkHandleActionSummon } from "./summon/summon";
-import { autoSelectActionTarget, calculateActionArea, calculateTargetIndices } from "./targeting/targeting";
-import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
-import { AppDispatch, RootState } from "../../store";
+import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -103,20 +108,6 @@ export const performAction = ({
 
         const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
 
-        const getCalculationTarget = (targetType: CONDITION_TARGETS): CombatantInfo | BattleState | undefined => {
-            const battle = getState().battle! as BattleState;
-            if (targetType === CONDITION_TARGETS.TARGET) {
-                // This is the primary target only
-                return findCombatantData(battle, combatants[selectedIndex]?.id);
-            }
-            if (targetType === CONDITION_TARGETS.ACTOR) {
-                return findCombatantData(battle, actorId);
-            }
-            if (targetType === CONDITION_TARGETS.BATTLE) {
-                return battle;
-            }
-        };
-
         const updatedStatsProps: UpdatedStatsProps = {
             deck: battle.deck,
             hand: battle.hand,
@@ -136,11 +127,12 @@ export const performAction = ({
                 handleSecondaryAction({
                     secondaryAction,
                     actorId,
-                    getCalculationTarget,
                     context,
                     parentContext,
                     updatedStatsProps,
                     isAutoCast,
+                    primaryActionTarget: findCombatantData(battle, combatants[selectedIndex]?.id),
+                    battle,
                 })
             );
         };
@@ -370,7 +362,7 @@ const getHitEffects = ({
     }
 
     const results: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[][] = [];
-    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo, context }).reduce(
+    const lifeOnHit = getEnabledEffects({ combatantInfo: actorInfo, context, battle: getState().battle! }).reduce(
         (acc, { lifeOnHit = 0, stacks = 1 }) => acc + lifeOnHit * stacks,
         0
     );
@@ -394,7 +386,9 @@ const getHitEffects = ({
 
     const totalThorns = affectedTargets.reduce((acc, id: string) => {
         const combatantData = findCombatantData(getState().battle!, id);
-        getEnabledEffects({ combatantInfo: combatantData }).forEach(({ thorns = 0, stacks = 1 }) => (acc += thorns * stacks));
+        getEnabledEffects({ combatantInfo: combatantData, context, battle: getState().battle! }).forEach(
+            ({ thorns = 0, stacks = 1 }) => (acc += thorns * stacks)
+        );
         return acc;
     }, 0);
 
@@ -413,7 +407,7 @@ const getHitEffects = ({
         results.push(updated);
     }
 
-    const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo }).reduce(
+    const totalMesoSteal = getEnabledEffects({ combatantInfo: actorInfo, context, battle: getState().battle! }).reduce(
         (acc, { mesoSteal = 0, stacks = 1 }) => acc + mesoSteal * stacks,
         0
     );
@@ -558,31 +552,35 @@ const onAction = ({ action, context, parentAbility }: { action: Action; context:
 const handleSecondaryAction = ({
     secondaryAction,
     actorId,
-    getCalculationTarget,
     context,
     parentContext,
     updatedStatsProps,
     isAutoCast,
+    primaryActionTarget,
+    battle,
 }: {
     secondaryAction: (ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean }) | undefined;
     actorId: string;
-    getCalculationTarget: (
-        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | CombatEffect | undefined;
     context: ActionContext;
     parentContext: ActionContext;
     updatedStatsProps: any;
     isAutoCast: boolean;
+    primaryActionTarget: CombatantInfo | NonCombatPlayerInfo | undefined;
+    battle: BattleState;
 }) => {
     return (
         dispatch: AppDispatch,
         getState: () => RootState
     ): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined => {
-        if (!secondaryAction || !passesConditions({ getCalculationTarget, proc: secondaryAction, context })) {
+        const actorData = findCombatantData(getState().battle! as BattleState, actorId);
+
+        if (
+            !secondaryAction ||
+            !passesConditions({ target: primaryActionTarget, actor: actorData, proc: secondaryAction, context, battle })
+        ) {
             return;
         }
 
-        const actorData = findCombatantData(getState().battle! as BattleState, actorId);
         if (!actorData) {
             return;
         }
@@ -597,8 +595,6 @@ const handleSecondaryAction = ({
             type: secondaryAction.type || ACTION_TYPES.NONE,
             target: secondaryAction.target || TARGET_TYPES.SELF,
         };
-
-        const battle: BattleState = getState().battle!;
 
         const target = autoSelectActionTarget({
             action: secondaryAction,

@@ -3,6 +3,7 @@ import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
 import { BASE_MAX_RESOURCES } from "../constants";
 import { battleStateSlice } from "../reducer";
+import { BattleState } from "../types";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
 import { getHandAuraEffects } from "../view/Hand";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
@@ -22,11 +23,13 @@ export const isWithinPlayerAbilityArea = ({
     actor,
     selectedIndex,
     targetIndex,
+    battle,
 }: {
     ability: Ability;
     actor: CombatantInfo;
     selectedIndex: number;
     targetIndex: number;
+    battle: BattleState;
 }): boolean => {
     if (!ability) {
         return false;
@@ -39,7 +42,7 @@ export const isWithinPlayerAbilityArea = ({
         name: "Player Ability Area Check",
         sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
     };
-    const area = calculateActionArea({ action, actor, context }) || action?.area || 0;
+    const area = calculateActionArea({ action, actor, context, battle }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
 };
 
@@ -123,7 +126,9 @@ export const useHandAbility = ({
     selectedAbilityId: string;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { hand } = getState().battle!;
+        const battle = getState().battle!;
+        const { hand, playerSide } = battle;
+        const player = playerSide.find((c) => c?.isPlayer) as Player;
         dispatch(selectHandAbility(null));
         // Why not just pass ability object from BattleView instead of performing a lookup again?
         const ability = getCardByInstanceId(hand, selectedAbilityId);
@@ -141,6 +146,8 @@ export const useHandAbility = ({
                             card = applyAbilityEventEffects({
                                 event: card.onUse,
                                 ability: card,
+                                battle,
+                                player,
                             });
                             return {
                                 ...card,

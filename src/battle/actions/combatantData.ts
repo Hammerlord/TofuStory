@@ -1,7 +1,8 @@
 import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
-import { BattleState, battleStateSlice } from "../reducer";
+import { battleStateSlice } from "../reducer";
+import { BattleState } from "../types";
 import { CombatantInfo, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 
@@ -18,16 +19,12 @@ export const updateCombatant = ({
     newProperties: { [key in keyof Combatant]?: Combatant[key] };
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
+        // Due to morph, the combatant may no longer exist
         const combatantData = findCombatantData(getState().battle!, combatantId);
         if (!combatantData) {
             return;
         }
         const { combatant: oldCombatant, friendlySide, friendly } = combatantData;
-        // Due to morph, the combatant may no longer exist
-        if (!oldCombatant || !friendlySide || !friendly) {
-            return;
-        }
-
         const newCombatant = { ...oldCombatant, ...newProperties };
 
         dispatch(

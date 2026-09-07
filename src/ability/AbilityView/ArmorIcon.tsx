@@ -1,9 +1,10 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { calculateArmor } from "../../battle/calculateArmor";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { getMultiplier } from "../../battle/getMultiplier";
+import { BattleState } from "../../battle/types";
+import { ActionContext, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import Icon from "../../icon/Icon";
 import { ShieldIcon } from "../../images/icons";
 import { Action, CombatAbility } from "../types";
@@ -23,12 +24,14 @@ export const getArmorStatistics = ({
     deck = [],
     hand = [],
     discard = [],
+    battle,
 }: {
     ability: CombatAbility;
-    playerInfo?: Partial<CombatantInfo>;
+    playerInfo?: NonCombatPlayerInfo;
     deck?: CombatAbility[];
     hand?: CombatAbility[];
     discard?: CombatAbility[];
+    battle?: BattleState | null;
 }): ArmorStats => {
     const { actions: primaryActions = [] } = ability;
 
@@ -45,34 +48,38 @@ export const getArmorStatistics = ({
             };
         }
 
+        const source = { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY };
+        const context: ActionContext = {
+            name: "Armor View",
+            sourceChain: [source],
+        };
+
+        const props = {
+            actor: playerInfo,
+            target: playerInfo, // Fix me: This is only if the ability targets SELF
+            allTargets: playerInfo ? [playerInfo] : [],
+            deck,
+            hand,
+            discard,
+            battle,
+            context,
+        };
         const withBonus = armorActions.map((action) => {
             return {
                 ...calculateBonus({
                     action,
-                    actor: playerInfo,
-                    target: playerInfo, // Fix me: This is only if the ability targets SELF
-                    allTargets: playerInfo ? [playerInfo] : [],
+                    ...props,
                     isTargetSelected: false,
                     actionParent: ability,
-                    deck,
-                    hand,
-                    discard,
                 }),
             };
         });
 
-        const context: ActionContext = {
-            name: "Armor View",
-            sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
-        };
-
         const withArmorReceived = withBonus.map((action) => {
             const multiplier = getMultiplier({
+                ...props,
                 actor: playerInfo,
                 multiplier: action.multiplier,
-                deck,
-                hand,
-                discard,
             });
 
             return {
@@ -82,6 +89,7 @@ export const getArmorStatistics = ({
                     action,
                     multiplier,
                     context,
+                    battle,
                 }),
             };
         });

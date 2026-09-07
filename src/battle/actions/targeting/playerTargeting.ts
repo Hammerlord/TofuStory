@@ -1,7 +1,7 @@
 import { Ability, TARGET_TYPES, TRIGGER_TARGET_TYPES, EFFECT_TYPES } from "../../../ability/types";
 import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
-import { BattleState } from "../../reducer";
+import { BattleState } from "../../types";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, CombatantInfo, ActionContext } from "../../types";
 import { isUntargetable, isStealthed } from "../../utils";
 import { hasEffectType } from "../combatantData";
@@ -72,14 +72,15 @@ export const isValidTargetForPlayerAbility = ({
             if (isUntargetable(targetedFriendly)) {
                 return false;
             }
-            const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
-                if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
-                    return actorData;
-                } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                    return findCombatantData(battle, playerSide[index]?.id);
-                }
-            };
-            const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action, context }));
+            const conditionsPassed = actions.some((action) =>
+                passesConditions({
+                    actor: actorData,
+                    target: findCombatantData(battle, playerSide[index]?.id),
+                    battle,
+                    proc: action,
+                    context,
+                })
+            );
             if (!conditionsPassed) {
                 return false;
             }
@@ -122,15 +123,9 @@ export const isValidTargetForPlayerAbility = ({
             return false;
         }
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
-            if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
-                return actorData;
-            } else if (targetType === TRIGGER_TARGET_TYPES.TARGET) {
-                return findCombatantData(battle, targetedEnemy?.id);
-            }
-        };
-
-        const conditionsPassed = actions.some((action) => passesConditions({ getCalculationTarget, proc: action, context }));
+        const conditionsPassed = actions.some((action) =>
+            passesConditions({ actor: actorData, target: findCombatantData(battle, targetedEnemy?.id), battle, proc: action, context })
+        );
         if (!conditionsPassed) {
             return false;
         }

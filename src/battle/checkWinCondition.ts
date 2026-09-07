@@ -1,4 +1,4 @@
-import { BattleState } from "./reducer";
+import { BattleState } from "./types";
 
 export const checkWinCondition = ({ battle }: { battle: BattleState }) => {
     const { enemySide, currentWaveIndex, waves, round } = battle;

@@ -18,7 +18,8 @@ import { abilityNameMap } from "../../../enemy";
 import { Item } from "../../../item/types";
 import { passesChance } from "../../../utils";
 import { passesConditions } from "../../passesConditions";
-import { BattleState, battleStateSlice } from "../../reducer";
+import { battleStateSlice } from "../../reducer";
+import { BattleState } from "../../types";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { canTargetIfStealthed, isSilenced, isStunnedOrFrozen } from "../../utils";
 import { isTurnActionPrevented } from "../combatantData";
@@ -110,19 +111,39 @@ export const onEffectEventTrigger = ({
             return targetIds.filter((v): v is string => v !== undefined);
         };
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES | CONDITION_TARGETS): CombatantInfo[] | BattleState => {
-            if (targetType === CONDITION_TARGETS.BATTLE) {
-                return getState().battle!;
-            }
-            return getCalculationTargetIds(targetType).map((id) => findCombatantData(getState().battle!, id));
-        };
+        const battleState = getState().battle!;
+        const effectOwner = findCombatantData(battleState, ownerId) as CombatantInfo;
+        const effectApplier = findCombatantData(battleState, effect?.applierId);
+        const sourceActorInfo = findCombatantData(battleState, source?.actorId);
+        const targetInfo = findCombatantData(battleState, source?.targetId);
+        const allTargets = (source?.allTargetIds || [])
+            .map((id) => findCombatantData(battleState, id))
+            .filter((v): v is CombatantInfo => v !== undefined);
 
         // Must pass parent effect conditions as well as child effectEvent conditions (if any)
         const conditionsPassed =
-            passesConditions({ getCalculationTarget, proc: effect, context }) &&
-            passesConditions({ getCalculationTarget, proc: effectEvent, context });
+            passesConditions({
+                effectOwner,
+                effectApplier,
+                actor: sourceActorInfo,
+                target: targetInfo,
+                allTargets,
+                battle: battleState,
+                proc: effect,
+                context,
+            }) &&
+            passesConditions({
+                effectOwner,
+                effectApplier,
+                actor: sourceActorInfo,
+                target: targetInfo,
+                allTargets,
+                battle: battleState,
+                proc: effectEvent,
+                context,
+            });
 
-        const caster = findCombatantData(getState().battle!, ownerId) as CombatantInfo;
+        const caster = effectOwner;
 
         const chanceMultiplier = getMultiplier({
             ...getState().battle!,
@@ -200,20 +221,22 @@ export const onEffectEventTrigger = ({
             );
         }
 
+        // Check that the individual target passes conditions for the effect event if applicable. Prior to this, only the primary
+        // target was checked and then it would pass/fail for all targets.
         const initialTargetIds = getCalculationTargetIds(targetType).filter((id) => {
-            const secondaryGetCalculationTarget = (secondaryTargetType: TRIGGER_TARGET_TYPES) => {
-                // Check that the individual target passes conditions for the effect event if applicable. Prior to this, only the primary
-                // target was checked and then it would pass/fail for all targets.
-                if (
-                    secondaryTargetType === targetType &&
-                    [TRIGGER_TARGET_TYPES.TARGET, TRIGGER_TARGET_TYPES.ALL_TARGETS].includes(secondaryTargetType)
-                ) {
-                    return findCombatantData(getState().battle!, id);
-                }
-
-                return getCalculationTarget(secondaryTargetType);
-            };
-            return passesConditions({ getCalculationTarget: secondaryGetCalculationTarget, proc: effectEvent, context });
+            const perIdData = findCombatantData(battleState, id);
+            const isTarget = targetType === TRIGGER_TARGET_TYPES.TARGET;
+            const isAllTargets = targetType === TRIGGER_TARGET_TYPES.ALL_TARGETS;
+            return passesConditions({
+                effectOwner,
+                effectApplier,
+                actor: sourceActorInfo,
+                target: isTarget ? perIdData : targetInfo,
+                allTargets: isAllTargets ? (perIdData ? [perIdData] : []) : allTargets,
+                battle: battleState,
+                proc: effectEvent,
+                context,
+            });
         });
 
         const initialTargetData = findCombatantData(getState().battle!, initialTargetIds[0]);
@@ -364,10 +387,7 @@ export const onEffectEventTrigger = ({
             }
 
             const target = getState().battle![side]?.[index];
-
-            const getCalculationTarget = (): CombatantInfo | undefined => {
-                return findCombatantData(getState().battle!, target?.id);
-            };
+            const targetData = findCombatantData(getState().battle!, target?.id);
 
             const actorInfo = findCombatantData(getState().battle!, ownerId);
             const actor = actorInfo?.combatant;
@@ -395,7 +415,7 @@ export const onEffectEventTrigger = ({
                 return;
             }
 
-            if (passesConditions({ getCalculationTarget, proc: action, context })) {
+            if (passesConditions({ actor: actorInfo, target: targetData, battle: getState().battle!, proc: action, context })) {
                 abilityUsed = true;
 
                 dispatch(
@@ -645,7 +665,9 @@ const triggerCardEffectEvents = ({
                 return applyAbilityEventEffects({
                     event,
                     ability: card,
+                    battle: getState().battle!,
                     context,
+                    player: playerSide.find((c: Combatant | null) => c?.isPlayer) as Player,
                 });
             });
         };

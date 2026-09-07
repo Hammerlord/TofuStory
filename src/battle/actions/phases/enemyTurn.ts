@@ -6,7 +6,8 @@ import { AppDispatch, RootState } from "../../../store";
 import { getRandomInt } from "../../../utils";
 import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
-import { BATTLE_STATES, BattleState, battleStateSlice } from "../../reducer";
+import { BATTLE_STATES, battleStateSlice } from "../../reducer";
+import { BattleState } from "../../types";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { isStunnedOrFrozen } from "../../utils";
 import { findCombatantData, isTurnActionPrevented, updateCombatant, updateCombatants } from "../combatantData";
@@ -103,13 +104,7 @@ const enemyAction = (combatantId: string, playbackCollector: PlaybackCollector) 
 export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreDisabled: boolean }): number => {
     const { resources = 0, maxResources = BASE_MAX_RESOURCES, abilities = [] } = actorInfo?.combatant || {};
 
-    const getCalculationTarget = (type: CONDITION_TARGETS) => {
-        if (!type || type === CONDITION_TARGETS.ACTOR) {
-            return actorInfo;
-        }
-    };
-
-    const abilityPassesConditions = (ability: CombatAbility) => passesConditions({ getCalculationTarget, proc: ability });
+    const abilityPassesConditions = (ability: CombatAbility) => passesConditions({ actor: actorInfo, proc: ability });
 
     if (!abilities.length) {
         return -1;

@@ -1,13 +1,15 @@
 import classNames from "classnames";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Ability, CombatAbility, WeaponImageOptions } from "../ability/types";
-import BattlefieldContainer from "../battle/view/BattleView";
+import { updateCombatant } from "../battle/actions/combatantData";
 import { startBattle } from "../battle/actions/phases/phases";
 import { passesValueComparison } from "../battle/passesConditions";
-import { BATTLE_STATES, BattleState, battleStateSlice } from "../battle/reducer";
-import { BATTLE_TYPES } from "../battle/types";
+import { battleStateSlice } from "../battle/reducer";
+import { BATTLE_TYPES, BattleState } from "../battle/types";
+import BattlefieldContainer from "../battle/view/BattleView";
 import { playerStateSlice } from "../character/playerReducer";
+import { Player } from "../character/types";
 import { INTRO_PAN_TIME, REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { KerningWorkshopImage, VictoriaIslandImage } from "../images";
@@ -45,8 +47,6 @@ import Sound from "./Sound";
 import { saveGame } from "./gameFiles";
 import { ItemRewardsOptions, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
-import { updateCombatant } from "../battle/actions/combatantData";
-import { Player } from "../character/types";
 
 const TRANSITION_TIME = 0.25; // Seconds
 

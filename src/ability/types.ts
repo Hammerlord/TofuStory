@@ -1,4 +1,4 @@
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { Item, RARITIES } from "../item/types";
 

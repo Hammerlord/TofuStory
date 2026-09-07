@@ -3,7 +3,7 @@ import { isOffensiveAction } from "../../../ability/AbilityView/utils";
 import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
-import { BattleState } from "../../reducer";
+import { BattleState } from "../../types";
 import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
@@ -389,11 +389,13 @@ export const calculateActionArea = ({
     actor,
     target,
     context,
+    battle,
 }: {
     action?: Action;
     actor: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
     context?: ActionContext;
+    battle?: BattleState | null;
 }): number => {
     if (!action) {
         return 0;
@@ -402,26 +404,14 @@ export const calculateActionArea = ({
     const isOffense = isOffensiveAction(action);
     let totalArea = area;
     if (isOffense) {
-        const getCalculationTarget = (
-            calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-        ): CombatantInfo | NonCombatPlayerInfo | undefined => {
-            if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-                return actor;
-            }
-
-            if (target && calculationTarget === CONDITION_TARGETS.TARGET) {
-                return target;
-            }
-        };
-
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach(({ offenseAreaIncrease = 0 }) => {
+        getEnabledEffects({ combatantInfo: actor, context, battle }).forEach(({ offenseAreaIncrease = 0 }) => {
             totalArea += offenseAreaIncrease;
         });
 
         if (action.bonus) {
             const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
             bonuses.forEach((bonus) => {
-                if (bonus.area && passesConditions({ getCalculationTarget, proc: bonus, context })) {
+                if (bonus.area && passesConditions({ actor, target, allTargets: [target], proc: bonus, context, battle })) {
                     totalArea += bonus.area;
                 }
             });

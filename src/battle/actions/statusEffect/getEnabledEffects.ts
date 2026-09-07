@@ -1,7 +1,9 @@
-import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES, Ability, CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
+import { CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
 import { passesConditions } from "../../passesConditions";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
+import { BattleState } from "../../types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo } from "../../types";
 import { isSilenced } from "../../utils";
+import { findCombatantData } from "../combatantData";
 import { isTurnToTrigger } from "./effectLifecycle";
 
 /**
@@ -10,13 +12,11 @@ import { isTurnToTrigger } from "./effectLifecycle";
 
 export const getEnabledEffects = ({
     combatantInfo,
-    getCalculationTarget,
-    context: context,
+    battle,
+    context,
 }: {
     combatantInfo?: NonCombatPlayerInfo | CombatantInfo;
-    getCalculationTarget?: (
-        calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[] | Ability;
+    battle?: BattleState | null;
     context?: ActionContext;
 }): CombatEffect[] => {
     const { combatant } = combatantInfo || {};
@@ -25,26 +25,26 @@ export const getEnabledEffects = ({
     }
 
     const silenced = isSilenced(combatant);
-    const getCalculationTargetFn = (calcTarget) => {
-        if (!calcTarget || calcTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
-            return combatantInfo;
-        }
 
-        // getCalculationTarget allows finding combatants beyond the effect owner, and should be provided for scenarios where a check against an external party needs to be made,
-        // for example, proximity between two combatants. It need not be provided by consumers in cases where there is no "other party" in the calculation, such as
-        // determining whether `combatant` has a certain effect type has nothing to do with any other combatant.
-        if (getCalculationTarget) {
-            return getCalculationTarget(calcTarget);
-        }
-    };
-
-    return combatant.effects?.filter((effect) => {
+    return combatant.effects?.filter((effect: CombatEffect) => {
         const { canBeSilenced, turnsTriggerFrequency, uptime } = effect;
         const disabled = silenced && canBeSilenced && effect.class === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
+        let effectApplier;
+        if (effect.applierId === combatant.id) {
+            effectApplier = combatantInfo;
+        } else if (battle) {
+            effectApplier = findCombatantData(battle, effect.applierId);
+        }
 
         return (
             !disabled &&
-            passesConditions({ getCalculationTarget: getCalculationTargetFn, proc: effect, context }) &&
+            passesConditions({
+                effectOwner: combatantInfo,
+                effectApplier,
+                proc: effect,
+                battle,
+                context,
+            }) &&
             isTurnToTrigger({ turnsTriggerFrequency, uptime })
         );
     });

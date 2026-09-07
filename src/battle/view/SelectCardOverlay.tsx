@@ -8,7 +8,7 @@ import { useAppDispatch } from "../../hooks";
 import { XIcon } from "../../images/icons";
 import Button from "../../view/Button";
 import Overlay from "../../view/Overlay";
-import { PlayerSelectCardsPrompt } from "../reducer";
+import { PlayerSelectCardsPrompt } from "../types";
 import getCardSelection from "../selectCardUtils";
 import { AshesImage } from "../../images";
 import { Box } from "@mui/material";

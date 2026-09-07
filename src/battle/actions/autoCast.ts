@@ -12,7 +12,8 @@ import {
 import { Combatant, Player } from "../../character/types";
 import { getRandomItem, shuffle } from "../../utils";
 import { passesValueComparison } from "../passesConditions";
-import { BattleState, battleStateSlice } from "../reducer";
+import { battleStateSlice } from "../reducer";
+import { BattleState } from "../types";
 import getCardSelection from "../selectCardUtils";
 import { ActionContext } from "./../types";
 import { depleteAbilities } from "./cardActions/depleteCards";
@@ -98,13 +99,17 @@ export const checkHandleAutoCast = ({
 
             const drawAbilityEffects = abilityToCast.onDraw?.abilityEffects;
             if (type === AUTO_CAST_ABILITY_TYPES.FROM_DECK && drawAbilityEffects) {
-                const playerSide = getState().battle!.playerSide;
+                const battle = getState().battle!;
+                const { playerSide } = battle;
+                const player = playerSide.find((c) => c?.isPlayer) as Player;
                 abilityToCast = applyAbilityEffectsOnDraw({
                     // Cards in the deck are always CombatAbility
                     drawnCard: abilityToCast as CombatAbility,
                     context,
                     playerSide,
                     effects: drawAbilityEffects,
+                    battle,
+                    player,
                 });
             }
 

@@ -1,11 +1,11 @@
 import { isOffensiveAction } from "../ability/AbilityView/utils";
-import { Action, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Action } from "../ability/types";
 import { performAction } from "../battle/actions/performAction";
 import { checkValidEnemyTargeting } from "../battle/actions/targeting/enemyTargeting";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { checkSummonMinion } from "../battle/actions/summon/summon";
 import { passesConditions } from "../battle/passesConditions";
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, ActionContext } from "../battle/types";
 import { getPlayerAbilityResourceCost } from "../battle/actions/playerAbility";
 import { findCombatantData } from "../battle/actions/combatantData";
@@ -323,19 +323,11 @@ const getAbilityPreviews = ({
         const actorData = lookupCombatantDataHelper(actor.id);
         const targetData = lookupCombatantDataHelper(target.id);
 
-        const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
-            if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
-                return actorData;
-            }
-
-            if (calculationTarget === TRIGGER_TARGET_TYPES.TARGET) {
-                return targetData;
-            }
-        };
-
         if (
             !passesConditions({
-                getCalculationTarget,
+                actor: actorData,
+                target: targetData,
+                battle,
                 proc: action,
                 context,
             })

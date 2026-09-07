@@ -65,23 +65,13 @@ export const calculateDamage = ({
         baseDamage = Math.max(0, baseDamage);
     }
 
-    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | NonCombatPlayerInfo | undefined => {
-        if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
-            return actor;
-        }
-
-        if (calculationTarget === TRIGGER_TARGET_TYPES.TARGET) {
-            return target;
-        }
-    };
-
     let totalAttackPower = 0;
     let totalSkillBonus = 0;
     let minimumDamage = 0;
     let maximumDamage = action.maxDamage;
 
     if (isAttack && actor) {
-        getEnabledEffects({ combatantInfo: actor, getCalculationTarget, context }).forEach((effect) => {
+        getEnabledEffects({ combatantInfo: actor, targetInfo: target, context }).forEach((effect) => {
             const {
                 attackPower = 0,
                 skillBonus = [],
@@ -114,7 +104,7 @@ export const calculateDamage = ({
     }
 
     let totalDefDown = 0;
-    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, getCalculationTarget, context });
+    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, targetInfo: actor, context });
 
     targetEnabledEffects.forEach((effect: CombatEffect) => {
         const { maxDamageTaken, excludeEffectOwner, defenseDown: defDown = 0, stacks = 1 } = effect;

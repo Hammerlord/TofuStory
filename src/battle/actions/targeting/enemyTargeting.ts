@@ -2,7 +2,7 @@ import { CombatEffect, EFFECT_TYPES } from "../../../ability/types";
 import { previewAction } from "../../../character/getAbilityPreviews";
 import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 import { Combatant } from "../../../character/types";
-import { BattleState } from "../../reducer";
+import { BattleState } from "../../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
 import { performAction } from "../performAction";

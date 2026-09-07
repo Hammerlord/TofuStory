@@ -1,5 +1,6 @@
 import { AbilityEffect, CombatAbility } from "../ability/types";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
+import { BattleState } from "./types";
 import { ActionContext, CombatantInfo } from "./types";
 
 export const calculateArmor = ({
@@ -7,11 +8,13 @@ export const calculateArmor = ({
     action,
     multiplier = 1,
     context,
+    battle,
 }: {
     target?: CombatantInfo;
     action: { armor?: number; maxArmor?: number; flatArmor?: number };
     multiplier: number;
     context?: ActionContext;
+    battle?: BattleState | null;
 }): number => {
     const { armor: initArmor, maxArmor = Infinity, flatArmor } = action;
     if (!initArmor && !flatArmor) {
@@ -34,7 +37,7 @@ export const calculateArmor = ({
     }
 
     const targetArmorReceived =
-        getEnabledEffects({ combatantInfo: target, context }).reduce(
+        getEnabledEffects({ combatantInfo: target, context, battle }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
             0
         ) || 0;

@@ -50,7 +50,9 @@ import { useHandAbility } from "../actions/playerAbility";
 import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { usePreloadImages } from "../hooks/usePreloadImage";
-import { BATTLE_STATES, BattleState, PlayerSelectCardsPrompt, battleStateSlice } from "../reducer";
+import { BATTLE_STATES, battleStateSlice } from "../reducer";
+import { PlayerSelectCardsPrompt } from "../types";
+import { BattleState } from "../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../types";
 import { canTargetIfStealthed, isUntargetable } from "../utils";
 import { canUsePlayerAbility } from "../actions/playerAbility";
@@ -864,6 +866,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     actor: actorInfo,
                     selectedIndex: hoveredCombatant?.index,
                     targetIndex: combatantIndex,
+                    battle,
                 });
             };
 
@@ -899,7 +902,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedHandAbilityId);
         const [card] = newHand.splice(cardIndex, 1);
         if (card) {
-            newDeck.unshift(applyAbilityEventEffects({ event: card.onLeaveHand, ability: card }));
+            newDeck.unshift(applyAbilityEventEffects({ event: card.onLeaveHand, ability: card, battle, player }));
         }
 
         dispatch(

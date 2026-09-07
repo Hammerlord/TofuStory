@@ -8,7 +8,7 @@ import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
 import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
-import { Player } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
 import { CriticalShotImage, MapleLeavesImage } from "../../images";
@@ -342,11 +342,7 @@ const AbilityView = forwardRef(
             retain,
         } = ability;
 
-        if (!actions.length) {
-            return null;
-        }
-
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0];
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0] || {};
         const cardImage = image || minion?.image;
         let imageNode = null;
 
@@ -433,37 +429,27 @@ const AbilityView = forwardRef(
                 const context: ActionContext = { name: "Ability View", sourceChain: [source] };
 
                 if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
-                    return battle?.enemySide.some((combatant) => {
-                        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
-                            if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                                return playerInfo;
-                            }
-
-                            if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                                return findCombatantData(battle, combatant?.id);
-                            }
-                        };
-
+                    return battle?.enemySide.some((combatant: Combatant | null) => {
                         return (
                             combatant &&
                             combatant.HP > 0 &&
-                            conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }))
+                            conditionProcs.some((proc) =>
+                                passesConditions({
+                                    actor: playerInfo,
+                                    target: findCombatantData(battle, combatant?.id),
+                                    proc,
+                                    context,
+                                    battle,
+                                })
+                            )
                         );
                     });
                 }
 
-                return battle?.playerSide.some((combatant) => {
-                    const getCalculationTarget = (calculationTarget: CONDITION_TARGETS) => {
-                        if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                            return playerInfo;
-                        }
-
-                        if (calculationTarget === CONDITION_TARGETS.TARGET) {
-                            return findCombatantData(battle, combatant?.id);
-                        }
-                    };
-
-                    return conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }));
+                return battle?.playerSide.some((combatant: Combatant | null) => {
+                    return conditionProcs.some((proc) =>
+                        passesConditions({ actor: playerInfo, target: findCombatantData(battle, combatant?.id), proc, context, battle })
+                    );
                 });
             });
         }, [ability, battle?.enemySide, battle?.playerSide]);
@@ -703,14 +689,23 @@ const AbilityView = forwardRef(
                                 )}
                             </div>
                             <div className={classes.footer}>
-                                {<Area ability={ability} playerInfo={playerInfo} deck={deck} hand={hand} discard={discard} />}
+                                {
+                                    <Area
+                                        ability={ability}
+                                        playerInfo={playerInfo}
+                                        deck={deck}
+                                        hand={hand}
+                                        discard={discard}
+                                        battle={battle}
+                                    />
+                                }
                                 <AbilityTypeView targetType={targetType} type={type} minion={minion} />
                                 {minion && (
                                     <div className={classes.minionStats}>
                                         <span className={classes.minionHPContainer}>
                                             <Icon icon={<HeartIcon />} text={minion.maxHP} />
                                             <span className={classes.minionBuff}>
-                                                {minion.armor > 0 && <Icon icon={ShieldIcon} size="sm" text={minion.armor} />}
+                                                {(minion.armor || 0) > 0 && <Icon icon={ShieldIcon} size="sm" text={minion.armor} />}
                                                 {minionDefensiveEffect && <Icon icon={minionDefensiveEffect.icon} size="sm" />}
                                             </span>
                                         </span>

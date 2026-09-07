@@ -7,10 +7,10 @@ import { getMaxHP } from "../battle/utils";
 import { getEnabledEffects } from "../battle/actions/statusEffect/getEnabledEffects";
 import { Combatant } from "./types";
 import { passesConditions } from "../battle/passesConditions";
-import { Effect, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { Effect } from "../ability/types";
 import { CombatantInfo } from "../battle/types";
 import { useAppSelector } from "../hooks";
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 
 const useStyles = createUseStyles({
     icon: {
@@ -36,7 +36,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
         return (
             effect.defenseDown &&
             passesConditions({
-                getCalculationTarget: (targetType) => (targetType === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? combatantInfo : undefined),
+                effectOwner: combatantInfo,
                 proc: effect,
             })
         );

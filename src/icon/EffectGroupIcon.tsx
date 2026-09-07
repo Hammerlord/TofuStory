@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, CONDITION_TARGETS, EFFECT_CLASSES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import { CombatEffect, CONDITION_TARGETS, EFFECT_CLASSES } from "../ability/types";
 import { passesConditions } from "../battle/passesConditions";
 import { Combatant, Player } from "../character/types";
 import { HourglassIcon } from "../images/icons";
@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { isTurnToTrigger } from "../battle/actions/statusEffect/effectLifecycle";
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 import { playExpandContractAnimation } from "../character/animations";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
@@ -270,8 +270,7 @@ const EffectGroupIcon = ({
     const isConditionsPassed =
         hasTriggerSourceConditions ||
         passesConditions({
-            getCalculationTarget: (calculationTarget: TRIGGER_TARGET_TYPES) =>
-                calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER ? findCombatantData(battle, owner?.id) : undefined,
+            effectOwner: findCombatantData(battle, owner?.id),
             proc: effects[0],
         });
 

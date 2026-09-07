@@ -8,7 +8,6 @@ import { INDUCED_ACTION_PLAYBACK_SPEED } from "../constants";
 import { passesConditions } from "../passesConditions";
 import { CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
 import { isStunnedOrFrozen } from "../utils";
-import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { findCombatantData } from "./combatantData";
 import { performAction } from "./performAction";
@@ -70,15 +69,10 @@ export const checkInduce = ({
 
                     const combatant = combatantData.combatant;
 
-                    const getCalculationTarget = (type: TRIGGER_TARGET_TYPES) => {
-                        if (type === TRIGGER_TARGET_TYPES.ACTOR) {
-                            return combatantData;
-                        }
-                    };
                     if (
                         !combatant.HP ||
                         isStunnedOrFrozen(combatant) ||
-                        !passesConditions({ getCalculationTarget, proc: action, context: parentContext })
+                        !passesConditions({ actor: combatantData, battle: getState().battle!, proc: action, context: parentContext })
                     ) {
                         return;
                     }
@@ -124,6 +118,7 @@ export const checkInduce = ({
                                 context,
                                 ability: {
                                     name: "Induced Ability",
+                                    level: 1,
                                     actions: [action],
                                     effects: [],
                                 },

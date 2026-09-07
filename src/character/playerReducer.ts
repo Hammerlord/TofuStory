@@ -20,7 +20,7 @@ import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 import { RANDOM_BOSSES } from "../map/randomBosses";
-import { BattleStatistics } from "../battle/reducer";
+import { BattleStatistics } from "../battle/types";
 import { createCombatAbility } from "../ability/createCombatAbility";
 
 export type ShopState = {

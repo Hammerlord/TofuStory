@@ -1,13 +1,11 @@
 import { getAbilityUpgradedFromEffects, isOffensiveAbility, isSupportAbility } from "../../ability/AbilityView/utils";
-import { Ability, Action, CONDITION_TARGETS, CombatAbility, EFFECT_EVENT_KEYS, TARGET_TYPES } from "../../ability/types";
+import { Ability, Action, CombatAbility, EFFECT_EVENT_KEYS, TARGET_TYPES } from "../../ability/types";
 import { getRandomInt, passesChance } from "../../utils";
 import { passesConditions } from "../passesConditions";
-import { BattleState } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getPlayerAbilityResourceCost } from "./playerAbility";
 import { isTurnActionPrevented } from "./combatantData";
 import { findCombatantData } from "./combatantData";
-import { TRIGGER_TARGET_TYPES } from "./../../ability/types";
 import { ActionContext } from "./../types";
 import { performAction } from "./performAction";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
@@ -122,21 +120,16 @@ export const useAbility = ({
                 return;
             }
 
-            const getCalculationTarget = (
-                calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-            ): CombatantInfo | BattleState | undefined => {
-                const battle = getState().battle!;
-                if (calculationTarget === CONDITION_TARGETS.BATTLE) {
-                    return battle;
-                }
-                if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-                    return findCombatantData(battle, actorId);
-                }
-
-                return findCombatantData(battle, battle[side]?.[index]?.id);
-            };
-
-            if (passesConditions({ getCalculationTarget, proc: action, context: parentContext })) {
+            const battle = getState().battle!;
+            if (
+                passesConditions({
+                    actor: findCombatantData(battle, actorId),
+                    target: findCombatantData(battle, battle[side]?.[index]?.id),
+                    battle,
+                    proc: action,
+                    context: parentContext,
+                })
+            ) {
                 dispatch(performAction({ action, selectedIndex: index, side, actorId, parentContext, isAutoCast }));
             }
         };

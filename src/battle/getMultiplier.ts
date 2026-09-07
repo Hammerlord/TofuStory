@@ -45,17 +45,8 @@ export const getMultiplier = ({
         return 1;
     }
 
-    const getCalculationTarget = (calculationTarget) => {
-        if (calculationTarget === CONDITION_TARGETS.ACTOR) {
-            return actor;
-        }
-
-        if (calculationTarget === CONDITION_TARGETS.TARGET) {
-            return target;
-        }
-    };
-
-    const combatantInfo = getCalculationTarget(multiplier.calculationTarget);
+    const combatantInfo = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? actor : target;
+    const oppositeInfo = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? target : actor;
     const { combatant, friendly = [] } = combatantInfo || {};
 
     const { value, type, filters, filterUnique, filterOutProcs } = multiplier;
@@ -171,7 +162,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.DEBUFFS) {
-        let debuffs = getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
+        let debuffs = getEnabledEffects({ combatantInfo, targetInfo: oppositeInfo }).filter(
             (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF
         );
 
@@ -188,7 +179,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.BUFFS) {
-        let buffs = getEnabledEffects({ combatantInfo, getCalculationTarget }).filter(
+        let buffs = getEnabledEffects({ combatantInfo, targetInfo: oppositeInfo }).filter(
             (effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF
         );
 

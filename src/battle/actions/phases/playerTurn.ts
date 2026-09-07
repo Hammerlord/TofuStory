@@ -1,11 +1,11 @@
-import { CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
+import { CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { Combatant, Player } from "../../../character/types";
+import { AppDispatch, RootState } from "../../../store";
 import { checkWinCondition } from "../../checkWinCondition";
-import { getMaxResources } from "../playerAbility";
 import { battleStateSlice } from "../../reducer";
 import { BATTLEFIELD_SIDES } from "../../types";
-import { prepareForDiscard } from "../cardActions/utils";
 import { drawCards } from "../cardActions/drawCards";
+import { prepareForDiscard } from "../cardActions/utils";
 import { findCombatantData, updateCombatants } from "../combatantData";
 import { playbackCollector } from "../playbackCollector";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
@@ -15,10 +15,8 @@ import { useAbility } from "../useAbility";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";
 import { handleDoTs } from "./damageOverTime";
-import { onEndTurnTriggers } from "./phases";
-import { requeueRecentlyUsedAbility } from "./phases";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
-import { AppDispatch, RootState } from "../../../store";
+import { onEndTurnTriggers, requeueRecentlyUsedAbility } from "./phases";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
@@ -93,13 +91,15 @@ export const playerEndTurn = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         // Order matters: discard first, so that any lingering minion attacks that result in a card draw don't have that card immediately discarded
         // Then, tick down end turn triggers so that buffs don't fall off before minions can attack
-        const { discard, hand } = getState().battle!;
+        const battle = getState().battle!;
+        const { discard, hand, playerSide } = battle;
         const newHand = hand.filter((card: CombatAbility) => card.retain);
         const cardsToDiscard = hand.filter((card: CombatAbility) => !card.retain);
+        const player = playerSide.find((c) => c?.isPlayer) as Player;
 
         dispatch(
             updateBattle({
-                discard: [...prepareForDiscard({ cards: cardsToDiscard }), ...discard],
+                discard: [...prepareForDiscard({ cards: cardsToDiscard, player, battle }), ...discard],
                 hand: newHand,
             })
         );

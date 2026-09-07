@@ -13,7 +13,7 @@ import { CrossedSwordsIcon } from "../images/icons";
 import Tooltip from "../view/Tooltip";
 import { getNextTelegraphedAbility } from "./Telegraph";
 import { useAppSelector } from "../hooks";
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 
 const useStyles = createUseStyles({
     bonus: {

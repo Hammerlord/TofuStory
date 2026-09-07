@@ -13,9 +13,14 @@ import {
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { getMaxResources } from "./actions/playerAbility";
-import { BattleState } from "./reducer";
-import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "./types";
+import { BattleState } from "./types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "./types";
 import { getMaxHP } from "./utils";
+import { findCombatantData } from "./actions/combatantData";
+
+type GetCombatantCalcTargetFn = (
+    targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+) => CombatantInfo | CombatantInfo[] | NonCombatPlayerInfo | NonCombatPlayerInfo[] | undefined;
 
 export const passesValueComparison = ({
     val,
@@ -71,14 +76,22 @@ export const passesValueComparison = ({
 };
 
 export const passesConditions = ({
-    getCalculationTarget, // If targets are an array, check that at least one satisfies conditions (OR).
     proc,
-    context: context,
+    effectApplier,
+    effectOwner,
+    actor,
+    target,
+    allTargets = [],
+    battle,
+    context,
 }: {
-    getCalculationTarget: (
-        calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-    ) => CombatantInfo | CombatantInfo[] | CombatAbility | BattleState | CombatEffect | undefined;
+    effectApplier?: NonCombatPlayerInfo | CombatantInfo;
+    effectOwner?: NonCombatPlayerInfo | NonCombatPlayerInfo[] | CombatantInfo | CombatantInfo[];
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
+    allTargets?: NonCombatPlayerInfo[] | CombatantInfo[];
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
+    battle?: BattleState | null; // Eg. not provided if out of combat
     context?: ActionContext;
 }): boolean => {
     const passesCondition = (condition: Condition) => {
@@ -90,31 +103,39 @@ export const passesConditions = ({
         }
 
         if (calculationTarget === CONDITION_TARGETS.BATTLE) {
+            if (!battle) {
+                return false;
+            }
+
             if (property !== undefined) {
-                const battle = getCalculationTarget(calculationTarget) as BattleState;
                 const val = _.get(battle, property);
                 return passesValueComparison({ val, otherVal: value, comparator });
             }
 
-            console.warn(`property must be configured for calculation target BATTLE to work properly. None was configured.`);
+            console.warn("The condition `property` must be configured for calculation target BATTLE to work. None was configured.");
             return false;
         }
 
-        // TRIGGER_SOURCE already handled above
-        const calcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(calculationTarget) as CombatantInfo | CombatantInfo[];
+        const getCalculationTarget = (targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
+            return getCalculationCombatantTarget({
+                calculationTarget: targetType,
+                effectApplier,
+                effectOwner,
+                actor,
+                target,
+                allTargets,
+            });
+        };
+
+        const calcTargets = getCalculationTarget(calculationTarget);
+
         if (!calcTargets) {
             return false;
         }
 
-        let effectOwner: CombatantInfo | CombatantInfo[] = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as
-            | CombatantInfo
-            | CombatantInfo[];
-        if (Array.isArray(effectOwner)) {
-            effectOwner = effectOwner[0];
-        }
-
-        const checkPass = (calcTarget: CombatantInfo) => {
-            return passesCombatantCondition({ condition, calcTarget, getCalculationTarget, context, proc, effectOwner });
+        const effectOwnerData = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as CombatantInfo | undefined;
+        const checkPass = (calcTarget: CombatantInfo | NonCombatPlayerInfo) => {
+            return passesCombatantCondition({ condition, calcTarget, getCalculationTarget, context, proc, effectOwner: effectOwnerData });
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
@@ -250,8 +271,8 @@ const passesCombatantCondition = ({
     effectOwner,
 }: {
     condition: Condition;
-    calcTarget?: CombatantInfo;
-    getCalculationTarget;
+    calcTarget?: CombatantInfo | NonCombatPlayerInfo;
+    getCalculationTarget: GetCombatantCalcTargetFn;
     context?: ActionContext;
     effectOwner?: CombatantInfo;
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" };
@@ -285,9 +306,7 @@ const passesCombatantCondition = ({
     } = condition;
 
     if (otherCalculationTarget) {
-        let otherCalcTargets: CombatantInfo | CombatantInfo[] = getCalculationTarget(otherCalculationTarget.targetType) as
-            | CombatantInfo
-            | CombatantInfo[];
+        let otherCalcTargets = getCalculationTarget(otherCalculationTarget.targetType) as CombatantInfo | CombatantInfo[];
         if (!otherCalcTargets) {
             return false;
         }
@@ -507,4 +526,43 @@ const passesPropertyCheck = ({
 
     const propertyVal = _.get(object, property);
     return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+};
+
+const getCalculationCombatantTarget = ({
+    calculationTarget,
+    effectApplier,
+    effectOwner,
+    actor,
+    target,
+    allTargets = [],
+}: {
+    calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
+    effectApplier?: NonCombatPlayerInfo | CombatantInfo;
+    effectOwner?: NonCombatPlayerInfo | NonCombatPlayerInfo[] | CombatantInfo | CombatantInfo[];
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
+    allTargets?: NonCombatPlayerInfo[] | CombatantInfo[];
+}) => {
+    if (calculationTarget === CONDITION_TARGETS.ACTOR) {
+        return actor;
+    }
+
+    if (calculationTarget === CONDITION_TARGETS.TARGET) {
+        return target;
+    }
+
+    if (calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_APPLIER) {
+        return effectApplier;
+    }
+
+    if (calculationTarget === TRIGGER_TARGET_TYPES.ALL_TARGETS) {
+        return allTargets.filter((data): data is CombatantInfo => data !== undefined);
+    }
+
+    // Why can this be an array?
+    if (Array.isArray(effectOwner)) {
+        effectOwner = effectOwner[0];
+    }
+
+    return effectOwner;
 };

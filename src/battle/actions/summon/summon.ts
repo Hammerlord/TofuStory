@@ -10,7 +10,6 @@ import {
     Effect,
     Minion,
     TARGET_TYPES,
-    TRIGGER_TARGET_TYPES,
 } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { enemyNameMap } from "../../../enemy";
@@ -19,7 +18,8 @@ import { Item } from "../../../item/types";
 import { getRandomItem, passesChance } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
-import { BattleState, battleStateSlice } from "../../reducer";
+import { battleStateSlice } from "../../reducer";
+import { BattleState } from "../../types";
 import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
@@ -55,17 +55,11 @@ export const checkHandleActionSummon = ({
             return;
         }
 
-        const getCalculationTarget = (targetType: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
-            if (targetType === TRIGGER_TARGET_TYPES.ACTOR) {
-                return actorData;
-            }
-        };
-
         const actionSummon = action.summon || [];
         const potentialBonusSummons: ActionSummon[] = bonuses.flatMap((b) => b?.summon || []);
         const summons = actionSummon
             .concat(potentialBonusSummons)
-            .filter((b) => passesConditions({ getCalculationTarget, proc: b, context: parentContext }));
+            .filter((b) => passesConditions({ actor: actorData, proc: b, context: parentContext }));
 
         if (!summons.length) {
             return;

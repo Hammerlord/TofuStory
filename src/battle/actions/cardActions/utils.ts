@@ -1,18 +1,24 @@
 import { AbilityEffect, AbilityEvent, CombatAbility } from "../../../ability/types";
-import { passesChance, getRandomItem } from "../../../utils";
+import { Player } from "../../../character/types";
+import { getRandomItem, passesChance } from "../../../utils";
 import { passesConditions } from "../../passesConditions";
-import { ActionContext } from "../../types";
+import { ActionContext, BattleState } from "../../types";
+import { findCombatantData } from "../combatantData";
 
 export const prepareForDiscard = ({
     cards,
     isPlayed = false,
     // Eg. Bounce does not get rid of Furious Strike
     alwaysKeepRetain = false,
+    player,
+    battle,
 }: {
     cards: CombatAbility[];
     // isPlayed: set to true if the card was discarded after being played.
     isPlayed?: boolean;
     alwaysKeepRetain?: boolean;
+    player: Player;
+    battle: BattleState;
 }) => {
     return cards
         .filter((ability: CombatAbility) => {
@@ -43,6 +49,8 @@ export const prepareForDiscard = ({
                         return false;
                     }),
                 },
+                player,
+                battle,
             });
         });
 };
@@ -52,11 +60,15 @@ export const applyAbilityEventEffects = ({
     ability,
     context,
     bonusChance,
+    battle,
+    player,
 }: {
     event?: AbilityEvent | undefined;
     ability: CombatAbility;
     context?: ActionContext;
     bonusChance?: number;
+    battle: BattleState;
+    player: Player;
 }): CombatAbility => {
     if (!event) {
         return ability;
@@ -70,9 +82,9 @@ export const applyAbilityEventEffects = ({
     }
 
     const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
+    const actor = findCombatantData(battle, player?.id);
 
-    const getCalculationTarget = () => undefined; // TODO for more comprehensive check, add combatants
-    if (!passesConditions({ context, getCalculationTarget, proc: event })) {
+    if (!passesConditions({ context, actor, proc: event, battle })) {
         return ability;
     }
 

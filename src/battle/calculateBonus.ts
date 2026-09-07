@@ -1,6 +1,7 @@
 import { Action, Bonus, CombatAbility, CONDITION_TARGETS } from "../ability/types";
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
+import { BattleState } from "./types";
 import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo } from "./types";
 
 export const calculateBonus = ({
@@ -14,6 +15,7 @@ export const calculateBonus = ({
     deck,
     hand,
     discard,
+    battle,
 }: {
     action: Action; // The action to apply the bonus to
     // If we are out of combat, we don't have index, etc.
@@ -26,23 +28,13 @@ export const calculateBonus = ({
     deck: CombatAbility[];
     hand: CombatAbility[];
     discard: CombatAbility[];
+    battle?: BattleState | null;
 }): Action => {
     if (!action.bonus) {
         return action;
     }
 
     const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
-    const getCalculationTarget = (
-        conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET
-    ): NonCombatPlayerInfo | CombatantInfo | undefined => {
-        if (conditionTarget === CONDITION_TARGETS.TARGET) {
-            return target;
-        }
-        if (conditionTarget === CONDITION_TARGETS.ACTOR) {
-            return actor;
-        }
-    };
-
     const source = context?.sourceChain?.at(-1);
 
     return bonuses.reduce(
@@ -61,7 +53,7 @@ export const calculateBonus = ({
             });
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-            if (passesConditions({ getCalculationTarget, proc: bonus, context }) && isValidTarget) {
+            if (passesConditions({ target, actor, proc: bonus, context, battle }) && isValidTarget) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
                 const {
                     damage = 0,

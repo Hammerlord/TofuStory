@@ -7,7 +7,8 @@ import {
     RANGED_ACTION_PLAYBACK_SPEED,
     RICOCHET_ACTION_PLAYBACK_SPEED,
 } from "../constants";
-import { BattleState, battleStateSlice } from "../reducer";
+import { battleStateSlice } from "../reducer";
+import { BattleState } from "../types";
 import { ActionParent, AddCardsEvent, BATTLEFIELD_SIDES, Displacement, Event } from "../types";
 import { ActionContext } from "./../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";

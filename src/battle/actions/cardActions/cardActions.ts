@@ -6,7 +6,8 @@ import { Combatant, Player } from "../../../character/types";
 import { shuffle } from "../../../utils";
 import { battleWarnings, MAX_HAND_SIZE } from "../../constants";
 import { passesValueComparison } from "../../passesConditions";
-import { BattleState, battleStateSlice } from "../../reducer";
+import { battleStateSlice } from "../../reducer";
+import { BattleState } from "../../types";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
 import { usePlayerAbility } from "../playerAbility";
@@ -75,9 +76,10 @@ export const checkCardActions = ({
         if (discardCardsFromHand) {
             const { amount } = discardCardsFromHand;
             const battle: BattleState = getState().battle!;
-            const { hand, discard } = battle;
+            const { hand, discard, playerSide } = battle;
+            const player = playerSide.find((c) => c?.isPlayer) as Player;
 
-            const cardsDiscarded = prepareForDiscard({ cards: shuffle(hand).slice(0, amount), alwaysKeepRetain: true });
+            const cardsDiscarded = prepareForDiscard({ cards: shuffle(hand).slice(0, amount), alwaysKeepRetain: true, battle, player });
             const newHand = hand.filter((card) => cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId));
 
             dispatch(
@@ -120,6 +122,7 @@ export const checkCardActions = ({
         if (applyAbilityEffects) {
             const { amount = Infinity, pile: pileKey, filters } = applyAbilityEffects;
             const battle = getState().battle! as BattleState;
+            const player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
             const pile: CombatAbility[] = battle[pileKey];
             const affectedCards = shuffle(pile)
                 .filter((card) => {
@@ -140,7 +143,7 @@ export const checkCardActions = ({
                 updateBattle({
                     [pileKey]: pile.map((card: CombatAbility) => {
                         if (card.instanceId && affectedCards[card.instanceId]) {
-                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, context });
+                            return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, context, battle, player });
                         }
                         return card;
                     }),
@@ -174,6 +177,8 @@ export const checkCardActions = ({
                         removeAfterTurn: abilityEffects.some((e) => e.removeParentCardAfterTurn), // Why not make this effect consumed properly by the system?
                     },
                     context,
+                    battle: getState().battle! as BattleState,
+                    player,
                 })
             );
 

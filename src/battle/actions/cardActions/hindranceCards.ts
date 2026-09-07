@@ -2,7 +2,7 @@ import { partition } from "ramda";
 import * as uuid from "uuid";
 import { Ability, ACTION_TYPES, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { AppDispatch, RootState } from "../../../store";
-import { BattleState } from "../../reducer";
+import { BattleState } from "../../types";
 import { ActionContext, BATTLEFIELD_SIDES, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats } from "../getUpdatedStats";

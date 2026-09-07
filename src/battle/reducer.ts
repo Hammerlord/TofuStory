@@ -1,77 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { ReactElement } from "react";
-import { Ability, CombatAbility, SelectCards } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 import { Combatant } from "../character/types";
 import { Item } from "../item/types";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, EventGroup, TriggerSource, Wave } from "./types";
+import { BattleState, EventGroup, Notification, PlayerSelectCardsPrompt } from "./types";
 import { getMaxHP } from "./utils";
 import { battleWarnings, MAX_HAND_SIZE } from "./constants";
 import * as uuid from "uuid";
 import { prepareForDiscard } from "./actions/cardActions/utils";
 import { createCombatAbility } from "../ability/createCombatAbility";
-
-// Text banner notification to display some info during battle
-interface Notification {
-    severity?: "warning";
-    text: string | ReactElement;
-    id: string; // UUID
-}
-
-export interface BattleStatistics {
-    totalDamage: number;
-    damageByEnemyName: {
-        [enemyName: string]: number;
-    };
-    totalKills: number;
-}
-
-export interface BattleState {
-    enemySide: (Combatant | null)[];
-    playerSide: (Combatant | null)[];
-    deck: CombatAbility[];
-    discard: CombatAbility[];
-    hand: CombatAbility[];
-    depleted: CombatAbility[];
-    isPlayerTurn: boolean | null;
-    eventQueue: EventGroup[];
-    playerActionQueue: object[];
-    charactersAttackedThisTurn: string[];
-    /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
-    round: number;
-    waves: Wave[];
-    currentWaveIndex: number;
-    /** When interacting with cards in your hand, or discovering a card */
-    selectCardsPrompt: PlayerSelectCardsPrompt | null;
-    state: BATTLE_STATES;
-    backgroundImage?: string; // Path to background image
-    backgroundMusic?: string; // 'boss' or path to music URL
-    type: BATTLE_TYPES; // Determines the rewards at the end of battle
-    itemRewards?: Item[];
-    overrideItemChoices?: Item[];
-    cardRewards?: Ability[];
-    disableCardRewards?: boolean;
-    disableItemRewards?: boolean;
-    notification?: Notification;
-    statistics: BattleStatistics;
-    isTutorial?: boolean;
-    addAbilities: CombatAbility[];
-    deckCycled?: boolean;
-    selectedHandAbilityId?: string | null;
-    selectedAllyId?: string | null;
-}
-
-// TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
-export interface PlayerSelectCardsPrompt {
-    selectCards: SelectCards;
-    source?: TriggerSource;
-    isAutoCast?: boolean;
-    abilityQueued?: {
-        selectedAbilityId: string;
-        selectedTargetIndex: number;
-        selectedTargetSide: BATTLEFIELD_SIDES;
-    };
-}
 
 /**
  * These signal the phase of a battle and what events to subsequently trigger (after completing animation playback of the current set of actions)

@@ -4,6 +4,7 @@ import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { Ability, CombatAbility } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
+import { BattleState } from "../../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -56,12 +57,14 @@ const Area = ({
     deck = [],
     hand = [],
     discard = [],
+    battle,
 }: {
     ability: Ability | CombatAbility;
     playerInfo: NonCombatPlayerInfo;
     deck?: CombatAbility[];
     hand?: CombatAbility[];
     discard?: CombatAbility[];
+    battle?: BattleState | null;
 }) => {
     const { actions = [] } = ability || {};
 
@@ -78,6 +81,7 @@ const Area = ({
             action: actions[0],
             actor: playerInfo,
             context,
+            battle,
         }) ||
         actions[0]?.area ||
         0;

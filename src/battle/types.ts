@@ -1,9 +1,11 @@
 import { ReactElement } from "react";
 import { Item } from "../item/types";
-import { Ability, Action, CardPileType, CombatAbility, CombatEffect, Effect, Minion } from "./../ability/types";
+import { Ability, Action, CardPileType, CombatAbility, CombatEffect, Effect, Minion, SelectCards } from "./../ability/types";
 import { Combatant, Player } from "./../character/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { PlaybackCollector } from "./actions/playbackCollector";
+import { BATTLE_STATES } from "./reducer";
+import { EventGroup, TriggerSource, Wave } from "./types";
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;
@@ -144,3 +146,61 @@ export enum BATTLE_TYPES {
 // Logs combatants who moved or were displaced (eg. by vacuum) during an action. `from` and `to` are the index positions.
 // What do we need the side for if combatantIds never change sides? Just to have the info handy?
 export type Displacement = { [combatantId: string]: { from: number; to: number; side?: BATTLEFIELD_SIDES } };
+export interface BattleState {
+    enemySide: (Combatant | null)[];
+    playerSide: (Combatant | null)[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
+    hand: CombatAbility[];
+    depleted: CombatAbility[];
+    isPlayerTurn: boolean | null;
+    eventQueue: EventGroup[];
+    playerActionQueue: object[];
+    charactersAttackedThisTurn: string[];
+    /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
+    round: number;
+    waves: Wave[];
+    currentWaveIndex: number;
+    /** When interacting with cards in your hand, or discovering a card */
+    selectCardsPrompt: PlayerSelectCardsPrompt | null;
+    state: BATTLE_STATES;
+    backgroundImage?: string; // Path to background image
+    backgroundMusic?: string; // 'boss' or path to music URL
+    type: BATTLE_TYPES; // Determines the rewards at the end of battle
+    itemRewards?: Item[];
+    overrideItemChoices?: Item[];
+    cardRewards?: Ability[];
+    disableCardRewards?: boolean;
+    disableItemRewards?: boolean;
+    notification?: Notification;
+    statistics: BattleStatistics;
+    isTutorial?: boolean;
+    addAbilities: CombatAbility[];
+    deckCycled?: boolean;
+    selectedHandAbilityId?: string | null;
+    selectedAllyId?: string | null;
+} // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
+
+export interface PlayerSelectCardsPrompt {
+    selectCards: SelectCards;
+    source?: TriggerSource;
+    isAutoCast?: boolean;
+    abilityQueued?: {
+        selectedAbilityId: string;
+        selectedTargetIndex: number;
+        selectedTargetSide: BATTLEFIELD_SIDES;
+    };
+}
+export interface BattleStatistics {
+    totalDamage: number;
+    damageByEnemyName: {
+        [enemyName: string]: number;
+    };
+    totalKills: number;
+} // Text banner notification to display some info during battle
+
+export interface Notification {
+    severity?: "warning";
+    text: string | ReactElement;
+    id: string; // UUID
+}

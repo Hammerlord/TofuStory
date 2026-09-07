@@ -43,7 +43,8 @@ export const selectCardsAction =
         abilityQueued: CombatAbility;
     }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
-        const { deck, hand, discard } = getState().battle!;
+        const battle = getState().battle!;
+        const { deck, hand, discard } = battle;
         const playbackCollectorInstance = playbackCollector();
         const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
 
@@ -60,7 +61,7 @@ export const selectCardsAction =
             const updatedDeck = [...deck];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDeck.unshift(applyAbilityEventEffects({ event: ability.onLeaveHand, ability }));
+                    updatedDeck.unshift(applyAbilityEventEffects({ event: ability.onLeaveHand, ability, player, battle }));
                 } else {
                     updatedHand.push(ability);
                 }
@@ -82,7 +83,7 @@ export const selectCardsAction =
             const updatedDiscard = [...discard];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDiscard.unshift(...prepareForDiscard({ cards: [ability] }));
+                    updatedDiscard.unshift(...prepareForDiscard({ cards: [ability], player, battle }));
                 } else {
                     updatedHand.push(ability);
                 }
@@ -178,7 +179,8 @@ export const handleSelectCards = ({
         }
         const { type, maxAmount = 1 } = selectCards;
 
-        const { hand, deck, discard, playerSide } = getState().battle!;
+        const battle = getState().battle!;
+        const { hand, deck, discard, playerSide } = battle;
         const player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
         const cards = getCardSelection({
@@ -198,7 +200,9 @@ export const handleSelectCards = ({
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
             // TODO no op for now. There are no actions which deplete from hand.
         } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-            const cardsToMove = cards.map((card: CombatAbility) => applyAbilityEventEffects({ event: card.onLeaveHand, ability: card }));
+            const cardsToMove = cards.map((card: CombatAbility) =>
+                applyAbilityEventEffects({ event: card.onLeaveHand, ability: card, battle, player })
+            );
             const updatedHand = hand.filter((ability: CombatAbility) =>
                 cardsToMove.every((card) => card.instanceId !== ability.instanceId)
             );

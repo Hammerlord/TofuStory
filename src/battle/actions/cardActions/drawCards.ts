@@ -15,7 +15,8 @@ import {
 import { Combatant, Player } from "../../../character/types";
 import { passesChance, shuffle } from "../../../utils";
 import { passesValueComparison } from "../../passesConditions";
-import { BattleState, battleStateSlice } from "../../reducer";
+import { battleStateSlice } from "../../reducer";
+import { BattleState } from "../../types";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
 import { getUpdatedStats } from "../getUpdatedStats";
@@ -44,6 +45,7 @@ export const drawCards = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { deck, discard, playerSide, enemySide } = getState().battle!;
+        const battle = getState().battle!;
         const player = playerSide?.find((c) => c?.isPlayer) as Player;
         const hasViewDeckInOrder = player?.effects.some((e) => e.viewDeckInOrder);
 
@@ -121,7 +123,9 @@ export const drawCards = ({
             handlePreemptive(cardsDrawn);
         }
 
-        cardsToDraw = cardsToDraw.map((card) => applyAbilityEffectsOnDraw({ drawnCard: card, context, effects, playerSide }));
+        cardsToDraw = cardsToDraw.map((card) =>
+            applyAbilityEffectsOnDraw({ drawnCard: card, context, effects, playerSide, battle, player })
+        );
 
         const newState = {
             deck: newDeck,
@@ -153,11 +157,15 @@ export const applyAbilityEffectsOnDraw = ({
     context: context,
     effects,
     playerSide,
+    battle,
+    player,
 }: {
     drawnCard: CombatAbility;
     context: ActionContext;
     effects: AbilityEffect[];
     playerSide: (Combatant | null)[];
+    battle: BattleState;
+    player: Player;
 }) => {
     const onDrawEffects = drawnCard.onDraw?.abilityEffects;
     if (onDrawEffects) {
@@ -167,6 +175,8 @@ export const applyAbilityEffectsOnDraw = ({
             context: context,
             ability: drawnCard,
             bonusChance: totalCritChance,
+            battle,
+            player,
         });
     }
     return {

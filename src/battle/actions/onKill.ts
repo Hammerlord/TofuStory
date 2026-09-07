@@ -2,7 +2,9 @@ import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from ".
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
-import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
+import { battleStateSlice } from "../reducer";
+import { BattleStatistics } from "../types";
+import { BattleState } from "../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { BATTLE_STATES } from "./../reducer";
 import { ActionContext } from "./../types";
@@ -36,7 +38,10 @@ export const handleOnKill = (context: ActionContext) => {
         const isKilledTargetThreatening = Boolean(killedInfo?.combatant?.abilities?.[0]);
 
         if (isKilledTargetThreatening) {
-            const lifeOnKill = getEnabledEffects({ combatantInfo: killedByInfo }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
+            const lifeOnKill = getEnabledEffects({
+                combatantInfo: killedByInfo,
+                battle: getState().battle!,
+            }).reduce((acc, { lifeOnKill = 0 }) => acc + lifeOnKill, 0);
             const { deck, hand, discard } = getState().battle!;
 
             if (lifeOnKill > 0) {

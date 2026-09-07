@@ -7,7 +7,7 @@ import Icon from "./Icon";
 import { CombatantInfo } from "../battle/types";
 import { getEnabledEffects } from "../battle/actions/statusEffect/getEnabledEffects";
 import { useAppSelector } from "../hooks";
-import { BattleState } from "../battle/reducer";
+import { BattleState } from "../battle/types";
 
 const ANIMATION_DURATION = 0.5;
 
