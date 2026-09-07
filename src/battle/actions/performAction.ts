@@ -59,11 +59,11 @@ export const performAction = ({
         }
 
         const battleSide = battle[side];
-        const target = findCombatantData(battle, battleSide[selectedIndex]?.id);
+        const target = findCombatantData(battle, battleSide[selectedIndex]?.id)!;
 
         const { vacuum, secondaryAction, autoCastAbilities, retreat } = action;
         const combatants = battle[side];
-        const parentSource = parentContext?.sourceChain?.at(-1);
+        const parentSource = parentContext.sourceChain?.at(-1);
 
         const targetSource: TriggerSource = {
             ...parentSource,
@@ -316,8 +316,13 @@ export const performAction = ({
         dispatch(checkHandleActionSummon({ action, actorId, parentContext, actionParent: parentSource?.source }));
         dispatch(checkHandleMorph({ action, morphTargetIds: targetIds, actorId, parentContext, actionParent: parentSource?.source }));
         dispatch(checkInduce({ action, affectedTargetIds: targetIds, parentContext }));
+
         if (retreat) {
-            const { friendly, friendlySide } = findCombatantData(getState().battle!, actorId);
+            const { friendly, friendlySide } = findCombatantData(getState().battle!, actorId) || {};
+            if (!friendly || !friendlySide) {
+                return;
+            }
+
             dispatch(
                 updateBattle({
                     [friendlySide]: friendly.map((combatant) => {

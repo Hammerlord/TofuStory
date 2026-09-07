@@ -1,32 +1,6 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
 import { MULTIPLIER_TYPES } from "../types";
 
-/**
- * Map EFFECT_EVENT_KEYS to more friendly strings.
- * @see EFFECT_EVENT_KEYS
- */
-export const effectEventKeyLabelMap = {
-    onAbility: "When you use an ability",
-    onAttack: "When you attack",
-    onDeath: "On death",
-    onFriendlyDeath: "When an ally dies",
-    onHostileDeath: "When an enemy dies",
-    onReceiveAttack: "When attacked",
-    onReceiveDamage: "When damaged",
-    onReceiveHealing: "When healed",
-    onReceiveArmor: "When you gain armor",
-    onReceiveEffect: "When you receive an effect",
-    onApplyEffect: "When you apply an effect",
-    onRemoved: "When this effect is removed",
-    onResourcesSpent: "After spending resources",
-    onTurnStart: "When your turn starts",
-    onTurnEnd: "When your turn ends",
-    onEnd: "When this effect ends",
-    onWaveStart: "On wave start",
-    onWaveClear: "On wave clear",
-    onDrawCard: "When you draw cards",
-};
-
 const { ATTACKS_MADE_IN_TURN, ARMOR, ABILITIES_WITH_NAME, MAX_HP, DEBUFFS, NUM_AFFECTED_TARGETS, NUM_SOURCE_TARGETS } = MULTIPLIER_TYPES;
 
 export const multiplierTypeKeyLabelMap = {

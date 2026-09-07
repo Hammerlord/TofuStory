@@ -147,7 +147,7 @@ export const getDamageStatistics = ({
         baseDamage: withAttackPower[0].damage,
         secondaryDamage: withAttackPower[0].secondaryDamage,
         hasMultiplier: hasAttackMultiplier || isMultiHit,
-        hasConditionFulfilled: withBonus[0].damage > firstActionDamage,
+        hasConditionFulfilled: (withBonus[0].damage || 0) > firstActionDamage,
         hasBonus: withAttackPower[0].damage > firstActionDamage,
         isAdditive,
     };

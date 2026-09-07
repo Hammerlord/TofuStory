@@ -1,4 +1,4 @@
-import { CombatEffect, Effect, EFFECT_EVENT_KEYS } from "../../ability/types";
+import { CombatEffect, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";

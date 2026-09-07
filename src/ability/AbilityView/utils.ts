@@ -43,7 +43,10 @@ export const isAttackAction = (action: Action): boolean => {
 };
 
 export const isOffensiveAction = (action: Action): boolean => {
-    return [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE, TARGET_TYPES.HOSTILE_CHARACTER].includes(action.target);
+    return (
+        action.target !== undefined &&
+        [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE, TARGET_TYPES.HOSTILE_CHARACTER].includes(action.target)
+    );
 };
 
 export const isOffensiveAbility = (ability: Ability): boolean => {
@@ -56,6 +59,7 @@ export const isAttackAbility = (ability: Ability): boolean => {
 
 export const isSupportAction = (action: Action): boolean => {
     return (
+        action.target !== undefined &&
         [TARGET_TYPES.SELF, TARGET_TYPES.FRIENDLY, TARGET_TYPES.RANDOM_FRIENDLY, TARGET_TYPES.FRIENDLY_CHARACTER].includes(action.target) &&
         action.type !== ACTION_TYPES.NONE
     );

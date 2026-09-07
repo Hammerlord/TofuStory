@@ -2776,9 +2776,9 @@ export const bladeworks: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
-                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
-                { minion: [cloneDeep(soulBlade.minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
+                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
             ],
         },
     ],

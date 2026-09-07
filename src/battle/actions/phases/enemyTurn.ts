@@ -124,8 +124,9 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
             e?.disableAbilities?.forEach((type: ACTION_TYPES) => (disabledActionTypes[type] = true));
         });
 
-        return (ability.actions || []).every((action) => !disabledActionTypes[action.type]);
+        return (ability.actions || []).every((action) => !action.type || !disabledActionTypes[action.type]);
     };
+
     if (resources >= maxResources) {
         const specialAbilityIndex = abilities.findIndex(
             (ability) =>

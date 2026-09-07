@@ -32,8 +32,8 @@ export const getArmorStatistics = ({
 }): ArmorStats => {
     const { actions: primaryActions = [] } = ability;
 
-    const calcArmorFromActions = (actions: Action[] = []) => {
-        const armorActions = actions.filter((action) => (action?.armor || 0) > 0);
+    const calcArmorFromActions = (actions: (Action | undefined)[] = []) => {
+        const armorActions: Action[] = actions.filter((action): action is Action => (action?.armor || 0) > 0);
         if (armorActions.length === 0) {
             return {
                 base: 0,

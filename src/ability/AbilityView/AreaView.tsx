@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
-import { Ability, Action } from "../types";
+import { Ability, CombatAbility } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
 
 const useStyles = createUseStyles({
@@ -57,11 +57,11 @@ const Area = ({
     hand = [],
     discard = [],
 }: {
-    ability: Ability;
+    ability: CombatAbility;
     playerInfo: CombatantInfo;
-    deck?: Ability[];
-    hand?: Ability[];
-    discard?: Ability[];
+    deck?: CombatAbility[];
+    hand?: CombatAbility[];
+    discard?: CombatAbility[];
 }) => {
     const { actions = [] } = ability || {};
 
@@ -100,16 +100,16 @@ const Area = ({
 };
 
 export const AreaIndicator = ({
-    area,
+    area = 0,
     hasBonus,
-    baseDamage,
-    secondaryDamage,
+    baseDamage = 0,
+    secondaryDamage = 0,
     size,
     primaryColor,
     secondaryColor,
     className,
 }: {
-    area: number;
+    area?: number;
     hasBonus?: boolean;
     baseDamage?: number;
     secondaryDamage?: number;
@@ -131,6 +131,7 @@ export const AreaIndicator = ({
             {(secondaryDamage > 0 && secondaryDamage) || (baseDamage > 0 && baseDamage)}
         </span>
     ));
+
     return (
         <div className={classNames(classes.root, className)}>
             {areaIndicator}

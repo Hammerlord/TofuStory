@@ -30,7 +30,7 @@ export const useAbility = ({
 }: {
     side?: BATTLEFIELD_SIDES;
     selectedIndex?: number;
-    ability: CombatAbility;
+    ability: CombatAbility | Ability;
     actorId: string;
     isAutoCast?: boolean;
     isProc?: boolean;
