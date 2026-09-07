@@ -279,7 +279,7 @@ const getStatusEffectDiff = ({
     const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
 
     const getEffectDuration = (incomingEffect: Effect) => {
-        if (incomingEffect === undefined || incomingEffect.duration === Infinity) {
+        if (incomingEffect === undefined || !incomingEffect.duration) {
             return Infinity;
         }
 
@@ -303,7 +303,7 @@ const getStatusEffectDiff = ({
             return acc;
         }, 0);
 
-        return (incomingEffect.duration || 0) + totalBonusDuration;
+        return incomingEffect.duration + totalBonusDuration;
     };
 
     const effects: CombatEffect[] = [];
