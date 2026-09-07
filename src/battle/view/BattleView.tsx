@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
@@ -17,7 +16,6 @@ import {
     SELECT_CARD_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
-import { PreviewStatUpdate } from "../../character/AbilityPreview";
 import CombatantView from "../../character/CombatantView";
 import { getNextTelegraphedAbility } from "../../character/Telegraph";
 import getAbilityPreviews, { getEmptyTileKey } from "../../character/getAbilityPreviews";
@@ -65,6 +63,7 @@ import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTarget
 import { findCombatantData } from "../actions/combatantData";
 import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
+import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 
 const useStyles = createUseStyles({
     root: {
@@ -374,7 +373,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         );
     };
 
-    const handleAbilityClick = (e: React.ChangeEvent, id: string) => {
+    const handleAbilityClick = (e: React.MouseEvent, id: string) => {
         if (selectCardsPrompt) {
             warn(battleWarnings.promptFinishSelecting);
             return;
@@ -942,123 +941,26 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
 
-    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = useMemo(() => {
-        const empty = { result: {}, combatantStates: undefined } as any;
-        if (!selectedAbility || selectedAbility.disablePreview) {
-            return empty;
-        }
-
-        if (hoveredCombatant && shouldShowReticle(hoveredCombatant.side, hoveredCombatant.index)) {
-            return getAbilityPreviews({
-                ability: selectedAbility,
-                actor: selectedMinion || player,
-                target: hoveredCombatant,
+    const abilityPreviewData = useMemo(
+        () =>
+            getAbilityUsePreviews({
+                selectedAbility,
+                hoveredCombatant,
+                selectedMinion,
+                player,
+                playerSide,
+                enemySide,
                 battle,
-            });
-        }
+                shouldShowReticle,
+            }),
+        [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player]
+    );
+    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = abilityPreviewData;
 
-        const allPotentialTargetResults: { [combatantId: string]: PreviewStatUpdate[] } = {};
-
-        const calculatePotentialResults = (combatants: (Combatant | null)[], side: BATTLEFIELD_SIDES) => {
-            combatants.forEach((combatant, i) => {
-                if (!combatant?.HP || !shouldShowReticle(side, i)) {
-                    return;
-                }
-
-                const preview = getAbilityPreviews({
-                    ability: selectedAbility,
-                    actor: selectedMinion || player,
-                    target: { index: i, id: combatant.id, side },
-                    battle,
-                });
-                allPotentialTargetResults[combatant.id] = preview.result[combatant.id];
-            });
-        };
-
-        calculatePotentialResults(enemySide, BATTLEFIELD_SIDES.ENEMY_SIDE);
-        calculatePotentialResults(playerSide, BATTLEFIELD_SIDES.PLAYER_SIDE);
-        return { result: allPotentialTargetResults, combatantStates: undefined };
-    }, [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player]);
-
-    const targetedByEnemyAbilities = useMemo(() => {
-        const targetMap = {};
-
-        let previousCombatantStates = previewAbilityCombatants;
-        getCombatantMoveOrder({ combatants: enemySide, round }).forEach((enemyId) => {
-            const enemyInfo = findCombatantData({ ...battle, ...previousCombatantStates }, enemyId);
-            if (!enemyInfo) {
-                return;
-            }
-
-            const enemy = enemyInfo.combatant;
-            const { targeting, HP, cantMove } = enemy || {};
-
-            if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo) || cantMove) {
-                return;
-            }
-
-            const ability = enemy.targeting?.ability || getNextTelegraphedAbility(enemyInfo);
-            if (!ability) {
-                return;
-            }
-
-            const abilityPreviews = getAbilityPreviews({
-                ability,
-                actor: enemy,
-                battle,
-                combatantStates: previousCombatantStates,
-            });
-
-            const { result, combatantStates } = abilityPreviews;
-            previousCombatantStates = combatantStates;
-
-            Object.entries(result).forEach(([combatantId, previews]) => {
-                const traverseAndAggregate = (obj: any, otherObj: any) => {
-                    if (!obj || typeof otherObj !== "object") {
-                        return;
-                    }
-
-                    Object.entries(obj).forEach(([key, val]) => {
-                        if (typeof otherObj[key] === "undefined") {
-                            otherObj[key] = val;
-                            return;
-                        }
-
-                        if (typeof val === "number") {
-                            otherObj[key] = (otherObj[key] || 0) + val;
-                            return;
-                        }
-
-                        if (Array.isArray(val)) {
-                            otherObj[key].push(...val);
-                            return;
-                        }
-
-                        if (typeof val === "object") {
-                            traverseAndAggregate(val, otherObj[key]);
-                            return;
-                        }
-
-                        otherObj[key] = val;
-                    });
-
-                    return otherObj;
-                };
-
-                const aggregated = previews.reduce((acc, preview: PreviewStatUpdate) => {
-                    if (!acc) {
-                        return cloneDeep(preview);
-                    }
-
-                    return traverseAndAggregate(cloneDeep(preview), acc);
-                }, targetMap[combatantId]);
-
-                targetMap[combatantId] = aggregated;
-            });
-        });
-
-        return targetMap;
-    }, [enemySide, playerSide, JSON.stringify(abilityUsePreviews)]);
+    const targetedByEnemyAbilities = useMemo(
+        () => getTargetedByEnemyAbilities({ battle, enemySide, round, previewAbilityCombatants }),
+        [enemySide, round, previewAbilityCombatants, JSON.stringify(abilityUsePreviews)]
+    );
 
     const animationCanvas = useMemo(
         () => (
@@ -1158,9 +1060,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                         isHighlighted={false}
                                         showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
                                         isHoveringCombatant={Boolean(hoveredCombatant)}
-                                        previewStatUpdate={abilityUsePreviews[enemy?.id]}
+                                        previewStatUpdate={enemy?.id ? abilityUsePreviews[enemy.id] : undefined}
                                         previewTargetedBy={
-                                            targetedByEnemyAbilities[enemy?.id] ||
+                                            (enemy?.id && targetedByEnemyAbilities[enemy.id]) ||
                                             targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.ENEMY_SIDE)]
                                         }
                                         enemySideRefs={enemyRefs}
@@ -1218,11 +1120,11 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                 showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
                                                 selectedAbility={abilityToUse}
                                                 characterRef={allyRefs[i]}
-                                                previewStatUpdate={abilityUsePreviews[ally?.id]}
+                                                previewStatUpdate={ally?.id ? abilityUsePreviews[ally.id] : undefined}
                                                 enemySideRefs={enemyRefs}
                                                 playerSideRefs={allyRefs}
                                                 previewTargetedBy={
-                                                    targetedByEnemyAbilities[ally?.id] ||
+                                                    (ally?.id && targetedByEnemyAbilities[ally.id]) ||
                                                     targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.PLAYER_SIDE)]
                                                 }
                                                 index={i}
