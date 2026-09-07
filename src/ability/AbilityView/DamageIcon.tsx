@@ -1,13 +1,13 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
 import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
 import { getMultiplier } from "../../battle/getMultiplier";
 import Icon from "../../icon/Icon";
 import { CrossedSwordsIcon } from "../../images/icons";
-import { ACTION_TYPES, Action, CombatAbility } from "../types";
+import { ACTION_TYPES, Ability, Action, CombatAbility } from "../types";
 import { calculateActionArea } from "../../battle/actions/targeting/targeting";
 
 export interface DamageStats {
@@ -26,9 +26,9 @@ export const getDamageStatistics = ({
     hand = [],
     discard = [],
 }: {
-    ability: CombatAbility;
+    ability: Ability | CombatAbility;
     // If we are out of combat, we don't have index, etc.
-    actorInfo: Partial<CombatantInfo>;
+    actorInfo: NonCombatPlayerInfo;
     hand?: CombatAbility[];
     deck?: CombatAbility[];
     discard?: CombatAbility[];
@@ -86,7 +86,7 @@ export const getDamageStatistics = ({
 
         const resourceCost = getPlayerAbilityResourceCost({
             combatant: actorInfo?.combatant,
-            effects: ability.effects,
+            effects: ability.effects || [],
             resourceCost: ability.resourceCost,
         });
 

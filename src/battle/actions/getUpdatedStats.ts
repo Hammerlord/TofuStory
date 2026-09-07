@@ -15,7 +15,7 @@ import { getMaxHP } from "./../utils";
 import { hasEffectType } from "./combatantData";
 import { getHalveArmorAmount } from "./phases/checkHalveArmor";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
-import { createCombatEffect } from "../../character/effects/createCombatEffect";
+import { createCombatEffect, lookupEffect } from "../../character/effects/createCombatEffect";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
@@ -357,15 +357,7 @@ const getStatusEffectDiff = ({
 
     Array.from({ length: multiplier }).forEach(() => {
         const effectsToAdd = allActionEffects
-            .map((effect: String | Effect) => {
-                if (typeof effect === "string") {
-                    return {
-                        ...effectNameMap[effect],
-                    };
-                }
-
-                return effect as Effect | CombatEffect;
-            })
+            .map(lookupEffect)
             .filter((effect) => {
                 if (isImmuneTo(effect)) {
                     // ID for differentiation purposes when announcing that the effect failed to apply

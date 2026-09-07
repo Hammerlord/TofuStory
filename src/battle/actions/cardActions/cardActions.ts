@@ -275,7 +275,7 @@ export const handleDrawOriginalAbility = ({
                 hand: newHand,
                 deck: newDeck,
                 discard: newDiscard,
-                deplete: newDeplete,
+                depleted: newDeplete,
             })
         );
     };

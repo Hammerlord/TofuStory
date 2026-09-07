@@ -46,7 +46,7 @@ export const checkHandleActionSummon = ({
     action: Action;
     actorId: string;
     parentContext: ActionContext;
-    actionParent: ActionParent;
+    actionParent?: ActionParent;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];

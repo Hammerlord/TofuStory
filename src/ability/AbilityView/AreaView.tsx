@@ -57,8 +57,8 @@ const Area = ({
     hand = [],
     discard = [],
 }: {
-    ability: CombatAbility;
-    playerInfo: CombatantInfo | NonCombatPlayerInfo;
+    ability: Ability | CombatAbility;
+    playerInfo: NonCombatPlayerInfo;
     deck?: CombatAbility[];
     hand?: CombatAbility[];
     discard?: CombatAbility[];
@@ -68,7 +68,7 @@ const Area = ({
     const context: ActionContext = {
         name: "Area View",
         sourceChain: [
-            { source: ability as Ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
             { source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION },
         ],
     };

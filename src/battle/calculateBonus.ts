@@ -1,7 +1,7 @@
 import { Action, Bonus, CombatAbility, CONDITION_TARGETS } from "../ability/types";
 import { getMultiplier } from "./getMultiplier";
 import { passesConditions } from "./passesConditions";
-import { ActionContext, ActionParent, CombatantInfo } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo } from "./types";
 
 export const calculateBonus = ({
     action,
@@ -17,9 +17,9 @@ export const calculateBonus = ({
 }: {
     action: Action; // The action to apply the bonus to
     // If we are out of combat, we don't have index, etc.
-    target?: Partial<CombatantInfo>;
-    allTargets: Partial<CombatantInfo>[];
-    actor?: Partial<CombatantInfo>;
+    target?: NonCombatPlayerInfo;
+    allTargets: NonCombatPlayerInfo[];
+    actor?: NonCombatPlayerInfo;
     isTargetSelected: boolean;
     actionParent?: ActionParent;
     context?: ActionContext;
@@ -34,7 +34,7 @@ export const calculateBonus = ({
     const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
     const getCalculationTarget = (
         conditionTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET
-    ): Partial<CombatantInfo> | CombatantInfo | undefined => {
+    ): NonCombatPlayerInfo | CombatantInfo | undefined => {
         if (conditionTarget === CONDITION_TARGETS.TARGET) {
             return target;
         }

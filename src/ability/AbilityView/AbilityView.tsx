@@ -7,7 +7,7 @@ import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
-import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -17,6 +17,8 @@ import { RARITIES } from "../../item/types";
 import { interpolateAbilityDescription } from "../descriptionInterpolation";
 import {
     ACTION_TYPES,
+    Ability,
+    AbilityEffect,
     Action,
     ActionOptionalProperties,
     Bonus,
@@ -25,6 +27,7 @@ import {
     Condition,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Effect,
     TARGET_TYPES,
 } from "../types";
 import AbilityTooltip from "./AbilityTooltip";
@@ -36,6 +39,7 @@ import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
 import { getAbilityColor, getLastPlayedCards } from "./utils";
+import { lookupEffect } from "../../character/effects/createCombatEffect";
 
 const useStyles = createUseStyles({
     root: {
@@ -337,7 +341,12 @@ const AbilityView = forwardRef(
             effects = [],
             retain,
         } = ability;
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0] || {};
+
+        if (!actions.length) {
+            return null;
+        }
+
+        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0];
         const cardImage = image || minion?.image;
         let imageNode = null;
 
@@ -352,16 +361,16 @@ const AbilityView = forwardRef(
             );
         }
 
-        let playerInfo: { combatant: Player } | undefined;
+        let playerInfo: NonCombatPlayerInfo | CombatantInfo | undefined;
         if (disableBattleBonuses || !battle) {
             if (character.player) {
                 playerInfo = { combatant: character.player };
             }
         } else if (battle) {
-            playerInfo = findCombatantData(battle, character.player?.id) as { combatant: Player };
+            playerInfo = findCombatantData(battle, character.player?.id);
         }
 
-        const player = playerInfo?.combatant;
+        const player = playerInfo?.combatant as Player;
 
         // Depending on whether we want to show combat bonuses based on your current hand, deck, etc., grab those objects from either state
         const {
@@ -473,7 +482,7 @@ const AbilityView = forwardRef(
             damage: selfDamage,
             resourceGain,
         } = actions
-            .filter(({ target }) => target === TARGET_TYPES.SELF || target === TARGET_TYPES.FRIENDLY)
+            .filter((action: Action) => action.target === TARGET_TYPES.SELF || action.target === TARGET_TYPES.FRIENDLY)
             .reduce((acc: any, action: Action) => {
                 const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
                 const multiplier = getMultiplier({
@@ -534,7 +543,9 @@ const AbilityView = forwardRef(
 
         let minionAttackDamage = 0;
         let minionHostileAction: Action | null = null;
-        for (const ability of minion?.abilities || []) {
+        const { effects: minionEffects = [], abilities: minionAbilities = [] } = minion || {};
+
+        for (const ability of minionAbilities) {
             for (const action of ability.actions) {
                 if (action.target === TARGET_TYPES.RANDOM_HOSTILE || action.target === TARGET_TYPES.HOSTILE) {
                     minionHostileAction = action;
@@ -544,10 +555,11 @@ const AbilityView = forwardRef(
             }
         }
 
-        const minionHostileEffect = (minionHostileAction?.effects || []).find((e) => e.class === EFFECT_CLASSES.DEBUFF);
-        const minionDefensiveEffect = (minion?.effects || []).find((e) => e.class === EFFECT_CLASSES.BUFF);
-
-        const taunt = minion?.effects?.some((e) => e.type === EFFECT_TYPES.TAUNT);
+        const minionHostileEffect = (minionHostileAction?.effects || [])
+            .map(lookupEffect)
+            .find((e: Effect) => e.class === EFFECT_CLASSES.DEBUFF);
+        const minionDefensiveEffect = minionEffects.map(lookupEffect).find((e: Effect) => e.class === EFFECT_CLASSES.BUFF);
+        const taunt = minionEffects.map(lookupEffect).some((e: Effect) => e.type === EFFECT_TYPES.TAUNT);
 
         const isAbilityUsable = canUsePlayerAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
@@ -565,11 +577,14 @@ const AbilityView = forwardRef(
 
         const inBattle = battle && battle.state !== BATTLE_STATES.VICTORY;
         const shouldGlow = isAbilityUsable && !disableGlow && !disableConditionGlow && inBattle;
-        const glowStacks: number = [hasBonus, ...effects.map((e) => e.highlightCard)].reduce((acc, cur: boolean | undefined) => {
-            const stacks = cur ? 1 : 0;
-            return acc + stacks;
-        }, 0);
-        const cannotBePlayed = inBattle && (isLocked || (unplayable && !effects.some((e) => e.bypassUnplayable)));
+        const glowStacks: number = [hasBonus, ...effects.map((e: AbilityEffect) => e.highlightCard)].reduce(
+            (acc, cur: boolean | undefined) => {
+                const stacks = cur ? 1 : 0;
+                return acc + stacks;
+            },
+            0
+        );
+        const cannotBePlayed = inBattle && (isLocked || (unplayable && !effects.some((e: AbilityEffect) => e.bypassUnplayable)));
 
         return (
             <AbilityTooltip ability={ability}>

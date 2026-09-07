@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const AbilityTypeView = ({ targetType, type, minion }: { targetType: TARGET_TYPES; type: ACTION_TYPES; minion: Minion }) => {
+const AbilityTypeView = ({ targetType, type, minion }: { targetType?: TARGET_TYPES; type?: ACTION_TYPES; minion?: Minion }) => {
     let typeLabel;
     if (minion) {
         typeLabel = "Summon";

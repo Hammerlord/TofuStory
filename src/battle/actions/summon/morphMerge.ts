@@ -44,7 +44,7 @@ export const checkHandleMorph = ({
     morphTargetIds: string[];
     actorId: string;
     parentContext: ActionContext;
-    actionParent: ActionParent;
+    actionParent?: ActionParent;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         if (!action.morph) {

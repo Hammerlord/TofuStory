@@ -81,7 +81,7 @@ export const getPlayerAbilityResourceCost = ({
     return Math.max(0, resourceCost + resourceCostFromEffects);
 };
 
-export const canUsePlayerAbility = (player: Player | undefined, ability?: CombatAbility | undefined): boolean => {
+export const canUsePlayerAbility = (player: Player | undefined, ability?: CombatAbility | Ability | undefined): boolean => {
     if (!ability) {
         return false;
     }
@@ -126,7 +126,11 @@ export const useHandAbility = ({
         const { hand } = getState().battle!;
         dispatch(selectHandAbility(null));
         // Why not just pass ability object from BattleView instead of performing a lookup again?
-        const ability: CombatAbility = getCardByInstanceId(hand, selectedAbilityId);
+        const ability = getCardByInstanceId(hand, selectedAbilityId);
+        if (!ability) {
+            return;
+        }
+
         const isReusable = ability.reusable || ability.effects?.some((effect) => effect.reusable);
         if (isReusable) {
             // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
@@ -179,7 +183,7 @@ export const usePlayerAbility = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide } = getState().battle!;
-        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const actor = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
         dispatch(
             useAbility({

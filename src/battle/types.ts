@@ -74,7 +74,7 @@ export enum TRIGGER_SOURCE_TYPES {
 }
 
 export interface TriggerSource {
-    source?: Action | CombatEffect | CombatAbility | Item;
+    source?: Action | CombatEffect | CombatAbility | Ability | Item;
     // The amount of, eg. block, healing, overhealing done by the source
     statUpdate?: UpdatedCombatantStats;
     type?: TRIGGER_SOURCE_TYPES;

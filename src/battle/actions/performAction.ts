@@ -290,11 +290,14 @@ export const performAction = ({
             actor: actorData,
             ...(getState().battle! as BattleState),
         });
+
+        const parentAbility = parentSource?.type === TRIGGER_SOURCE_TYPES.ABILITY ? (parentSource.source as CombatAbility) : undefined;
+
         dispatch(
             checkHandleAutoCast({
                 autoCastAbilities,
                 actor: actorData.combatant as Player,
-                parentAbility: parent as any,
+                parentAbility,
                 multiplier,
                 context,
             })
@@ -303,6 +306,7 @@ export const performAction = ({
             onAction({
                 action,
                 context,
+                parentAbility,
             })
         );
 
@@ -351,6 +355,10 @@ const getHitEffects = ({
     context: ActionContext;
     getState: () => RootState;
 }): { statUpdate: UpdatedCombatantStats; action: Action }[][] => {
+    if (!action.type) {
+        return [];
+    }
+
     if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
         return [];
     }
@@ -425,7 +433,7 @@ const getHitEffects = ({
         });
 
         const totalMesosGained = updatedTargets.reduce((acc, { statUpdate }) => {
-            return acc + Math.abs(statUpdate.mesos);
+            return acc + Math.abs(statUpdate.mesos || 0);
         }, 0);
 
         const updatedActor = getUpdatedStats({
@@ -457,7 +465,7 @@ const handleOnReceiveAction = ({
     combatants: (Combatant | null)[];
 }) => {
     return (dispatch: AppDispatch) => {
-        const isAttack = (action: Action) => [ACTION_TYPES.RANGE_ATTACK, ACTION_TYPES.ATTACK].includes(action.type);
+        const isAttack = (action: Action) => action.type && [ACTION_TYPES.RANGE_ATTACK, ACTION_TYPES.ATTACK].includes(action.type);
         const prevSource = context?.sourceChain?.at(-1);
         updatedStats.forEach(({ statUpdate, action }) => {
             if (!isAttack(action)) {
@@ -497,7 +505,7 @@ const handleOnReceiveAction = ({
     };
 };
 
-const onAction = ({ action, context }: { action: Action; context: ActionContext }) => {
+const onAction = ({ action, context, parentAbility }: { action: Action; context: ActionContext; parentAbility?: CombatAbility }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const latestSource = context?.sourceChain?.at(-1);
         const actorId = latestSource?.actorId;
@@ -531,13 +539,16 @@ const onAction = ({ action, context }: { action: Action; context: ActionContext 
             }
         }
 
-        const turnHistory = combatant.turnHistory || [];
+        if (!parentAbility) {
+            return;
+        }
 
+        const turnHistory = combatant.turnHistory || [];
         dispatch(
             updateCombatant({
                 combatantId: actorId!,
                 newProperties: {
-                    turnHistory: [...turnHistory, { ...action, parent: latestSource?.source }],
+                    turnHistory: [...turnHistory, { ...action, parent: parentAbility }],
                 },
             })
         );

@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
 import { CombatEffect, Effect } from "../../ability/types";
+import { effectNameMap } from "../../enemy/effect";
 
 export const createCombatEffect = (e: Effect | CombatEffect): CombatEffect => {
     return {
@@ -14,4 +15,14 @@ export const createCombatEffect = (e: Effect | CombatEffect): CombatEffect => {
         duration: Infinity,
         ...cloneDeep(e),
     };
+};
+
+export const lookupEffect = (effect: String | Effect) => {
+    if (typeof effect === "string") {
+        return {
+            ...effectNameMap[effect],
+        };
+    }
+
+    return effect as Effect | CombatEffect;
 };
