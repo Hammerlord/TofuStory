@@ -43,12 +43,12 @@ const Hand = ({
     cardRefs,
 }: {
     hand: CombatAbility[];
-    onAbilityClick: Function;
+    onAbilityClick: (event: React.MouseEvent, id: string) => void;
     selectedAbilityId?: string | null;
     className: string;
     cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
 }) => {
-    const handleAbilityMouseDown = (event, id: string) => {
+    const handleAbilityMouseDown = (event: React.MouseEvent, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
             onAbilityClick(event, id);
         }

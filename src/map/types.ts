@@ -31,7 +31,7 @@ export interface RouteNode {
     y: number;
     type?: NODE_TYPES;
     encounter?: string; // This is usually a pre-configured overworld boss, identified by a string ID. See overworldBosses.ts.
-    event?;
+    event?: EventScene;
     treasure?: {
         mesos?: number[]; // [min, max]
         items?: Item[]; // If not provided, it will grant a piece of equipment not already owned by the player
@@ -112,5 +112,5 @@ export type TownProperties = {
     onExit: () => void;
     onClickScene: (scene: EventScene) => void;
     onCamp: () => void;
-    onBattle: (battleConfig, callback: Function) => void;
+    onBattle: (battleConfig: BattleState, callback: Function) => void;
 };

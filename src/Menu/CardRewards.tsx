@@ -85,7 +85,7 @@ const CardRewards = ({
 }: {
     deck: CombatAbility[];
     player: Player;
-    updateDeck;
+    updateDeck: (newDeck: CombatAbility[]) => void;
     onClose: (rolledAbilities: Ability[]) => void;
     cardRewardOptions?: Ability[];
     rewardType?: BATTLE_TYPES;
@@ -97,7 +97,7 @@ const CardRewards = ({
     rarityRollMode?: "all" | "individual";
     rareCardBonusChance?: number;
 }) => {
-    const rolledAbilities = useMemo(() => {
+    const rolledAbilities: CombatAbility[] = useMemo(() => {
         const potentialAbilities = getCardPool(player, deck);
         const { numChoices: numChoicesFromItems, choices: choicesFromItems } = getCardChoicesFromItems({
             player,
@@ -150,7 +150,7 @@ const CardRewards = ({
         return choices.map(createCombatAbility);
     }, []);
 
-    const [selectedAbilityIndices, setSelectedAbilityIndices] = useState([]);
+    const [selectedAbilityIndices, setSelectedAbilityIndices] = useState<number[]>([]);
     const classes = useStyles();
 
     const handleSelectClick = () => {
@@ -159,7 +159,7 @@ const CardRewards = ({
         onClose(rolledAbilities);
     };
 
-    const handleCardClick = (index) => {
+    const handleCardClick = (index: number) => {
         if (maxAmount === 1) {
             setSelectedAbilityIndices([index]);
             return;

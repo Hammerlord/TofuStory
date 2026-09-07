@@ -10,6 +10,7 @@ import DeckViewer from "./DeckViewer";
 import Inventory from "./Inventory";
 import WeaponSkins from "./WeaponSkins";
 import { WeaponImageOptions } from "../ability/types";
+import { Player } from "../character/types";
 
 const useStyles = createUseStyles({
     headerBar: {
@@ -116,11 +117,14 @@ const Header = ({
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
-    const battle = useAppSelector((state) => state.battle);
+    const playerSide = useAppSelector((state) => state.battle?.playerSide) || [];
     const character = useAppSelector((state) => state.character);
     const { player: playerCharacter, deck, infamy } = character || {};
-    const playerCombatant = battle?.playerSide.find((combatant) => combatant?.isPlayer);
-    const player = playerCombatant || playerCharacter;
+    const playerCombatant = playerSide.find((combatant) => combatant?.isPlayer);
+    const player = (playerCombatant as Player) || playerCharacter;
+    if (!player) {
+        return null;
+    }
 
     return (
         <>

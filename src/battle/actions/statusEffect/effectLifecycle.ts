@@ -31,7 +31,7 @@ export const checkUpdateEffectLifecycle =
         const ownerId = owner.id;
         const maxStacks = effect.maxStacks || Infinity;
         const updatedStacks = (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0);
-        const updatedEffect = {
+        const updatedEffect: CombatEffect = {
             ...effect,
             stacks: Math.min(maxStacks, updatedStacks),
             duration: resetDuration ? effect.originalDuration : effect.duration,

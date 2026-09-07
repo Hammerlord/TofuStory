@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
 /**
  * Rarity indicator that appears above a card.
  */
-const RarityTag = ({ rarity, className }: { rarity: RARITIES; className?: string }) => {
+const RarityTag = ({ rarity, className }: { rarity?: RARITIES; className?: string }) => {
     const classes = useStyles();
     return (
         <div className={classNames(classes.rarityContainer, className)}>

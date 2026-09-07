@@ -187,6 +187,8 @@ export const startBattle = ({
             },
             charactersAttackedThisTurn: [],
             addAbilities: addAbilities.map(createCombatAbility),
+            selectedAllyId: null,
+            selectedHandAbilityId: null,
         };
 
         dispatch(updateBattle(battleObj));
@@ -331,11 +333,13 @@ export const requeueRecentlyUsedAbility =
         if (!actorInfo.combatant.casting?.channelDuration) {
             const validAbilityIds = actor.abilities.map((a) => a.instanceId);
             // Exclude procs from being considered for requeuing
-            const history = actor.abilityHistory.filter((a) => validAbilityIds.includes(a.instanceId));
+            const history = actor.abilityHistory.filter((a) => "instanceId" in a && validAbilityIds.includes(a.instanceId));
             const abilityUsed = history[history.length - 1];
             let abilityIndex = -1;
             if (abilityUsed) {
-                abilityIndex = actor.abilities.findIndex((ability) => ability.instanceId === abilityUsed?.instanceId);
+                abilityIndex = actor.abilities.findIndex(
+                    (ability) => "instanceId" in abilityUsed && ability.instanceId === abilityUsed.instanceId
+                );
             } else {
                 abilityIndex = getUseAbilityIndex(actorInfo);
             }

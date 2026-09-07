@@ -1,17 +1,15 @@
-import { ClickAwayListener, Popper } from "@mui/material";
+import { Popper } from "@mui/material";
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
+import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { CombatEffect, EFFECT_EVENT_KEYS } from "../ability/types";
+import { Combatant, Player } from "../character/types";
 import { COLOR_RARITY_COMMON, COLOR_RARITY_RARE, COLOR_RARITY_UNCOMMON } from "../constants";
 import { useAppSelector } from "../hooks";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import Button from "../view/Button";
-import { resourceClassNameMap } from "../ability/AbilityView/constants";
-import { Combatant, Player } from "../character/types";
-import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
-import { EventGroup } from "../battle/types";
 
 const useStyles = createUseStyles({
     root: {
@@ -114,15 +112,15 @@ const useStyles = createUseStyles({
 
 const ITEM_CLASS_NAME = "inventory-item";
 
-const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem: (item: Item) => void }) => {
+const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem?: (item: Item) => void }) => {
     const playerSide = useAppSelector((state) => state.battle?.playerSide);
 
     const handleOnUseItem = (item: Item) => {
-        onUseItem(item);
+        onUseItem && onUseItem(item);
     };
 
-    return inventory.map((item, i) => (
-        <InventoryItem playerSide={playerSide} item={item} key={item.name} onUseItem={handleOnUseItem} player={player} index={i} />
+    return inventory.map((item) => (
+        <InventoryItem playerSide={playerSide} item={item} key={item.name} onUseItem={handleOnUseItem} player={player} />
     ));
 };
 
@@ -131,15 +129,13 @@ const InventoryItem = ({
     playerSide,
     onUseItem,
     player,
-    index,
 }: {
     item: Item;
-    playerSide: (Combatant | null)[];
+    playerSide: (Combatant | null)[] | undefined;
     onUseItem: (item: Item) => void;
     player: Player;
-    index: number;
 }) => {
-    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
     const [isTriggerHovered, setIsTriggerHovered] = useState(false);
     const [isPopperHovered, setIsPopperHovered] = useState(false);
 
@@ -191,11 +187,11 @@ const InventoryItem = ({
         }
     };
 
-    const handleItemClick = (e) => {
+    const handleItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         setMenuAnchor(e.currentTarget);
     };
 
-    const handleItemMouseEnter = (e) => {
+    const handleItemMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
         setMenuAnchor(e.currentTarget);
         setIsTriggerHovered(true);
     };
@@ -203,6 +199,8 @@ const InventoryItem = ({
     const handleItemMouseOut = () => {
         setIsTriggerHovered(false);
     };
+
+    const { stacks = 1, healing = 0 } = item;
 
     return (
         <>
@@ -220,7 +218,7 @@ const InventoryItem = ({
                         [classes.glow]: getCombatCounter(item) === 0,
                     })}
                 />
-                <span className={classes.stacks}>{item.stacks > 1 && `x${item.stacks}`}</span>
+                <span className={classes.stacks}>{stacks > 1 && `x${item.stacks}`}</span>
                 <span className={classes.combatCounter}>{getCombatCounter(item)}</span>
             </button>
             {menuAnchor && isOpen && (
@@ -235,7 +233,7 @@ const InventoryItem = ({
                 >
                     <div className={classes.menuInner}>
                         <div className={classes.itemName}>
-                            {item.name} {item.stacks > 1 && `x${item.stacks}`}
+                            {item.name} {stacks > 1 && `x${item.stacks}`}
                         </div>
                         <div className={classes.rarity}>
                             <span
@@ -247,10 +245,10 @@ const InventoryItem = ({
                             />{" "}
                             {item.rarity || RARITIES.COMMON}
                         </div>
-                        {item.healing > 0 && `Recover ${item.healing} HP.`}
+                        {healing > 0 && `Recover ${healing} HP.`}
                         <div dangerouslySetInnerHTML={{ __html: interpolateDescription(item) }} />
                         <div className={classes.useButtonContainer}>
-                            {isItemUsable && onUseItem && (
+                            {isItemUsable && (
                                 <Button variant="contained" color="primary" onClick={handleItemUse}>
                                     Use
                                 </Button>

@@ -8,7 +8,6 @@ import {
     CombatEffect,
     EFFECT_TYPES,
     SkillBonus,
-    TRIGGER_TARGET_TYPES,
 } from "../ability/types";
 import { Item } from "../item/types";
 import { hasEffectType } from "./actions/combatantData";
@@ -77,7 +76,7 @@ export const calculateDamage = ({
     let maximumDamage = action.maxDamage;
 
     if (isAttack && actor) {
-        getEnabledEffects({ combatantInfo: actor, targetInfo: target, context }).forEach((effect) => {
+        getEnabledEffects({ combatantInfo: actor, context }).forEach((effect) => {
             const {
                 attackPower = 0,
                 skillBonus = [],

@@ -4,16 +4,21 @@ import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Ability, CombatAbility } from "../ability/types";
 import type { CharacterState } from "../character/playerReducer";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
-import { ITEM_MASTERLIST } from "../item/masterList";
 import { chargingStone, greaterChargingStone, integrityStone, honestyStone, rageStone, rampageStone } from "../item/starterItems";
 import { Item } from "../item/types";
 import { CLASS_ITEMS } from "../map/routes/eventList";
-import { ShopAbility } from "../shops/constants";
+import { ShopAbility, ShopItem } from "../shops/constants";
 import { getUpgradeCard } from "./utils";
 import { tofu, tofuSoup } from "../item/items";
+import { ITEM_MASTERLIST } from "../item/masterList";
 
 export const saveGame = (characterObject: CharacterState) => {
     const { deck, player, townShops } = characterObject;
+
+    if (!player) {
+        return;
+    }
+
     // Due to card effects sometimes using SVGs (functions, which cannot be stringified), flatten the objects to just their name/level here and do a lookup on retrieval.
     const flattenDeck = deck.map((card) => ({ name: card.name, level: card.level }));
     const flattenPlayerItems = player.items.map((item) => ({ name: item.name, stacks: item.stacks }));
@@ -128,7 +133,7 @@ export const getGameFile = () => {
         const other = [tofu, tofuSoup];
         const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables, ...other];
 
-        const items = player.items.map((item) => {
+        const items = player.items.map((item: Item) => {
             const found = itemLookup.find((otherItem) => otherItem.name === item.name);
             if (found) {
                 return {
@@ -147,7 +152,7 @@ export const getGameFile = () => {
             /**
              * See output of flattenShopItem above for the input here.
              */
-            const hydrateShopItem = (shopItem: { price: number; item: string } | null) => {
+            const hydrateShopItem = (shopItem: { price: number; item: string } | null): ShopItem | null => {
                 if (!shopItem) return shopItem;
                 const lookup = itemLookup.find(({ name }) => name === shopItem.item);
                 if (lookup) {
@@ -169,7 +174,7 @@ export const getGameFile = () => {
                 acc[townName].shop = {
                     ...shop,
                     abilities: shop.abilities.map(hydrateShopAbility),
-                    items: shop.items.map(hydrateShopItem).filter((v) => v),
+                    items: shop.items.map(hydrateShopItem).filter((v: ShopItem) => v),
                 };
             }
 
@@ -180,7 +185,7 @@ export const getGameFile = () => {
                         .map((itemName: string) => {
                             return itemLookup.find((otherItem) => otherItem.name === itemName);
                         })
-                        .filter((v) => v),
+                        .filter((v: Item) => v),
                 };
             }
 
