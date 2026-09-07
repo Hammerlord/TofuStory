@@ -29,8 +29,8 @@ export const getCombatantMoveOrder = ({
             }
 
             const middle = 2;
-            const aIndex = combatants.findIndex((c: Combatant | null) => c?.id === a.id);
-            const bIndex = combatants.findIndex((enemy: Combatant | null) => enemy?.id === b.id);
+            const aIndex = combatants.findIndex((c: Combatant | null) => c?.id === a?.id);
+            const bIndex = combatants.findIndex((enemy: Combatant | null) => enemy?.id === b?.id);
 
             return Math.abs(aIndex - middle) - Math.abs(bIndex - middle);
         })

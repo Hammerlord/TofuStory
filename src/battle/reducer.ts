@@ -36,28 +36,24 @@ export const battleStateSlice = createSlice({
     initialState: initialState as BattleState | null,
     reducers: {
         promptPlayerSelectCards: (state, action: PayloadAction<PlayerSelectCardsPrompt>) => {
-            if (!state) return state;
             return {
                 ...state,
                 selectCardsPrompt: action.payload,
             };
         },
         closePlayerSelectCardsPrompt: (state) => {
-            if (!state) return state;
             return {
                 ...state,
                 selectCardsPrompt: null,
             };
         },
         updateBattle: (state, action: PayloadAction<Partial<BattleState>>) => {
-            if (!state) return state;
             return {
                 ...state,
                 ...action.payload,
             };
         },
         pushEventQueue: (state, action: PayloadAction<EventGroup | EventGroup[]>) => {
-            if (!state) return state;
             let payload = action.payload;
             if (!Array.isArray(payload)) {
                 payload = [payload];
@@ -73,9 +69,6 @@ export const battleStateSlice = createSlice({
             return null;
         },
         updateBattleState: (state, action: PayloadAction<BATTLE_STATES>) => {
-            if (!state) {
-                return state;
-            }
             // If the fight is over, don't overwrite the state
             if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state.state)) {
                 return state;
@@ -91,7 +84,6 @@ export const battleStateSlice = createSlice({
             };
         },
         useConsumable: (state, action: PayloadAction<Item>) => {
-            if (!state) return state;
             const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             return {
@@ -128,14 +120,12 @@ export const battleStateSlice = createSlice({
             };
         },
         setNotification: (state, action: PayloadAction<Notification>) => {
-            if (!state) return state;
             return {
                 ...state,
                 notification: action.payload,
             };
         },
         selectHandAbility: (state, action: PayloadAction<string | null>) => {
-            if (!state) return state;
             return {
                 ...state,
                 selectedAllyId: null,
@@ -143,7 +133,6 @@ export const battleStateSlice = createSlice({
             };
         },
         selectAlly: (state, action: PayloadAction<string | null>) => {
-            if (!state) return state;
             return {
                 ...state,
                 selectedAllyId: action.payload,
@@ -151,7 +140,6 @@ export const battleStateSlice = createSlice({
             };
         },
         addCardsToHand: (state, action: PayloadAction<CombatAbility[]>) => {
-            if (!state) return state;
             const newCards = action.payload.slice().map(createCombatAbility);
             let newHand: CombatAbility[] = dedupeByInstanceId([...newCards, ...state.hand]);
             const newDiscard = state.discard.slice();
