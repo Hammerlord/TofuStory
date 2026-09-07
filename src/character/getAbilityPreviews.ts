@@ -171,7 +171,7 @@ const getAbilityPreviews = ({
 }: {
     ability: CombatAbility | Ability;
     actor: Combatant;
-    target?: { side: BATTLEFIELD_SIDES; index: number; id: string };
+    target?: { side: BATTLEFIELD_SIDES; index: number; id: string | null };
     battle: BattleState;
     combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
 }): {
@@ -270,19 +270,21 @@ const getAbilityPreviews = ({
         });
     };
 
-    const summonPreviews = previewAction({
-        actionFn: checkSummonMinion({
-            ability,
-            selectedIndex: initTarget?.index,
-            side: initTarget?.side,
-            actorId: actor.id,
-            parentContext: context,
-            isAutoCast: false,
-        }),
-        battle: { ...battle, ...previousCombatantStates },
-    });
+    if (initTarget) {
+        const summonPreviews = previewAction({
+            actionFn: checkSummonMinion({
+                ability,
+                selectedIndex: initTarget.index,
+                side: initTarget.side,
+                actorId: actor.id,
+                parentContext: context,
+                isAutoCast: false,
+            }),
+            battle: { ...battle, ...previousCombatantStates },
+        });
 
-    handleStatUpdatePreviews({ previews: summonPreviews });
+        handleStatUpdatePreviews({ previews: summonPreviews });
+    }
 
     const actions: Action[] =
         ability.resourceCost === "x"

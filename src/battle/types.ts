@@ -184,8 +184,8 @@ export interface BattleState {
     isTutorial?: boolean;
     addAbilities: CombatAbility[];
     deckCycled?: boolean;
-    selectedHandAbilityId?: string | null;
-    selectedAllyId?: string | null;
+    selectedHandAbilityId: string | null;
+    selectedAllyId: string | null;
 } // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
 
 export interface PlayerSelectCardsPrompt {

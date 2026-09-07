@@ -106,10 +106,10 @@ export const autoSelectActionTarget = ({
     action: Action;
     actorId: string;
     battle: BattleState;
-}): { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } => {
+}): { index: number; side: BATTLEFIELD_SIDES } | undefined => {
     const actorData = findCombatantData(battle, actorId);
     if (!actorData) {
-        return { index: undefined, side: undefined };
+        return;
     }
 
     const indices = getValidTargetIndicesForAction({
@@ -127,12 +127,17 @@ export const autoSelectActionTarget = ({
         const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
         if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
             const index = pickHostileIndex({ targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined), actorData });
-            return { index, side: indices[0].side };
+            if (typeof index === "number") {
+                return { index, side: indices[0].side };
+            }
+            return;
         }
         return getRandomItem(indices);
     }
 
-    return { index: initialSelectedIndex, side: initialSelectedSide };
+    if (initialSelectedSide && typeof initialSelectedIndex === "number") {
+        return { index: initialSelectedIndex, side: initialSelectedSide };
+    }
 };
 
 export const getValidTargetIndicesForAction = ({
@@ -145,7 +150,7 @@ export const getValidTargetIndicesForAction = ({
     initialSelectedSide?: BATTLEFIELD_SIDES;
     action: Action;
     actorData: CombatantInfo;
-}): { index: number | undefined; side: BATTLEFIELD_SIDES | undefined }[] => {
+}): { index: number; side: BATTLEFIELD_SIDES }[] => {
     let isPlayerHostile: boolean | undefined;
     const { friendly, hostile, friendlySide, hostileSide, combatant, index } = actorData;
     const actorId = combatant?.id;
@@ -279,7 +284,11 @@ export const getValidTargetIndicesForAction = ({
         }
     }
 
-    return [{ index: initialSelectedIndex, side: initialSelectedSide }];
+    if (initialSelectedSide && typeof initialSelectedIndex === "number") {
+        return [{ index: initialSelectedIndex, side: initialSelectedSide }];
+    }
+
+    return [];
 };
 
 const pickHostileIndex = ({ targetIndices, actorData }: { targetIndices: number[]; actorData: CombatantInfo }): number | undefined => {

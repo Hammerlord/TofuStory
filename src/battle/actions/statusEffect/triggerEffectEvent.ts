@@ -374,7 +374,7 @@ export const onEffectEventTrigger = ({
         };
 
         ability?.actions.forEach((action: Action) => {
-            const { index, side } = autoSelectActionTarget({
+            const selection = autoSelectActionTarget({
                 initialSelectedIndex: i,
                 initialSelectedSide: friendlySide,
                 action,
@@ -382,9 +382,11 @@ export const onEffectEventTrigger = ({
                 battle: getState().battle!,
             });
 
-            if (side === undefined || index === undefined) {
+            if (!selection) {
                 return;
             }
+
+            const { index, side } = selection;
 
             const target = getState().battle![side]?.[index];
             const targetData = findCombatantData(getState().battle!, target?.id);

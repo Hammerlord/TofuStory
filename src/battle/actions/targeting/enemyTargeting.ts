@@ -1,7 +1,8 @@
 import { CombatEffect, EFFECT_TYPES } from "../../../ability/types";
 import { previewAction } from "../../../character/getAbilityPreviews";
 import { getNextTelegraphedAbility } from "../../../character/Telegraph";
-import { Combatant } from "../../../character/types";
+import { ActionTarget, Combatant } from "../../../character/types";
+import { AppDispatch, RootState } from "../../../store";
 import { BattleState } from "../../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
@@ -17,7 +18,7 @@ import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./target
 export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: string }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         let battle: BattleState = getState().battle!;
-        const validTargetSwitchId: string = options?.validTargetSwitchId;
+        const validTargetSwitchId: string | undefined = options?.validTargetSwitchId;
         let targetSwitch: CombatantInfo | undefined;
 
         if (validTargetSwitchId) {
@@ -38,17 +39,17 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
                 return;
             }
 
-            let mutableUpdatedActionTargets = [];
+            let mutableUpdatedActionTargets: ActionTarget[] = [];
             ability.actions.forEach((action, i) => {
                 let target;
                 const { side, index: currentTarIndex } = currentTargeting?.actionTargets?.[i] || {};
-                const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo });
+                const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo! });
                 if (validIndices.some((item) => item.side === side && item.index === currentTarIndex)) {
                     target = currentTargeting?.actionTargets?.[i];
 
                     if (targetSwitch) {
                         const randomTarget = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
-                        if (randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
+                        if (randomTarget && randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
                             target = randomTarget;
                         }
                     }
@@ -56,6 +57,10 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
 
                 if (!target) {
                     target = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
+                }
+
+                if (!target) {
+                    return;
                 }
 
                 mutableUpdatedActionTargets[i] = target;
@@ -140,7 +145,7 @@ export const checkValidEnemyNextAbility = () => {
                         combatantId: enemy.id,
                         newProperties: {
                             targeting: {
-                                ...targets,
+                                actionTargets: targets,
                                 ability,
                             },
                         },
@@ -167,7 +172,7 @@ export const updateEnemyTargetingAfterEffectsApplied = ({
         }
 
         const combatant = findCombatantData(getState().battle!, combatantId);
-        if (combatant.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
+        if (combatant?.friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE) {
             dispatch(checkValidEnemyTargeting({ validTargetSwitchId: combatantId }));
         }
     };

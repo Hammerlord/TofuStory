@@ -8,6 +8,11 @@ export interface TurnHistoryAction extends Action {
     parent: CombatAbility;
 }
 
+export type ActionTarget = {
+    side: BATTLEFIELD_SIDES;
+    index: number;
+};
+
 /** Interface of a battle participant */
 export interface Combatant extends Minion {
     HP: number;
@@ -28,17 +33,14 @@ export interface Combatant extends Minion {
     } | null;
     turnHistory: TurnHistoryAction[];
     abilities: CombatAbility[];
-    abilityHistory: CombatAbility[];
+    abilityHistory: (Ability | CombatAbility)[];
     maxResources?: number;
     resourcesPerTurn: number;
     items: Item[];
     mesos: number;
     targeting?: {
         // A targeting object for each ability.action
-        actionTargets: {
-            side: BATTLEFIELD_SIDES;
-            index?: number;
-        }[];
+        actionTargets: ActionTarget[];
         ability: Ability;
     } | null;
 }

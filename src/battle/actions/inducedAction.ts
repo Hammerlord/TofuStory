@@ -79,7 +79,7 @@ export const checkInduce = ({
 
                     const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
 
-                    const { index, side } = autoSelectActionTarget({
+                    const target = autoSelectActionTarget({
                         action,
                         actorId: id,
                         initialSelectedIndex: initialIndex,
@@ -87,9 +87,11 @@ export const checkInduce = ({
                         battle: getState().battle!,
                     });
 
-                    if (typeof index !== "number" || !side) {
+                    if (!target) {
                         return;
                     }
+
+                    const { index, side } = target;
 
                     dispatch(
                         performAction({

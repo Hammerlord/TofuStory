@@ -99,6 +99,6 @@ export const getLastPlayedCards = ({ player, amount = 0 }: { player?: Player | u
     return (player.abilityHistory || [])
         .slice()
         .reverse()
-        .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique)
+        .filter((ability): ability is CombatAbility => "instanceId" in ability && !ability.isUnique)
         .slice(0, amount);
 };

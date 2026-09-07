@@ -55,7 +55,7 @@ export const generateShopInventory = ({
     // Abilities
     const potentialAbilities = getCardPool(player, deck);
 
-    const rolledAbilities = [];
+    const rolledAbilities: Ability[] = [];
     Array.from({ length: NUM_SHOP_ABILITIES }).forEach(() => {
         const selectedRarity = rollRarity({ player });
         const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
@@ -66,20 +66,20 @@ export const generateShopInventory = ({
     });
 
     const abilities = rolledAbilities.map((ability: Ability) => {
-        const priceRangeForRarity: [number, number] = ABILITIES_PRICE_RARITY_MAP[ability.rarity || RARITIES.COMMON] as [number, number];
+        const priceRangeForRarity = ABILITIES_PRICE_RARITY_MAP[ability.rarity || RARITIES.COMMON] as [number, number];
         const price = getRandomInt(...priceRangeForRarity);
         return { price, item: ability };
     });
 
     // Items
-    const itemsRolledForSale = [];
+    const itemsRolledForSale: Item[] = [];
     Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
         const item = getRandomItem(rollItemPool({ player, excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem, hugeMesoItem] }));
         itemsRolledForSale.push(item);
     });
 
     const items = itemsRolledForSale.map((item) => {
-        const priceRangeForRarity: [number, number] = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON];
+        const priceRangeForRarity = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON] as [number, number];
         const price = getRandomInt(...priceRangeForRarity);
         return { price, item, isConsumable: false, isFood: false };
     });

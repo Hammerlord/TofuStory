@@ -602,11 +602,13 @@ const handleSecondaryAction = ({
             battle,
         });
 
-        if (!target.side || target.index === undefined) {
+        if (!target) {
             return;
         }
 
-        const targetId = battle[target.side]?.[target.index]?.id;
+        const { side, index } = target;
+
+        const targetId = battle[side]?.[index]?.id;
         const targetData = findCombatantData(battle, targetId);
         if (!targetData) {
             return [];

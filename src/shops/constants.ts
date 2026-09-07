@@ -15,12 +15,14 @@ export const INCENSE_BASE_PRICE = 100;
 export const SHOP_REFRESH_COST = 50;
 
 export const ABILITIES_PRICE_RARITY_MAP = {
+    [RARITIES.STARTER]: [50, 65],
     [RARITIES.COMMON]: [50, 65],
     [RARITIES.UNCOMMON]: [90, 120],
     [RARITIES.RARE]: [140, 170],
 };
 
 export const ITEMS_PRICE_RARITY_MAP = {
+    [RARITIES.STARTER]: [75, 90],
     [RARITIES.COMMON]: [75, 90],
     [RARITIES.UNCOMMON]: [140, 160],
     [RARITIES.RARE]: [210, 230],
@@ -42,7 +44,6 @@ export type ShopItem = {
     item: Item;
     isConsumable: boolean;
     isFood: boolean;
-    statChanges?;
 };
 
 export type ShopAbility = {

@@ -117,6 +117,10 @@ export const useAbility = ({
                 prevSelection = selection;
             }
 
+            if (!selection) {
+                return;
+            }
+
             const { side, index } = selection;
             if (side === undefined || index === undefined) {
                 return;
