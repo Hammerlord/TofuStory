@@ -1,5 +1,6 @@
 import { Combatant, Player } from "../character/types";
 import { Action, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion } from "./../ability/types";
+import { BASE_MAX_RESOURCES } from "./constants";
 
 export const getMaxHP = (combatant?: Minion | Combatant | null): number => {
     if (!combatant) {
@@ -20,6 +21,15 @@ export const getMaxHP = (combatant?: Minion | Combatant | null): number => {
             return acc + maxHP;
         }, 0)
     );
+};
+
+export const getMaxResources = (combatant: Combatant): number => {
+    if (!combatant) {
+        return 0;
+    }
+
+    const { maxResources: initialMaxResources = BASE_MAX_RESOURCES, effects = [] } = combatant;
+    return effects.reduce((maximum, effect) => maximum + (effect?.maxResources || 0), initialMaxResources);
 };
 
 export const isSilenced = (character: Minion | Combatant | null): boolean => {

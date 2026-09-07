@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { ACTION_TYPES, ANIMATION_TYPES, Ability, CombatAbility, CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../ability/types";
 import { findCombatantData } from "../battle/actions/combatantData";
-import { BATTLE_STATES } from "../battle/reducer";
+import { BATTLE_STATES } from "../battle/states";
 import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";

@@ -1,9 +1,9 @@
 import { AbilityEffect, AbilityEvent, CombatAbility } from "../../../ability/types";
 import { Player } from "../../../character/types";
 import { getRandomItem, passesChance } from "../../../utils";
+import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
 import { ActionContext, BattleState } from "../../types";
-import { findCombatantData } from "../combatantData";
 
 export const prepareForDiscard = ({
     cards,

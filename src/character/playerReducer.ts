@@ -2,12 +2,11 @@ import { getRandomItem } from "./../utils";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { clamp } from "ramda";
 import * as uuid from "uuid";
-import { saveGame } from "../Menu/gameFiles";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { aggregateItemEffects } from "../Menu/utils";
 import { BATTLE_TYPES, Wave } from "../battle/types";
 import { calculateMesoMultiplier, getMaxHP } from "../battle/utils";
-import { getMaxResources } from "../battle/actions/playerAbility";
+import { getMaxResources } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
@@ -365,11 +364,6 @@ export const playerStateSlice = createSlice({
         selectMapNode: (state: CharacterState, action) => {
             const node = action.payload;
 
-            if (node.type === NODE_TYPES.RESTING_ZONE || state.currentMapLocation?.type === NODE_TYPES.TOWN) {
-                saveGame({
-                    ...state,
-                });
-            }
             return {
                 ...state,
                 currentMapLocation: node,
@@ -418,7 +412,6 @@ export const playerStateSlice = createSlice({
                 };
             }
 
-            saveGame(newState);
             return newState;
         },
         updateTownShop: (state: CharacterState, action: PayloadAction<{ town: TOWNS; shopKey: string; shopState: any }>) => {
@@ -440,7 +433,6 @@ export const playerStateSlice = createSlice({
                 },
             };
 
-            saveGame(newState);
             return newState;
         },
         onPurchaseConsumable: (state: CharacterState, action: PayloadAction<string>) => {
@@ -470,7 +462,6 @@ export const playerStateSlice = createSlice({
                 },
             };
 
-            saveGame(newState);
             return newState;
         },
         setNumNormalEncountersSinceLoot: (state: CharacterState, action: PayloadAction<number>) => {

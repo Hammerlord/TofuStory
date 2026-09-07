@@ -15,7 +15,7 @@ import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { PlaybackCollector } from "./playbackCollector";
 import { AppDispatch, RootState } from "../../store";
 
-const { pushEventQueue } = battleStateSlice?.actions || {};
+const { pushEventQueue } = battleStateSlice.actions;
 
 /**
  * A middleware that pushes to event queue while handling playbackCollector

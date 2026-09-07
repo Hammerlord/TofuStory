@@ -9,22 +9,7 @@ import { battleWarnings, MAX_HAND_SIZE } from "./constants";
 import * as uuid from "uuid";
 import { prepareForDiscard } from "./actions/cardActions/utils";
 import { createCombatAbility } from "../ability/createCombatAbility";
-
-/**
- * These signal the phase of a battle and what events to subsequently trigger (after completing animation playback of the current set of actions)
- */
-export enum BATTLE_STATES {
-    BATTLE_START = "battle-start",
-    WAVE_START = "wave-start",
-    TURN_START = "turn-start",
-    TURN_STARTING = "turn-starting",
-    TURN_IN_PROGRESS = "turn-in-progress",
-    TURN_END = "turn-end",
-    TURN_ENDING = "turn-ending",
-    WAVE_END = "wave-end",
-    VICTORY = "victory",
-    DEFEAT = "defeat",
-}
+import { BATTLE_STATES } from "./states";
 
 // Partially to address a weird bug where abilities were duplicated in the hand for some reason
 function dedupeByInstanceId(pile: CombatAbility[]) {

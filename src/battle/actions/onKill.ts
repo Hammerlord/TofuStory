@@ -6,7 +6,7 @@ import { battleStateSlice } from "../reducer";
 import { BattleStatistics } from "../types";
 import { BattleState } from "../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { BATTLE_STATES } from "./../reducer";
+import { BATTLE_STATES } from "./../states";
 import { ActionContext } from "./../types";
 import { findCombatantData, isActorPlayerSide } from "./combatantData";
 import { getUpdatedStats } from "./getUpdatedStats";

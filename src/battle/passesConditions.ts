@@ -12,11 +12,10 @@ import {
     Effect,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { getMaxResources } from "./actions/playerAbility";
+import { findCombatantData } from "./actions/combatantData";
 import { BattleState } from "./types";
 import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "./types";
-import { getMaxHP } from "./utils";
-import { findCombatantData } from "./actions/combatantData";
+import { getMaxHP, getMaxResources } from "./utils";
 
 type GetCombatantCalcTargetFn = (
     targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES

@@ -1,4 +1,4 @@
-import { ACTION_TYPES, Ability, CONDITION_TARGETS, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../../ability/types";
+import { ACTION_TYPES, Ability, CombatAbility, EFFECT_EVENT_KEYS } from "../../../ability/types";
 import { previewAction } from "../../../character/getAbilityPreviews";
 import { Combatant } from "../../../character/types";
 import { ITEM_TYPES, Item } from "../../../item/types";
@@ -6,9 +6,9 @@ import { AppDispatch, RootState } from "../../../store";
 import { getRandomInt } from "../../../utils";
 import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
-import { BATTLE_STATES, battleStateSlice } from "../../reducer";
-import { BattleState } from "../../types";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
+import { battleStateSlice } from "../../reducer";
+import { BATTLE_STATES } from "../../states";
+import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
 import { isStunnedOrFrozen } from "../../utils";
 import { findCombatantData, isTurnActionPrevented, updateCombatant, updateCombatants } from "../combatantData";
 import { performAction } from "../performAction";

@@ -2,11 +2,47 @@ import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
 import { battleStateSlice } from "../reducer";
-import { BattleState } from "../types";
-import { CombatantInfo, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 
 const { updateBattle } = battleStateSlice?.actions || {};
+
+/**
+ * Gets a combatant and details about its position and allies on the battlefield.
+ */
+export const findCombatantData = (
+    battle?: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] },
+    combatantId?: string
+): CombatantInfo | undefined => {
+    if (!battle || !combatantId) {
+        return;
+    }
+
+    const { playerSide, enemySide } = battle;
+    const enemyIndex = enemySide.findIndex((combatant: Combatant | null) => combatant?.id === combatantId);
+    if (enemySide[enemyIndex]) {
+        return {
+            combatant: enemySide[enemyIndex],
+            index: enemyIndex,
+            friendly: enemySide.slice(),
+            hostile: playerSide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        };
+    }
+
+    const index = playerSide.findIndex((combatant: Combatant | null) => combatant?.id === combatantId);
+    if (playerSide[index]) {
+        return {
+            combatant: playerSide[index],
+            index,
+            friendly: playerSide.slice(),
+            hostile: enemySide.slice(),
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        };
+    }
+};
 
 /**
  * Updates a combatant given its ID. This overwrites the combatant.
@@ -33,45 +69,6 @@ export const updateCombatant = ({
             })
         );
     };
-};
-
-/**
- * Helper to get the combatant data and additional details such as what slot index it sits on the board, who its allies and enemies are.
- * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
- */
-
-export const findCombatantData = (
-    battle?: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] },
-    combatantId?: string
-): CombatantInfo | undefined => {
-    if (!battle || !combatantId) {
-        return;
-    }
-
-    const { playerSide, enemySide } = battle;
-    const enemyIndex = enemySide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (enemySide[enemyIndex]) {
-        return {
-            combatant: enemySide[enemyIndex],
-            index: enemyIndex,
-            friendly: enemySide.slice(),
-            hostile: playerSide.slice(),
-            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
-            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
-        };
-    }
-
-    const index = playerSide.findIndex((c: Combatant | null) => c?.id === combatantId);
-    if (playerSide[index]) {
-        return {
-            combatant: playerSide[index],
-            index,
-            friendly: playerSide.slice(),
-            hostile: enemySide.slice(),
-            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
-            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
-        };
-    }
 };
 
 export const updateCombatants = (characters: (Combatant | null)[], updateFn: (character: Combatant) => Combatant): (Combatant | null)[] => {

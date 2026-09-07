@@ -2,14 +2,15 @@ import * as uuid from "uuid";
 import { aggregateAbilityEffects, aggregateItemEffects } from "../../../Menu/utils";
 import { elite, eruptive, raging, thorns, warding } from "../../../ability/Effects";
 import { Ability, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES, Minion } from "../../../ability/types";
-import { playerStateSlice } from "../../../character/playerReducer";
+import { pushBattleHistory, updatePlayer } from "../../../character/actions";
 import { Combatant, Player } from "../../../character/types";
 import { createCombatant } from "../../../enemy/createEnemy";
 import { poisonous, sneaky } from "../../../enemy/effect";
 import { Item } from "../../../item/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BASE_MAX_RESOURCES, BOSS_MUSIC } from "../../constants";
-import { BATTLE_STATES, battleStateSlice } from "../../reducer";
+import { battleStateSlice } from "../../reducer";
+import { BATTLE_STATES } from "../../states";
 import { BattleState } from "../../types";
 import { BATTLE_TYPES, BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
@@ -26,7 +27,6 @@ import { AppDispatch, RootState } from "../../../store";
 import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
-const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
 
 export const onBattleEnd = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {

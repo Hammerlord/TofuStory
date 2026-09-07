@@ -1,10 +1,8 @@
 import { Ability, AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
-import { BASE_MAX_RESOURCES } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BattleState } from "../types";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
+import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
 import { getHandAuraEffects } from "../view/Hand";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { recalculateEffectsFromAbilities } from "./cardActions/drawCards";
@@ -15,6 +13,7 @@ import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { checkValidEnemyNextAbility, checkValidEnemyTargeting } from "./targeting/enemyTargeting";
 import { calculateActionArea } from "./targeting/targeting";
 import { useAbility } from "./useAbility";
+export { getMaxResources } from "../utils";
 
 const { updateBattle, pushEventQueue, selectHandAbility } = battleStateSlice.actions;
 
@@ -103,17 +102,6 @@ export const canUsePlayerAbility = (player: Player | undefined, ability?: Combat
         return acc + (e.resourceCost || 0);
     }, 0);
     return resourceCost + resourceCostFromEffects <= (player.resources || 0);
-};
-
-// We're just going to assume max resource effects always take hold (does not need to pass conditions and cannot be silenced)
-// There is only one example of max resource increase, and it is for the player character only:
-/** @see emerald */
-export const getMaxResources = (character: Combatant): number => {
-    if (!character) {
-        return 0;
-    }
-    const { maxResources: initMaxResources = BASE_MAX_RESOURCES, effects = [] } = character;
-    return effects.reduce((acc, effect) => acc + (effect?.maxResources || 0), initMaxResources);
 };
 
 export const useHandAbility = ({

@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
 import { CLASS_ITEMS, ITEMS } from "../map/routes/eventList";
 import ItemView from "../item/ItemView";
-import { glassShoe, goldenHammer, incense, unsignedLetter } from "../item/items";
+import { ITEM_MASTERLIST } from "../item/masterList";
 import { RARITIES } from "../item/types";
 import { PLAYER_CLASSES } from "../Menu/types";
 
@@ -17,8 +17,6 @@ const useStyles = createUseStyles({
         margin: 16,
     },
 });
-
-export const ITEM_MASTERLIST = [goldenHammer, incense, glassShoe, unsignedLetter, ...ITEMS];
 
 const DevItemViewer = () => {
     const classes = useStyles();

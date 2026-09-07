@@ -4,8 +4,8 @@ import { Ability, Action, CardPileType, CombatAbility, CombatEffect, Effect, Min
 import { Combatant, Player } from "./../character/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { PlaybackCollector } from "./actions/playbackCollector";
-import { BATTLE_STATES } from "./reducer";
-import { EventGroup, TriggerSource, Wave } from "./types";
+import { BATTLE_STATES } from "./states";
+
 export interface BattleNotification {
     id: string; // For rerendering the same message if applicable
     text: string;

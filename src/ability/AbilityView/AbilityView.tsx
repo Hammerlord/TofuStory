@@ -6,7 +6,7 @@ import { findCombatantData } from "../../battle/actions/combatantData";
 import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
-import { BATTLE_STATES } from "../../battle/reducer";
+import { BATTLE_STATES } from "../../battle/states";
 import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
 import { Combatant, Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
