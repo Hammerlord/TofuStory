@@ -499,7 +499,8 @@ const handleOnReceiveAction = ({
 
 const onAction = ({ action, context }: { action: Action; context: ActionContext }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const actorId = context?.sourceChain?.at(-1)?.actorId;
+        const latestSource = context?.sourceChain?.at(-1);
+        const actorId = latestSource?.actorId;
         const combatantData = findCombatantData(getState().battle!, actorId);
         if (!combatantData) {
             return;
@@ -530,13 +531,13 @@ const onAction = ({ action, context }: { action: Action; context: ActionContext 
             }
         }
 
-        const turnHistory = combatant?.turnHistory || [];
+        const turnHistory = combatant.turnHistory || [];
 
         dispatch(
             updateCombatant({
                 combatantId: actorId!,
                 newProperties: {
-                    turnHistory: [...turnHistory, { ...action, parent: context?.sourceChain?.at(-1)?.source }],
+                    turnHistory: [...turnHistory, { ...action, parent: latestSource?.source }],
                 },
             })
         );
@@ -594,7 +595,7 @@ const handleSecondaryAction = ({
             battle,
         });
 
-        if (!target) {
+        if (!target.side || target.index === undefined) {
             return;
         }
 

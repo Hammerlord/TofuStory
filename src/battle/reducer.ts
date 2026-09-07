@@ -93,6 +93,10 @@ function dedupeByInstanceId(pile: CombatAbility[]) {
     const seen = new Set<string>();
 
     return pile.filter((ability) => {
+        if (!ability.instanceId) {
+            return true;
+        }
+
         if (seen.has(ability.instanceId)) {
             return false;
         }
@@ -106,27 +110,31 @@ const initialState: BattleState | null = null as BattleState | null;
 
 export const battleStateSlice = createSlice({
     name: "battle",
-    initialState,
+    initialState: initialState as BattleState | null,
     reducers: {
-        promptPlayerSelectCards: (state: BattleState | null, action: PayloadAction<PlayerSelectCardsPrompt>) => {
+        promptPlayerSelectCards: (state, action: PayloadAction<PlayerSelectCardsPrompt>) => {
+            if (!state) return state;
             return {
                 ...state,
                 selectCardsPrompt: action.payload,
             };
         },
         closePlayerSelectCardsPrompt: (state) => {
+            if (!state) return state;
             return {
                 ...state,
                 selectCardsPrompt: null,
             };
         },
-        updateBattle: (state, action: PayloadAction<object>) => {
+        updateBattle: (state, action: PayloadAction<Partial<BattleState>>) => {
+            if (!state) return state;
             return {
                 ...state,
                 ...action.payload,
             };
         },
         pushEventQueue: (state, action: PayloadAction<EventGroup | EventGroup[]>) => {
+            if (!state) return state;
             let payload = action.payload;
             if (!Array.isArray(payload)) {
                 payload = [payload];
@@ -159,7 +167,8 @@ export const battleStateSlice = createSlice({
                 state: action.payload,
             };
         },
-        useConsumable: (state: BattleState, action: PayloadAction<Item>) => {
+        useConsumable: (state, action: PayloadAction<Item>) => {
+            if (!state) return state;
             const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             return {
@@ -177,7 +186,7 @@ export const battleStateSlice = createSlice({
                             if (item.name === name) {
                                 return {
                                     ...item,
-                                    stacks: item.stacks - 1,
+                                    stacks: (item.stacks ?? 1) - 1,
                                 };
                             }
 
@@ -185,22 +194,25 @@ export const battleStateSlice = createSlice({
                         });
                     }
 
+                    const maxResources = combatant.maxResources ?? 0;
                     return {
                         ...combatant,
                         HP: Math.min(getMaxHP(combatant), combatant.HP + healing),
-                        resources: Math.min(combatant.maxResources, combatant.resources + resources),
+                        resources: Math.min(maxResources, (combatant.resources ?? 0) + resources),
                         items: updatedItems,
                     };
                 }),
             };
         },
         setNotification: (state, action: PayloadAction<Notification>) => {
+            if (!state) return state;
             return {
                 ...state,
                 notification: action.payload,
             };
         },
         selectHandAbility: (state, action: PayloadAction<string | null>) => {
+            if (!state) return state;
             return {
                 ...state,
                 selectedAllyId: null,
@@ -208,13 +220,15 @@ export const battleStateSlice = createSlice({
             };
         },
         selectAlly: (state, action: PayloadAction<string | null>) => {
+            if (!state) return state;
             return {
                 ...state,
                 selectedAllyId: action.payload,
                 selectedHandAbilityId: null,
             };
         },
-        addCardsToHand: (state: BattleState, action: PayloadAction<CombatAbility[]>) => {
+        addCardsToHand: (state, action: PayloadAction<CombatAbility[]>) => {
+            if (!state) return state;
             const newCards = action.payload.slice().map((card) => ({ ...card, instanceId: card.instanceId || uuid.v4() }));
             let newHand: CombatAbility[] = dedupeByInstanceId([...newCards, ...state.hand]);
             const newDiscard = state.discard.slice();

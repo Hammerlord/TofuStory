@@ -333,7 +333,7 @@ const generateElite = ({
     return [null, null, enemy, null, null];
 };
 
-export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] => {
+export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] | undefined => {
     if (!route) {
         return;
     }
@@ -345,14 +345,14 @@ export const generateElites = (route: Route, previousEncounters: Wave[][]): { en
     const getSingle = () => generateElite(eliteProps);
 
     const eliteGenerators = [getSquad, getTriad, getDuo, getSingle];
-
-    if (route.elites.special?.length > 0) {
+    const special = route.elites?.special || [];
+    if (special?.length > 0) {
         eliteGenerators.push(() => {
-            const eligibleEnemies = route.elites.special.filter((enemySet: (Minion | null)[]) => {
+            const eligibleEnemies = special.filter((enemySet: (Minion | null)[]) => {
                 const recentEnemyLog = getRecentEnemies(previousEncounters);
                 return enemySet.every((enemy) => !enemy || !recentEnemyLog[enemy.name]);
             });
-            return getRandomItem(eligibleEnemies.length ? eligibleEnemies : route.elites.special);
+            return getRandomItem(eligibleEnemies.length ? eligibleEnemies : special);
         });
     }
 
@@ -370,11 +370,11 @@ export const generateWaves = ({
 }): Wave[] => {
     const numWaves = getRandomItem([1, 2]);
 
-    const waves = [];
+    const waves: Wave[] = [];
     const baseEnemyPool: Minion[][] =
         numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
 
-    let enemyPool = baseEnemyPool.slice();
+    let enemyPool: Minion[][] = baseEnemyPool.slice();
 
     const lastThreeBattles = previousEncounters.slice().reverse().slice(0, 3);
     const getNames = (characters: (Minion | null)[]) => JSON.stringify(characters.map((e) => e?.name)); // Quick and dirty way to identify the board enemy side.
@@ -402,44 +402,46 @@ export const generateWaves = ({
                 enemyPool.push(candidates);
                 generateEnemies();
                 --retries;
-            } else {
-                if (Math.random() <= CHANCE_TO_SPAWN_SPECIAL_ENEMY && route.specialEnemies?.length) {
-                    const numSpecial = getRandomItem([1, 1, 2, 2, 3, 4, 5]);
+                return;
+            }
 
-                    const isNotSpecialEnemy = (c: Minion | null): boolean => {
-                        return !c || route.specialEnemies.every((e) => e.name !== c.name);
+            const special = route.specialEnemies || [];
+            if (Math.random() <= CHANCE_TO_SPAWN_SPECIAL_ENEMY && special.length) {
+                const numSpecial = getRandomItem([1, 1, 2, 2, 3, 4, 5]);
+
+                const isNotSpecialEnemy = (c: Minion | null): boolean => {
+                    return !c || special.every((e) => e.name !== c.name);
+                };
+
+                Array.from({ length: numSpecial }).forEach((_) => {
+                    const specialEnemy = getRandomItem(special);
+
+                    const [nonemptySlots, emptySlots] = partition(
+                        ([c]) => Boolean(c),
+                        candidates.map((c, i) => [c, i])
+                    );
+
+                    const rollResourceAmount = () => {
+                        return getRandomItem([0, 1, 2]);
                     };
 
-                    Array.from({ length: numSpecial }).forEach((_) => {
-                        const specialEnemy = getRandomItem(route.specialEnemies);
+                    const emptyIndices: number[] = emptySlots.map(([, i]) => i).filter((i: number) => isNotSpecialEnemy(candidates[i]));
+                    if (emptyIndices.length > 0) {
+                        const emptySlot: number = getRandomItem(emptyIndices);
+                        candidates[emptySlot] = { ...specialEnemy, resources: rollResourceAmount() };
+                        return;
+                    }
 
-                        const [nonemptySlots, emptySlots] = partition(
-                            ([c]) => Boolean(c),
-                            candidates.map((c, i) => [c, i])
-                        );
-
-                        const rollResourceAmount = () => {
-                            return getRandomItem([0, 1, 2]);
-                        };
-
-                        const emptyIndices: number[] = emptySlots.map(([, i]) => i).filter((i: number) => isNotSpecialEnemy(candidates[i]));
-                        if (emptyIndices.length > 0) {
-                            const emptySlot: number = getRandomItem(emptyIndices);
-                            candidates[emptySlot] = { ...specialEnemy, resources: rollResourceAmount() };
-                            return;
-                        }
-
-                        const nonemptyIndices: number[] = nonemptySlots
-                            .map(([, i]) => i)
-                            .filter((i: number) => isNotSpecialEnemy(candidates[i]));
-                        if (nonemptyIndices.length) {
-                            const occupiedSlot: number = getRandomItem(nonemptyIndices);
-                            candidates[occupiedSlot] = { ...specialEnemy, resources: rollResourceAmount() };
-                        }
-                    });
-                }
-                waves.push({ enemies: candidates });
+                    const nonemptyIndices: number[] = nonemptySlots
+                        .map(([, i]) => i)
+                        .filter((i: number) => isNotSpecialEnemy(candidates[i]));
+                    if (nonemptyIndices.length) {
+                        const occupiedSlot: number = getRandomItem(nonemptyIndices);
+                        candidates[occupiedSlot] = { ...specialEnemy, resources: rollResourceAmount() };
+                    }
+                });
             }
+            waves.push({ enemies: candidates });
         };
         generateEnemies();
     }

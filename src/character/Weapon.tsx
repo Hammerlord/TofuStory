@@ -180,15 +180,15 @@ const Weapon = ({
     const weaponAnimationOptions = action?.animationOptions?.weapon || {};
 
     const battle = useAppSelector((state) => state?.battle);
-    const wielderInfo = findCombatantData(battle, wielder?.id);
-    const context: ActionContext = { name: "Weapon View", sourceChain: [source] };
+    const wielderInfo = battle ? findCombatantData(battle, wielder?.id) : { combatant: wielder };
+    const context: ActionContext = { name: "Weapon View", sourceChain: source ? [source] : [] };
     const totalArea = battle
         ? calculateActionArea({
               action: action,
               actor: wielderInfo,
               context,
           })
-        : area;
+        : area || 0;
     const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !totalArea;
     const isRotateWeaponToFaceTarget = weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
 

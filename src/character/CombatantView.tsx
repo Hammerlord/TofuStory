@@ -236,7 +236,7 @@ const useStyles = createUseStyles({
         filter: "brightness(0.25)",
         opacity: 1,
     },
-    weaponContainer: (combatant: Combatant) => {
+    weaponContainer: (combatant: Combatant | undefined | null) => {
         const { left, top } = combatant?.weaponImageOptions || {};
         return {
             position: "absolute",
@@ -337,7 +337,7 @@ const CombatantView = ({
     enemySideRefs: RefObject<HTMLElement>[];
     playerSideRefs: RefObject<HTMLElement>[];
     isHoveringCombatant?: boolean; // If any Combatant is being hovered, not just this one
-    onMouseEnter?: (combatant: Combatant | null, index: number) => void;
+    onMouseEnter?: (combatant: Combatant | null | undefined, index: number) => void;
     onMouseDown?: (event: React.MouseEvent, index: number) => void;
     onMouseLeave?: (event: any) => void;
     characterRef: RefObject<HTMLDivElement>;
@@ -355,35 +355,37 @@ const CombatantView = ({
         combatant?.effects.reduce((acc, e: CombatEffect) => {
             return { ...acc, ...e.portraitAnimationOptions }; // The last effect applied wins for all animation options
         }, {}) || {};
+
     // Tricky: Overwrite combatant with the parameter one, as it is the event queue combatant whose health will appear to update as it gets hit.
     // The one from findCombatantData is the end result combatant, when all the events in the queue have finished playing out.
     const combatantInfo = {
-        ...findCombatantData(battle, combatant?.id),
+        ...findCombatantData(battle!, combatant?.id),
         combatant,
     };
+
     const weaponRef = useRef(null);
     const characterImageRef = useRef(null);
 
     const eventStatChanges: UpdatedCombatantStats = currentEventGroup?.statUpdates?.[combatant?.id];
-    const isDeathBlow = eventStatChanges?.isDeathBlow;
+    const isDeathBlow = Boolean(eventStatChanges?.isDeathBlow);
     // We want the damage number etc. to appear only at the (approximate) time that character is hit by the attack
     const hitPlaybackDelay = currentEventGroup?.playbackTime ? currentEventGroup?.playbackTime / 2 : 500;
 
     useEffect(() => {
         const callback = () => {
-            if (characterImageRef.current) {
-                const isKillingBlow = isDeathBlow && !isLifeLinked;
-                if (isKillingBlow && !willPerformActions) {
-                    playDyingAnimation({ object: characterImageRef.current });
-                } else if (
-                    eventStatChanges?.healthDamage > 0 ||
-                    eventStatChanges?.effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)
-                ) {
-                    const baseDelta = Math.min(100, eventStatChanges?.healthDamage) || 1;
-                    // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
-                    const delta = isEnemy ? baseDelta : -baseDelta;
-                    playHitAnimation({ object: characterImageRef.current, delta });
-                }
+            if (!characterImageRef.current) {
+                return;
+            }
+
+            const { healthDamage = 0, effects = [] } = eventStatChanges || {};
+            const isKillingBlow = isDeathBlow && !isLifeLinked;
+            if (isKillingBlow && !willPerformActions) {
+                playDyingAnimation({ object: characterImageRef.current });
+            } else if (healthDamage > 0 || effects?.some((e: CombatEffect) => e.class === EFFECT_CLASSES.DEBUFF)) {
+                const baseDelta = Math.min(100, healthDamage) || 1;
+                // Reverse direction: eg. if an ally was hit, the animation should push it in a downward direction first.
+                const delta = isEnemy ? baseDelta : -baseDelta;
+                playHitAnimation({ object: characterImageRef.current, delta });
             }
         };
 
@@ -392,7 +394,11 @@ const CombatantView = ({
     }, [combatant, currentEventGroup?.id]);
 
     const hasStatusEffect = (type: EFFECT_TYPES): boolean => {
-        return combatant?.effects?.some((effect) => effect.type === type);
+        if (!combatant) {
+            return false;
+        }
+
+        return combatant.effects.some((effect) => effect.type === type);
     };
 
     const event = (currentEventGroup?.events || []).find((e) => e.actorId === combatant?.id);
@@ -409,22 +415,24 @@ const CombatantView = ({
     }
     const { animation, type: actionType, animationOptions } = action || {};
     const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
-    const showResourceBar = combatant?.abilities?.some(({ resourceCost }) => resourceCost === "x" || resourceCost > 0);
+    const showResourceBar = combatant?.abilities?.some(({ resourceCost = 0 }) => resourceCost === "x" || resourceCost > 0);
     const isApplyingEffect =
         ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(animation) &&
         (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
     const { animation: portraitAnimation, fadeInOut } = combatant?.imageOptions || {};
 
+    const hasHP = combatant?.HP || 0 > 0;
+
     const imageProps = {
         className: classNames("portrait", classes.portraitImage, {
             [classes.invisible]: currentEventGroup?.newCombatants?.some((c) => c.id === combatant?.id),
-            [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && combatant?.HP > 0,
+            [classes.fadeInOut]: (fadeInOut || fadeInOutFromEffect) && hasHP,
             [classes.float]: portraitAnimation === "float",
             [classes.poisoned]: hasStatusEffect(EFFECT_TYPES.POISON),
             [classes.dead]: !action && combatant?.HP === 0 && !willPerformActions && !isDeathBlow,
             [classes.applyingEffect]: isApplyingEffect,
             [classes.casting]: combatant?.casting && !(fadeInOut || fadeInOutFromEffect),
-            [classes.stasis]: combatant?.HP <= 0 && isLifeLinked,
+            [classes.stasis]: !hasHP && isLifeLinked,
         }),
         style: {
             animationDuration: `${(currentEventGroup?.playbackTime || 1000) / 1000}s`,
@@ -432,7 +440,7 @@ const CombatantView = ({
         ref: characterImageRef,
     };
 
-    const getCharacterImageNode = (props, key: string | number) => {
+    const getCharacterImageNode = (props: { style: object; className: string }, key?: string | number) => {
         const portrait = combatant?.effects?.find(({ override }) => override?.portrait)?.override?.portrait || combatant?.image;
         const { filter } =
             combatant?.imageOptions ||
@@ -467,10 +475,14 @@ const CombatantView = ({
     }
 
     const getExtraContainerIcons = (side: "left" | "right") => {
-        const extraEffects = combatant?.effects.filter((e) => e.extraDisplayOptions?.container === side) || [];
+        if (!combatant) {
+            return;
+        }
+
+        const extraEffects = combatant.effects.filter((e) => e.extraDisplayOptions?.container === side);
         return extraEffects.map((effect: CombatEffect) => {
             const shouldGlow = effect.id === (actionParent as CombatEffect)?.id;
-            return <EffectGroupIcon effects={[effect]} owner={combatant} key={effect.id} glow={shouldGlow} />;
+            return <EffectGroupIcon effects={[effect]} owner={combatant!} key={effect.id} glow={shouldGlow} />;
         });
     };
 
@@ -502,7 +514,8 @@ const CombatantView = ({
         [onMouseDown, index]
     );
 
-    const showCombatant = combatant?.HP > 0 || isLifeLinked || isDeathBlow;
+    const showCombatant = hasHP || isLifeLinked || isDeathBlow;
+    const showHeader = hasHP && (isEnemy || (combatant?.abilities || []).length > 1);
 
     useEntranceAnimation({ currentEventGroup, combatantId: combatant?.id, characterRef });
 
@@ -523,10 +536,10 @@ const CombatantView = ({
                     </span>
                 )}
 
-                {combatant?.HP > 0 && (isEnemy || combatant?.abilities?.length > 1) && (
+                {showHeader && (
                     <div className={classes.header}>
                         <Telegraph combatantInfo={combatantInfo} isEnemy={isEnemy} />
-                        {showResourceBar && <ResourceBar resources={combatant.resources} maxResources={combatant.maxResources} />}
+                        {showResourceBar && <ResourceBar resources={combatant!.resources} maxResources={combatant!.maxResources} />}
                     </div>
                 )}
                 <div className={classes.combatantContainer} ref={weaponRef}>
@@ -553,7 +566,7 @@ const CombatantView = ({
                                             i
                                         )
                                     )}
-                                {combatant.HP > 0 && (
+                                {hasHP && (
                                     <div
                                         className={classNames(classes.weaponContainer, {
                                             [classes.applyingEffect]: isApplyingEffect,
@@ -569,7 +582,7 @@ const CombatantView = ({
                                         />
                                     </div>
                                 )}
-                                {(combatant.HP > 0 || isLifeLinked) && (
+                                {(hasHP || isLifeLinked) && (
                                     <PortraitStatusEffects combatantInfo={combatantInfo} statChanges={eventStatChanges} />
                                 )}
                                 {animationOptions?.portraitEffectImage && getPortraitEffectNode()}
@@ -590,21 +603,18 @@ const CombatantView = ({
                     {showCombatant && (
                         <>
                             {!isTargeted && !selectedAbility && !currentEventGroup?.id && (
-                                <CombatantTooltip combatant={combatant} isEnemy={isEnemy} index={index} />
+                                <CombatantTooltip combatant={combatant!} isEnemy={isEnemy} index={index} />
                             )}
                             <div className={classes.leftContainer}>
                                 {getExtraContainerIcons("left")}
-                                <Armor amount={combatant.armor} combatantInfo={combatantInfo} />
+                                <Armor amount={combatant!.armor} combatantInfo={combatantInfo} />
                                 <Health combatantInfo={combatantInfo} />
                             </div>
 
                             <div className={classes.rightContainer}>
                                 {getExtraContainerIcons("right")}
                                 <AttackPower combatantInfo={combatantInfo} isEnemy={isEnemy} />
-                                {/** Update resources immediately as skills are used: UX issue where lagging resource feedback misleads people into thinking they have more/less resources */}
-                                {combatant?.isPlayer && (
-                                    <PlayerResources player={findCombatantData(battle, combatant?.id)?.combatant as Player} />
-                                )}
+                                {combatant?.isPlayer && <PlayerResources player={combatant as Player} />}
                             </div>
                             {animation === ANIMATION_TYPES.SNOOZE && <Icon icon={<ZzzIcon />} size="xl" className={classes.actionIcon} />}
                         </>
@@ -612,30 +622,30 @@ const CombatantView = ({
                 </div>
                 {showCombatant && (
                     <div className={classes.effectsContainer}>
-                        <EffectIconsContainer isSilenced={isSilenced} combatant={combatant} event={event} />
+                        <EffectIconsContainer isSilenced={isSilenced} combatant={combatant!} event={event} />
                     </div>
                 )}
             </div>
             {showIncomingDamagePreview && (
                 <AbilityPreview
                     previewStatUpdate={[previewTargetedBy]}
-                    combatant={combatant}
+                    combatant={combatant!}
                     isEnemy={true}
                     className={classes.previewAttacked}
                 />
             )}
-            {combatant?.HP > 0 && (
+            {hasHP && previewStatUpdate && (
                 <AbilityPreview
                     previewStatUpdate={previewStatUpdate}
-                    combatant={combatant}
+                    combatant={combatant!}
                     isEnemy={isEnemy}
                     mode={isHoveringCombatant ? "default" : "discreet"}
                 />
             )}
             {showReticle && <Reticle className={classes.reticle} color={reticleColor} />}
-            {combatant?.HP > 0 && (
+            {hasHP && (
                 <div className={classes.statusEffectAnnouncerContainer}>
-                    <StatusEffectAnnouncer statChanges={eventStatChanges} combatant={combatant} delay={hitPlaybackDelay} />
+                    <StatusEffectAnnouncer statChanges={eventStatChanges} combatant={combatant!} delay={hitPlaybackDelay} />
                 </div>
             )}
         </div>

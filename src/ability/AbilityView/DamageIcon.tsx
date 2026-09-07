@@ -27,6 +27,7 @@ export const getDamageStatistics = ({
     discard = [],
 }: {
     ability: CombatAbility;
+    // If we are out of combat, we don't have index, etc.
     actorInfo: Partial<CombatantInfo>;
     hand?: CombatAbility[];
     deck?: CombatAbility[];

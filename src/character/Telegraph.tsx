@@ -4,7 +4,7 @@ import { createUseStyles } from "react-jss";
 import { AreaIndicator } from "../ability/AbilityView/AreaView";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, TARGET_TYPES } from "../ability/types";
+import { ACTION_TYPES, Ability, Action, TARGET_TYPES } from "../ability/types";
 import { getUseAbilityIndex } from "../battle/actions/phases/enemyTurn";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/actions/combatantData";
@@ -173,21 +173,24 @@ export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?
  */
 const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; isEnemy: boolean }) => {
     const classes = useStyles();
-    const battle = useAppSelector((state) => state.battle);
+    const playerSide = useAppSelector((state) => state.battle?.playerSide);
+    const enemySide = useAppSelector((state) => state.battle?.enemySide);
+    const battle = { playerSide, enemySide };
+    const isPlayerTurn = useAppSelector((state) => state.battle?.isPlayerTurn);
     const { combatant } = combatantInfo || {};
 
-    if (!combatant || combatant.isPlayer || !battle.isPlayerTurn || combatant.cantMove) {
+    if (!combatant || combatant.isPlayer || !isPlayerTurn || combatant.cantMove) {
         return null;
     }
 
     let ability;
-    let channelDuration: number | undefined;
+    let channelDuration: number = 0;
     let castingCastTime: number | undefined;
     if (isEnemy) {
         ability = combatant.targeting?.ability;
         const casting = combatant?.casting;
         if (casting) {
-            channelDuration = casting.channelDuration;
+            channelDuration = casting.channelDuration || 0;
             castingCastTime = casting.castTime;
         }
     } else {
@@ -270,13 +273,7 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
         );
     };
 
-    const area = ability.actions.reduce((acc, action) => {
-        if (action.area > acc) {
-            return action.area;
-        }
-
-        return acc;
-    }, 0);
+    const area = Math.max(0, ...ability.actions.map((a) => a.area ?? 0));
 
     return (
         <div className={classes.root}>

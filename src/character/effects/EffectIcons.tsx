@@ -31,8 +31,8 @@ const useStyles = createUseStyles({
     },
 });
 
-export const getEffectGroups = (effects: CombatEffect[]) => {
-    const map = effects.reduce((acc, effect: Effect) => {
+export const getEffectGroups = (effects: CombatEffect[]): CombatEffect[][] => {
+    const map = effects.reduce((acc, effect: CombatEffect) => {
         const { name, type, disableDisplayIcon, icon } = effect;
         if (disableDisplayIcon || !icon) {
             return acc;
@@ -43,14 +43,23 @@ export const getEffectGroups = (effects: CombatEffect[]) => {
             ...acc,
             [key]: [...(acc[key] || []), effect],
         };
-    }, {});
+    }, {} as {[key: string]: CombatEffect[]});
+
     return Object.values(map);
 };
 
 /**
  * Status effect icons to display below the combatant portrait
  */
-const EffectIconsContainer = ({ combatant, isSilenced, event }: { combatant: Combatant | Player; isSilenced: boolean; event: Event }) => {
+const EffectIconsContainer = ({
+    combatant,
+    isSilenced,
+    event,
+}: {
+    combatant: Combatant | Player;
+    isSilenced: boolean;
+    event?: Event | undefined;
+}) => {
     const classes = useStyles();
     if (!combatant?.effects) {
         return null;

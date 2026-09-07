@@ -43,7 +43,10 @@ export const updateCombatant = ({
  * @returns {CombatantInfo|undefined} - Undefined if combatant associated to the UUID not found on the board
  */
 
-export const findCombatantData = (battle: BattleState, combatantId?: string): CombatantInfo | undefined => {
+export const findCombatantData = (
+    battle?: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] },
+    combatantId?: string
+): CombatantInfo | undefined => {
     if (!battle || !combatantId) {
         return;
     }

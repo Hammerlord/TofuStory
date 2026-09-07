@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Action, Effect } from "../ability/types";
+import { ACTION_TYPES, Ability, Action, Effect } from "../ability/types";
 import { DAMAGE_COEFF } from "../battle/constants";
 import { CombatantInfo } from "../battle/types";
 import { isTurnActionPrevented } from "../battle/actions/combatantData";
@@ -47,14 +47,14 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     const { combatant } = combatantInfo || {};
 
     const { HP, effects = [], casting, targeting, cantMove } = combatant || {};
-    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
-    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
+    const selectedAlly: string | null | undefined = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
+    const selectedAbility: string | null | undefined = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
 
     if (!HP || cantMove) {
         return null;
     }
 
-    let abilityToUse;
+    let abilityToUse: Ability | undefined;
     if (isEnemy) {
         abilityToUse = casting?.ability || targeting?.ability;
     } else if (!combatantInfo?.combatant.isPlayer) {
@@ -66,7 +66,7 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     const defaultActionStats = { damage: 0, timesToAttack: 0 };
     const { damage, timesToAttack } =
         abilityToUse?.actions.reduce((acc, action: Action) => {
-            const isAttack = [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
+            const isAttack = action.type && [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
             if (isAttack) {
                 ++timesToAttack;

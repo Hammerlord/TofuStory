@@ -1184,7 +1184,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                 combatant={ally}
                                                 isEnemy={false}
                                                 onMouseDown={handleAllyClick}
-                                                isSelected={selectedAllyId && selectedAllyId === ally?.id}
+                                                isSelected={Boolean(selectedAllyId && selectedAllyId === ally?.id)}
                                                 onMouseEnter={handleAllyMouseEnter}
                                                 onMouseLeave={handleCombatantMouseLeave}
                                                 isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}

@@ -148,7 +148,7 @@ export const calculateDamage = ({
     return Math.max(minimumDamage, Math.ceil(total));
 };
 
-export const getSkillBonusDamage = ({ ability, skillBonus }: { ability: Ability | Item; skillBonus: SkillBonus[] }) => {
+export const getSkillBonusDamage = ({ ability, skillBonus }: { ability?: Ability | Item; skillBonus?: SkillBonus[] }) => {
     if (!skillBonus || !ability) {
         return 0;
     }
