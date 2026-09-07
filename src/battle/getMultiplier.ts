@@ -1,23 +1,21 @@
 import _ from "lodash";
+import { isAttackAction, isOffensiveAbility } from "../ability/AbilityView/utils";
 import {
-    Ability,
-    Multiplier,
-    CONDITION_TARGETS,
-    MULTIPLIER_TYPES,
-    CombatEffect,
-    ACTION_TYPES,
-    EFFECT_CLASSES,
     Action,
+    ACTION_TYPES,
     CombatAbility,
+    CombatEffect,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    Multiplier,
+    MULTIPLIER_TYPES,
 } from "../ability/types";
-import { Item } from "../item/types";
+import { Combatant } from "../character/types";
+import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
+import { calculateDamage } from "./calculateDamage";
 import { passesValueComparison } from "./passesConditions";
 import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
-import { calculateDamage } from "./calculateDamage";
-import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
-import { isOffensiveAbility, isAttackAction } from "../ability/AbilityView/utils";
-import { Combatant } from "../character/types";
 
 export const getMultiplier = ({
     actor,
@@ -223,7 +221,7 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND) {
-        return calculateAttackDamageInHand({ hand, actor: combatantInfo, actionParent: source?.source });
+        return calculateAttackDamageInHand({ hand, deck, discard, actor: combatantInfo, actionParent: source?.source });
     }
 
     if (type === MULTIPLIER_TYPES.MISSING_HP) {
@@ -241,10 +239,14 @@ export const getMultiplier = ({
 
 const calculateAttackDamageInHand = ({
     hand,
+    deck,
+    discard,
     actor,
     actionParent,
 }: {
     hand: CombatAbility[];
+    deck: CombatAbility[];
+    discard: CombatAbility[];
     actor: CombatantInfo | NonCombatPlayerInfo;
     actionParent?: ActionParent;
 }): number => {
@@ -267,6 +269,9 @@ const calculateAttackDamageInHand = ({
                     action,
                     actionParent: card,
                     context,
+                    hand,
+                    deck,
+                    discard,
                 });
                 damage += actionDamage;
             }

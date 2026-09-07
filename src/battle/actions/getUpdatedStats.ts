@@ -127,6 +127,9 @@ export const getUpdatedStats = ({
                 actionParent,
                 multiplier,
                 context,
+                hand,
+                deck,
+                discard
             });
         }
 

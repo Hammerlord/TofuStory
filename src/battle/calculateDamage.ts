@@ -26,6 +26,9 @@ export const calculateDamage = ({
     actionParent,
     multiplier = 1,
     context,
+    hand,
+    deck,
+    discard,
 }: {
     actor?: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
@@ -35,6 +38,9 @@ export const calculateDamage = ({
     actionParent?: ActionParent; // TODO can this just be from `source` (source.source should probably be equivalent to this object) instead of having this separate param?
     multiplier?: number;
     context?: ActionContext;
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
 }): number => {
     const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
     if (action.damage === undefined && !isAttack) {
@@ -89,10 +95,9 @@ export const calculateDamage = ({
                 target,
                 allTargets: [target],
                 multiplier: multiplierConfig,
-                // TODO needs access to deck, hand, discard for multiplier to work for those.
-                deck: [],
-                hand: [],
-                discard: [],
+                hand,
+                deck,
+                discard,
             });
 
             totalSkillBonus += getSkillBonusDamage({ ability: actionParent as CombatAbility, skillBonus }) * stacks;
