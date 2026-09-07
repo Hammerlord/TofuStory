@@ -1,7 +1,7 @@
 import { CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
 import { passesConditions } from "../../passesConditions";
 import { BattleState } from "../../types";
-import { ActionContext, CombatantInfo, NonCombatCharacterInfo } from "../../types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo } from "../../types";
 import { isSilenced } from "../../utils";
 import { findCombatantData } from "../combatantData";
 import { isTurnToTrigger } from "./effectLifecycle";
@@ -15,7 +15,7 @@ export const getEnabledEffects = ({
     battle,
     context,
 }: {
-    combatantInfo?: NonCombatCharacterInfo | CombatantInfo;
+    combatantInfo?: NonCombatPlayerInfo | CombatantInfo;
     battle?: BattleState | null;
     context?: ActionContext;
 }): CombatEffect[] => {

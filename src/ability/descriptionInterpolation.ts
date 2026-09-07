@@ -1,7 +1,7 @@
 import Handlebars from "handlebars";
 import { cloneDeep } from "lodash";
 import { getMultiplier } from "../battle/getMultiplier";
-import { CombatantInfo, NonCombatCharacterInfo } from "../battle/types";
+import { CombatantInfo, NonCombatPlayerInfo } from "../battle/types";
 import { Combatant, Player } from "../character/types";
 import {
     BloodEmojiImage,
@@ -128,7 +128,7 @@ export const interpolateAbilityDescription = ({
     discard,
 }: {
     ability: CombatAbility | Ability;
-    playerInfo: CombatantInfo | NonCombatCharacterInfo;
+    playerInfo: CombatantInfo | NonCombatPlayerInfo;
     deck: CombatAbility[];
     hand: CombatAbility[];
     discard: CombatAbility[];

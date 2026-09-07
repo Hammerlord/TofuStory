@@ -114,7 +114,7 @@ export const classMap = {
 
 export const playerStateSlice = createSlice({
     name: "player",
-    initialState: INITIAL_STATE,
+    initialState: INITIAL_STATE as CharacterState,
     reducers: {
         incrementEncounterTypeWon: (state: CharacterState, action: PayloadAction<BATTLE_TYPES>) => {
             return {

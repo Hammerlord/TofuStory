@@ -46,6 +46,7 @@ export const getMultiplier = ({
 
     const combatantInfo = multiplier.calculationTarget === CONDITION_TARGETS.ACTOR ? actor : target;
 
+    // @ts-ignore
     const { combatant, friendly = [] } = combatantInfo || {};
 
     const { value, type, filters, filterUnique, filterOutProcs } = multiplier;
@@ -247,7 +248,7 @@ const calculateAttackDamageInHand = ({
     hand: CombatAbility[];
     deck: CombatAbility[];
     discard: CombatAbility[];
-    actor: CombatantInfo | NonCombatPlayerInfo;
+    actor?: CombatantInfo | NonCombatPlayerInfo;
     actionParent?: ActionParent;
 }): number => {
     let damage = 0;

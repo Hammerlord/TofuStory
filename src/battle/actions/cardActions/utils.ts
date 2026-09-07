@@ -91,16 +91,9 @@ export const applyAbilityEventEffects = ({
     const effects = [...(ability.effects || [])];
 
     effectsToApply.forEach((e: AbilityEffect) => {
-        const countMap = effects.reduce((acc, e: AbilityEffect) => {
-            if (e.name) {
-                acc[e.name] = (acc[e.name] || 0) + 1;
-            }
-
-            return acc;
-        }, {});
-
         const { name, maxApplications } = e;
-        if (!maxApplications || !countMap[name] || countMap[name] < maxApplications) {
+        const applicationCount = effects.filter((effect) => effect.name === name).length;
+        if (!maxApplications || applicationCount < maxApplications) {
             effects.push(e);
         }
     });

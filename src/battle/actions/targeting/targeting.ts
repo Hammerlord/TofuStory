@@ -4,7 +4,7 @@ import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TR
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BattleState } from "../../types";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatCharacterInfo, TriggerSource } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
@@ -392,7 +392,7 @@ export const calculateActionArea = ({
     battle,
 }: {
     action?: Action;
-    actor: CombatantInfo | NonCombatCharacterInfo;
+    actor: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
     context?: ActionContext;
     battle?: BattleState | null;
@@ -411,7 +411,8 @@ export const calculateActionArea = ({
         if (action.bonus) {
             const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
             bonuses.forEach((bonus) => {
-                if (bonus.area && passesConditions({ actor, target, allTargets: [target], proc: bonus, context, battle })) {
+                const allTargets = target ? [target] : [];
+                if (bonus.area && passesConditions({ actor, target, allTargets, proc: bonus, context, battle })) {
                     totalArea += bonus.area;
                 }
             });

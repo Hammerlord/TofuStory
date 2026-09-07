@@ -12,12 +12,13 @@ import {
     Effect,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { ActionContext, BattleState, CombatantInfo, NonCombatCharacterInfo, TRIGGER_SOURCE_TYPES } from "./types";
+import { ActionContext, BattleState, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
+import { Combatant } from "../character/types";
 
 type GetCombatantCalcTargetFn = (
     targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
-) => CombatantInfo | CombatantInfo[] | NonCombatCharacterInfo | NonCombatCharacterInfo[] | undefined;
+) => CombatantInfo | CombatantInfo[] | NonCombatPlayerInfo | NonCombatPlayerInfo[] | undefined;
 
 export const passesValueComparison = ({
     val,
@@ -82,11 +83,11 @@ export const passesConditions = ({
     battle,
     context,
 }: {
-    effectApplier?: NonCombatCharacterInfo | CombatantInfo;
-    effectOwner?: NonCombatCharacterInfo | NonCombatCharacterInfo[] | CombatantInfo | CombatantInfo[];
-    actor?: NonCombatCharacterInfo | CombatantInfo;
-    target?: NonCombatCharacterInfo | CombatantInfo;
-    allTargets?: NonCombatCharacterInfo[] | CombatantInfo[];
+    effectApplier?: NonCombatPlayerInfo | CombatantInfo;
+    effectOwner?: NonCombatPlayerInfo | NonCombatPlayerInfo[] | CombatantInfo | CombatantInfo[];
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
+    allTargets?: NonCombatPlayerInfo[] | CombatantInfo[];
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" }; // The thing to activate conditionally--an action, an effect, a bonus
     battle?: BattleState | null; // Eg. not provided if out of combat
     context?: ActionContext;
@@ -131,7 +132,7 @@ export const passesConditions = ({
         }
 
         const effectOwnerData = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as CombatantInfo | undefined;
-        const checkPass = (calcTarget: CombatantInfo | NonCombatCharacterInfo) => {
+        const checkPass = (calcTarget: CombatantInfo | NonCombatPlayerInfo) => {
             return passesCombatantCondition({ condition, calcTarget, getCalculationTarget, context, proc, effectOwner: effectOwnerData });
         };
 
@@ -268,12 +269,13 @@ const passesCombatantCondition = ({
     effectOwner,
 }: {
     condition: Condition;
-    calcTarget?: CombatantInfo | NonCombatCharacterInfo;
+    calcTarget?: CombatantInfo | NonCombatPlayerInfo;
     getCalculationTarget: GetCombatantCalcTargetFn;
     context?: ActionContext;
     effectOwner?: CombatantInfo;
     proc: { conditions?: Condition[]; conditionOperator?: "and" | "or" };
 }) => {
+    // @ts-ignore
     const { combatant, index, friendly = [] } = calcTarget || {};
     if (!combatant) {
         return false;
@@ -468,7 +470,7 @@ const passesCombatantCondition = ({
     }
 
     if (numFriendly !== undefined) {
-        const calculatedNumFriendly = friendly.filter((combatant) => {
+        const calculatedNumFriendly = friendly.filter((combatant: Combatant | null) => {
             if (!combatant?.HP) {
                 return false;
             }
@@ -534,11 +536,11 @@ const getCalculationCombatantTarget = ({
     allTargets = [],
 }: {
     calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
-    effectApplier?: NonCombatCharacterInfo | CombatantInfo;
-    effectOwner?: NonCombatCharacterInfo | NonCombatCharacterInfo[] | CombatantInfo | CombatantInfo[];
-    actor?: NonCombatCharacterInfo | CombatantInfo;
-    target?: NonCombatCharacterInfo | CombatantInfo;
-    allTargets?: NonCombatCharacterInfo[] | CombatantInfo[];
+    effectApplier?: NonCombatPlayerInfo | CombatantInfo;
+    effectOwner?: NonCombatPlayerInfo | NonCombatPlayerInfo[] | CombatantInfo | CombatantInfo[];
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
+    allTargets?: NonCombatPlayerInfo[] | CombatantInfo[];
 }) => {
     if (calculationTarget === CONDITION_TARGETS.ACTOR) {
         return actor;
