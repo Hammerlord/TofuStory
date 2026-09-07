@@ -22,6 +22,7 @@ import { getUseAbilityIndex } from "./enemyTurn";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 import { getNextTelegraphedAbility } from "../../../character/Telegraph";
 import { AppDispatch, RootState } from "../../../store";
+import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 const { updateBattle, updateBattleState, pushEventQueue } = battleStateSlice.actions;
 const { updatePlayer, pushBattleHistory } = playerStateSlice.actions;
@@ -86,7 +87,7 @@ export const nextWave = () => {
                 currentWaveIndex: currentWaveIndex + 1,
                 round: 0,
                 enemySide: enemies.map(createCombatant),
-                deck: presetDeck ? presetDeck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })) : deck,
+                deck: presetDeck ? presetDeck.map(createCombatAbility) : deck,
                 hand: presetDeck ? [] : hand,
                 discard: presetDeck ? [] : discard,
             })
@@ -130,17 +131,7 @@ export const startBattle = ({
         const { presetDeck, enemies, generateEliteAffixes } = waves[0];
 
         const initialDeck = deckProp || presetDeck || character.deck;
-        const deck = initialDeck.map((card) => {
-            if (!("instanceId" in card) || !card.instanceId) {
-                return {
-                    ...card,
-                    effects: card.effects || [],
-                    instanceId: uuid.v4(),
-                };
-            }
-
-            return card;
-        }) as CombatAbility[];
+        const deck = initialDeck.map(createCombatAbility);
 
         const player = {
             ...character.player,
@@ -191,7 +182,7 @@ export const startBattle = ({
                 damageByEnemyName: {},
             },
             charactersAttackedThisTurn: [],
-            addAbilities: addAbilities.map((card) => ({ ...card, instanceId: uuid.v4(), effects: card.effects || [] })),
+            addAbilities: addAbilities.map(createCombatAbility),
         };
 
         dispatch(updateBattle(battleObj));
@@ -207,11 +198,7 @@ export const onBattleStart = () => {
             dispatch(
                 checkCardActions({
                     action: {
-                        addCardsToDeck: addAbilities.map((card) => ({
-                            ...card,
-                            instanceId: uuid.v4(),
-                            effects: card.effects || [],
-                        })),
+                        addCardsToDeck: addAbilities.map(createCombatAbility),
                     },
                     context: {
                         playbackCollector: playbackCollectorInstance,

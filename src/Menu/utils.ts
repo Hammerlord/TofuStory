@@ -10,6 +10,7 @@ import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Player } from "../character/types";
 import { getRandomItem } from "../utils";
 import { BATTLE_TYPES } from "../battle/types";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const copyEffect = (e: Effect): CombatEffect => ({
     ...cloneDeep(e),
@@ -155,11 +156,10 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
         return;
     }
 
-    return {
+    return createCombatAbility({
         ...newCard,
         level: (card.level || 1) + 1,
-        instanceId: card.instanceId || uuid.v4(),
-    };
+    });
 };
 
 export const getCardPool = (player: Player, deck: CombatAbility[]) => {

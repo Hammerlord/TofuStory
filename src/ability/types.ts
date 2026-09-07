@@ -888,6 +888,7 @@ export interface CombatAbility extends Ability {
     // Procced/synthetic abilities sometimes don't have instance IDs.
     instanceId?: string;
     effects: AbilityEffect[];
+    level: number;
 }
 
 export enum ACTION_TYPES {

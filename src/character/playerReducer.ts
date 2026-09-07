@@ -21,6 +21,7 @@ import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 import { RANDOM_BOSSES } from "../map/randomBosses";
 import { BattleStatistics } from "../battle/reducer";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -142,20 +143,13 @@ export const playerStateSlice = createSlice({
                     class: action.payload.selectedClass,
                     effects: aggregateItemEffects(classMap[action.payload.selectedClass].items),
                 },
-                deck: action.payload.deck.map((card: Ability) => ({ ...card, effects: card.effects || [], instanceId: uuid.v4() })),
+                deck: action.payload.deck.map(createCombatAbility),
             };
         },
         updateDeck: (state: CharacterState, action: PayloadAction<(CombatAbility | Ability)[]>) => {
             return {
                 ...state,
-                deck: action.payload.map((card) => {
-                    // @ts-ignore We are checking the existence of instanceId here anyway
-                    if (card.instanceId) {
-                        return card;
-                    }
-
-                    return { ...card, effects: card.effects || [], instanceId: uuid.v4() };
-                }),
+                deck: action.payload.map(createCombatAbility),
             };
         },
         restartGame: () => {

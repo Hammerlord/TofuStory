@@ -4,6 +4,7 @@ import * as uuid from "uuid";
 import { aggregateItemEffects } from "../Menu/utils";
 import { Ability, CombatEffect, Effect, Minion } from "../ability/types";
 import { Combatant } from "../character/types";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 export const createCombatant = (combatant: Minion | Combatant | undefined | null): Combatant | null => {
     if (!combatant) {
@@ -29,13 +30,7 @@ export const createCombatant = (combatant: Minion | Combatant | undefined | null
         maxResources: (combatant as Combatant).maxResources || 3,
         resourcesPerTurn: (combatant as Combatant).resourcesPerTurn || 1,
         casting: null,
-        abilities:
-            combatant.abilities?.map((ability: Ability) => ({
-                ...cloneDeep(ability),
-                actions: (ability.actions || []).map(cloneDeep),
-                instanceId: uuid.v4(),
-                effects: [],
-            })) || [],
+        abilities: combatant.abilities?.map(createCombatAbility) || [],
         turnHistory: [],
         abilityHistory: [],
         mesos: combatant.mesos || 0,

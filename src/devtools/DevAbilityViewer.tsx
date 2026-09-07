@@ -10,6 +10,7 @@ import Button from "../view/Button";
 import { Ability, CombatAbility } from "../ability/types";
 import { RARITIES } from "../item/types";
 import { Box } from "@mui/material";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const useStyles = createUseStyles({
     class: {
@@ -45,7 +46,7 @@ const DevAbilityViewer = ({ onClose }) => {
             return [];
         }
 
-        return cards.map((card) => ({ ...card, instanceId: uuid.v4() }));
+        return cards.map(createCombatAbility);
     };
 
     const rarityChart = {

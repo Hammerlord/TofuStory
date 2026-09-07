@@ -21,6 +21,7 @@ import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "./utils";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const useStyles = createUseStyles({
     inner: {
@@ -146,7 +147,7 @@ const CardRewards = ({
             }
         });
 
-        return choices.map((ability: Ability) => ({ ...ability, instanceId: uuid.v4() }));
+        return choices.map(createCombatAbility);
     }, []);
 
     const [selectedAbilityIndices, setSelectedAbilityIndices] = useState([]);

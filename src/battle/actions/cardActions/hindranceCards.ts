@@ -7,6 +7,7 @@ import { ActionContext, BATTLEFIELD_SIDES, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
+import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 export const filterImmunedHindranceCards = ({
     cardsToAdd: initialCardsToAdd,
@@ -48,7 +49,7 @@ export const filterImmunedHindranceCards = ({
             if (stacks) {
                 // instanceId: for identification purposes during visual feedback
                 const hindrance: Ability = hindranceCards.shift()!;
-                const removed: CombatAbility = { ...hindrance, instanceId: uuid.v4(), effects: hindrance?.effects || [] };
+                const removed: CombatAbility = createCombatAbility(hindrance);
                 immuned.push(removed);
 
                 const changesToAnnounce: UpdatedCombatantStats = {

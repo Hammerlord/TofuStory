@@ -8,6 +8,7 @@ import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { filterImmunedHindranceCards } from "./hindranceCards";
 import { AppDispatch, RootState } from "../../../store";
+import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -47,11 +48,7 @@ export const checkAddCardsToDeck = ({
         const battle: BattleState = getState().battle!;
         const updatedDeck = [...battle.deck];
         const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
-        const combatCards: CombatAbility[] = cardsToAdd.map((card) => ({
-            ...card,
-            effects: card.effects || [],
-            instanceId: uuid.v4(),
-        }));
+        const combatCards: CombatAbility[] = cardsToAdd.map(createCombatAbility);
 
         combatCards.forEach((card) => {
             const moveType = addCardsToDeckOptions?.moveType || "random";
@@ -103,10 +100,7 @@ export const handleAddCardsToDiscard = ({
             return;
         }
 
-        const combatCards = cardsToAdd.map((card: Ability) => ({
-            ...card,
-            instanceId: uuid.v4(),
-        })) as CombatAbility[];
+        const combatCards = cardsToAdd.map(createCombatAbility);
 
         dispatch(
             enqueueEvent({
@@ -143,12 +137,7 @@ export const handleAddCardsToHand = ({
             return;
         }
 
-        cardsToAdd = cardsToAdd
-            .map((card: Ability) => ({
-                ...card,
-                instanceId: uuid.v4(),
-            }))
-            .reverse();
+        cardsToAdd = cardsToAdd.map(createCombatAbility).reverse();
 
         dispatch(addCardsToHand(cardsToAdd));
         dispatch(triggerAddCardsToHandEvent(addCards.length, context));

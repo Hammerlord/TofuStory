@@ -9,6 +9,7 @@ import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
 import { passesValueComparison } from "./passesConditions";
 import _ from "lodash";
 import { PLAYER_CLASSES } from "../Menu/types";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const DEFAULT_NUM_OPTIONS = 3;
 
@@ -33,12 +34,11 @@ const getCardSelection = ({
     const removeParentCardAfterTurn = effects.some((e: AbilityEffect) => e.removeParentCardAfterTurn); // Can't this stay as a part of `effects` and get read there?
 
     const createNewOption = (ability: Ability | CombatAbility): CombatAbility => {
-        return {
+        return createCombatAbility({
             ...ability,
-            instanceId: uuid.v4(),
             removeAfterTurn: ability.removeAfterTurn || removeParentCardAfterTurn,
             effects: [...(ability.effects || []), ...effects],
-        };
+        });
     };
 
     const applyFilters = (cards: CombatAbility[] | Ability[]) => {

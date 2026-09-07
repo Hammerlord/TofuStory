@@ -26,6 +26,7 @@ import { TOWNS } from "../map/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { NUM_TRANSMUTATIONS } from "./constants";
 import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const HEADER_BAR = 72;
 
@@ -213,7 +214,7 @@ export const TransmutationView = ({
     disableBackdrop?: boolean; // Disable background image
     backdrop?: string; // Custom background image
 }) => {
-    const [selectedCard, setSelectedCard] = useState(null);
+    const [selectedCard, setSelectedCard] = useState<CombatAbility | null>(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
     const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
 
@@ -276,7 +277,7 @@ export const TransmutationView = ({
             });
 
             if (filteredByRarity) {
-                let cardToAdd = { ...filteredByRarity, level: 1, instanceId: uuid.v4() };
+                let cardToAdd = createCombatAbility({ ...filteredByRarity });
                 while (cardToAdd.level < selectedCard.level) {
                     const card = getUpgradeCard(cardToAdd);
                     if (card) {
