@@ -1,29 +1,22 @@
 import { cloneDeep } from "lodash";
-import * as uuid from "uuid";
-import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
-import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
-import { Item, ITEM_TYPES } from "../item/types";
-import { AbilityUpgrade } from "./../ability/types";
-import { directDamageTakenTrigger } from "../ability/Effects";
 import { JOB_CARD_MAP } from "../ability";
-import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { Player } from "../character/types";
-import { getRandomItem } from "../utils";
-import { BATTLE_TYPES } from "../battle/types";
+import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { createCombatAbility } from "../ability/createCombatAbility";
-
-const copyEffect = (e: Effect): CombatEffect => ({
-    ...cloneDeep(e),
-    id: uuid.v4(),
-    uptime: e.uptime || 1,
-    stacks: e.stacks || 1,
-});
+import { directDamageTakenTrigger } from "../ability/Effects";
+import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
+import { Ability, CombatAbility, CombatEffect, Effect } from "../ability/types";
+import { BATTLE_TYPES } from "../battle/types";
+import { createCombatEffect } from "../character/effects/createCombatEffect";
+import { Player } from "../character/types";
+import { Item } from "../item/types";
+import { getRandomItem } from "../utils";
+import { AbilityUpgrade } from "./../ability/types";
 
 export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
-    const effects: CombatEffect[] = [copyEffect(directDamageTakenTrigger)]; // Player always has this effect for calculating whether damage was recently taken
+    const effects: CombatEffect[] = [createCombatEffect(directDamageTakenTrigger)]; // Player always has this effect for calculating whether damage was recently taken
     items.forEach((item) => {
         const itemEffects: CombatEffect[] =
-            item?.effects?.map((e: Effect) => ({ ...copyEffect(e), itemSource: item.name, stacks: item?.stacks || 1 })) || [];
+            item?.effects?.map((e: Effect) => ({ ...createCombatEffect(e), itemSource: item.name, stacks: item?.stacks || 1 })) || [];
         effects.push(...itemEffects);
     });
     return effects;
@@ -34,10 +27,9 @@ export const aggregateAbilityEffects = (abilities: CombatAbility[]): CombatEffec
     abilities.forEach((a: CombatAbility) => {
         const abilityEffects =
             a.effectsWhileOwned?.map((e) => ({
-                ...copyEffect(e),
+                ...createCombatEffect(e),
                 originalAbilityId: a.instanceId,
                 isEffectFromHoldingAbility: true, // Flag to recalculate if a card event occurs
-                stacks: e.stacks || 1,
             })) || [];
         effects.push(...abilityEffects);
     });

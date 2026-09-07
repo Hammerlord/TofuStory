@@ -137,9 +137,8 @@ export const handleAddCardsToHand = ({
             return;
         }
 
-        cardsToAdd = cardsToAdd.map(createCombatAbility).reverse();
-
-        dispatch(addCardsToHand(cardsToAdd));
+        const combatCards = cardsToAdd.map(createCombatAbility).reverse();
+        dispatch(addCardsToHand(combatCards));
         dispatch(triggerAddCardsToHandEvent(addCards.length, context));
     };
 };

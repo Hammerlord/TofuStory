@@ -5,21 +5,14 @@ import { aggregateItemEffects } from "../Menu/utils";
 import { Ability, CombatEffect, Effect, Minion } from "../ability/types";
 import { Combatant } from "../character/types";
 import { createCombatAbility } from "../ability/createCombatAbility";
+import { createCombatEffect } from "../character/effects/createCombatEffect";
 
 export const createCombatant = (combatant: Minion | Combatant | undefined | null): Combatant | null => {
     if (!combatant) {
         return null;
     }
 
-    const effects = [
-        ...aggregateItemEffects(combatant.items || []),
-        ...(combatant.effects?.map((effect: Effect | CombatEffect) => ({
-            ...cloneDeep(effect),
-            uptime: effect.uptime || 1,
-            id: uuid.v4(),
-            stacks: effect.stacks || 1,
-        })) || []),
-    ];
+    const effects = [...aggregateItemEffects(combatant.items || []), ...(combatant.effects?.map(createCombatEffect) || [])];
 
     const baseChar = {
         id: uuid.v4(),

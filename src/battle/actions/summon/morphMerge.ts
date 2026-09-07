@@ -26,6 +26,7 @@ import { requeueRecentlyUsedAbility } from "../phases/phases";
 import { enqueueEvent } from "../enqueueEvent";
 import { getPossibleSummonIndices, onSummonTriggers } from "./summon";
 import { AppDispatch, RootState } from "../../../store";
+import { createCombatEffect } from "../../../character/effects/createCombatEffect";
 
 const { updateBattle } = battleStateSlice?.actions || {};
 
@@ -297,19 +298,16 @@ const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; 
         } as Ability,
     };
 
-    return {
+    return createCombatEffect({
         name: "Reveal Timer",
         description: "When destroyed or when this effect ends, the hidden character will be revealed.",
         icon: HourglassIcon,
         type: EFFECT_TYPES.NONE,
         class: EFFECT_CLASSES.NONE,
-        id: uuid.v4(),
-        uptime: 1,
-        stacks: 1,
         canBeSilenced: false,
         duration,
         onDeath: reveal,
         onEnd: duration ? reveal : undefined,
         disableDisplayIcon: !duration,
-    };
+    });
 };

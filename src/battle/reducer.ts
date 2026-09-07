@@ -9,6 +9,7 @@ import { getMaxHP } from "./utils";
 import { battleWarnings, MAX_HAND_SIZE } from "./constants";
 import * as uuid from "uuid";
 import { prepareForDiscard } from "./actions/cardActions/utils";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 // Text banner notification to display some info during battle
 interface Notification {
@@ -229,7 +230,7 @@ export const battleStateSlice = createSlice({
         },
         addCardsToHand: (state, action: PayloadAction<CombatAbility[]>) => {
             if (!state) return state;
-            const newCards = action.payload.slice().map((card) => ({ ...card, instanceId: card.instanceId || uuid.v4() }));
+            const newCards = action.payload.slice().map(createCombatAbility);
             let newHand: CombatAbility[] = dedupeByInstanceId([...newCards, ...state.hand]);
             const newDiscard = state.discard.slice();
 

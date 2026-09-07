@@ -1,6 +1,3 @@
-
-
-
 import { ClickAwayListener, Divider, MenuItem, MenuList, Popper } from "@mui/material";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
@@ -30,6 +27,7 @@ import Button from "../view/Button";
 import DevAbilityViewer from "./DevAbilityViewer";
 import DevItemViewer from "./DevItemViewer";
 import DevStageBattle from "./DevStageBattle";
+import { createCombatAbility } from "../ability/createCombatAbility";
 
 const useStyles = createUseStyles({
     buttonContainer: {
@@ -226,7 +224,7 @@ const DevToolButton = () => {
             {isTransmutationOpen && (
                 <TransmutationView
                     deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => {
-                        const card = { ...ability, instanceId: uuid.v4() };
+                        const card = createCombatAbility(ability);
                         const upgraded = getUpgradeCard(card);
                         if (upgraded) {
                             return upgraded;

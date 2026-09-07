@@ -1,0 +1,17 @@
+import { cloneDeep } from "lodash";
+import * as uuid from "uuid";
+import { CombatEffect, Effect } from "../../ability/types";
+
+export const createCombatEffect = (e: Effect | CombatEffect): CombatEffect => {
+    return {
+        id: uuid.v4(),
+        uptime: 1,
+        stacks: 1,
+        maxStacks: Infinity,
+        maxDuration: Infinity,
+        maxApplications: Infinity,
+        turnsTriggerFrequency: 0,
+        duration: Infinity,
+        ...cloneDeep(e),
+    };
+};

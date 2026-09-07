@@ -15,6 +15,7 @@ import { getMaxHP } from "./../utils";
 import { hasEffectType } from "./combatantData";
 import { getHalveArmorAmount } from "./phases/checkHalveArmor";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
+import { createCombatEffect } from "../../character/effects/createCombatEffect";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
@@ -368,13 +369,13 @@ const getStatusEffectDiff = ({
             .filter((effect) => {
                 if (isImmuneTo(effect)) {
                     // ID for differentiation purposes when announcing that the effect failed to apply
-                    failedToApplyEffects.push({
-                        ...effect,
-                        applierId: actor?.combatant?.id,
-                        id: uuid.v4(),
-                        uptime: 0,
-                        stacks: effect.stacks || 1,
-                    });
+                    failedToApplyEffects.push(
+                        createCombatEffect({
+                            ...effect,
+                            applierId: actor?.combatant?.id,
+                            uptime: 0,
+                        })
+                    );
                     return false;
                 }
 
@@ -394,17 +395,14 @@ const getStatusEffectDiff = ({
                     };
                 }
                 const duration = getEffectDuration(effect);
-                return {
+                return createCombatEffect({
                     ...cloneDeep(effect),
                     duration,
                     override: overrideObj,
-                    uptime: effect.uptime || 1,
-                    id: uuid.v4(),
                     applierId: actor?.combatant?.id,
                     originalAbilityId: (actionParent as CombatAbility)?.instanceId,
                     originalDuration: duration,
-                    stacks: effect.stacks || 1,
-                };
+                });
             });
 
         effects.push(...effectsToAdd);

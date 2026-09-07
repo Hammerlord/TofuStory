@@ -1,7 +1,7 @@
 import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { Ability } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { CharacterState } from "../character/playerReducer";
 import { ITEM_MASTERLIST } from "../devtools/DevItemViewer";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
@@ -104,7 +104,7 @@ export const getGameFile = () => {
         const { deck = [], player = {}, townShops = {} } = fileObj;
         const cards = [...JOB_CARD_MAP[player.class].all, ...NEUTRAL_ABILITIES];
 
-        const hydrateAbility = (flatCard: { name: string; level?: number }) => {
+        const hydrateAbility = (flatCard: { name: string; level?: number }): CombatAbility | undefined => {
             const { name, level = 1 } = flatCard;
             const hydrated = cards.find((card) => card.name === name);
             if (hydrated) {

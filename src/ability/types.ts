@@ -309,6 +309,11 @@ export type CombatEffect = Effect & {
     originalDuration?: number;
     stacks: number;
     isEffectFromHoldingAbility?: boolean;
+    maxStacks: number;
+    maxApplications: number;
+    turnsTriggerFrequency: number;
+    duration: number;
+    maxDuration: number;
 };
 
 export interface WeaponImageOptions {

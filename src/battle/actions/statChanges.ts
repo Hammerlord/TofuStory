@@ -278,9 +278,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
         if (!incomingEffect.maxApplications) {
             const existingEffectIndex = updatedEffects.findIndex(
                 (effect: CombatEffect) =>
-                    effect.name === incomingEffect.name &&
-                    effect.stacks < (effect.maxStacks || Infinity) &&
-                    (effect.duration || Infinity) === (incomingEffect.duration || Infinity)
+                    effect.name === incomingEffect.name && effect.stacks < effect.maxStacks && effect.duration === incomingEffect.duration
             );
 
             const existingEffect = updatedEffects[existingEffectIndex];
@@ -292,7 +290,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             const { stacks = 1, maxStacks = Infinity, applierId } = existingEffect;
             updatedEffects[existingEffectIndex] = {
                 ...existingEffect,
-                stacks: Math.min(maxStacks, stacks + (incomingEffect.stacks || 1)),
+                stacks: Math.min(maxStacks, stacks + incomingEffect.stacks),
                 // The last character who applies the DoT gets the applier attribution, eg. for effects like Tauromacis Horn.
                 applierId: incomingEffect.applierId || applierId,
             };
@@ -308,7 +306,7 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             if (!idCountMap[effect.name]) {
                 idCountMap[effect.name] = {
                     count: 1,
-                    totalStacks: effect.stacks || 1,
+                    totalStacks: effect.stacks,
                     lowestDuration: effect,
                 };
 
@@ -316,14 +314,14 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             }
 
             ++idCountMap[effect.name].count;
-            idCountMap[effect.name].totalStacks += effect.stacks || 1;
+            idCountMap[effect.name].totalStacks += effect.stacks;
             if (effect.duration < idCountMap[effect.name].lowestDuration?.duration) {
                 idCountMap[effect.name].lowestDuration = effect;
             }
         });
 
         const { count, totalStacks } = idCountMap[incomingEffect.name] || {};
-        if (!count || (count < (incomingEffect.maxApplications || Infinity) && totalStacks < (incomingEffect.maxStacks || Infinity))) {
+        if (!count || (count < incomingEffect.maxApplications && totalStacks < incomingEffect.maxStacks)) {
             updatedEffects.push(incomingEffect);
             return;
         }
@@ -332,15 +330,15 @@ const calculateEffectChanges = (incomingEffects: CombatEffect[], existingEffects
             const { lowestDuration } = idCountMap[effect.name] || {};
             if (lowestDuration?.id === effect.id) {
                 // This is the effect to extend the duration and/or stacks
-                const updatedEffectDuration = isNaN(updatedEffects[i].duration) ? Infinity : updatedEffects[i].duration;
-                const incomingEffectDuration = isNaN(incomingEffect.duration) ? Infinity : incomingEffect.duration;
+                const updatedEffectDuration = updatedEffects[i].duration;
+                const incomingEffectDuration = incomingEffect.duration;
                 const newDuration = updatedEffectDuration + incomingEffectDuration;
-                const maxDuration = effect.maxDuration || Infinity;
-                const maxStacks = updatedEffects[i].maxStacks || incomingEffect.maxStacks || Infinity;
+                const maxDuration = effect.maxDuration;
+                const maxStacks = updatedEffects[i].maxStacks || incomingEffect.maxStacks;
                 updatedEffects[i] = {
                     ...updatedEffects[i],
                     duration: Math.min(maxDuration, newDuration),
-                    stacks: Math.min((updatedEffects[i].stacks || 0) + (incomingEffect.stacks || 0), maxStacks),
+                    stacks: Math.min(updatedEffects[i].stacks + incomingEffect.stacks, maxStacks),
                     // The last character who applies the DoT gets the applier attribution, eg. for effects like Tauromacis Horn.
                     applierId: incomingEffect.applierId || effect.applierId,
                 };
