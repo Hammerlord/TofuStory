@@ -16,6 +16,8 @@ import { updateCombatant } from "./combatantData";
 import { handleAddCardsToHand } from "./cardActions/addCards";
 import { cloneDeep } from "lodash";
 import { AppDispatch, RootState } from "../../store";
+import * as uuid from "uuid";
+import { createCombatAbility } from "../../ability/createCombatAbility";
 
 export const useAbility = ({
     ability,
@@ -177,13 +179,13 @@ export const useAbility = ({
         if (echo) {
             const removeEchoRegex = /(?:<b>)?Echo\.?(?:<\/b>)?/g;
             const newDescription = (ability.description || "").replace(removeEchoRegex, "");
-            const copy: CombatAbility = {
+            const copy: CombatAbility = createCombatAbility({
                 ...cloneDeep(ability),
+                instanceId: uuid.v4(),
                 echo: false,
                 removeAfterTurn: true,
                 description: newDescription,
-                effects: ability.effects || [],
-            };
+            });
             dispatch(handleAddCardsToHand({ addCards: [copy], context }));
         }
     };
@@ -198,7 +200,7 @@ export const onUseAbility =
     }: {
         actorInfo: CombatantInfo;
         context: ActionContext;
-        ability: CombatAbility;
+        ability: Ability | CombatAbility;
         isAutoCast?: boolean;
     }) =>
     (dispatch: AppDispatch) => {
