@@ -159,19 +159,24 @@ export const getMorphMerge = ({
         return possibleSummonIndices.shift();
     };
 
-    const modifierValues = Object.entries(modifiers).reduce((acc, [property, modifierType]) => {
-        let value = targets.reduce((acc, targetInfo: CombatantInfo) => {
-            return acc + (targetInfo.combatant[property] || 0);
-        }, 0); // Default is sum
+    const modifierValues = Object.entries(modifiers).reduce(
+        (acc, [property, modifierType]) => {
+            let value = targets.reduce((acc, targetInfo: CombatantInfo) => {
+                // @ts-ignore
+                return acc + (targetInfo.combatant[property] || 0);
+            }, 0); // Default is sum
 
-        if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
-            value = Math.ceil(value / minions.length);
-        } else if (modifierType === MORPH_MINION_MODIFIERS.MULTIPLY) {
-            value = Math.ceil(value * 1.5);
-        }
-        acc[property] = value;
-        return acc;
-    }, {});
+            if (modifierType === MORPH_MINION_MODIFIERS.DIVIDE_EVENLY) {
+                value = Math.ceil(value / minions.length);
+            } else if (modifierType === MORPH_MINION_MODIFIERS.MULTIPLY) {
+                value = Math.ceil(value * 1.5);
+            }
+
+            acc[property] = value;
+            return acc;
+        },
+        {} as { [property: string]: number }
+    );
 
     for (const { minion, positionIndex, storeSummoner, turnLimit } of minions) {
         const pos = getSummonPos(positionIndex);
@@ -182,11 +187,13 @@ export const getMorphMerge = ({
         }
 
         if (typeof pos === "number") {
+            const combatant = createCombatant({
+                ...minionToSummon,
+                ...modifierValues,
+            })!;
+
             combatants[pos] = {
-                ...createCombatant({
-                    ...minionToSummon,
-                    ...modifierValues,
-                }),
+                ...combatant,
             };
 
             if (storeSummoner && summoner) {
@@ -241,7 +248,7 @@ export const getMorphMap = ({
                 const { storeTarget, turnLimit } = minionConfig;
 
                 // Retain id: it is the "same" combatant, now transformed. Used for allowing the transformed character to make a move on the same turn as the mutation
-                const summon = { ...createCombatant(minionToSummon), id: combatant.id };
+                const summon = { ...createCombatant(minionToSummon), id: combatant.id } as Combatant;
                 if (storeTarget) {
                     summon.effects.push(getStoredTargetEffect({ combatant, duration: turnLimit }));
                 }

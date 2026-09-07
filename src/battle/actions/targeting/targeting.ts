@@ -4,7 +4,7 @@ import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TR
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { BattleState } from "../../reducer";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
+import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 import { findCombatantData } from "../combatantData";
@@ -391,7 +391,7 @@ export const calculateActionArea = ({
     context,
 }: {
     action?: Action;
-    actor: CombatantInfo;
+    actor: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
     context?: ActionContext;
 }): number => {
@@ -402,7 +402,9 @@ export const calculateActionArea = ({
     const isOffense = isOffensiveAction(action);
     let totalArea = area;
     if (isOffense) {
-        const getCalculationTarget = (calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES) => {
+        const getCalculationTarget = (
+            calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+        ): CombatantInfo | NonCombatPlayerInfo | undefined => {
             if (calculationTarget === CONDITION_TARGETS.ACTOR || calculationTarget === TRIGGER_TARGET_TYPES.EFFECT_OWNER) {
                 return actor;
             }

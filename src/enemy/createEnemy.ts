@@ -5,9 +5,9 @@ import { aggregateItemEffects } from "../Menu/utils";
 import { Ability, CombatEffect, Effect, Minion } from "../ability/types";
 import { Combatant } from "../character/types";
 
-export const createCombatant = (combatant: Minion | Combatant | undefined | null): Combatant => {
+export const createCombatant = (combatant: Minion | Combatant | undefined | null): Combatant | null => {
     if (!combatant) {
-        return combatant;
+        return null;
     }
 
     const effects = [

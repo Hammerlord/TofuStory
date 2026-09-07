@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { Item } from "../item/types";
-import { Ability, Action, CardPileType, CombatEffect, Effect, Minion } from "./../ability/types";
+import { Ability, Action, CardPileType, CombatAbility, CombatEffect, Effect, Minion } from "./../ability/types";
 import { Combatant, Player } from "./../character/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { PlaybackCollector } from "./actions/playbackCollector";
@@ -74,7 +74,7 @@ export enum TRIGGER_SOURCE_TYPES {
 }
 
 export interface TriggerSource {
-    source?: Action | CombatEffect | Ability | Item;
+    source?: Action | CombatEffect | CombatAbility | Item;
     // The amount of, eg. block, healing, overhealing done by the source
     statUpdate?: UpdatedCombatantStats;
     type?: TRIGGER_SOURCE_TYPES;
@@ -130,6 +130,10 @@ export interface CombatantInfo {
     friendlySide: BATTLEFIELD_SIDES;
     hostileSide: BATTLEFIELD_SIDES;
 }
+
+export type NonCombatPlayerInfo = {
+    combatant: Player;
+} & { [key in keyof CombatantInfo]?: CombatantInfo[key] };
 
 export enum BATTLE_TYPES {
     ENCOUNTER = "encounter",

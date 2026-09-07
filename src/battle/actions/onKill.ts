@@ -1,6 +1,6 @@
 import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
 import { playerStateSlice } from "../../character/playerReducer";
-import { Combatant } from "../../character/types";
+import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
 import { BattleState, battleStateSlice, BattleStatistics } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
@@ -176,7 +176,7 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
 
         const { playerSide } = getState().battle!;
 
-        const player = playerSide.find((c: Combatant | null) => c?.isPlayer);
+        const player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
         if (player.HP <= 0) {
             dispatch(updateBattleState(BATTLE_STATES.DEFEAT));
             dispatch(updatePlayer(player));
@@ -226,7 +226,7 @@ const checkUpdatePlayerMoneyOnKill = ({
         const updated = getUpdatedStats({
             ...getState().battle!,
             targetIds: [player.id],
-            actorId: deadCombatantInfo,
+            actorId: combatant.id,
             action: moneyAction,
             context: context,
             getCombatantById: (id: string) => findCombatantData(getState().battle!, id),

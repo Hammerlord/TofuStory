@@ -349,7 +349,7 @@ const getHitEffects = ({
     actorId: string;
     action: Action;
     context: ActionContext;
-    getState;
+    getState: () => RootState;
 }): { statUpdate: UpdatedCombatantStats; action: Action }[][] => {
     if (![ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)) {
         return [];
@@ -452,8 +452,8 @@ const handleOnReceiveAction = ({
     context: context,
     combatants,
 }: {
-    updatedStats: { statUpdate; action }[];
-    context?: ActionContext;
+    updatedStats: { statUpdate: UpdatedCombatantStats; action: Action }[];
+    context: ActionContext;
     combatants: (Combatant | null)[];
 }) => {
     return (dispatch: AppDispatch) => {
@@ -497,10 +497,14 @@ const handleOnReceiveAction = ({
     };
 };
 
-const onAction = ({ action, context: context }: { action: Action; context?: ActionContext }) => {
+const onAction = ({ action, context }: { action: Action; context: ActionContext }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const actorId = context?.sourceChain?.at(-1)?.actorId;
-        const { combatant, hostile } = findCombatantData(getState().battle!, actorId) || {};
+        const combatantData = findCombatantData(getState().battle!, actorId);
+        if (!combatantData) {
+            return;
+        }
+        const { combatant, hostile } = combatantData;
 
         if (action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK) {
             dispatch(
@@ -530,7 +534,7 @@ const onAction = ({ action, context: context }: { action: Action; context?: Acti
 
         dispatch(
             updateCombatant({
-                combatantId: actorId,
+                combatantId: actorId!,
                 newProperties: {
                     turnHistory: [...turnHistory, { ...action, parent: context?.sourceChain?.at(-1)?.source }],
                 },

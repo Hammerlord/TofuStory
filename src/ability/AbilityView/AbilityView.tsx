@@ -7,7 +7,7 @@ import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/reducer";
-import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
+import { ActionContext, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
 import { Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -15,7 +15,18 @@ import { CriticalShotImage, MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
 import { RARITIES } from "../../item/types";
 import { interpolateAbilityDescription } from "../descriptionInterpolation";
-import { ACTION_TYPES, Action, CONDITION_TARGETS, CombatAbility, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "../types";
+import {
+    ACTION_TYPES,
+    Action,
+    ActionOptionalProperties,
+    Bonus,
+    CONDITION_TARGETS,
+    CombatAbility,
+    Condition,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TARGET_TYPES,
+} from "../types";
 import AbilityTooltip from "./AbilityTooltip";
 import AbilityTypeView from "./AbilityTypeView";
 import Area, { AreaIndicator } from "./AreaView";
@@ -256,7 +267,7 @@ interface AbilityViewProps {
     onClick?: (event: any) => void;
     onMouseDown?: (event: any) => void;
     isSelected?: boolean;
-    ability: CombatAbility;
+    ability: CombatAbility | Ability;
     className?: string;
     // Eg. when viewing cards during card reward, the cards should not glow
     disableGlow?: boolean;
@@ -341,14 +352,16 @@ const AbilityView = forwardRef(
             );
         }
 
-        let playerInfo = findCombatantData(battle, character.player?.id);
-        let player: Player | undefined;
-        if (disableBattleBonuses || !playerInfo?.combatant) {
-            player = character.player;
-            playerInfo = { combatant: player };
-        } else {
-            player = playerInfo?.combatant as Player;
+        let playerInfo: { combatant: Player } | undefined;
+        if (disableBattleBonuses || !battle) {
+            if (character.player) {
+                playerInfo = { combatant: character.player };
+            }
+        } else if (battle) {
+            playerInfo = findCombatantData(battle, character.player?.id) as { combatant: Player };
         }
+
+        const player = playerInfo?.combatant;
 
         // Depending on whether we want to show combat bonuses based on your current hand, deck, etc., grab those objects from either state
         const {
@@ -357,7 +370,7 @@ const AbilityView = forwardRef(
             discard = [],
         } = (() => {
             if (disableBattleBonuses || !battle) {
-                return { deck: character.deck };
+                return { deck: [], hand: [], discard: [] };
             }
 
             return battle;
@@ -377,7 +390,7 @@ const AbilityView = forwardRef(
 
         const hasConditionFulfilled = useMemo(() => {
             return actions.some((action: Action) => {
-                const conditionProcs = [];
+                const conditionProcs: { conditions?: Condition[]; conditionOperator?: "and" | "or" }[] = [];
                 const { conditions, bonus, secondaryAction } = action;
 
                 if (conditions) {
@@ -385,9 +398,13 @@ const AbilityView = forwardRef(
                 }
 
                 if (Array.isArray(bonus)) {
-                    conditionProcs.push(...bonus.map((bonus) => bonus));
+                    conditionProcs.push(...bonus);
                 } else if (bonus?.conditions) {
-                    conditionProcs.push(action.bonus);
+                    if (Array.isArray(action.bonus)) {
+                        conditionProcs.push(...action.bonus);
+                    } else if (action.bonus) {
+                        conditionProcs.push(action.bonus);
+                    }
                 }
 
                 if (secondaryAction?.conditions) {
@@ -395,7 +412,7 @@ const AbilityView = forwardRef(
                 }
 
                 if (Array.isArray(secondaryAction?.bonus)) {
-                    conditionProcs.push(...secondaryAction?.bonus.map((bonus) => bonus));
+                    conditionProcs.push(...secondaryAction?.bonus);
                 } else if (secondaryAction?.bonus?.conditions) {
                     conditionProcs.push(secondaryAction.bonus);
                 }
@@ -419,7 +436,9 @@ const AbilityView = forwardRef(
                         };
 
                         return (
-                            combatant?.HP > 0 && conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }))
+                            combatant &&
+                            combatant.HP > 0 &&
+                            conditionProcs.some((proc) => passesConditions({ getCalculationTarget, proc, context }))
                         );
                     });
                 }

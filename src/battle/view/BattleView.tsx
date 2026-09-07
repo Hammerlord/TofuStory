@@ -398,12 +398,16 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     };
 
     const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
+        if (!selectedHandAbilityId) {
+            return;
+        }
+
         dispatch(
             useHandAbility({
                 selectedTargetIndex: selectedIndex,
                 selectedAbilityId: selectedHandAbilityId,
                 selectedTargetSide: side,
-            }) as any
+            })
         );
     };
 
@@ -414,10 +418,11 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
 
         if (selectCardsPrompt?.selectCards?.then) {
+            const sourceChain = selectCardsPrompt.source ? [selectCardsPrompt.source] : [];
             dispatch(
                 checkCardActions({
                     action: selectCardsPrompt?.selectCards?.then,
-                    context: { name: "Select Cards Prompt", sourceChain: [selectCardsPrompt.source] },
+                    context: { name: "Select Cards Prompt", sourceChain },
                     isAutoCast: selectCardsPrompt.isAutoCast,
                 })
             );
@@ -428,8 +433,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         dispatch(closePlayerSelectCardsPrompt());
     };
 
-    const handleAllyAttack = ({ index }) => {
-        dispatch(onSummonAttack({ selectedIndex: index, actorId: selectedAllyId }));
+    const handleAllyAttack = ({ index }: { index: number }) => {
+        dispatch(onSummonAttack({ selectedIndex: index, actorId: selectedAllyId! }));
         dispatch(selectAlly(null));
     };
 
@@ -448,7 +453,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
         // Wayfind does not require a discard to benefit from the +1 extra card draw, so don't show an empty overlay in that case
         const skipOverlayTypes = [SELECT_CARD_TYPES.DISCARD_TO_DRAW, SELECT_CARD_TYPES.HAND_TO_TOP_DECK];
-        if (skipOverlayTypes.includes(type) && hand.length === 1) {
+        if (type && skipOverlayTypes.includes(type) && hand.length === 1) {
             handleAbilityUse({ selectedIndex, side });
             return;
         }
@@ -512,6 +517,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         selectedIndex: index,
                         side: BATTLEFIELD_SIDES.PLAYER_SIDE,
                         actorId: selectedMinion?.id || player.id,
+                        context: { name: "Minion movement", sourceChain: [] },
                     })
                 );
             } else {
@@ -520,7 +526,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             return;
         }
 
-        if (isEligibleToAttack(playerSide[index]) || (allowFriendlyMovement && playerSide[index])) {
+        if ((playerSide[index] && isEligibleToAttack(playerSide[index])) || (allowFriendlyMovement && playerSide[index])) {
             dispatch(selectAlly(playerSide[index].id));
             e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         }
@@ -530,10 +536,12 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         warn(battleWarnings.targetStealth);
     };
 
-    const tauntEnemies = enemySide
-        .filter((combatant) => combatant?.HP)
+    const tauntEnemies: CombatantInfo[] = enemySide
+        .filter((combatant): combatant is Combatant => Boolean(combatant?.HP))
         .map((combatant) => findCombatantData(battle, combatant.id))
-        .filter((combatantInfo: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
+        .filter((combatantInfo: CombatantInfo | undefined): combatantInfo is CombatantInfo =>
+            hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT)
+        );
 
     const mustTargetTauntError = (index: number): boolean => {
         if (tauntEnemies.length === 0) {
@@ -550,13 +558,15 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const handleEnemyClick = (e: React.MouseEvent, index: number) => {
         if (e.button === 2) {
             // Right click will deselect the ability
+            e.preventDefault();
             return;
         }
 
+        const target = enemySide[index];
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
-            } else if (!canTargetIfStealthed(selectedMinion, enemySide[index], abilityToUse?.actions?.[0])) {
+            } else if (!canTargetIfStealthed(selectedMinion, target, abilityToUse?.actions?.[0])) {
                 warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
@@ -575,7 +585,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 }
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
-            } else if (!canTargetIfStealthed(player, enemySide[index], abilityToUse?.actions?.[0])) {
+            } else if (!canTargetIfStealthed(player, target, abilityToUse?.actions?.[0])) {
                 warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
@@ -590,7 +600,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    const battleStateRef: RefObject<BATTLE_STATES | undefined> = useRef(null);
+    const battleStateRef: RefObject<BATTLE_STATES | null> = useRef(null);
 
     usePreloadImages(playerSide, enemySide, hand, deck, discard);
 
@@ -770,7 +780,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const isValidIndex = (index: any) => typeof index === "number";
         const noHover = !isValidIndex(hoveredCombatant?.index);
         const mismatchingSide = side !== hoveredCombatant?.side;
-        if (disableActions || noHover || mismatchingSide || !actor) {
+        if (!abilityToUse || disableActions || noHover || mismatchingSide || !actor) {
             return false;
         }
 
@@ -803,7 +813,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
      * When selecting an ability, if a reticle should appear on a combatant, it means that combatant is a valid target.
      */
     const shouldShowReticle = useCallback(
-        (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number) => {
+        (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
             if (selectedAbilityFromHand && !canUsePlayerAbility(player, selectedAbilityFromHand)) {
                 return false;
             }
@@ -814,9 +824,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 return false;
             }
 
-            const checkValidTargetForAbility = (ability: Ability) => {
+            const checkValidTargetForAbility = (ability: Ability | undefined) => {
+                if (!ability) {
+                    return false;
+                }
+
                 if (
-                    isValidTargetForPlayerAbility({
+                    !isValidTargetForPlayerAbility({
                         ability,
                         side: combatantSide,
                         index: combatantIndex,
@@ -824,31 +838,33 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         actorId,
                     })
                 ) {
-                    if (
-                        !hoveredCombatant ||
-                        !isValidTargetForPlayerAbility({
-                            ability,
-                            side: hoveredCombatant.side,
-                            index: hoveredCombatant.index,
-                            battle,
-                            actorId,
-                        })
-                    ) {
-                        return true;
-                    }
-
-                    const actorInfo = findCombatantData(battle, actorId);
-                    if (!actorInfo) {
-                        return false;
-                    }
-
-                    return isWithinPlayerAbilityArea({
-                        ability,
-                        actor: actorInfo,
-                        selectedIndex: hoveredCombatant?.index,
-                        targetIndex: combatantIndex,
-                    });
+                    return false;
                 }
+
+                if (
+                    !hoveredCombatant ||
+                    !isValidTargetForPlayerAbility({
+                        ability,
+                        side: hoveredCombatant.side,
+                        index: hoveredCombatant.index,
+                        battle,
+                        actorId,
+                    })
+                ) {
+                    return true;
+                }
+
+                const actorInfo = findCombatantData(battle, actorId);
+                if (!actorInfo) {
+                    return false;
+                }
+
+                return isWithinPlayerAbilityArea({
+                    ability,
+                    actor: actorInfo,
+                    selectedIndex: hoveredCombatant?.index,
+                    targetIndex: combatantIndex,
+                });
             };
 
             return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
@@ -897,6 +913,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             checkEventTrigger({
                 combatantId: player.id,
                 effectEventKey: EFFECT_EVENT_KEYS.onMoveCardFromHandToDeck,
+                context: { name: "Move Card To Deck" },
             })
         );
     };
@@ -918,7 +935,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             });
         }
 
-        const allPotentialTargetResults = {};
+        const allPotentialTargetResults: { [combatantId: string]: PreviewStatUpdate[] } = {};
 
         const calculatePotentialResults = (combatants: (Combatant | null)[], side: BATTLEFIELD_SIDES) => {
             combatants.forEach((combatant, i) => {
@@ -947,7 +964,11 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         let previousCombatantStates = previewAbilityCombatants;
         getCombatantMoveOrder({ combatants: enemySide, round }).forEach((enemyId) => {
             const enemyInfo = findCombatantData({ ...battle, ...previousCombatantStates }, enemyId);
-            const enemy = enemyInfo?.combatant;
+            if (!enemyInfo) {
+                return;
+            }
+
+            const enemy = enemyInfo.combatant;
             const { targeting, HP, cantMove } = enemy || {};
 
             if (!targeting || HP === 0 || isTurnActionPrevented(enemyInfo) || cantMove) {
@@ -955,6 +976,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             }
 
             const ability = enemy.targeting?.ability || getNextTelegraphedAbility(enemyInfo);
+            if (!ability) {
+                return;
+            }
 
             const abilityPreviews = getAbilityPreviews({
                 ability,

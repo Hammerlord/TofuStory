@@ -30,6 +30,7 @@ import {
     Effect,
     EFFECT_CLASSES,
     EFFECT_TYPES,
+    Minion,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
@@ -386,7 +387,7 @@ export const secondExiledArm: Ability = {
     image: ZakumArmLeft2Image,
     rarity: RARITIES.RARE,
     minion: {
-        ...firstExiledArm.minion,
+        ...(firstExiledArm.minion as Minion),
         name: "Second Arm of the Exiled One",
         image: ZakumArmLeft2Image,
     },
@@ -398,7 +399,7 @@ export const thirdExiledArm: Ability = {
     image: ZakumArmRightImage,
     rarity: RARITIES.RARE,
     minion: {
-        ...firstExiledArm.minion,
+        ...(firstExiledArm.minion as Minion),
         name: "Third Arm of the Exiled One",
         image: ZakumArmRightImage,
     },
@@ -410,7 +411,7 @@ export const fourthExiledArm: Ability = {
     image: ZakumArmRight2Image,
     rarity: RARITIES.RARE,
     minion: {
-        ...firstExiledArm.minion,
+        ...(firstExiledArm.minion as Minion),
         name: "Fourth Arm of the Exiled One",
         image: ZakumArmRight2Image,
     },

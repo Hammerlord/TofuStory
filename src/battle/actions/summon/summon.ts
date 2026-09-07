@@ -302,7 +302,7 @@ export const checkSummonMinion = ({
         }
 
         const baseMinion = cloneDeep({ ...minion, effects: minionEffects });
-        const summonedMinion: Combatant = createCombatant(baseMinion);
+        const summonedMinion = createCombatant(baseMinion) as Combatant;
 
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};

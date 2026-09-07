@@ -12,7 +12,7 @@ import {
 } from "../ability/types";
 import { Item } from "../item/types";
 import { passesValueComparison } from "./passesConditions";
-import { ActionContext, ActionParent, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
 import { getMaxHP } from "./utils";
 import { calculateDamage } from "./calculateDamage";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
@@ -30,10 +30,10 @@ export const getMultiplier = ({
     hand = [],
     discard = [],
 }: {
-    actor?: CombatantInfo;
-    target?: CombatantInfo;
-    allTargets?: CombatantInfo[];
-    sourceTargets?: CombatantInfo[];
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
+    allTargets?: (NonCombatPlayerInfo | CombatantInfo)[];
+    sourceTargets?: (NonCombatPlayerInfo | CombatantInfo)[];
     actionParent?: ActionParent;
     multiplier?: Multiplier;
     source?: TriggerSource;
@@ -97,9 +97,10 @@ export const getMultiplier = ({
         }
 
         let filtered = cardsToCheck.filter((card) => {
-            return filters.some(({ property, value, comparator }) =>
-                passesValueComparison({ val: card[property], otherVal: value, comparator })
-            );
+            return filters.some(({ property, value, comparator }) => {
+                const val = _.get(card, property);
+                passesValueComparison({ val, otherVal: value, comparator });
+            });
         }).length;
 
         return Math.floor(filtered * numValue);
@@ -113,9 +114,10 @@ export const getMultiplier = ({
         return combatant.effects.reduce((acc, effect: CombatEffect) => {
             if (
                 filters &&
-                !filters.some(({ property, value, comparator }) =>
-                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
-                )
+                !filters.some(({ property, value, comparator }) => {
+                    const val = _.get(effect, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
+                })
             ) {
                 return acc;
             }
@@ -146,9 +148,10 @@ export const getMultiplier = ({
             }
 
             if (filters) {
-                return filters.some(({ property, value, comparator }) =>
-                    passesValueComparison({ val: parent[property], otherVal: value, comparator })
-                );
+                return filters.some(({ property, value, comparator }) => {
+                    const val = _.get(parent, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
+                });
             }
 
             return true;
@@ -174,18 +177,14 @@ export const getMultiplier = ({
 
         if (filters) {
             debuffs = debuffs.filter((effect) => {
-                return filters.some(({ property, value, comparator }) =>
-                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
-                );
+                return filters.some(({ property, value, comparator }) => {
+                    const val = _.get(effect, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
+                });
             });
         }
 
-        const unique = {};
-        debuffs.forEach((d) => {
-            unique[d.name] = true;
-        });
-
-        return Object.keys(unique).length;
+        return new Set(debuffs.map((d) => d.name)).size;
     }
 
     if (type === MULTIPLIER_TYPES.BUFFS) {
@@ -195,18 +194,14 @@ export const getMultiplier = ({
 
         if (filters) {
             buffs = buffs.filter((effect) => {
-                return filters.some(({ property, value, comparator }) =>
-                    passesValueComparison({ val: effect[property], otherVal: value, comparator })
-                );
+                return filters.some(({ property, value, comparator }) => {
+                    const val = _.get(effect, property);
+                    return passesValueComparison({ val, otherVal: value, comparator });
+                });
             });
         }
 
-        const unique = {};
-        buffs.forEach((b) => {
-            unique[b.name] = true;
-        });
-
-        return Object.keys(unique).length;
+        return new Set(buffs.map((b) => b.name)).size;
     }
 
     if (type === MULTIPLIER_TYPES.ABILITIES_USED) {
@@ -227,12 +222,7 @@ export const getMultiplier = ({
         });
 
         if (filterUnique) {
-            const abilityMap = abilitiesUsed.reduce((acc, ability) => {
-                acc[ability.name] = true;
-                return acc;
-            }, {});
-
-            return Object.keys(abilityMap).length;
+            return new Set(abilitiesUsed.map((b) => b.name)).size;
         }
 
         return abilitiesUsed.length;
@@ -267,7 +257,7 @@ const calculateAttackDamageInHand = ({
     actionParent,
 }: {
     hand: CombatAbility[];
-    actor: CombatantInfo;
+    actor: CombatantInfo | NonCombatPlayerInfo;
     actionParent?: ActionParent;
 }): number => {
     let damage = 0;

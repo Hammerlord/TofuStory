@@ -2,7 +2,7 @@ import { Action } from "@reduxjs/toolkit";
 import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { isOffensiveAction, isSupportAction } from "../ability/AbilityView/utils";
-import { AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/types";
+import { Ability, AbilityEffect, CardFilterCondition, CombatAbility } from "../ability/types";
 import { Player } from "../character/types";
 import { shuffle } from "../utils";
 import { SELECT_CARD_TYPES, SelectCards } from "./../ability/types";
@@ -32,7 +32,7 @@ const getCardSelection = ({
     const { effects = [], type, filters } = selectCards || {};
     const removeParentCardAfterTurn = effects.some((e: AbilityEffect) => e.removeParentCardAfterTurn); // Can't this stay as a part of `effects` and get read there?
 
-    const createNewOption = (ability: CombatAbility): CombatAbility => {
+    const createNewOption = (ability: Ability | CombatAbility): CombatAbility => {
         return {
             ...ability,
             instanceId: uuid.v4(),
@@ -41,21 +41,22 @@ const getCardSelection = ({
         };
     };
 
-    const applyFilters = (cards: CombatAbility[]) => {
+    const applyFilters = (cards: CombatAbility[] | Ability[]) => {
         // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
         if (selectedAbilityId) {
-            cards = cards.filter(({ instanceId }) => instanceId !== selectedAbilityId);
+            cards = cards.filter((card) => (card as CombatAbility).instanceId !== selectedAbilityId);
         }
         if (filters?.length) {
             return cards.filter((card) => cardPassesFilterCondition(card, filters));
         }
         return cards;
     };
+
     if (type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
         return applyFilters(hand).map(createNewOption);
     }
     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-        return applyFilters(hand);
+        return applyFilters(hand) as CombatAbility[];
     }
 
     if (type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS) {
@@ -101,7 +102,7 @@ const getCardSelection = ({
     return [];
 };
 
-export const cardPassesFilterCondition = (card: CombatAbility, filters?: CardFilterCondition[]) => {
+export const cardPassesFilterCondition = (card: Ability | CombatAbility, filters?: CardFilterCondition[]) => {
     if (!filters?.length) {
         return true;
     }

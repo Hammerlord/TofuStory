@@ -25,7 +25,7 @@ export const getArmorStatistics = ({
     discard = [],
 }: {
     ability: CombatAbility;
-    playerInfo?: CombatantInfo;
+    playerInfo?: Partial<CombatantInfo>;
     deck?: CombatAbility[];
     hand?: CombatAbility[];
     discard?: CombatAbility[];

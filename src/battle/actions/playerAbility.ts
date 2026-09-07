@@ -81,7 +81,7 @@ export const getPlayerAbilityResourceCost = ({
     return Math.max(0, resourceCost + resourceCostFromEffects);
 };
 
-export const canUsePlayerAbility = (player: Player, ability: CombatAbility | undefined): boolean => {
+export const canUsePlayerAbility = (player: Player | undefined, ability?: CombatAbility | undefined): boolean => {
     if (!ability) {
         return false;
     }

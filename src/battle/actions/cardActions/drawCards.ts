@@ -66,7 +66,9 @@ export const drawCards = ({
                 // If we are looking for eg. offense cards only, the deck cannot be cycled; search the discard for remaining offense cards instead.
                 // If there are not enough to fulfill the quota, it just whiffs.
                 while (cards.length !== numCards) {
-                    const i = newDeck.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                    const i = newDeck.findIndex((ability) =>
+                        ability.actions.some((action: Action) => action.type && filters.includes(action.type))
+                    );
                     if (i === -1) {
                         break;
                     }
@@ -76,7 +78,9 @@ export const drawCards = ({
                 }
 
                 while (cards.length !== numCards) {
-                    const i = newDiscard.findIndex((ability) => ability.actions.some((action: Action) => filters.includes(action.type)));
+                    const i = newDiscard.findIndex((ability) =>
+                        ability.actions.some((action: Action) => action.type && filters.includes(action.type))
+                    );
                     if (i === -1) {
                         break;
                     }

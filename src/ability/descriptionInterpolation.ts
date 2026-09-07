@@ -41,13 +41,13 @@ const iconStyles = {
     "vertical-align": "middle",
 };
 
-const styleObjectToString = (object) => {
+const styleObjectToString = (object: object) => {
     return Object.entries(object).reduce((acc, entry) => {
         return acc + entry.join(":") + ";";
     }, "");
 };
 
-const cardTypeString = (color) => {
+const cardTypeString = (color: string) => {
     const properties = {
         width: "7px",
         height: "7px",
@@ -99,17 +99,19 @@ const ICON_INTERPOLATIONS = {
 export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass?: PLAYER_CLASSES }) => {
     const manaStyleStr = styleObjectToString({ ...iconStyles, width: "12px" });
 
-    const resource =
-        {
+    let resource = FuryImage;
+    let resourceStyle = styleStrWithShadow;
+    if (playerClass) {
+        resource = {
             [PLAYER_CLASSES.WARRIOR]: FuryImage,
             [PLAYER_CLASSES.MAGICIAN]: ManaImage,
             [PLAYER_CLASSES.BOWMAN]: LeafImage,
-        }[playerClass] || FuryImage;
+        }[playerClass];
+    }
 
-    const resourceStyle =
-        {
-            [PLAYER_CLASSES.MAGICIAN]: manaStyleStr,
-        }[playerClass] || styleStrWithShadow;
+    if (resourceStyle === PLAYER_CLASSES.MAGICIAN) {
+        resourceStyle = manaStyleStr;
+    }
 
     return {
         ...ICON_INTERPOLATIONS,
@@ -125,11 +127,11 @@ export const interpolateAbilityDescription = ({
     hand,
     discard,
 }: {
-    ability: CombatAbility;
+    ability: CombatAbility | Ability;
     playerInfo: CombatantInfo;
-    deck;
-    hand;
-    discard;
+    deck: CombatAbility[];
+    hand: CombatAbility[];
+    discard: CombatAbility[];
 }) => {
     ability = cloneDeep(ability);
     // Some abilities apply an effect, where the "main" point of the ability is a proc from that effect, eg. Dust Devils.

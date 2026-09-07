@@ -8,7 +8,7 @@ import { Combatant } from "../types";
 
 const PLAYBACK_TIME = 3000;
 
-const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }: { object: HTMLElement; delay: number; playbackTime: number }) => {
+const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }: { object: HTMLElement; delay: number; playbackTime?: number }) => {
     const animationFrames: any[] = [
         {
             opacity: 0.5,
@@ -85,7 +85,7 @@ const StatusEffectAnnouncer = ({
 }) => {
     const classes = useStyles();
     const ref = useRef({});
-    const [queue, setQueue]: [EffectQueued[], Function] = useState([]);
+    const [queue, setQueue] = useState<EffectQueued[]>([]);
 
     const isInvalidCombatant =
         !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));

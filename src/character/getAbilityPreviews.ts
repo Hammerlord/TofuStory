@@ -15,7 +15,7 @@ import { Combatant } from "./types";
 import { validate as uuidValidate } from "uuid";
 import { AppDispatch, RootState } from "../store";
 
-export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES) => [index, side].join("-");
+export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES): string => [index, side].join("-");
 
 type BattleStateEventPayload = BattleState & Event;
 
@@ -26,9 +26,9 @@ export const previewAction = ({
     actionFn: (dispatch: AppDispatch, getState: () => RootState) => void;
     battle: BattleState;
 }): { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } } => {
-    const statUpdates = {};
+    const statUpdates: { [key: string]: UpdatedCombatantStats[] } = {};
 
-    const dispatch = (reduxAction) => {
+    const dispatch = (reduxAction: any | { payload: BattleStateEventPayload }) => {
         if (typeof reduxAction === "function") {
             return reduxAction(dispatch, getState);
         }
@@ -53,7 +53,7 @@ export const previewAction = ({
                     statUpdates[combatantId] = [];
                 }
 
-                statUpdates[combatantId].push({ ...value, action: payload.action });
+                statUpdates[combatantId].push({ ...value, action: payload.action, combatantId });
             });
         }
 
@@ -85,7 +85,7 @@ export const previewAction = ({
                 }
 
                 const projectedStatUpdate: UpdatedCombatantStats = {
-                    combatantId: key,
+                    combatantId: `empty-tile-${key}`,
                     rawDamage: finalDamage,
                     healthDamage: finalDamage,
                     armor,
@@ -122,7 +122,7 @@ const previewTargetChange = ({
         battle,
     });
 
-    const dispatch = (reduxAction) => {
+    const dispatch = (reduxAction: any | { payload: BattleStateEventPayload }) => {
         if (typeof reduxAction === "function") {
             return reduxAction(dispatch, getState);
         }
@@ -178,7 +178,7 @@ const getAbilityPreviews = ({
     result: { [combatantId: string]: PreviewStatUpdate[] };
     combatantStates: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
 } => {
-    const result = {};
+    const result: { [combatantId: string]: PreviewStatUpdate[] } = {};
     const hasYetToCastAbility = !actor.casting && ability?.castTime;
 
     const previousCombatantStates = combatantStates || {
@@ -211,7 +211,7 @@ const getAbilityPreviews = ({
         isPreviewMode: true,
     };
 
-    const lookupCombatantDataHelper = (id: string): CombatantInfo => {
+    const lookupCombatantDataHelper = (id: string): CombatantInfo | undefined => {
         return findCombatantData({ ...battle, ...previousCombatantStates }, id);
     };
 
@@ -247,7 +247,7 @@ const getAbilityPreviews = ({
                     // It's an empty tile preview.
                     result[id].push({
                         statUpdate,
-                        nondeterministic: targetsRandomly,
+                        nondeterministic: Boolean(targetsRandomly),
                         action: currentAction,
                     });
 
@@ -255,14 +255,15 @@ const getAbilityPreviews = ({
                 }
 
                 const { index } = combatantInfo;
-                const totalTargets = currentAction?.numTargets + 1 || 0;
+                const totalTargets = (currentAction?.numTargets || 0) + 1;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
                 const isProc = statUpdate.context?.sourceChain?.at(-1)?.isProc;
                 const isProcHostileAction = isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
+                const nondeterministic = Boolean(hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction);
 
                 result[id].push({
                     statUpdate,
-                    nondeterministic: hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction,
+                    nondeterministic,
                     action: currentAction,
                 });
             });
@@ -322,7 +323,7 @@ const getAbilityPreviews = ({
         const actorData = lookupCombatantDataHelper(actor.id);
         const targetData = lookupCombatantDataHelper(target.id);
 
-        const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo => {
+        const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
             if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
                 return actorData;
             }

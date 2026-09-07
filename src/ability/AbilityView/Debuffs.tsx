@@ -4,7 +4,7 @@ import { NimbleJewelCImage } from "../../images";
 import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HourglassIcon, SnowflakeIcon, SpeechBubbleIcon } from "../../images/icons";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
-export const getDebuffIcon = (type: EFFECT_TYPES): ReactElement => {
+export const getDebuffIcon = (type: EFFECT_TYPES): ReactElement | undefined => {
     switch (type) {
         case EFFECT_TYPES.BLEED:
             return <BloodIcon />;

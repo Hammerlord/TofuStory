@@ -153,7 +153,7 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
     };
 };
 
-export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }: { turnsTriggerFrequency: number; uptime: number }): boolean => {
+export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }: { turnsTriggerFrequency?: number; uptime: number }): boolean => {
     if (!turnsTriggerFrequency) {
         return true;
     }

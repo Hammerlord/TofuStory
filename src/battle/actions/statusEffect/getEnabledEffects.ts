@@ -1,6 +1,6 @@
 import { CONDITION_TARGETS, TRIGGER_TARGET_TYPES, Ability, CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
 import { passesConditions } from "../../passesConditions";
-import { ActionContext, CombatantInfo, TriggerSource } from "../../types";
+import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
 import { isSilenced } from "../../utils";
 import { isTurnToTrigger } from "./effectLifecycle";
 
@@ -13,7 +13,7 @@ export const getEnabledEffects = ({
     getCalculationTarget,
     context: context,
 }: {
-    combatantInfo?: CombatantInfo;
+    combatantInfo?: NonCombatPlayerInfo | CombatantInfo;
     getCalculationTarget?: (
         calculationTarget: CONDITION_TARGETS.ACTOR | CONDITION_TARGETS.TARGET | TRIGGER_TARGET_TYPES
     ) => CombatantInfo | CombatantInfo[] | Ability;

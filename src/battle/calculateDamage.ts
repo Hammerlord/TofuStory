@@ -15,7 +15,7 @@ import { hasEffectType } from "./actions/combatantData";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
 import { DAMAGE_COEFF } from "./constants";
 import { getMultiplier } from "./getMultiplier";
-import { ActionContext, ActionParent, CombatantInfo } from "./types";
+import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo } from "./types";
 
 export const calculateDamage = ({
     actor,
@@ -27,7 +27,7 @@ export const calculateDamage = ({
     multiplier = 1,
     context,
 }: {
-    actor?: CombatantInfo;
+    actor?: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
     targetIndex?: number;
     selectedIndex?: number;
@@ -65,7 +65,7 @@ export const calculateDamage = ({
         baseDamage = Math.max(0, baseDamage);
     }
 
-    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | undefined => {
+    const getCalculationTarget = (calculationTarget: TRIGGER_TARGET_TYPES): CombatantInfo | NonCombatPlayerInfo | undefined => {
         if (calculationTarget === TRIGGER_TARGET_TYPES.ACTOR) {
             return actor;
         }

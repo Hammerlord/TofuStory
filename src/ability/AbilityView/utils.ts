@@ -88,11 +88,11 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
 };
 
 // For Astral Rewind copies: Procced abilities do not have instanceIds, only actual cards do. Do not copy procs or unique abilities.
-export const getLastPlayedCards = ({ player, amount = 0 }: { player: Player; amount?: number }) => {
-    if (!amount) {
+export const getLastPlayedCards = ({ player, amount = 0 }: { player?: Player | undefined; amount?: number }) => {
+    if (!amount || !player) {
         return [];
     }
-    return (player?.abilityHistory || [])
+    return (player.abilityHistory || [])
         .slice()
         .reverse()
         .filter((ability: CombatAbility) => ability.instanceId && !ability.isUnique)

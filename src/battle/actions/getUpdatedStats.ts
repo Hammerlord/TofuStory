@@ -38,6 +38,7 @@ export interface UpdatedCombatantStats {
     failedToAddCards?: CombatAbility[];
     overkill?: number;
     context?: ActionContext;
+    action?: Action; // Appended in previews, but is it generally used?
 }
 
 export interface UpdatedStatsProps {

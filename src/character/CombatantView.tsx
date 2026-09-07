@@ -322,7 +322,7 @@ const CombatantView = ({
     characterRef,
     ...other
 }: {
-    combatant?: Combatant | Player;
+    combatant?: Combatant | Player | null;
     isEnemy: boolean;
     isTargeted: boolean;
     currentEventGroup: EventGroup;

@@ -27,7 +27,7 @@ export const getDamageStatistics = ({
     discard = [],
 }: {
     ability: CombatAbility;
-    actorInfo: CombatantInfo;
+    actorInfo: Partial<CombatantInfo>;
     hand?: CombatAbility[];
     deck?: CombatAbility[];
     discard?: CombatAbility[];

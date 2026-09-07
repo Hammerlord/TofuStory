@@ -33,13 +33,10 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
         if (depletedOnUse) {
             dispatch(
                 enqueueEvent({
-                    ...getState().battle!,
-                    id: uuid.v4(),
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
                     cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-                    events: [],
-                } as EventGroup)
+                })
             );
         }
 

@@ -11,7 +11,7 @@ import { getMaxResources } from "../battle/actions/playerAbility";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
-import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
+import { GeneratedRouteNode, NODE_TYPES, Route, TOWNS } from "../map/types";
 import { NUM_TRADING_POST_TRADES, NUM_TRANSMUTATIONS, ShopAbility, ShopItem } from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
@@ -55,8 +55,8 @@ export type CharacterState = {
     visitedEvents: { [eventId: string]: number };
     infamy: number;
     currentMapLocation: null | GeneratedRouteNode;
-    currentTown: TOWNS;
-    route;
+    currentTown: TOWNS | null;
+    route: Route | null;
     nodesVisited: { [nodeId: string]: true };
     townShops: { [key in TOWNS]?: TownShops };
     purchasedConsumables: {
@@ -116,7 +116,7 @@ export const playerStateSlice = createSlice({
     name: "player",
     initialState: INITIAL_STATE,
     reducers: {
-        incrementEncounterTypeWon: (state, action: PayloadAction<BATTLE_TYPES>) => {
+        incrementEncounterTypeWon: (state: CharacterState, action: PayloadAction<BATTLE_TYPES>) => {
             return {
                 ...state,
                 battlesWon: {
@@ -125,7 +125,7 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        updatePlayer: (state, action: PayloadAction<{ [key in keyof Player]?: Player[key] }>) => {
+        updatePlayer: (state: CharacterState, action: PayloadAction<{ [key in keyof Player]?: Player[key] }>) => {
             return {
                 ...state,
                 player: {
@@ -134,7 +134,7 @@ export const playerStateSlice = createSlice({
                 } as Player,
             };
         },
-        onSelectClass: (state, action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>) => {
+        onSelectClass: (state: CharacterState, action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>) => {
             return {
                 ...state,
                 player: {
@@ -142,10 +142,10 @@ export const playerStateSlice = createSlice({
                     class: action.payload.selectedClass,
                     effects: aggregateItemEffects(classMap[action.payload.selectedClass].items),
                 },
-                deck: action.payload.deck.map((card: Ability) => ({ ...card, instanceId: uuid.v4() })),
+                deck: action.payload.deck.map((card: Ability) => ({ ...card, effects: card.effects || [], instanceId: uuid.v4() })),
             };
         },
-        updateDeck: (state, action: PayloadAction<(CombatAbility | Ability)[]>) => {
+        updateDeck: (state: CharacterState, action: PayloadAction<(CombatAbility | Ability)[]>) => {
             return {
                 ...state,
                 deck: action.payload.map((card) => {
@@ -154,14 +154,14 @@ export const playerStateSlice = createSlice({
                         return card;
                     }
 
-                    return { ...card, instanceId: uuid.v4() };
+                    return { ...card, effects: card.effects || [], instanceId: uuid.v4() };
                 }),
             };
         },
         restartGame: () => {
             return INITIAL_STATE;
         },
-        loseItems: (state, action: PayloadAction<String[]>) => {
+        loseItems: (state: CharacterState, action: PayloadAction<String[]>) => {
             const player = state.player;
             const lostItemNames = action.payload;
 
@@ -199,12 +199,17 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        acquireItems: (state, action: PayloadAction<Item[]>) => {
+        acquireItems: (state: CharacterState, action: PayloadAction<Item[]>) => {
             const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.OTHER, ITEM_TYPES.EQUIPMENT];
-            let newItems = [...state.player.items];
+            const player = state.player;
+            if (!player) {
+                return;
+            }
 
-            const regularItems = [];
-            const itemsWithPickUpEffects = [];
+            let newItems = [...player.items];
+
+            const regularItems: Item[] = [];
+            const itemsWithPickUpEffects: Item[] = [];
             action.payload.forEach((item) => {
                 if (item.pickUp) {
                     itemsWithPickUpEffects.push(item);
@@ -232,7 +237,7 @@ export const playerStateSlice = createSlice({
                 };
             });
 
-            if (regularItems.some((item) => item.name === STARTER_ITEM_UPGRADE_MAP[state.player?.class]?.name)) {
+            if (regularItems.some((item) => item.name === STARTER_ITEM_UPGRADE_MAP[player.class]?.name)) {
                 // This is the upgraded starter item. The starter item will be replaced.
                 newItems = newItems.filter((item) => item.rarity !== RARITIES.STARTER);
             }
@@ -246,9 +251,9 @@ export const playerStateSlice = createSlice({
             }, 0);
             let updatedMesos = 0;
             if (incomingMesos > 0) {
-                updatedMesos = state.player.mesos + calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
+                updatedMesos = player.mesos + calculateMesoMultiplier({ player, mesos: incomingMesos });
             } else {
-                updatedMesos = Math.max(0, state.player.mesos + incomingMesos);
+                updatedMesos = Math.max(0, player.mesos + incomingMesos);
             }
 
             const newItemsMaxHP = aggregateItemEffects(regularItems).reduce((acc, effect: Effect) => {
@@ -262,11 +267,11 @@ export const playerStateSlice = createSlice({
                     effects: aggregateItemEffects(newItems),
                     items: newItems,
                     mesos: updatedMesos,
-                    HP: state.player.HP + newItemsMaxHP,
+                    HP: player.HP + newItemsMaxHP,
                 },
             };
         },
-        updateMesos: (state, action: PayloadAction<number | undefined>) => {
+        updateMesos: (state: CharacterState, action: PayloadAction<number | undefined>) => {
             const incomingMesos = action.payload || 0;
             let updated = 0;
             if (incomingMesos > 0) {
@@ -283,9 +288,13 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        useConsumable: (state, action: PayloadAction<Item>) => {
+        useConsumable: (state: CharacterState, action: PayloadAction<Item>) => {
             // Out of combat consumable use. In-combat uses a different action, see battleStateSlice.
             const player = state.player;
+            if (!player) {
+                return;
+            }
+
             const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             let updatedItems = [...player.items];
@@ -296,7 +305,7 @@ export const playerStateSlice = createSlice({
                     if (item.name === name) {
                         return {
                             ...item,
-                            stacks: item.stacks - 1,
+                            stacks: (item.stacks || 1) - 1,
                         };
                     }
 
@@ -314,19 +323,19 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        pushBattleHistory: (state, action: PayloadAction<BattleHistory>) => {
+        pushBattleHistory: (state: CharacterState, action: PayloadAction<BattleHistory>) => {
             return {
                 ...state,
                 battleHistory: [...(state?.battleHistory || []), action.payload],
             };
         },
-        pushActivityHistory: (state, action: PayloadAction<ActivityHistoryLog>) => {
+        pushActivityHistory: (state: CharacterState, action: PayloadAction<ActivityHistoryLog>) => {
             return {
                 ...state,
                 activityHistory: [...(state.activityHistory || []), action.payload],
             };
         },
-        logVisitedEvent: (state, action: PayloadAction<string>) => {
+        logVisitedEvent: (state: CharacterState, action: PayloadAction<string>) => {
             const eventId = action.payload;
             return {
                 ...state,
@@ -336,13 +345,13 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        addInfamy: (state, action: PayloadAction<number>) => {
+        addInfamy: (state: CharacterState, action: PayloadAction<number>) => {
             return {
                 ...state,
                 infamy: state.infamy + action.payload,
             };
         },
-        loadState: (state, action) => {
+        loadState: (state: CharacterState, action) => {
             return {
                 ...state,
                 ...action.payload,
@@ -359,7 +368,7 @@ export const playerStateSlice = createSlice({
                 rolledBosses: getRolledBosses(),
             };
         },
-        selectMapNode: (state, action) => {
+        selectMapNode: (state: CharacterState, action) => {
             const node = action.payload;
 
             if (node.type === NODE_TYPES.RESTING_ZONE || state.currentMapLocation?.type === NODE_TYPES.TOWN) {
@@ -373,14 +382,14 @@ export const playerStateSlice = createSlice({
                 nodesVisited: { ...state.nodesVisited, [node.id]: true },
             };
         },
-        selectInTownNode: (state, action: PayloadAction<string>) => {
+        selectInTownNode: (state: CharacterState, action: PayloadAction<string>) => {
             const node = action.payload;
             return {
                 ...state,
                 nodesVisited: { ...state.nodesVisited, [node]: true },
             };
         },
-        setRoute: (state, action) => {
+        setRoute: (state: CharacterState, action) => {
             const route = action.payload;
             return {
                 ...state,
@@ -388,7 +397,7 @@ export const playerStateSlice = createSlice({
                 currentMapLocation: route,
             };
         },
-        setTown: (state, action: PayloadAction<TOWNS>) => {
+        setTown: (state: CharacterState, action: PayloadAction<TOWNS>) => {
             const townName = action.payload;
             const newState = {
                 ...state,
@@ -418,7 +427,7 @@ export const playerStateSlice = createSlice({
             saveGame(newState);
             return newState;
         },
-        updateTownShop: (state, action: PayloadAction<{ town: TOWNS; shopKey: string; shopState: any }>) => {
+        updateTownShop: (state: CharacterState, action: PayloadAction<{ town: TOWNS; shopKey: string; shopState: any }>) => {
             const { town, shopKey, shopState } = action.payload;
             if (!shopKey) {
                 return state;
@@ -440,7 +449,7 @@ export const playerStateSlice = createSlice({
             saveGame(newState);
             return newState;
         },
-        onPurchaseConsumable: (state, action: PayloadAction<string>) => {
+        onPurchaseConsumable: (state: CharacterState, action: PayloadAction<string>) => {
             const itemName = action.payload;
             return {
                 ...state,
@@ -450,7 +459,7 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        refreshTownItemShop: (state, action: PayloadAction<TOWNS>) => {
+        refreshTownItemShop: (state: CharacterState, action: PayloadAction<TOWNS>) => {
             const town = action.payload;
             const newState = {
                 ...state,
@@ -470,7 +479,7 @@ export const playerStateSlice = createSlice({
             saveGame(newState);
             return newState;
         },
-        setNumNormalEncountersSinceLoot: (state, action: PayloadAction<number>) => {
+        setNumNormalEncountersSinceLoot: (state: CharacterState, action: PayloadAction<number>) => {
             return {
                 ...state,
                 numNormalEncountersSinceLoot: action.payload,

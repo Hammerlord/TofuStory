@@ -40,15 +40,14 @@ const Bleed = ({ amount }: { amount?: number }) => {
             return;
         }
 
-        let timeout;
         if (amount > oldAmount) {
-            timeout = setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setOldAmount(amount);
             }, ANIMATION_DURATION * 1000);
+            return () => clearTimeout(timeout);
         } else {
             setOldAmount(amount);
         }
-        return () => clearTimeout(timeout);
     }, [amount]);
     const classes = useStyles();
 
