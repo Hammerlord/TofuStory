@@ -306,7 +306,7 @@ export type CombatEffect = Effect & {
     uptime: number;
     applierId?: string; // The id of the combatant that applied this, if applicable
     originalAbilityId?: string; // The id of the CombatAbility that applied this, if applicable
-    originalDuration?: number;
+    originalDuration: number;
     stacks: number;
     isEffectFromHoldingAbility?: boolean;
     maxStacks: number;

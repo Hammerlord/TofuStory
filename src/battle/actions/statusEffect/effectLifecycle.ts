@@ -6,6 +6,7 @@ import { enqueueEvent } from "../enqueueEvent";
 import { triggerStatChangeEvents } from "../statChanges";
 import { onEffectEventTrigger } from "./triggerEffectEvent";
 import { AppDispatch, RootState } from "../../../store";
+import { Combatant } from "../../../character/types";
 
 /**
  * Handles updating effect lifecycle properties
@@ -17,21 +18,17 @@ export const checkUpdateEffectLifecycle =
         effect,
         effectEvent,
         context,
-        ownerId,
+        owner,
     }: {
         effect: CombatEffect;
         effectEvent: EffectEventTrigger;
         context: ActionContext;
-        ownerId: string;
+        owner: Combatant;
     }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
         const { removeEffect, decrementStacks = 0, incrementStacks = 0, resetDuration } = effectEvent;
 
-        const { combatant } = findCombatantData(getState().battle!, ownerId) || {};
-        if (!combatant) {
-            return;
-        }
-
+        const ownerId = owner.id;
         const maxStacks = effect.maxStacks || Infinity;
         const updatedStacks = (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0);
         const updatedEffect = {
@@ -43,7 +40,7 @@ export const checkUpdateEffectLifecycle =
         if (removeEffect || updatedEffect.stacks === 0) {
             const removedEffects: CombatEffect[] = [];
             const newEffects: CombatEffect[] = [];
-            combatant.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
+            owner.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
 
             dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, context: context }]));
             dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
@@ -52,7 +49,7 @@ export const checkUpdateEffectLifecycle =
         }
 
         if ((decrementStacks && updatedEffect.stacks > 0) || resetDuration || incrementStacks) {
-            const newEffects = combatant.effects.map((e: CombatEffect) => {
+            const newEffects = owner.effects.map((e: CombatEffect) => {
                 return e.id === effect.id ? updatedEffect : e;
             });
             dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));

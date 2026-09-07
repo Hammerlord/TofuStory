@@ -607,7 +607,6 @@ const handleSecondaryAction = ({
         }
 
         const { side, index } = target;
-
         const targetId = battle[side]?.[index]?.id;
         const targetData = findCombatantData(battle, targetId);
         if (!targetData) {
