@@ -1,16 +1,16 @@
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, Ability, CombatAbility, CombatEffect } from "../../ability/types";
-import { isOffensiveAbility } from "../../ability/AbilityView/utils";
 import { BLUE, GREEN, RED } from "../../ability/AbilityView/constants";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
+import { ACTION_TYPES, Ability, CombatAbility, CombatEffect } from "../../ability/types";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../../character/effects/constants";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { CrossedSwordsIcon, HourglassIcon } from "../../images/icons";
+import { CrossedSwordsIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
 import Tooltip from "../../view/Tooltip";
-import { BATTLEFIELD_SIDES, EventGroup } from "../types";
 import { UpdatedCombatantStats } from "../actions/getUpdatedStats";
+import { BATTLEFIELD_SIDES, EventGroup } from "../types";
 
 const useItemStyles = createUseStyles({
     root: ({ actorSide }: { actorSide: BATTLEFIELD_SIDES | undefined }) => ({
@@ -80,7 +80,7 @@ const getAbilityType = (actionParent: CombatAbility | undefined) => {
     return undefined;
 };
 
-const useDamageListStyles = createUseStyles({
+const useListStyles = createUseStyles({
     root: {
         display: "flex",
         flexDirection: "column",
@@ -97,8 +97,12 @@ const getDirectDamageUpdates = (statUpdates: EventGroup["statUpdates"]): Updated
     return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.rawDamage ?? 0) > 0);
 };
 
+const getArmorUpdates = (statUpdates: EventGroup["statUpdates"]): UpdatedCombatantStats[] => {
+    return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.armor ?? 0) > 0);
+};
+
 const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
-    const classes = useDamageListStyles();
+    const classes = useListStyles();
     const damageUpdates = getDirectDamageUpdates(statUpdates);
 
     if (!damageUpdates.length) {
@@ -110,6 +114,25 @@ const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] })
             {damageUpdates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
                     {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to {update.combatantName}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const ArmorList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
+    const classes = useListStyles();
+    const updates = getArmorUpdates(statUpdates);
+
+    if (!updates.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {updates.map((update) => (
+                <div className={classes.row} key={update.combatantId}>
+                    {update.armor} <Icon icon={ShieldIcon} size="xs" /> to {update.combatantName}
                 </div>
             ))}
         </div>
@@ -163,6 +186,7 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
 
             <hr />
             <DamageList statUpdates={group.statUpdates} />
+            <ArmorList statUpdates={group.statUpdates} />
         </>
     );
 
