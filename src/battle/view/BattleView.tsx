@@ -17,14 +17,29 @@ import {
     TARGET_TYPES,
 } from "../../ability/types";
 import CombatantView from "../../character/CombatantView";
-import { getNextTelegraphedAbility } from "../../character/Telegraph";
-import getAbilityPreviews, { getEmptyTileKey } from "../../character/getAbilityPreviews";
+import { getEmptyTileKey } from "../../character/getAbilityPreviews";
 import { Combatant, Player } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import Icon from "../../icon/Icon";
 import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
+import { checkCardActions } from "../actions/cardActions/cardActions";
+import { applyAbilityEventEffects } from "../actions/cardActions/utils";
+import { findCombatantData, hasEffectType } from "../actions/combatantData";
+import { endEnemyTurn, enemyMoves, startEnemyTurn } from "../actions/phases/enemyTurn";
+import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
+import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
+import { canUsePlayerAbility, getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
+import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
+import { useAbility } from "../actions/useAbility";
+import { checkWinCondition } from "../checkWinCondition";
+import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
+import { usePreloadImages } from "../hooks/usePreloadImage";
+import { battleStateSlice } from "../reducer";
+import { BATTLE_STATES } from "../states";
+import { BATTLEFIELD_SIDES, BattleState, CombatantInfo, EventGroup, PlayerSelectCardsPrompt } from "../types";
+import { canTargetIfStealthed, isUntargetable } from "../utils";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -38,32 +53,8 @@ import ParticleCanvas from "./ParticleCanvas";
 import SelectCardOverlay from "./SelectCardOverlay";
 import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
-import { checkCardActions } from "../actions/cardActions/cardActions";
-import { applyAbilityEventEffects } from "../actions/cardActions/utils";
-import { endEnemyTurn, enemyMoves, startEnemyTurn } from "../actions/phases/enemyTurn";
-import { getCombatantMoveOrder } from "../actions/phases/getCombatantMoveOrder";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
-import { useHandAbility } from "../actions/playerAbility";
-import { checkWinCondition } from "../checkWinCondition";
-import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
-import { usePreloadImages } from "../hooks/usePreloadImage";
-import { battleStateSlice } from "../reducer";
-import { BATTLE_STATES } from "../states";
-import { PlayerSelectCardsPrompt } from "../types";
-import { BattleState } from "../types";
-import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../types";
-import { canTargetIfStealthed, isUntargetable } from "../utils";
-import { canUsePlayerAbility } from "../actions/playerAbility";
-import { getCardByInstanceId } from "../actions/playerAbility";
-import { isWithinPlayerAbilityArea } from "../actions/playerAbility";
-import { isTurnActionPrevented } from "../actions/combatantData";
-import { hasEffectType } from "../actions/combatantData";
-import { isValidTargetForPlayerAbility } from "../actions/targeting/playerTargeting";
-import { findCombatantData } from "../actions/combatantData";
-import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
-import { useAbility } from "../actions/useAbility";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
+import { isTargetedForAbility, shouldShowReticleForTarget } from "./targetHelpers";
 
 const useStyles = createUseStyles({
     root: {
@@ -796,101 +787,47 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     }, [eventGroups, battleState, isWinConditionTriggered]);
 
-    const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean => {
-        const isValidIndex = (index: any) => typeof index === "number";
-        const noHover = !isValidIndex(hoveredCombatant?.index);
-        const mismatchingSide = side !== hoveredCombatant?.side;
-        if (!abilityToUse || disableActions || noHover || mismatchingSide || !actor) {
-            return false;
-        }
-
-        const hoveredIndex = hoveredCombatant?.index;
-
-        if (
-            !isValidTargetForPlayerAbility({
-                ability: abilityToUse,
-                side,
-                index: hoveredIndex,
-                battle,
-                actorId,
-            })
-        ) {
-            return false;
-        }
-
-        if (typeof i !== "number") {
-            return false;
-        }
-
-        const actorInfo = findCombatantData(battle, actorId);
-        if (!actorInfo) {
-            return false;
-        }
-        return isWithinPlayerAbilityArea({ ability: abilityToUse, actor: actorInfo, selectedIndex: hoveredIndex, targetIndex: i, battle });
-    };
+    const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean =>
+        isTargetedForAbility({
+            hoveredCombatant,
+            abilityToUse,
+            disableActions,
+            actor,
+            battle,
+            actorId,
+            side,
+            i,
+        });
 
     /**
      * When selecting an ability, if a reticle should appear on a combatant, it means that combatant is a valid target.
      */
     const shouldShowReticle = useCallback(
-        (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean => {
-            if (selectedAbilityFromHand && !canUsePlayerAbility(player, selectedAbilityFromHand)) {
-                return false;
-            }
-
-            const moveAbility = allowFriendlyMovement && selectedMinion ? movementAbility : undefined;
-
-            if (!abilityToUse && !moveAbility) {
-                return false;
-            }
-
-            const checkValidTargetForAbility = (ability: Ability | undefined) => {
-                if (!ability) {
-                    return false;
-                }
-
-                if (
-                    !isValidTargetForPlayerAbility({
-                        ability,
-                        side: combatantSide,
-                        index: combatantIndex,
-                        battle,
-                        actorId,
-                    })
-                ) {
-                    return false;
-                }
-
-                if (
-                    !hoveredCombatant ||
-                    !isValidTargetForPlayerAbility({
-                        ability,
-                        side: hoveredCombatant.side,
-                        index: hoveredCombatant.index,
-                        battle,
-                        actorId,
-                    })
-                ) {
-                    return true;
-                }
-
-                const actorInfo = findCombatantData(battle, actorId);
-                if (!actorInfo) {
-                    return false;
-                }
-
-                return isWithinPlayerAbilityArea({
-                    ability,
-                    actor: actorInfo,
-                    selectedIndex: hoveredCombatant?.index,
-                    targetIndex: combatantIndex,
-                    battle,
-                });
-            };
-
-            return checkValidTargetForAbility(abilityToUse) || checkValidTargetForAbility(moveAbility);
-        },
-        [selectedMinion, selectedAbilityFromHand, allowFriendlyMovement, movementAbility, hoveredCombatant, abilityToUse]
+        (combatantSide: BATTLEFIELD_SIDES, combatantIndex: number): boolean =>
+            shouldShowReticleForTarget({
+                selectedAbilityFromHand,
+                player,
+                selectedMinion,
+                allowFriendlyMovement,
+                movementAbility,
+                hoveredCombatant,
+                abilityToUse,
+                battle,
+                actorId,
+                combatantSide,
+                combatantIndex,
+            }),
+        [
+            selectedMinion,
+            selectedAbilityFromHand,
+            allowFriendlyMovement,
+            movementAbility,
+            hoveredCombatant,
+            abilityToUse,
+            battle,
+            actorId,
+            player,
+        ]
     );
 
     const origination = useMemo(() => {
