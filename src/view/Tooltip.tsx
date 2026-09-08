@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
             padding: "16px",
         },
 
-        "& .MuiTooltip-Arrow::before": {
+        "& .MuiTooltip-arrow::before": {
             background: "rgba(25, 25, 25, 0.95)",
         },
 
