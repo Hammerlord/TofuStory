@@ -186,6 +186,7 @@ export interface BattleState {
     deckCycled?: boolean;
     selectedHandAbilityId: string | null;
     selectedAllyId: string | null;
+    showTurnAnnouncement?: boolean;
 } // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
 
 export interface PlayerSelectCardsPrompt {

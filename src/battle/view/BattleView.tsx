@@ -1,4 +1,4 @@
-import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactElement, RefObject, useCallback, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../../ability/AbilityView/DamageIcon";
@@ -27,14 +27,12 @@ import Tooltip from "../../view/Tooltip";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/utils";
 import { findCombatantData, hasEffectType } from "../actions/combatantData";
-import { endEnemyTurn, enemyMoves, startEnemyTurn } from "../actions/phases/enemyTurn";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
-import { initiatePlayerTurnInProgress, onSummonAttack, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
+import { onSummonAttack } from "../actions/phases/playerTurn";
 import { canUsePlayerAbility, getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
 import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
-import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
+import { useBattlePhase } from "../hooks/useBattlePhase";
 import { usePreloadImages } from "../hooks/usePreloadImage";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
@@ -221,7 +219,6 @@ const useStyles = createUseStyles({
 const BATTLEFIELD_SIZE = 5;
 
 const {
-    popEventQueue,
     updateBattleState,
     updateBattle,
     promptPlayerSelectCards,
@@ -288,6 +285,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         isTutorial,
         selectedAllyId,
         selectedHandAbilityId,
+        showTurnAnnouncement,
     } = battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
@@ -299,11 +297,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const discardRef: RefObject<HTMLDivElement | null> = useRef(null);
     const depleteRef: RefObject<HTMLDivElement | null> = useRef(null);
 
-    const [showTurnAnnouncement, setShowTurnAnnouncement] = useState(false);
-    const [showWaveClear, setShowWaveClear] = useState(false);
     const [hoveredCombatant, setHoveredCombatant] = useState<{ side: BATTLEFIELD_SIDES; index: number; id: string | null } | null>(null);
     const classes = useStyles({ backgroundImage } as any);
-    const { description: waveDescription } = waves[currentWaveIndex] || {};
 
     const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
 
@@ -311,7 +306,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
 
-    const isWinConditionTriggered = checkWinCondition({ battle });
+    const { isWinConditionTriggered, showWaveClear } = useBattlePhase({ onWin });
 
     const disableActions: boolean = Boolean(
         !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt
@@ -611,181 +606,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    const battleStateRef: RefObject<BATTLE_STATES | null> = useRef(null);
-
     usePreloadImages(playerSide, enemySide, hand, deck, discard);
-
-    useEffect(() => {
-        const showWaveDescription = ({
-            description,
-            i = 0,
-            delay = 2500,
-        }: {
-            description?: string | string[] | ReactElement | ReactElement[];
-            i?: number;
-            delay?: number;
-        }) => {
-            setTimeout(() => {
-                dispatch(
-                    setNotification({
-                        text: Array.isArray(description) ? description[i] : description,
-                        id: uuid.v4(),
-                    })
-                );
-                if (Array.isArray(description) && description[i + 1]) {
-                    showWaveDescription({ description, i: i + 1, delay: 7500 });
-                }
-            }, delay);
-        };
-
-        showWaveDescription({ description: waveDescription });
-    }, [currentWaveIndex]);
-
-    useEffect(() => {
-        const notification = waves[currentWaveIndex]?.notifications?.find((n) => n.round === round);
-        if (notification) {
-            dispatch(
-                setNotification({
-                    text: notification.text,
-                    id: uuid.v4(),
-                })
-            );
-        }
-    }, [currentWaveIndex, round]);
-
-    const handleBattlePhase = () => {
-        if (isWinConditionTriggered) {
-            dispatch(updateBattleState(BATTLE_STATES.WAVE_END));
-        } else if (battleState === BATTLE_STATES.TURN_ENDING) {
-            setTimeout(() => {
-                dispatch(updateBattle({ isPlayerTurn: !isPlayerTurn }));
-                dispatch(updateBattleState(BATTLE_STATES.TURN_STARTING));
-            }, 250);
-        }
-
-        // Prevent duplicate battle states from triggering consecutively
-        if (battleStateRef?.current === battleState) {
-            return;
-        }
-
-        const prevBattleState = battleStateRef.current;
-        battleStateRef.current = battleState;
-        if (battleState === BATTLE_STATES.BATTLE_START) {
-            setTimeout(() => {
-                dispatch(onBattleStart());
-                dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
-            }, 250);
-            return;
-        }
-
-        if (battleState === BATTLE_STATES.WAVE_START) {
-            setTimeout(() => {
-                dispatch(onWaveStart());
-                setShowTurnAnnouncement(true);
-                setTimeout(() => {
-                    setShowTurnAnnouncement(false);
-                    dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-                }, TURN_ANNOUNCEMENT_TIME);
-            }, 250);
-            return;
-        }
-
-        if (battleState === BATTLE_STATES.TURN_STARTING) {
-            setShowTurnAnnouncement(true);
-            setTimeout(() => {
-                setShowTurnAnnouncement(false);
-                dispatch(updateBattleState(BATTLE_STATES.TURN_START));
-            }, TURN_ANNOUNCEMENT_TIME);
-
-            return;
-        }
-
-        if (battleState === BATTLE_STATES.TURN_START) {
-            if (isPlayerTurn) {
-                dispatch(startPlayerTurn(prevBattleState === BATTLE_STATES.WAVE_START));
-            } else {
-                dispatch(startEnemyTurn());
-            }
-            dispatch(updateBattleState(BATTLE_STATES.TURN_IN_PROGRESS));
-        }
-
-        if (battleState === BATTLE_STATES.TURN_IN_PROGRESS) {
-            if (!isPlayerTurn) {
-                dispatch(enemyMoves());
-            } else {
-                dispatch(initiatePlayerTurnInProgress());
-            }
-
-            return;
-        }
-
-        if (battleState === BATTLE_STATES.TURN_END) {
-            if (isPlayerTurn) {
-                dispatch(playerEndTurn());
-            } else {
-                dispatch(endEnemyTurn());
-            }
-
-            dispatch(updateBattleState(BATTLE_STATES.TURN_ENDING));
-        }
-
-        if (battleState === BATTLE_STATES.WAVE_END) {
-            setTimeout(() => {
-                setShowWaveClear(true);
-
-                setTimeout(() => {
-                    setShowWaveClear(false);
-                    dispatch(onWaveClear());
-                    if (waves[currentWaveIndex + 1]) {
-                        dispatch(nextWave());
-                        dispatch(updateBattleState(BATTLE_STATES.WAVE_START));
-                    } else {
-                        dispatch(onBattleEnd());
-                        onWin && onWin(battle);
-                    }
-                }, TURN_ANNOUNCEMENT_TIME);
-            }, 1000);
-        }
-    };
-    const playbackStartedAt = useRef<number | null>(null);
-
-    useEffect(() => {
-        if (!currentEventGroup) {
-            playbackStartedAt.current = null;
-            return;
-        }
-
-        const now = performance.now();
-
-        if (playbackStartedAt.current === null) {
-            playbackStartedAt.current = now;
-        }
-
-        // Some animations are getting cut off at the end, need to investigate
-        const graceWindow = 50;
-        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime + graceWindow;
-
-        const delay = Math.max(0, deadline - now);
-
-        const timeout = setTimeout(() => {
-            playbackStartedAt.current = deadline;
-
-            dispatch(popEventQueue());
-        }, delay);
-
-        return () => clearTimeout(timeout);
-    }, [currentEventGroup?.id]);
-
-    useEffect(() => {
-        if ([BATTLE_STATES.VICTORY].includes(battleState)) {
-            return;
-        }
-
-        if (!eventGroups.length) {
-            handleBattlePhase();
-            return;
-        }
-    }, [eventGroups, battleState, isWinConditionTriggered]);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean =>
         isTargetedForAbility({
