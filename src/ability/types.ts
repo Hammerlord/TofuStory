@@ -643,6 +643,8 @@ export type CardsAction = {
     bonus?: CardBonus[];
 };
 
+export type InduceCombatantModes = "standard" | "left-to-right" | "right-to-left";
+
 export type Action = {
     damage?: number;
     maxDamage?: number;
@@ -743,7 +745,7 @@ export type Action = {
     // When cast on a combatant, that combatant will attack randomly.
     induceCombatantAttack?: boolean;
     induceCombatant?: {
-        mode?: "standard" | "left-to-right" | "right-to-left";
+        mode?: InduceCombatantModes;
         action: Action | Action[];
     };
     mesos?: number;
