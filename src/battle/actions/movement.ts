@@ -136,41 +136,49 @@ export const applyVacuum = ({
 
     for (let i = 1; i <= area; ++i) {
         if (characters[index + i] && !isDisplacementImmune(characters[index + i])) {
-            for (let j = 0; j < i && j < distance; ++j) {
+            let landing: number | null = null;
+            for (let j = i - 1; j >= Math.max(0, i - distance); --j) {
                 const existingCharacter = characters[index + j];
                 if (isDisplacementImmune(existingCharacter)) {
                     break; // A displacement-immune character blocks anything behind it from moving further
                 }
                 if (isValidSlot(existingCharacter)) {
-                    characters[index + j] = characters[index + i];
-                    characters[index + i] = null;
-                    const id = characters[index + j]?.id;
-                    if (id) {
-                        displacements[id] = {
-                            from: index + i,
-                            to: index + j,
-                        };
-                    }
+                    landing = j;
+                }
+            }
+            if (landing !== null) {
+                characters[index + landing] = characters[index + i];
+                characters[index + i] = null;
+                const id = characters[index + landing]?.id;
+                if (id) {
+                    displacements[id] = {
+                        from: index + i,
+                        to: index + landing,
+                    };
                 }
             }
         }
         if (characters[index - i] && !isDisplacementImmune(characters[index - i])) {
-            for (let j = 0; j < i && j < distance; ++j) {
+            let landing: number | null = null;
+            for (let j = i - 1; j >= Math.max(0, i - distance); --j) {
                 const existingCharacter = characters[index - j];
                 if (isDisplacementImmune(existingCharacter)) {
                     break; // A displacement-immune character blocks anything behind it from moving further
                 }
                 if (isValidSlot(existingCharacter)) {
-                    characters[index - j] = characters[index - i];
-                    characters[index - i] = null;
+                    landing = j;
+                }
+            }
+            if (landing !== null) {
+                characters[index - landing] = characters[index - i];
+                characters[index - i] = null;
 
-                    const id = characters[index - j]?.id;
-                    if (id) {
-                        displacements[id] = {
-                            from: index - i,
-                            to: index - j,
-                        };
-                    }
+                const id = characters[index - landing]?.id;
+                if (id) {
+                    displacements[id] = {
+                        from: index - i,
+                        to: index - landing,
+                    };
                 }
             }
         }
