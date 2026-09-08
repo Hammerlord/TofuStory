@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import Camp from "../map/Camp";
 import { REGIONS } from "../map/regions";
@@ -274,6 +274,7 @@ const ScenePlayer = ({
     const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [upgradedCards, setUpgradedCards]: [{ original: CombatAbility[]; upgraded: CombatAbility[] }, Function] = useState(null);
+    const [hasEnteredInitialNode, setHasEnteredInitialNode] = useState(false);
 
     const classes = useStyles();
 
@@ -282,17 +283,8 @@ const ScenePlayer = ({
         dialog = [],
         items,
         responses: initResponses,
-        puzzle,
         itemChoices,
-        loseItems = [],
-        loseMesos,
-        mesos,
-        loseHP,
-        treasureBox,
-        conditionalNext,
-        infamy,
         disableBackground,
-        id,
     }: ScriptNode = script[dialogIndex] || ({} as any);
 
     const itemsObtainedFromScene: Item[] | undefined = useMemo(() => {
@@ -320,94 +312,6 @@ const ScenePlayer = ({
         return itemPool;
     }, [items]);
 
-    useEffect(() => {
-        if (!script[dialogIndex]) {
-            return;
-        }
-
-        const { scene: newScene, background: scriptBackground, region: scriptRegion }: ScriptNode = script[dialogIndex];
-        if (scriptRegion) {
-            onChangeRegion(scriptRegion);
-        }
-        if (newScene && newScene !== Backdrop) {
-            setBackdrop(() => newScene || null);
-        }
-
-        const transitioningPuzzle = (Puzzle && !puzzle) || (!puzzle && Puzzle);
-        if (transitioningPuzzle) {
-            if (onTransition) {
-                onTransition(() => {
-                    setPuzzle(null);
-
-                    if (disableBackground) {
-                        return;
-                    }
-                    if (scriptBackground) {
-                        setBackground(scriptBackground);
-                    } else if (!background) {
-                        setBackground(BG_MAP[region]);
-                    }
-                });
-            }
-        } else {
-            setPuzzle(() => puzzle);
-            if (disableBackground) {
-                return;
-            }
-            if (scriptBackground) {
-                setBackground(scriptBackground);
-            } else if (!background) {
-                setBackground(BG_MAP[region]);
-            }
-        }
-
-        if (loseItems.length) {
-            dispatch(loseItemsAction(loseItems));
-        }
-
-        if (loseMesos) {
-            updatePlayer({
-                mesos: Math.max(0, player.mesos - loseMesos),
-            });
-        }
-
-        if (mesos) {
-            updatePlayer({
-                mesos: Math.max(0, player.mesos + mesos),
-            });
-        }
-
-        if (loseHP) {
-            updatePlayer({
-                HP: Math.max(1, player.HP - loseHP),
-            });
-        }
-
-        if (treasureBox) {
-            const { isOpen, isCursed }: ScriptNodeTreasure = treasureBox;
-            setTreasureBoxOptions({
-                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
-                curse: isCursed ? "damage" : undefined,
-            });
-        }
-
-        if (conditionalNext) {
-            const passing = conditionalNext.find(({ conditions }) => passesScriptConditions(conditions));
-            if (passing) {
-                setScript(passing.next);
-                setDialogIndex(0);
-            }
-        }
-
-        if (infamy) {
-            dispatch(addInfamy(infamy));
-        }
-
-        if (id) {
-            dispatch(logVisitedEvent(id));
-        }
-    }, [script?.[dialogIndex]]);
-
     const handleExit = (disableTransition?: boolean) => {
         if (disableTransition || scene.disableTransition) {
             onExit();
@@ -416,34 +320,6 @@ const ScenePlayer = ({
         onTransition(() => {
             onExit();
         });
-    };
-
-    const onProceedDialog = () => {
-        const newDialogIndex = dialogIndex + 1;
-        if (script[newDialogIndex]) {
-            setDialogIndex(newDialogIndex);
-        } else {
-            handleExit();
-        }
-    };
-
-    const handleClickDialog = () => {
-        if (!responses && !items) {
-            onProceedDialog();
-        }
-    };
-
-    const onCompletePuzzle = (completionPayload?: PuzzleCompletionPayload) => {
-        if (completionPayload) {
-            const { infamy = 0, items = [] } = completionPayload;
-            if (items.length) {
-                dispatch(acquireItems(items));
-            }
-            dispatch(addInfamy(infamy));
-            dispatch(pushActivityHistory(completionPayload));
-        }
-
-        handleClickDialog();
     };
 
     const recentBattle = battleHistory[battleHistory.length - 1];
@@ -495,6 +371,108 @@ const ScenePlayer = ({
         return conditions.some(passesCondition);
     };
 
+    const enterNode = (node: ScriptNode, nextScript = script, nextIndex = dialogIndex) => {
+        const { scene: newScene, background: scriptBackground, region: scriptRegion } = node;
+
+        if (scriptRegion) {
+            onChangeRegion?.(scriptRegion);
+        }
+        if (newScene && newScene !== Backdrop) {
+            setBackdrop(newScene);
+        }
+
+        const transitioningPuzzle = (Puzzle && !node.puzzle) || (!node.puzzle && Puzzle);
+        const updateBackground = () => {
+            if (node.disableBackground) {
+                return;
+            }
+            if (scriptBackground) {
+                setBackground(scriptBackground);
+            } else if (!background) {
+                setBackground(BG_MAP[region]);
+            }
+        };
+
+        if (transitioningPuzzle && onTransition) {
+            onTransition(() => {
+                setPuzzle(node.puzzle || null);
+                updateBackground();
+            });
+        } else {
+            setPuzzle(node.puzzle || null);
+            updateBackground();
+        }
+
+        if (node.loseItems?.length) {
+            dispatch(loseItemsAction(node.loseItems));
+        }
+        if (node.loseMesos) {
+            updatePlayer?.({ mesos: Math.max(0, player.mesos - node.loseMesos) });
+        }
+        if (node.mesos) {
+            updatePlayer?.({ mesos: Math.max(0, player.mesos + node.mesos) });
+        }
+        if (node.loseHP) {
+            updatePlayer?.({ HP: Math.max(1, player.HP - node.loseHP) });
+        }
+        if (node.treasureBox) {
+            const { isOpen, isCursed }: ScriptNodeTreasure = node.treasureBox;
+            setTreasureBoxOptions({
+                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
+                curse: isCursed ? "damage" : undefined,
+            });
+        }
+        if (node.infamy) {
+            dispatch(addInfamy(node.infamy));
+        }
+        if (node.id) {
+            dispatch(logVisitedEvent(node.id));
+        }
+
+        const passing = node.conditionalNext?.find(({ conditions }) => passesScriptConditions(conditions));
+        if (passing) {
+            setScript(passing.next);
+            setDialogIndex(0);
+            if (passing.next[0]) {
+                enterNode(passing.next[0], passing.next, 0);
+            }
+            return;
+        }
+
+        if (nextScript !== script || nextIndex !== dialogIndex) {
+            setScript(nextScript);
+            setDialogIndex(nextIndex);
+        }
+    };
+
+    const onProceedDialog = () => {
+        const newDialogIndex = dialogIndex + 1;
+        if (script[newDialogIndex]) {
+            enterNode(script[newDialogIndex], script, newDialogIndex);
+        } else {
+            handleExit();
+        }
+    };
+
+    const handleClickDialog = () => {
+        if (!responses && !items) {
+            onProceedDialog();
+        }
+    };
+
+    const onCompletePuzzle = (completionPayload?: PuzzleCompletionPayload) => {
+        if (completionPayload) {
+            const { infamy = 0, items = [] } = completionPayload;
+            if (items.length) {
+                dispatch(acquireItems(items));
+            }
+            dispatch(addInfamy(infamy));
+            dispatch(pushActivityHistory(completionPayload));
+        }
+
+        handleClickDialog();
+    };
+
     const handleUpgradeCards = (numCards: number) => {
         const eligibleCards = deck.filter((card: CombatAbility) => !card.level || card.level === 1);
         const candidates = shuffle(eligibleCards)
@@ -529,8 +507,9 @@ const ScenePlayer = ({
             }
 
             if (next) {
-                setScript(next);
-                setDialogIndex(0);
+                if (next[0]) {
+                    enterNode(next[0], next, 0);
+                }
             }
 
             if (shop) {
@@ -590,7 +569,7 @@ const ScenePlayer = ({
         dispatch(acquireItems(itemsObtainedFromScene));
 
         if (dialogIndex < script.length - 1) {
-            setDialogIndex(dialogIndex + 1);
+            enterNode(script[dialogIndex + 1], script, dialogIndex + 1);
         } else {
             onExit();
         }
@@ -600,7 +579,7 @@ const ScenePlayer = ({
         dispatch(acquireItems([item]));
 
         if (dialogIndex < script.length - 1) {
-            setDialogIndex(dialogIndex + 1);
+            enterNode(script[dialogIndex + 1], script, dialogIndex + 1);
         } else {
             onExit();
         }
@@ -656,9 +635,9 @@ const ScenePlayer = ({
         });
 
         if (newDialogIndex > -1) {
-            setDialogIndex(newDialogIndex);
+            enterNode(script[newDialogIndex], script, newDialogIndex);
         } else {
-            setDialogIndex(script.length - 1);
+            enterNode(script[script.length - 1], script, script.length - 1);
         }
 
         e.stopPropagation(); // Prevent the click from going to the scene background, which will advance the dialog by 1 instead of skip
@@ -698,7 +677,15 @@ const ScenePlayer = ({
 
     return (
         <>
-            <div className={classes.root}>
+            <div
+                className={classes.root}
+                ref={(element) => {
+                    if (element && !hasEnteredInitialNode) {
+                        setHasEnteredInitialNode(true);
+                        enterNode(script[dialogIndex]);
+                    }
+                }}
+            >
                 <div
                     className={classNames(classes.backgroundOverlay, {
                         [classes.hide]: disableBackground,
@@ -814,7 +801,12 @@ const ScenePlayer = ({
                 <TreasureBox
                     onExit={() => {
                         setTreasureBoxOptions(null);
-                        setDialogIndex((prev) => prev + 1);
+                        const nextIndex = dialogIndex + 1;
+                        if (script[nextIndex]) {
+                            enterNode(script[nextIndex], script, nextIndex);
+                        } else {
+                            onExit();
+                        }
                     }}
                     onLoot={handleObtainLoot}
                     player={player}
