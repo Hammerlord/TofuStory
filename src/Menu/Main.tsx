@@ -45,6 +45,7 @@ import Header from "./Header";
 import ItemRewards from "./ItemRewards";
 import Sound from "./Sound";
 import { saveGame } from "./gameFiles";
+import { store } from "../store";
 import { ItemRewardsOptions, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 
@@ -360,7 +361,7 @@ const Main = () => {
         // Only if we're not in the middle of a scene (which could consist of multiple battles), save the game.
         // Otherwise, refreshing or crashing in the middle of the scene could cause some content to get locked out.
         if (!scene) {
-            saveGame(character);
+            saveGame(store.getState().character);
         }
     };
 
@@ -612,7 +613,7 @@ const Main = () => {
                             onExit={() => {
                                 setScene(null);
                                 setSceneRegion(null);
-                                saveGame(character);
+                                saveGame(store.getState().character);
                             }}
                             onBattle={handleSceneBattle}
                             onShop={() => setActivity(ACTIVITIES.SHOP)}
@@ -624,7 +625,10 @@ const Main = () => {
                     )}
                     {activity === ACTIVITIES.CAMP && (
                         <Camp
-                            onExit={() => setActivity(null)}
+                            onExit={() => {
+                                setActivity(null);
+                                saveGame(store.getState().character);
+                            }}
                             player={player}
                             deck={deck}
                             updateDeck={handleUpdateDeck}
@@ -652,7 +656,10 @@ const Main = () => {
 
                     {treasure && (
                         <TreasureBox
-                            onExit={() => setTreasure(null)}
+                            onExit={() => {
+                                setTreasure(null);
+                                saveGame(store.getState().character);
+                            }}
                             onLoot={handleObtainLoot}
                             /**Puzzle={treasure.puzzle}**/
                             initItems={treasure.items}

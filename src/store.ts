@@ -2,12 +2,7 @@ import { configureStore, Middleware } from "@reduxjs/toolkit";
 import { battleStateSlice } from "./battle/reducer";
 import { playerStateSlice } from "./character/playerReducer";
 
-const characterPersistenceActions = new Set([
-    "player/selectMapNode",
-    "player/setTown",
-    "player/updateTownShop",
-    "player/refreshTownItemShop",
-]);
+const characterPersistenceActions = new Set(["player/setTown", "player/updateTownShop", "player/refreshTownItemShop"]);
 
 const isCharacterPersistenceAction = (action: unknown): action is { type: string } => {
     return typeof action === "object" && action !== null && "type" in action && typeof action.type === "string";
