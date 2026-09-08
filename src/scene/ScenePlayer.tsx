@@ -273,7 +273,7 @@ const ScenePlayer = ({
     const [showCamp, setShowCamp] = useState(false);
     const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const [upgradedCards, setUpgradedCards]: [{ original: CombatAbility[]; upgraded: CombatAbility[] }, Function] = useState(null);
+    const [upgradedCards, setUpgradedCards] = useState<{ original: CombatAbility[]; upgraded: CombatAbility[] } | null>(null);
     const [hasEnteredInitialNode, setHasEnteredInitialNode] = useState(false);
 
     const classes = useStyles();
@@ -378,7 +378,7 @@ const ScenePlayer = ({
             onChangeRegion?.(scriptRegion);
         }
         if (newScene && newScene !== Backdrop) {
-            setBackdrop(newScene);
+            setBackdrop(() => newScene);
         }
 
         const transitioningPuzzle = (Puzzle && !node.puzzle) || (!node.puzzle && Puzzle);
@@ -395,11 +395,11 @@ const ScenePlayer = ({
 
         if (transitioningPuzzle && onTransition) {
             onTransition(() => {
-                setPuzzle(node.puzzle || null);
+                setPuzzle(() => node.puzzle || null);
                 updateBackground();
             });
         } else {
-            setPuzzle(node.puzzle || null);
+            setPuzzle(() => node.puzzle || null);
             updateBackground();
         }
 
@@ -628,16 +628,56 @@ const ScenePlayer = ({
         }
     };
 
-    const handleSkip = (e) => {
-        const newDialogIndex = script.findIndex((scriptNode: ScriptNode, i) => {
-            const { responses, items, itemChoices, puzzle, scene, treasureBox } = scriptNode || {};
-            return i > dialogIndex && (responses || items || itemChoices || puzzle || scene || treasureBox);
-        });
+    const isSkipStoppingPoint = (scriptNode: ScriptNode) => {
+        const { responses, items, itemChoices, puzzle, scene, treasureBox } = scriptNode || {};
+        if (items || itemChoices || puzzle || scene || treasureBox) {
+            return true;
+        }
 
-        if (newDialogIndex > -1) {
-            enterNode(script[newDialogIndex], script, newDialogIndex);
-        } else {
-            enterNode(script[script.length - 1], script, script.length - 1);
+        if (!responses) {
+            return false;
+        }
+
+        if (responses.length !== 1) {
+            return true;
+        }
+
+        const [response] = responses;
+        return Boolean(
+            response.conditions?.length ||
+            response.encounter ||
+            response.isExit ||
+            response.shop ||
+            response.camp ||
+            response.removeAbility ||
+            response.upgradeCards ||
+            response.transmutation ||
+            response.infamy ||
+            response.id
+        );
+    };
+
+    const handleSkip = (e) => {
+        let currentScript = script;
+        let nextIndex = dialogIndex + 1;
+
+        while (nextIndex < currentScript.length) {
+            const nextNode = currentScript[nextIndex];
+            if (isSkipStoppingPoint(nextNode)) {
+                enterNode(nextNode, currentScript, nextIndex);
+                break;
+            }
+
+            enterNode(nextNode, currentScript, nextIndex);
+
+            const [response] = nextNode.responses || [];
+            if (nextNode.responses?.length === 1 && response.next) {
+                currentScript = response.next;
+                nextIndex = 0;
+                continue;
+            }
+
+            nextIndex += 1;
         }
 
         e.stopPropagation(); // Prevent the click from going to the scene background, which will advance the dialog by 1 instead of skip
