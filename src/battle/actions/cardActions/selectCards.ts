@@ -40,7 +40,7 @@ export const selectCardsAction =
         selectedAbilities: CombatAbility[];
         player: Player;
         effects?: AbilityEffect[];
-        abilityQueued: CombatAbility;
+        abilityQueued?: CombatAbility;
     }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
         const battle = getState().battle!;

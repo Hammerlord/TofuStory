@@ -108,11 +108,7 @@ const SelectCardOverlay = ({
     const [hide, setHide] = useState(false);
 
     const handleSelectClick = () => {
-        if (!abilityQueued) {
-            return;
-        }
-
-        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued: abilityQueued.selectedAbility }));
+        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued: abilityQueued?.selectedAbility }));
         onSelect();
     };
 
