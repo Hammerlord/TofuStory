@@ -2678,9 +2678,11 @@ export const poise: Ability = {
     actions: [
         {
             armor: 5,
-            target: TARGET_TYPES.SELF,
+            target: TARGET_TYPES.FRIENDLY,
             type: ACTION_TYPES.EFFECT,
-            effects: [{ ...aimEffect, stacks: 6 }],
+            secondaryAction: {
+                effects: [{ ...aimEffect, stacks: 6 }],
+            },
         },
     ],
     upgrades: [
@@ -2688,11 +2690,13 @@ export const poise: Ability = {
             actions: [
                 {
                     armor: 1,
-                    effects: [
-                        {
-                            stacks: 2,
-                        },
-                    ],
+                    secondaryAction: {
+                        effects: [
+                            {
+                                stacks: 2,
+                            },
+                        ],
+                    },
                 },
             ],
         },
