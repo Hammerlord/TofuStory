@@ -977,34 +977,29 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         [eventGroups[0]?.id]
     );
 
-    const handleEnemyMouseEnter = useCallback(
-        (combatant: Combatant | null | undefined, i: number) => {
-            if (!shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)) {
+    const handleCombatantMouseEnter = useCallback(
+        (side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
+            if (!shouldShowReticle(side, i)) {
                 return;
             }
 
             setHoveredCombatant({
-                side: BATTLEFIELD_SIDES.ENEMY_SIDE,
+                side,
                 index: i,
                 id: combatant?.id || null,
             });
         },
-        [selectedHandAbilityId, selectedAllyId]
+        [shouldShowReticle]
+    );
+
+    const handleEnemyMouseEnter = useCallback(
+        (combatant: Combatant | null | undefined, i: number) => handleCombatantMouseEnter(BATTLEFIELD_SIDES.ENEMY_SIDE, combatant, i),
+        [handleCombatantMouseEnter]
     );
 
     const handleAllyMouseEnter = useCallback(
-        (combatant: Combatant | null | undefined, i: number) => {
-            if (!shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)) {
-                return;
-            }
-
-            setHoveredCombatant({
-                side: BATTLEFIELD_SIDES.PLAYER_SIDE,
-                index: i,
-                id: combatant?.id || null,
-            });
-        },
-        [selectedHandAbilityId, selectedAllyId]
+        (combatant: Combatant | null | undefined, i: number) => handleCombatantMouseEnter(BATTLEFIELD_SIDES.PLAYER_SIDE, combatant, i),
+        [handleCombatantMouseEnter]
     );
 
     const handleCombatantMouseLeave = useCallback(() => {
