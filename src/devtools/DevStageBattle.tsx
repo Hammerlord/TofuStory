@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 
-import { entrenchedFire, guard, shatteringArrow } from "../ability/bowman/bowmanAbilities";
+import { entrenchedFire, guard, momentum, shatteringArrow, snipe } from "../ability/bowman/bowmanAbilities";
 import {
     bladedArmor,
     closeCombat,
@@ -27,13 +27,14 @@ import { bounce, vault } from "../ability/neutralAbilities";
 import { wanderingBlacksmith } from "../enemy/wanderingBlacksmith";
 import { deathLaser } from "./deathLaser";
 import { mesoThief } from "../enemy/mesoThieves";
+import { miniBean } from "../enemy/miniBean";
 
 const { updatePlayer, updateDeck } = playerStateSlice?.actions || {};
 const dummies = [devDummy, devDummy, devDummy, devDummy, devDummy];
-const other = [null, null, mesoThief, null, null];
+const other = [null, null, miniBean, null, null];
 
 const DevStageBattle = () => {
-    const deck = useMemo(() => [deathLaser], []);
+    const deck = useMemo(() => [closeCombat, momentum, momentum, momentum, snipe], []);
     const enemies = useMemo(() => other, []);
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle);

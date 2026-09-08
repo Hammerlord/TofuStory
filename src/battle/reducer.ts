@@ -53,16 +53,35 @@ export const battleStateSlice = createSlice({
                 ...action.payload,
             };
         },
-        pushEventQueue: (state, action: PayloadAction<EventGroup | EventGroup[]>) => {
+        pushEventQueue: (state: BattleState | null, action: PayloadAction<EventGroup | EventGroup[]>) => {
             let payload = action.payload;
             if (!Array.isArray(payload)) {
                 payload = [payload];
             }
-            state.eventQueue.push(...payload);
+
+            state?.eventQueue.push(...payload);
         },
         popEventQueue: (state) => {
             if (state?.eventQueue) {
                 state.eventQueue.shift();
+            }
+        },
+        pushActionHistory: (state: BattleState | null, action: PayloadAction<EventGroup>) => {
+            if (!state?.actionHistory) {
+                return;
+            }
+
+            const { statUpdates = {}, newCombatants = [] } = action.payload;
+            const emptyAction = !Object.keys(statUpdates || {}).length && !newCombatants.length;
+
+            if (emptyAction) {
+                return;
+            }
+
+            state.actionHistory.unshift(action.payload);
+            const max = 15; // For display purposes, fits the approx height of the board
+            if (state.actionHistory.length > max) {
+                state.actionHistory = state.actionHistory.slice(0, max + 1);
             }
         },
         closeBattle: () => {

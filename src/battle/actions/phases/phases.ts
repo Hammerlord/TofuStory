@@ -165,7 +165,6 @@ export const startBattle = ({
             depleted: [],
             isPlayerTurn: true,
             eventQueue: [],
-            playerActionQueue: [],
             currentWaveIndex: 0,
             waves,
             round: 0,
@@ -189,6 +188,7 @@ export const startBattle = ({
             addAbilities: addAbilities.map(createCombatAbility),
             selectedAllyId: null,
             selectedHandAbilityId: null,
+            actionHistory: [],
         };
 
         dispatch(updateBattle(battleObj));

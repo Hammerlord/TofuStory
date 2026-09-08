@@ -31,6 +31,8 @@ export type AddCardsEvent = {
 export interface Event {
     action?: Action;
     actorId?: string;
+    actorImage?: string;
+    actorName?: string;
     allTargetIndices?: number[];
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;
@@ -162,7 +164,6 @@ export interface BattleState {
     depleted: CombatAbility[];
     isPlayerTurn: boolean;
     eventQueue: EventGroup[];
-    playerActionQueue: object[];
     charactersAttackedThisTurn: string[];
     /** How many player + enemy turns (paired/combined) have passed since the start of the wave */
     round: number;
@@ -187,6 +188,7 @@ export interface BattleState {
     selectedHandAbilityId: string | null;
     selectedAllyId: string | null;
     showTurnAnnouncement?: boolean;
+    actionHistory: EventGroup[];
 } // TODO add what card triggered this prompt and pass it into applyAbilityEventEffects for condition check
 
 export interface PlayerSelectCardsPrompt {

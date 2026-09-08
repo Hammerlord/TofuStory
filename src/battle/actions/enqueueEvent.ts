@@ -78,14 +78,16 @@ export const enqueueEvent = ({
         }
 
         const battle: BattleState = getState().battle!;
+        const actor: Combatant | undefined | null = battle.playerSide.concat(battle.enemySide).find((c) => c?.id === actorId);
         const event: Event = {
             playerSide: battle.playerSide,
             enemySide: battle.enemySide,
             action,
             actorId,
+            actorImage: actor?.image,
+            actorName: actor?.name,
             id: uuid.v4(),
             selectedIndex,
-            // HACK: ensure that the selected index and "extra target indices" are hit first in playback
             allTargetIndices,
             targetSide: targetSide,
             actionParent,

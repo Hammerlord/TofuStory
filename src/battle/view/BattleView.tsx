@@ -53,6 +53,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 import { isTargetedForAbility, shouldShowReticleForTarget } from "./targetHelpers";
+import ActionHistory from "./ActionHistory";
 
 const useStyles = createUseStyles({
     root: {
@@ -76,6 +77,12 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         justifyItems: "center",
         marginTop: "100px",
+        position: "relative",
+    },
+    actionHistoryContainer: {
+        position: "absolute",
+        top: 0,
+        left: "-75px",
     },
     battlefield: {
         textAlign: "center",
@@ -786,6 +793,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     <ParticleCanvas eventGroup={eventGroups[0]} allyRefs={allyRefs} enemyRefs={enemyRefs} />
 
                     <div className={classes.battlefield} ref={battlefieldRef}>
+                        <div className={classes.actionHistoryContainer}>
+                            <ActionHistory />
+                        </div>
                         <div className={classes.waves}>
                             <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />
                         </div>

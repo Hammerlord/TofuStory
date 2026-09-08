@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { Tooltip as MuiTooltip } from "@mui/material";
+import { Tooltip as MuiTooltip, TooltipProps as MuiTooltipProps } from "@mui/material";
 
 const useStyles = createUseStyles({
     tooltip: {
@@ -24,7 +24,11 @@ const useStyles = createUseStyles({
     },
 });
 
-const Tooltip = ({ children, title, classes = {}, ...other }: any) => {
+interface TooltipProps extends MuiTooltipProps {
+    title: string;
+}
+
+const Tooltip = ({ children, title, classes = {}, ...other }: TooltipProps) => {
     const selectors = useStyles();
     return (
         <MuiTooltip arrow classes={{ popper: selectors.tooltip, ...classes }} title={title} {...other} disableInteractive={true}>

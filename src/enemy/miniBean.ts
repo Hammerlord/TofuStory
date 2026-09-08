@@ -316,7 +316,7 @@ export const eat: Ability = {
     resourceCost: 0,
     actions: [
         {
-            type: ACTION_TYPES.SPECIAL,
+            type: ACTION_TYPES.ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
             animationOptions: {

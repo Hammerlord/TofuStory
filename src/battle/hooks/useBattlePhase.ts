@@ -10,7 +10,7 @@ import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BattleState } from "../types";
 
-const { popEventQueue, updateBattleState, updateBattle, setNotification } = battleStateSlice.actions;
+const { popEventQueue, updateBattleState, updateBattle, setNotification, pushActionHistory } = battleStateSlice.actions;
 
 /**
  * Drives the battle state machine and its accompanying notifications/animation timing.
@@ -173,15 +173,16 @@ export const useBattlePhase = ({ onWin }: { onWin?: (battle: BattleState) => voi
             playbackStartedAt.current = now;
         }
 
-        // Some animations are getting cut off at the end, need to investigate
-        const graceWindow = 50;
-        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime + graceWindow;
+        const deadline = playbackStartedAt.current + currentEventGroup.playbackTime;
 
         const delay = Math.max(0, deadline - now);
+        const event = battle.eventQueue[0];
+        if (event) {
+            dispatch(pushActionHistory(event));
+        }
 
         const timeout = setTimeout(() => {
             playbackStartedAt.current = deadline;
-
             dispatch(popEventQueue());
         }, delay);
 
