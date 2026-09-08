@@ -128,7 +128,8 @@ const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] })
         <div className={classes.root}>
             {damageUpdates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
-                    {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to {update.combatantName}
+                    {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to <Icon icon={update.combatantImage} size="xs" />
+                    {update.combatantName}
                 </div>
             ))}
         </div>
@@ -147,7 +148,8 @@ const ArmorList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) 
         <div className={classes.root}>
             {updates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
-                    {update.armor} <Icon icon={ShieldIcon} size="xs" /> to {update.combatantName}
+                    {update.armor} <Icon icon={ShieldIcon} size="xs" /> to <Icon icon={update.combatantImage} size="xs" />{" "}
+                    {update.combatantName}
                 </div>
             ))}
         </div>
@@ -156,7 +158,7 @@ const ArmorList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) 
 
 const EffectsGainedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
     const classes = useListStyles();
-    const effectUpdates = getGainedEffectUpdates(statUpdates);
+    const effectUpdates = getGainedEffectUpdates(statUpdates).filter((u) => u.effect.icon);
 
     if (!effectUpdates.length) {
         return null;
@@ -166,7 +168,8 @@ const EffectsGainedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdat
         <div className={classes.root}>
             {effectUpdates.map(({ effect, update }, i) => (
                 <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
-                    {update.combatantName} gained <Icon icon={effect.icon} size="xs" /> {effect.name}
+                    <Icon icon={update.combatantImage} size="xs" /> {update.combatantName} gained <Icon icon={effect.icon} size="xs" />{" "}
+                    {effect.name}
                 </div>
             ))}
         </div>
@@ -175,7 +178,7 @@ const EffectsGainedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdat
 
 const EffectsResistedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
     const classes = useListStyles();
-    const effectUpdates = getResistedEffectUpdates(statUpdates);
+    const effectUpdates = getResistedEffectUpdates(statUpdates).filter((u) => u.effect.icon);
 
     if (!effectUpdates.length) {
         return null;
@@ -185,6 +188,7 @@ const EffectsResistedList = ({ statUpdates }: { statUpdates: EventGroup["statUpd
         <div className={classes.root}>
             {effectUpdates.map(({ effect, update }, i) => (
                 <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
+                    <Icon icon={update.combatantImage} size="xs" />
                     {update.combatantName} resisted <Icon icon={effect.icon} size="xs" /> {effect.name}
                     <Icon icon={NoEntryIcon} size="xs" />
                 </div>

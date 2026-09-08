@@ -22,6 +22,7 @@ export interface UpdatedCombatantStats {
     combatantId: string;
     // Snapshotted at the time of the update, since combatants may no longer exist by the time this is displayed
     combatantName?: string;
+    combatantImage?: string;
     actorId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
@@ -186,6 +187,7 @@ export const getUpdatedStats = ({
             id: uuid.v4(),
             combatantId: targetCombatant.id,
             combatantName: targetCombatant.name,
+            combatantImage: targetCombatant.image,
             rawDamage,
             healthDamage,
             healing,

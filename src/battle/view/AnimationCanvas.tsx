@@ -348,7 +348,7 @@ const AnimationCanvas = ({
             }
 
             // No animation for added to hand -- having the hand gain cards will suffice
-            if (ref.current && props) {
+            if (ref?.current && props) {
                 sendToPile({ object: ref.current, ...props });
             }
         };
