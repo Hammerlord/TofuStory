@@ -14,7 +14,7 @@ import {
 } from "../ability/types";
 import { EncroachingDarknessImage, TheRemembererImage } from "../images";
 import { CloudyIcon } from "../images/icons";
-import { critical } from "./effect";
+import { critical, displacementImmune } from "./effect";
 import { axeStump, copperDrake, darkStoneGolem, elliniaHornyMushroom, redSnail, slime, wildBoar, zombieLupin, wildKargo } from "./enemy";
 import { tauromacis, taurospear } from "./minotaur";
 
@@ -263,6 +263,7 @@ export const theRememberer: Minion = {
     maxHP: 500,
     abilities: [summonCoalescingMists2, summonCoalescingMists3, summonCoalescingMists4, pulsingNightmare],
     effects: [
+        displacementImmune,
         {
             ...immunity,
             description: "Impervious to harm while another character on the same side is alive.",

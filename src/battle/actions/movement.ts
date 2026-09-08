@@ -5,6 +5,7 @@ import { getRandomItem } from "../../utils";
 import { battleStateSlice } from "../reducer";
 import { BattleState } from "../types";
 import { BATTLEFIELD_SIDES, Displacement } from "../types";
+import { isDisplacementImmune } from "../utils";
 import { ActionContext } from "./../types";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
@@ -134,9 +135,12 @@ export const applyVacuum = ({
     const displacements: Displacement = {};
 
     for (let i = 1; i <= area; ++i) {
-        if (characters[index + i]) {
+        if (characters[index + i] && !isDisplacementImmune(characters[index + i])) {
             for (let j = 0; j < i && j < distance; ++j) {
                 const existingCharacter = characters[index + j];
+                if (isDisplacementImmune(existingCharacter)) {
+                    break; // A displacement-immune character blocks anything behind it from moving further
+                }
                 if (isValidSlot(existingCharacter)) {
                     characters[index + j] = characters[index + i];
                     characters[index + i] = null;
@@ -150,9 +154,12 @@ export const applyVacuum = ({
                 }
             }
         }
-        if (characters[index - i]) {
+        if (characters[index - i] && !isDisplacementImmune(characters[index - i])) {
             for (let j = 0; j < i && j < distance; ++j) {
                 const existingCharacter = characters[index - j];
+                if (isDisplacementImmune(existingCharacter)) {
+                    break; // A displacement-immune character blocks anything behind it from moving further
+                }
                 if (isValidSlot(existingCharacter)) {
                     characters[index - j] = characters[index - i];
                     characters[index - i] = null;

@@ -59,6 +59,13 @@ export const isUntargetable = (character?: Combatant | null): boolean => {
     return character.effects?.some(({ untargetable }) => untargetable);
 };
 
+export const isDisplacementImmune = (character?: Combatant | null): boolean => {
+    if (!character) {
+        return false;
+    }
+    return character.effects?.some(({ displacementImmune }) => displacementImmune);
+};
+
 export const hasTruesight = (character?: Combatant): boolean => {
     if (!character) {
         return false;

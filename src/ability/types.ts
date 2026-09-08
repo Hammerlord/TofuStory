@@ -188,6 +188,8 @@ export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEve
     class: EFFECT_CLASSES;
     // Cannot be targeted directly by any kind of ability. Can still be hit by AoE but character cannot be the primary target of an AoE
     untargetable?: boolean;
+    // Cannot be moved by displacements such as Close Combat. Also blocks other characters from being displaced past this character's slot
+    displacementImmune?: boolean;
     // 0: lasts until the end of the current turn; 1: lasts until the end of the opponent's turn...
     duration?: number;
     attackPower?: number;

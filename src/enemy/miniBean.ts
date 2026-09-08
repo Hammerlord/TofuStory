@@ -33,6 +33,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { displacementImmune } from "./effect";
 
 const yum: Effect = {
     name: "Yum!",
@@ -282,6 +283,7 @@ export const miniBean: Minion = {
         throwFood,
     ],
     effects: [
+        displacementImmune,
         hardy,
         {
             name: "Suck In",

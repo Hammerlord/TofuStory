@@ -634,6 +634,13 @@ export const doomEffect: Effect = {
     },
 };
 
+export const displacementImmune = {
+    name: "Displacement Immune",
+    type: EFFECT_TYPES.NONE,
+    class: EFFECT_CLASSES.NONE,
+    displacementImmune: true,
+};
+
 /**
  * Lookups used when there are circular references
  */
