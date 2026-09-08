@@ -7,7 +7,7 @@ import { ACTION_TYPES, Ability, CombatAbility, CombatEffect } from "../../abilit
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../../character/effects/constants";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { CrossedSwordsIcon, HourglassIcon, ShieldIcon } from "../../images/icons";
+import { CrossedSwordsIcon, HourglassIcon, NoEntryIcon, ShieldIcon } from "../../images/icons";
 import Tooltip from "../../view/Tooltip";
 import { UpdatedCombatantStats } from "../actions/getUpdatedStats";
 import { BATTLEFIELD_SIDES, EventGroup } from "../types";
@@ -101,6 +101,20 @@ const getArmorUpdates = (statUpdates: EventGroup["statUpdates"]): UpdatedCombata
     return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.armor ?? 0) > 0);
 };
 
+type EffectUpdate = { effect: CombatEffect; update: UpdatedCombatantStats };
+
+const getGainedEffectUpdates = (statUpdates: EventGroup["statUpdates"]): EffectUpdate[] => {
+    return Object.values(statUpdates || {})
+        .filter((update) => !update.context?.isProc)
+        .flatMap((update) => (update.effects || []).map((effect) => ({ effect, update })));
+};
+
+const getResistedEffectUpdates = (statUpdates: EventGroup["statUpdates"]): EffectUpdate[] => {
+    return Object.values(statUpdates || {})
+        .filter((update) => !update.context?.isProc)
+        .flatMap((update) => (update.failedToApplyEffects || []).map((effect) => ({ effect, update })));
+};
+
 const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
     const classes = useListStyles();
     const damageUpdates = getDirectDamageUpdates(statUpdates);
@@ -133,6 +147,45 @@ const ArmorList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) 
             {updates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
                     {update.armor} <Icon icon={ShieldIcon} size="xs" /> to {update.combatantName}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const EffectsGainedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
+    const classes = useListStyles();
+    const effectUpdates = getGainedEffectUpdates(statUpdates);
+
+    if (!effectUpdates.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {effectUpdates.map(({ effect, update }, i) => (
+                <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
+                    {update.combatantName} gained <Icon icon={effect.icon} size="xs" /> {effect.name}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const EffectsResistedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
+    const classes = useListStyles();
+    const effectUpdates = getResistedEffectUpdates(statUpdates);
+
+    if (!effectUpdates.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {effectUpdates.map(({ effect, update }, i) => (
+                <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
+                    {update.combatantName} resisted <Icon icon={effect.icon} size="xs" /> {effect.name}
+                    <Icon icon={NoEntryIcon} size="xs" />
                 </div>
             ))}
         </div>
@@ -187,6 +240,8 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
             <hr />
             <DamageList statUpdates={group.statUpdates} />
             <ArmorList statUpdates={group.statUpdates} />
+            <EffectsGainedList statUpdates={group.statUpdates} />
+            <EffectsResistedList statUpdates={group.statUpdates} />
         </>
     );
 
