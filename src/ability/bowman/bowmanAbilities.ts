@@ -1596,7 +1596,7 @@ export const snipe: Ability = {
     },
     actions: [
         {
-            damage: 20,
+            damage: 17,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1606,7 +1606,7 @@ export const snipe: Ability = {
                 effects: [
                     {
                         ...aimEffect,
-                        stacks: 10,
+                        stacks: 5,
                     },
                 ],
             },
@@ -1616,11 +1616,11 @@ export const snipe: Ability = {
         {
             actions: [
                 {
-                    damage: 7,
+                    damage: 6,
                     secondaryAction: {
                         effects: [
                             {
-                                stacks: 3,
+                                stacks: 2,
                             },
                         ],
                     },
