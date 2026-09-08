@@ -11,6 +11,7 @@ import { CrossedSwordsIcon, HourglassIcon, NoEntryIcon, ShieldIcon } from "../..
 import Tooltip from "../../view/Tooltip";
 import { UpdatedCombatantStats } from "../actions/getUpdatedStats";
 import { BATTLEFIELD_SIDES, EventGroup } from "../types";
+import { Combatant } from "../../character/types";
 
 const useItemStyles = createUseStyles({
     root: ({ actorSide }: { actorSide: BATTLEFIELD_SIDES | undefined }) => ({
@@ -192,6 +193,24 @@ const EffectsResistedList = ({ statUpdates }: { statUpdates: EventGroup["statUpd
     );
 };
 
+const SummonedMinionsList = ({ newCombatants }: { newCombatants: Combatant[] }) => {
+    const classes = useListStyles();
+
+    if (!newCombatants.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {newCombatants.map((combatant, i) => (
+                <div className={classes.row} key={[combatant.id, i].join("-")}>
+                    Summoned <Icon icon={combatant.image} size="xs" /> {combatant.name}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const useStyles = createUseStyles({
     root: {
         display: "flex",
@@ -242,6 +261,7 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
             <ArmorList statUpdates={group.statUpdates} />
             <EffectsGainedList statUpdates={group.statUpdates} />
             <EffectsResistedList statUpdates={group.statUpdates} />
+            <SummonedMinionsList newCombatants={group.newCombatants} />
         </>
     );
 
