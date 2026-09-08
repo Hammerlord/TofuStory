@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import { Ability, Action, ActionOptionalProperties, CombatAbility } from "../../../ability/types";
 import { getRandomInt } from "../../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED } from "../../constants";
-import { battleStateSlice } from "../../reducer";
+import { battleStateSlice, computeAddCardsToHand } from "../../reducer";
 import { BattleState } from "../../types";
 import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
@@ -12,6 +12,23 @@ import { AppDispatch, RootState } from "../../../store";
 import { createCombatAbility } from "../../../ability/createCombatAbility";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
+
+export const addCardsToHandWithEvents = (cards: CombatAbility[], context: ActionContext) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
+        const battle: BattleState = getState().battle!;
+        const { cardsAddedToHand, cardsDiscarded } = computeAddCardsToHand(battle, cards);
+
+        dispatch(addCardsToHand(cards));
+
+        if (cardsAddedToHand.length) {
+            dispatch(enqueueEvent({ newCards: cardsAddedToHand, cardsAddedTo: "hand", context }));
+        }
+
+        if (cardsDiscarded.length) {
+            dispatch(enqueueEvent({ newCards: cardsDiscarded, cardsAddedTo: "discard", context }));
+        }
+    };
+};
 
 /**
  * Remove a card from existence based on its id.
@@ -139,7 +156,8 @@ export const handleAddCardsToHand = ({
         }
 
         const combatCards = cardsToAdd.map(createCombatAbility).reverse();
-        dispatch(addCardsToHand(combatCards));
+        dispatch(addCardsToHandWithEvents(combatCards, context));
+
         dispatch(triggerAddCardsToHandEvent(addCards.length, context));
     };
 };

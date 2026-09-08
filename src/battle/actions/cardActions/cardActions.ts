@@ -10,9 +10,10 @@ import { battleStateSlice } from "../../reducer";
 import { BattleState } from "../../types";
 import { cardPassesFilterCondition } from "../../selectCardUtils";
 import { ActionContext } from "../../types";
+import { enqueueEvent } from "../enqueueEvent";
 import { usePlayerAbility } from "../playerAbility";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand } from "./addCards";
+import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand, addCardsToHandWithEvents } from "./addCards";
 import { handleDiscardAfterUse } from "./discardCards";
 import { drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
@@ -70,7 +71,10 @@ export const checkCardActions = ({
         }
 
         if (cardsToDraw) {
-            dispatch(drawCards({ ...cardsToDraw, context: context }));
+            const drawnCards = dispatch(drawCards({ ...cardsToDraw, context: context }));
+            if (drawnCards?.length) {
+                dispatch(enqueueEvent({ newCards: drawnCards, cardsAddedTo: "hand", context }));
+            }
         }
 
         if (discardCardsFromHand) {
@@ -182,7 +186,7 @@ export const checkCardActions = ({
                 })
             );
 
-            dispatch(addCardsToHand(cardsToAdd));
+            dispatch(addCardsToHandWithEvents(cardsToAdd, context));
         }
     };
 };

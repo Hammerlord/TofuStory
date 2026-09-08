@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { CombatAbility } from "../ability/types";
-import { Combatant } from "../character/types";
+import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
 import { BattleState, EventGroup, Notification, PlayerSelectCardsPrompt } from "./types";
 import { getMaxHP } from "./utils";
@@ -27,6 +27,47 @@ function dedupeByInstanceId(pile: CombatAbility[]) {
         seen.add(ability.instanceId);
         return true;
     });
+}
+
+export interface AddCardsToHandResult {
+    hand: CombatAbility[];
+    discard: CombatAbility[];
+    notification?: Notification;
+    cardsAddedToHand: CombatAbility[];
+    // The subset that didn't end up in hand (overflowed to discard)
+    cardsDiscarded: CombatAbility[];
+}
+
+export function computeAddCardsToHand(state: BattleState, newCards: CombatAbility[]): AddCardsToHandResult {
+    const processedCards = newCards.slice().map(createCombatAbility);
+    const existingHandIds = new Set(state.hand.map((card) => card.instanceId).filter(Boolean));
+    const cardsDropped = processedCards.filter((card) => card.instanceId && existingHandIds.has(card.instanceId));
+
+    let newHand: CombatAbility[] = dedupeByInstanceId([...processedCards, ...state.hand]);
+    const newDiscard = state.discard.slice();
+    let cardsOverflowedToDiscard: CombatAbility[] = [];
+    let notification: Notification | undefined;
+
+    if (newHand.length >= MAX_HAND_SIZE) {
+        const toDiscard = newHand.slice(MAX_HAND_SIZE);
+        newHand = newHand.slice(0, MAX_HAND_SIZE);
+        const player = state.playerSide.find((combatant) => combatant?.isPlayer) as Player;
+        cardsOverflowedToDiscard = prepareForDiscard({ cards: toDiscard, player, battle: state });
+        newDiscard.unshift(...cardsOverflowedToDiscard);
+        notification = { text: battleWarnings.handFull, severity: "warning", id: uuid.v4() };
+    }
+
+    const overflowedIds = new Set(cardsOverflowedToDiscard.map((card) => card.instanceId));
+    const droppedIds = new Set(cardsDropped.map((card) => card.instanceId));
+    const cardsAddedToHand = processedCards.filter((card) => !overflowedIds.has(card.instanceId) && !droppedIds.has(card.instanceId));
+
+    return {
+        hand: newHand,
+        discard: dedupeByInstanceId(newDiscard),
+        notification,
+        cardsAddedToHand,
+        cardsDiscarded: [...cardsOverflowedToDiscard, ...cardsDropped],
+    };
 }
 
 const initialState: BattleState | null = null as BattleState | null;
@@ -159,26 +200,13 @@ export const battleStateSlice = createSlice({
             };
         },
         addCardsToHand: (state, action: PayloadAction<CombatAbility[]>) => {
-            const newCards = action.payload.slice().map(createCombatAbility);
-            let newHand: CombatAbility[] = dedupeByInstanceId([...newCards, ...state.hand]);
-            const newDiscard = state.discard.slice();
-
-            if (newHand.length >= MAX_HAND_SIZE) {
-                const toDiscard = newHand.slice(MAX_HAND_SIZE);
-                newHand = newHand.slice(0, MAX_HAND_SIZE);
-                newDiscard.unshift(...prepareForDiscard({ cards: toDiscard }));
-
-                return {
-                    ...state,
-                    hand: newHand,
-                    notification: { text: battleWarnings.handFull, severity: "warning", id: uuid.v4() },
-                    discard: dedupeByInstanceId(newDiscard),
-                };
-            }
+            const { hand, discard, notification } = computeAddCardsToHand(state!, action.payload);
 
             return {
                 ...state,
-                hand: newHand,
+                hand,
+                discard,
+                ...(notification ? { notification } : {}),
             };
         },
     },

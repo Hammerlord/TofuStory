@@ -149,6 +149,8 @@ export const drawCards = ({
         }
 
         dispatch(recalculateEffectsFromAbilities());
+
+        return cardsToDraw;
     };
 };
 
