@@ -543,35 +543,35 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    const warnStealth = () => {
-        warn(battleWarnings.targetStealth);
-    };
-
-    const tauntEnemies: CombatantInfo[] = enemySide
-        .filter((combatant): combatant is Combatant => Boolean(combatant?.HP))
-        .map((combatant) => findCombatantData(battle, combatant.id))
-        .filter((combatantInfo: CombatantInfo | undefined): combatantInfo is CombatantInfo =>
-            hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT)
-        );
-
-    const mustTargetTauntError = (index: number): boolean => {
-        if (tauntEnemies.length === 0) {
-            return false;
-        }
-        const target = enemySide[index];
-        return tauntEnemies.every((enemy) => enemy.combatant.id !== target?.id);
-    };
-
-    const warnTaunt = () => {
-        warn(battleWarnings.targetTaunt);
-    };
-
     const handleEnemyClick = (e: React.MouseEvent, index: number) => {
         if (e.button === 2) {
             // Right click will deselect the ability
             e.preventDefault();
             return;
         }
+
+        const warnStealth = () => {
+            warn(battleWarnings.targetStealth);
+        };
+
+        const warnTaunt = () => {
+            warn(battleWarnings.targetTaunt);
+        };
+
+        const mustTargetTauntError = (index: number): boolean => {
+            const tauntEnemies: CombatantInfo[] = enemySide
+                .filter((combatant): combatant is Combatant => Boolean(combatant?.HP))
+                .map((combatant) => findCombatantData(battle, combatant.id))
+                .filter((combatantInfo: CombatantInfo | undefined): combatantInfo is CombatantInfo =>
+                    hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT)
+                );
+
+            if (tauntEnemies.length === 0) {
+                return false;
+            }
+            const target = enemySide[index];
+            return tauntEnemies.every((enemy) => enemy.combatant.id !== target?.id);
+        };
 
         const target = enemySide[index];
         if (selectedMinion) {
