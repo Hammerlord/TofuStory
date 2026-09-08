@@ -735,20 +735,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         [eventGroups[0]?.id]
     );
 
-    const handleCombatantMouseEnter = useCallback(
-        (side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
-            if (!shouldShowReticle(side, i)) {
-                return;
-            }
-
-            setHoveredCombatant({
-                side,
-                index: i,
-                id: combatant?.id || null,
-            });
-        },
-        [shouldShowReticle]
-    );
+    const handleCombatantMouseEnter = useCallback((side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
+        setHoveredCombatant({
+            side,
+            index: i,
+            id: combatant?.id || null,
+        });
+    }, []);
 
     const handleEnemyMouseEnter = useCallback(
         (combatant: Combatant | null | undefined, i: number) => handleCombatantMouseEnter(BATTLEFIELD_SIDES.ENEMY_SIDE, combatant, i),
