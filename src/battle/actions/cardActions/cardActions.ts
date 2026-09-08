@@ -21,7 +21,7 @@ import { handleSelectCards } from "./selectCards";
 import { applyAbilityEventEffects, prepareForDiscard } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
 
-const { updateBattle, setNotification, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
@@ -73,7 +73,7 @@ export const checkCardActions = ({
         if (cardsToDraw) {
             const drawnCards = dispatch(drawCards({ ...cardsToDraw, context: context }));
             if (drawnCards?.length) {
-                dispatch(enqueueEvent({ newCards: drawnCards, cardsAddedTo: "hand", context }));
+                dispatch(enqueueEvent({ newCards: drawnCards, cardsAddedTo: "hand", context, options: { alwaysGroup: true } }));
             }
         }
 
@@ -92,6 +92,8 @@ export const checkCardActions = ({
                     discard: [...cardsDiscarded, ...discard],
                 })
             );
+
+            dispatch(enqueueEvent({ newCards: cardsDiscarded, cardsAddedTo: "discard", context, options: { alwaysGroup: true } }));
         }
 
         // A new instance of owned cards in case they become stale in between actions

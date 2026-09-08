@@ -112,8 +112,8 @@ export const battleStateSlice = createSlice({
                 return;
             }
 
-            const { statUpdates = {}, newCombatants = [] } = action.payload;
-            const emptyAction = !Object.keys(statUpdates || {}).length && !newCombatants.length;
+            const { statUpdates = {}, newCombatants = [], addCards = [] } = action.payload;
+            const emptyAction = !Object.keys(statUpdates || {}).length && !newCombatants.length && !addCards.length;
 
             if (emptyAction) {
                 return;

@@ -275,7 +275,7 @@ export const performAction = ({
         // If eg. a bonus card draw was applied during the stat update action, checkCardActions should consume it.
         // Does secondaryAction need the same thing?
         const postUpdateAction = updated?.[0]?.action || action;
-        dispatch(checkCardActions({ action: postUpdateAction, context: parentContext, isAutoCast }));
+        dispatch(checkCardActions({ action: postUpdateAction, context, isAutoCast }));
 
         const multiplier = getMultiplier({
             multiplier: action.multiplier,

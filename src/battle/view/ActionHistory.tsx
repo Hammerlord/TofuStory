@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, CombatAbility, CombatEffect } from "../../ability/types";
+import { ACTION_TYPES, Ability, CardPileType, CombatAbility, CombatEffect } from "../../ability/types";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../../character/effects/constants";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -211,6 +211,29 @@ const SummonedMinionsList = ({ newCombatants }: { newCombatants: Combatant[] }) 
     );
 };
 
+const getCardsAddedTo = (addCards: EventGroup["addCards"], pile: CardPileType): Ability[] => {
+    return addCards.filter((entry) => entry.cardsAddedTo === pile).flatMap((entry) => entry.cards);
+};
+
+const CardsAddedList = ({ addCards, pile, label }: { addCards: EventGroup["addCards"]; pile: CardPileType; label: string }) => {
+    const classes = useListStyles();
+    const cards = getCardsAddedTo(addCards, pile);
+
+    if (!cards.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {cards.map((card, i) => (
+                <div className={classes.row} key={[card.name, i].join("-")}>
+                    {label} <Icon icon={card.image} size="xs" /> {card.name}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const useStyles = createUseStyles({
     root: {
         display: "flex",
@@ -262,6 +285,8 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
             <EffectsGainedList statUpdates={group.statUpdates} />
             <EffectsResistedList statUpdates={group.statUpdates} />
             <SummonedMinionsList newCombatants={group.newCombatants} />
+            <CardsAddedList addCards={group.addCards} pile="hand" label="Drew" />
+            <CardsAddedList addCards={group.addCards} pile="discard" label="Discarded" />
         </>
     );
 
