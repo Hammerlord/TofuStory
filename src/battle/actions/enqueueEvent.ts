@@ -14,6 +14,7 @@ import { ActionContext } from "./../types";
 import { UpdatedCombatantStats } from "./getUpdatedStats";
 import { PlaybackCollector } from "./playbackCollector";
 import { AppDispatch, RootState } from "../../store";
+import { findCombatantData } from "./combatantData";
 
 const { pushEventQueue } = battleStateSlice.actions;
 
@@ -78,14 +79,15 @@ export const enqueueEvent = ({
         }
 
         const battle: BattleState = getState().battle!;
-        const actor: Combatant | undefined | null = battle.playerSide.concat(battle.enemySide).find((c) => c?.id === actorId);
+        const actorData = findCombatantData(battle, actorId);
         const event: Event = {
             playerSide: battle.playerSide,
             enemySide: battle.enemySide,
             action,
             actorId,
-            actorImage: actor?.image,
-            actorName: actor?.name,
+            actorImage: actorData?.combatant?.image,
+            actorName: actorData?.combatant?.name,
+            actorSide: actorData?.friendlySide,
             id: uuid.v4(),
             selectedIndex,
             allTargetIndices,

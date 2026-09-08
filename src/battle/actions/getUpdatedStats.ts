@@ -20,6 +20,8 @@ import { createCombatEffect, lookupEffect } from "../../character/effects/create
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
     combatantId: string;
+    // Snapshotted at the time of the update, since combatants may no longer exist by the time this is displayed
+    combatantName?: string;
     actorId?: string;
     // Raw damage, including overkill figure
     rawDamage?: number;
@@ -129,7 +131,7 @@ export const getUpdatedStats = ({
                 context,
                 hand,
                 deck,
-                discard
+                discard,
             });
         }
 
@@ -183,6 +185,7 @@ export const getUpdatedStats = ({
         const statUpdate: UpdatedCombatantStats = {
             id: uuid.v4(),
             combatantId: targetCombatant.id,
+            combatantName: targetCombatant.name,
             rawDamage,
             healthDamage,
             healing,

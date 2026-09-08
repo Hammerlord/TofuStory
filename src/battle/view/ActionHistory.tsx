@@ -1,21 +1,26 @@
+import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { CombatAbility, CombatEffect } from "../../ability/types";
-import { useAppSelector } from "../../hooks";
-import { BattleState, EventGroup } from "../types";
 import { createUseStyles } from "react-jss";
-import Tooltip from "../../view/Tooltip";
+import { ACTION_TYPES, Ability, CombatAbility, CombatEffect } from "../../ability/types";
+import { isOffensiveAbility } from "../../ability/AbilityView/utils";
+import { BLUE, GREEN, RED } from "../../ability/AbilityView/constants";
+import { BUFF_COLOUR, DEBUFF_COLOUR } from "../../character/effects/constants";
+import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { HourglassIcon } from "../../images/icons";
+import { CrossedSwordsIcon, HourglassIcon } from "../../images/icons";
+import Tooltip from "../../view/Tooltip";
+import { BATTLEFIELD_SIDES, EventGroup } from "../types";
+import { UpdatedCombatantStats } from "../actions/getUpdatedStats";
 
 const useItemStyles = createUseStyles({
-    root: {
+    root: ({ actorSide }: { actorSide: BATTLEFIELD_SIDES | undefined }) => ({
         width: "50px",
         height: "50px",
         position: "relative",
-        border: "1px solid",
+        border: `1px solid ${actorSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? BUFF_COLOUR : DEBUFF_COLOUR}`,
         background: "rgba(0,0,0,0.7)",
         borderRadius: "2px",
-    },
+    }),
 
     action: {
         minWidth: "30px",
@@ -36,6 +41,81 @@ const useItemStyles = createUseStyles({
     },
 });
 
+const useTooltipStyles = createUseStyles({
+    diamond: {
+        width: "7px",
+        height: "7px",
+        transform: "rotate(45deg)",
+        display: "inline-block",
+        margin: "0 6px",
+    },
+    offensive: {
+        background: RED,
+    },
+    support: {
+        background: BLUE,
+    },
+    minion: {
+        background: GREEN,
+    },
+});
+
+const getAbilityType = (actionParent: CombatAbility | undefined) => {
+    if (!actionParent) {
+        return undefined;
+    }
+
+    if (isOffensiveAbility(actionParent as Ability)) {
+        return "offense";
+    }
+
+    if (actionParent?.minion || actionParent.actions?.some((action) => action.summon)) {
+        return "summon";
+    }
+
+    if (actionParent.actions?.some((action) => action.type === ACTION_TYPES.EFFECT)) {
+        return "support";
+    }
+
+    return undefined;
+};
+
+const useDamageListStyles = createUseStyles({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+    },
+    row: {
+        display: "flex",
+        alignItems: "center",
+        gap: "4px",
+    },
+});
+
+// Damage that was applied as a direct result of the action, excluding damage procced off of it (eg. thorns, reflect)
+const getDirectDamageUpdates = (statUpdates: EventGroup["statUpdates"]): UpdatedCombatantStats[] => {
+    return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.rawDamage ?? 0) > 0);
+};
+
+const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
+    const classes = useDamageListStyles();
+    const damageUpdates = getDirectDamageUpdates(statUpdates);
+
+    if (!damageUpdates.length) {
+        return null;
+    }
+
+    return (
+        <div className={classes.root}>
+            {damageUpdates.map((update) => (
+                <div className={classes.row} key={update.combatantId}>
+                    {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to {update.combatantName}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const useStyles = createUseStyles({
     root: {
         display: "flex",
@@ -48,13 +128,11 @@ const useStyles = createUseStyles({
 });
 
 const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
-    const classes = useItemStyles();
-    const event = group.events[0];
-    if (!event) {
-        return null;
-    }
+    const event = group.events[0] || {};
+    const { actorName, actorImage, actorSide, actionParent } = event;
+    const classes = useItemStyles({ actorSide });
+    const tooltipClasses = useTooltipStyles();
 
-    const { actorName, actorImage, actionParent } = event;
     const image = (actionParent as CombatAbility)?.image || (actionParent as CombatEffect)?.icon;
     if (!image) {
         return null;
@@ -64,12 +142,32 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
     if (typeof image === "string") {
         actionImage = <img src={image} className={classes.action} />;
     } else if (typeof image === "function") {
-        const ActionIcon = image;
+        const ActionIcon = image as any;
         actionImage = <ActionIcon className={classes.action} />;
     }
 
+    const abilityType = getAbilityType(actionParent as CombatAbility);
+
+    const tooltipContents = (
+        <>
+            {abilityType && (
+                <span
+                    className={classNames(tooltipClasses.diamond, {
+                        [tooltipClasses.offensive]: abilityType === "offense",
+                        [tooltipClasses.support]: abilityType === "support",
+                        [tooltipClasses.minion]: abilityType === "summon",
+                    })}
+                />
+            )}
+            {(actionParent as CombatAbility)?.name || ""}
+
+            <hr />
+            <DamageList statUpdates={group.statUpdates} />
+        </>
+    );
+
     return (
-        <Tooltip title={actionParent?.name || ""} placement="left">
+        <Tooltip title={tooltipContents} placement="left">
             <div className={classes.root}>
                 <div className={classes.actionContainer}>{actionImage}</div>
                 {actorImage && <img src={actorImage} alt={actorName} className={classes.actor} />}

@@ -33,6 +33,7 @@ export interface Event {
     actorId?: string;
     actorImage?: string;
     actorName?: string;
+    actorSide?: BATTLEFIELD_SIDES;
     allTargetIndices?: number[];
     selectedIndex?: number;
     targetSide?: BATTLEFIELD_SIDES;

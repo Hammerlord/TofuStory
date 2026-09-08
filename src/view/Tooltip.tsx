@@ -1,4 +1,5 @@
 import { createUseStyles } from "react-jss";
+import { ReactNode } from "react";
 import { Tooltip as MuiTooltip, TooltipProps as MuiTooltipProps } from "@mui/material";
 
 const useStyles = createUseStyles({
@@ -25,7 +26,7 @@ const useStyles = createUseStyles({
 });
 
 interface TooltipProps extends MuiTooltipProps {
-    title: string;
+    title: ReactNode;
 }
 
 const Tooltip = ({ children, title, classes = {}, ...other }: TooltipProps) => {
