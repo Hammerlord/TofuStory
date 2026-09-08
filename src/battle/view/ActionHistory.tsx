@@ -256,9 +256,6 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
     const tooltipClasses = useTooltipStyles();
 
     const image = (actionParent as CombatAbility)?.image || (actionParent as CombatEffect)?.icon;
-    if (!image) {
-        return null;
-    }
 
     let actionImage;
     if (typeof image === "string") {

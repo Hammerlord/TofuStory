@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { CombatAbility } from "../ability/types";
+import { CombatAbility, CombatEffect } from "../ability/types";
 import { Combatant, Player } from "../character/types";
 import { Item } from "../item/types";
 import { BattleState, EventGroup, Notification, PlayerSelectCardsPrompt } from "./types";
@@ -112,15 +112,17 @@ export const battleStateSlice = createSlice({
                 return;
             }
 
-            const { statUpdates = {}, newCombatants = [], addCards = [] } = action.payload;
+            const { statUpdates = {}, newCombatants = [], addCards = [], events = [] } = action.payload;
             const emptyAction = !Object.keys(statUpdates || {}).length && !newCombatants.length && !addCards.length;
+            const { actionParent } = events[0] || {};
+            const noImage = !(actionParent as CombatAbility)?.image && !(actionParent as CombatEffect)?.icon;
 
-            if (emptyAction) {
+            if (emptyAction || noImage) {
                 return;
             }
 
             state.actionHistory.unshift(action.payload);
-            const max = 15; // For display purposes, fits the approx height of the board
+            const max = 14; // For display purposes, fits the approx height of the board
             if (state.actionHistory.length > max) {
                 state.actionHistory = state.actionHistory.slice(0, max + 1);
             }
