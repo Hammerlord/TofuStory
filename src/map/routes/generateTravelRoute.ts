@@ -232,6 +232,12 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
             const precedingLevelSize = idx === 0 ? incomingLevelSize : levels[idx - 1].length;
             const count = getLevelNodeCount(precedingLevelSize);
+
+            if (!levels.length) {
+                levels.push(Array.from({ length: count }, () => makeGeneratedNode({ region: rawNode.region }, NODE_TYPES.ENCOUNTER)));
+                return;
+            }
+
             levels.push(Array.from({ length: count }, () => makeGeneratedNode({ region: rawNode.region })));
         });
 
