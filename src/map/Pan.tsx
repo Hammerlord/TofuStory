@@ -35,6 +35,9 @@ const useStyles = createUseStyles({
     },
 });
 
+// Since the player travels from left to right, move the centred X position closer to the left so that more nodes can be shown.
+const X_RATIO = 3;
+
 /**
  * Functionality for panning the overworld map around.
  */
@@ -51,7 +54,7 @@ const Pan = ({
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const xRef = useRef(-500);
+    const xRef = useRef(0);
     const yRef = useRef(0);
 
     const interactionPosRef = useRef<[number, number] | null>(null);
@@ -70,13 +73,14 @@ const Pan = ({
             return;
         }
 
+        const newUserPosX = userPosition.x / X_RATIO;
         const animation = containerRef.current?.animate(
             [
                 {
                     transform: `translate(${xRef.current}px, ${yRef.current}px)`,
                 },
                 {
-                    transform: `translate(${userPosition.x}px, ${userPosition.y}px)`,
+                    transform: `translate(${newUserPosX}px, ${userPosition.y}px)`,
                 },
             ],
             {
@@ -90,7 +94,7 @@ const Pan = ({
             animation.cancel();
         });
 
-        xRef.current = userPosition.x;
+        xRef.current = newUserPosX;
         yRef.current = userPosition.y;
 
         applyTransform();
@@ -106,7 +110,7 @@ const Pan = ({
         if (!userPosition || !mounted) return;
 
         if (isIntroPan) {
-            xRef.current = userPosition.x;
+            xRef.current = userPosition.x / X_RATIO;
             yRef.current = userPosition.y;
             applyTransform();
             setIsIntroPan(false);
@@ -170,7 +174,7 @@ const Pan = ({
             </div>
 
             <div className={classes.userPositionContainer}>
-                <ButtonBase onClick={() => panToUserPosition(500)} className={classes.userPosition} title="Center on your current location">
+                <ButtonBase onClick={() => panToUserPosition(500)} className={classes.userPosition} title="Pan to your current location">
                     <img src={AnonymushroomImage} />
                 </ButtonBase>
             </div>
