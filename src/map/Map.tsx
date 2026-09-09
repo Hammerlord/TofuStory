@@ -1,6 +1,7 @@
+import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicatorImage, TreasureChestImage } from "../images";
+import { ClickIndicatorImage, FlagImage, PersonalAnvilImage, TreasureChestImage } from "../images";
 import {
     CampingIcon,
     CrossedSwordsIcon,
@@ -14,8 +15,7 @@ import {
 import Overlay from "../view/Overlay";
 import Legend from "./Legend";
 import Pan from "./Pan";
-import { BG_MAP, GeneratedRouteNode, NODE_TYPES, Route, RouteNode } from "./types";
-import classNames from "classnames";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -172,6 +172,8 @@ const Map = ({
                     {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
                     {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
                     {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
+                    {current.type === NODE_TYPES.TRADING_POST && <image {...iconProps} href={FlagImage} />}
+                    {current.type === NODE_TYPES.TRANSMUTE && <image {...iconProps} href={PersonalAnvilImage} />}
                     {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
                     {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
                     {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}

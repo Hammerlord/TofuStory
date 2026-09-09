@@ -21,6 +21,8 @@ export enum NODE_TYPES {
     EVENT = "event",
     RESTING_ZONE = "restingZone",
     SHOP = "shop",
+    TRADING_POST = "tradingPost",
+    TRANSMUTE = "transmute",
     TOWN = "town",
     TREASURE = "treasure",
 }

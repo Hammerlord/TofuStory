@@ -326,6 +326,12 @@ const Main = () => {
             setTreasure({ ...node.treasure, puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]) });
         } else if (node.type === NODE_TYPES.RESTING_ZONE) {
             setActivity(ACTIVITIES.CAMP);
+        } else if (node.type === NODE_TYPES.SHOP) {
+            setActivity(ACTIVITIES.SHOP);
+        } else if (node.type === NODE_TYPES.TRADING_POST) {
+            setActivity(ACTIVITIES.TRADING_POST);
+        } else if (node.type === NODE_TYPES.TRANSMUTE) {
+            setActivity(ACTIVITIES.WORKSHOP);
         } else {
             const callback = () => {
                 if (node.type && [NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
@@ -635,8 +641,31 @@ const Main = () => {
                             updatePlayer={setPlayer}
                         />
                     )}
-                    {activity === ACTIVITIES.SHOP && <Shop onExit={() => setActivity(null)} />}
-                    {activity === ACTIVITIES.WORKSHOP && <Transmutation onExit={() => setActivity(null)} backdrop={KerningWorkshopImage} />}
+                    {activity === ACTIVITIES.SHOP && (
+                        <Shop
+                            onExit={() => {
+                                setActivity(null);
+                                saveGame(store.getState().character);
+                            }}
+                        />
+                    )}
+                    {activity === ACTIVITIES.TRADING_POST && (
+                        <TradingPost
+                            onExit={() => {
+                                setActivity(null);
+                                saveGame(store.getState().character);
+                            }}
+                        />
+                    )}
+                    {activity === ACTIVITIES.WORKSHOP && (
+                        <Transmutation
+                            onExit={() => {
+                                setActivity(null);
+                                saveGame(store.getState().character);
+                            }}
+                            backdrop={KerningWorkshopImage}
+                        />
+                    )}
                     {cardRewardsOpen && (
                         <CardRewards
                             deck={deck}
@@ -715,7 +744,6 @@ const Main = () => {
                             />
                         </Overlay>
                     )}
-                    {activity === ACTIVITIES.TRADING_POST && <TradingPost onExit={() => setActivity(null)} />}
                 </div>
             )}
             {<Header onUseItem={handleUseItem} onSelectWeaponSkin={handleSelectWeaponSkin} />}

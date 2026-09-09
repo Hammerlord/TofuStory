@@ -1,7 +1,16 @@
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
-import { TreasureChestImage } from "../images";
-import { CampingIcon, CrossedSwordsIcon, HouseIcon, JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon } from "../images/icons";
+import { FlagImage, PersonalAnvilImage, TreasureChestImage } from "../images";
+import {
+    CampingIcon,
+    CrossedSwordsIcon,
+    HouseIcon,
+    JapaneseOgreIcon,
+    LinkIcon,
+    MedalIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+} from "../images/icons";
 
 const useStyles = createUseStyles({
     legend: {
@@ -50,6 +59,12 @@ const Legend = () => {
             </li>
             <li>
                 <Icon icon={<MoneyBagIcon />} /> <span className={classes.legendItemText}>Shop</span>
+            </li>
+            <li>
+                <Icon icon={FlagImage} /> <span className={classes.legendItemText}>Trading Post</span>
+            </li>
+            <li>
+                <Icon icon={PersonalAnvilImage} /> <span className={classes.legendItemText}>Transmute</span>
             </li>
             <li>
                 <Icon icon={TreasureChestImage} /> <span className={classes.legendItemText}>Treasure</span>

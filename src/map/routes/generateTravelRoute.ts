@@ -6,6 +6,7 @@ const MIN_NODES_PER_LEVEL = 2;
 const MAX_NODES_PER_LEVEL = 3;
 const NODE_SPACING = 0.1;
 const BRANCH_OFFSET = 0.3;
+const RARE_NODE_CHANCE = 0.15;
 
 type Bookkeeping = {
     numEncountersSinceRestPoint: number;
@@ -108,8 +109,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         const routeId = route.id;
 
         let numEvents = route.nodes.length < 3 ? 0 : 1;
-        let numTreasures = 1;
-        let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? 1) : 0;
+        let numTreasures = 2;
+        let numShops = 2;
+        let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? 2) : 0;
+        let numTradingPosts = 1;
+        let numTransmutes = 1;
         let { numEncountersSinceRestPoint, numNodesSinceLastTreasure } = bookkeeping;
 
         const rollType = (): NODE_TYPES => {
@@ -126,7 +130,23 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             } else if (numEliteEncounters > 0) {
                 types.push(NODE_TYPES.ELITE_ENCOUNTER);
             } else {
-                types.push(NODE_TYPES.ENCOUNTER);
+                const rareTypes: NODE_TYPES[] = [];
+
+                // To give Trading Post a better chance at being useful, it should come after any treasure chests.
+                if (numTradingPosts > 0 && numTreasures === 0) {
+                    rareTypes.push(NODE_TYPES.TRADING_POST);
+                }
+                if (numTransmutes > 0) {
+                    rareTypes.push(NODE_TYPES.TRANSMUTE);
+                }
+
+                if (rareTypes.length > 0 && Math.random() < RARE_NODE_CHANCE) {
+                    types.push(getRandomItem(rareTypes));
+                } else if (numShops > 0 && Math.random() < 0.5) {
+                    types.push(NODE_TYPES.SHOP);
+                } else {
+                    types.push(NODE_TYPES.ENCOUNTER);
+                }
             }
 
             return getRandomItem(types);
@@ -145,6 +165,12 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 numEncountersSinceRestPoint = 0;
             } else if (type === NODE_TYPES.TREASURE) {
                 --numTreasures;
+            } else if (type === NODE_TYPES.SHOP) {
+                --numShops;
+            } else if (type === NODE_TYPES.TRADING_POST) {
+                --numTradingPosts;
+            } else if (type === NODE_TYPES.TRANSMUTE) {
+                --numTransmutes;
             }
 
             if (type === NODE_TYPES.TREASURE) {
