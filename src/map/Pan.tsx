@@ -43,12 +43,14 @@ const X_RATIO = 3;
  */
 const Pan = ({
     userPosition,
+    isIntro,
     children,
     style,
 }: {
     userPosition?: { x: number; y: number };
     children: React.ReactNode;
     style?: React.CSSProperties;
+    isIntro?: boolean;
 }) => {
     const classes = useStyles();
 
@@ -110,7 +112,11 @@ const Pan = ({
         if (!userPosition || !mounted) return;
 
         if (isIntroPan) {
-            xRef.current = userPosition.x / X_RATIO;
+            if (isIntro) {
+                xRef.current = userPosition.x;
+            } else {
+                xRef.current = X_RATIO;
+            }
             yRef.current = userPosition.y;
             applyTransform();
             setIsIntroPan(false);

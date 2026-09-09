@@ -18,6 +18,7 @@ import Legend from "./Legend";
 import Pan from "./Pan";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
 import { getRandomItem } from "../utils";
+import { toLith } from "./routes/routes";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -270,6 +271,7 @@ const Map = ({
     };
     const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
     const bgRegion: keyof typeof BG_MAP = playerLocationNode?.region || generatedRoute?.region;
+    const isIntro = playerLocationNode?.routeId === toLith.id && !visited[playerLocationNode.id];
 
     return (
         <Overlay>
@@ -277,7 +279,7 @@ const Map = ({
                 {bgRegion && <img src={BG_MAP[bgRegion]} className={classes.bgImage} />}
                 <div className={classes.tint} />
                 <div className={classes.canvasLayer}>
-                    <Pan userPosition={panPosition}>
+                    <Pan userPosition={panPosition} isIntro={isIntro}>
                         <div className={classes.imageContainer} ref={containerRef}>
                             <svg className={classes.routeContainer} onContextMenu={(e) => e.preventDefault()}>
                                 {nodeBGs}
