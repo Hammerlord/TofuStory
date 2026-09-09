@@ -219,6 +219,7 @@ const Map = ({
             const size = 400;
             townBGs.push(
                 <image
+                    key={`${current.id}-BG`}
                     href={townNodeBG}
                     x={x - size / 2}
                     y={y - size / 2}
