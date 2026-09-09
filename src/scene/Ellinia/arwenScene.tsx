@@ -50,7 +50,8 @@ const rowen = {
 const eventZombieLupin: Minion = {
     ...zombieLupin,
     isElite: true,
-    effects: [...zombieLupin.effects, lifeLink],
+    HP: 125,
+    effects: [...(zombieLupin.effects as Effect[]), lifeLink],
 };
 
 const sickLupin: Minion = {

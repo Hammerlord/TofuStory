@@ -159,7 +159,7 @@ const puppeteerRevive: EffectEventTrigger = {
             canBeSilenced: false,
             persistsWhenDead: true,
             description: "Revives when this effect ends.",
-            duration: 2,
+            duration: 3,
             maxApplications: 1,
             onEnd: {
                 usableWhileStunned: true,
