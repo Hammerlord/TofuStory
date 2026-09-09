@@ -52,6 +52,7 @@ export interface RegionTransition {
 }
 
 export interface GeneratedRouteNode extends RouteNode {
+    id: string;
     routeId: string;
     previousRouteId?: string;
     next?: GeneratedRouteNode[];

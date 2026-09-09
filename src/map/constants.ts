@@ -1,3 +1,6 @@
+import { ElliniaImage, HenesysImage, KerningCityImage, LithHarborImage, PerionImage, SleepywoodImage } from "../images";
+import { TOWNS } from "./types";
+
 export const TOWN_PLACES = {
     SHOP: "shop",
     TRADING_POST: "trading-post",
@@ -6,6 +9,15 @@ export const TOWN_PLACES = {
     REST: "resting-spot",
     GACHAPON: "gachapon",
     WORKSHOP: "workshop",
+};
+
+export const TOWN_NODE_BACKGROUNDS = {
+    [TOWNS.LITH_HARBOR]: LithHarborImage,
+    [TOWNS.HENESYS]: HenesysImage,
+    [TOWNS.KERNING]: KerningCityImage,
+    [TOWNS.ELLINIA]: ElliniaImage,
+    [TOWNS.PERION]: PerionImage,
+    [TOWNS.SLEEPYWOOD]: SleepywoodImage,
 };
 
 export const TOWN_STYLES = {

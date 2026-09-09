@@ -475,7 +475,7 @@ export const routeLith: Route = {
     ],
     region: REGIONS.LITH_HARBOR,
     numNodes: 5,
-    next: [toHenesysForest, toKerningForest],
+    next: [toKerningForest, toHenesysForest],
 };
 
 export const toLith: Route = {

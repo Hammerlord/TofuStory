@@ -6,7 +6,7 @@ import { getRandomInt, getRandomItem, shuffle } from "./../../utils";
 const MIN_NODES_PER_LEVEL = 2;
 const MAX_NODES_PER_LEVEL = 3;
 const NODE_SPACING = 0.1;
-const BRANCH_OFFSET = 0.3;
+const BRANCH_OFFSET = 0.35;
 const RARE_NODE_CHANCE = 0.15;
 
 type Bookkeeping = {

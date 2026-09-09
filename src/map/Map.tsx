@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ClickIndicatorImage, FlagImage, PersonalAnvilImage, TreasureChestImage } from "../images";
 import {
@@ -13,6 +13,7 @@ import {
     XIcon,
 } from "../images/icons";
 import Overlay from "../view/Overlay";
+import { TOWN_NODE_BACKGROUNDS } from "./constants";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
@@ -59,6 +60,12 @@ const useStyles = createUseStyles({
         height: "100%",
         width: "100%",
     },
+    routeNodeBG: {
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translateX(-50%) translateY(-50%)",
+    },
     routeNode: {
         position: "absolute",
         filter: Array.from({ length: 2 })
@@ -74,7 +81,7 @@ const useStyles = createUseStyles({
 
 const NODE_ICON_SIZE = 24;
 const X_SIZE = 32;
-const NODE_MARGIN = 100;
+const NODE_MARGIN = 300; // Buffer for the "map size" so that elements/nodes don't get cut off
 const toPixel = (fraction: number = 0, size: number) => NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
 
 const Map = ({
@@ -116,7 +123,19 @@ const Map = ({
         onSelectNode(node);
     };
 
-    const drawRouteNode = ({ prev, current, routeNodes, lines, visitedIds }: any) => {
+    const drawRouteNode = ({
+        prev,
+        current,
+        routeNodes,
+        lines,
+        visitedIds,
+    }: {
+        prev?: GeneratedRouteNode;
+        current: GeneratedRouteNode;
+        routeNodes: ReactElement[];
+        lines: ReactElement[];
+        visitedIds: Set<string>;
+    }) => {
         if (!current) {
             return;
         }
@@ -159,8 +178,7 @@ const Map = ({
             x: x - NODE_ICON_SIZE / 2,
             y: y - NODE_ICON_SIZE / 2,
         };
-
-        routeNodes.push(
+        const node = (
             <g x={x - 8} y={y - 8} onClick={handleClickNodeCallback} className={classNames(classes.routeNode)} key={`${current.id}-node`}>
                 <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
                 <g
@@ -194,13 +212,27 @@ const Map = ({
             </g>
         );
 
+        const townNodeBG = current.town && TOWN_NODE_BACKGROUNDS[current.town as keyof TOWN_NODE_BACKGROUNDS];
+        if (townNodeBG) {
+            const size = 400;
+
+            routeNodes.push(
+                <>
+                    <image href={townNodeBG} x={x - size / 2} y={y - size / 2} width={size} height={size} overflow={"visible"} />
+                    {node}
+                </>
+            );
+        } else {
+            routeNodes.push(node);
+        }
+
         if (current.next) {
             current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines, visitedIds }));
         }
     };
 
-    const routeNodes: ReactNode[] = [];
-    const lines: ReactNode[] = [];
+    const routeNodes: ReactElement[] = [];
+    const lines: ReactElement[] = [];
     drawRouteNode({ current: generatedRoute, routeNodes, lines, visitedIds: new Set() });
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
