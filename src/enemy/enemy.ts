@@ -2444,7 +2444,7 @@ export const ironHog: Minion = {
 export const blueMushroom: Minion = {
     name: "Blue Mushroom",
     image: BlueMushroomImage,
-    maxHP: 80,
+    maxHP: 75,
     mesos: 12,
     abilities: [
         {

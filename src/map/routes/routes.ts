@@ -369,8 +369,8 @@ export const routeHenesysEllinia: Route = {
     elites: {
         minions: [redSnail, elliniaGreenMushroom, stump],
         single: [lupin, curseEye],
-        duo: [axeStump, orangeMushroom, elliniaHornyMushroom],
-        trio: [elliniaGreenMushroom, pig, blueMushroom],
+        duo: [axeStump, orangeMushroom, elliniaHornyMushroom, blueMushroom],
+        trio: [elliniaGreenMushroom, pig],
         squad: [redSnail, slime],
         special: [
             [null, null, darkStoneGolem, null, null],
