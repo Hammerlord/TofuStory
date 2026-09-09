@@ -126,12 +126,14 @@ const Map = ({
     const drawRouteNode = ({
         prev,
         current,
+        townBGs,
         routeNodes,
         lines,
         visitedIds,
     }: {
         prev?: GeneratedRouteNode;
         current: GeneratedRouteNode;
+        townBGs: ReactElement[];
         routeNodes: ReactElement[];
         lines: ReactElement[];
         visitedIds: Set<string>;
@@ -215,25 +217,29 @@ const Map = ({
         const townNodeBG = current.town && TOWN_NODE_BACKGROUNDS[current.town as keyof TOWN_NODE_BACKGROUNDS];
         if (townNodeBG) {
             const size = 400;
-
-            routeNodes.push(
-                <>
-                    <image href={townNodeBG} x={x - size / 2} y={y - size / 2} width={size} height={size} overflow={"visible"} />
-                    {node}
-                </>
+            townBGs.push(
+                <image
+                    href={townNodeBG}
+                    x={x - size / 2}
+                    y={y - size / 2}
+                    width={size}
+                    height={size}
+                    style={{ position: "absolute", zIndex: 0 }}
+                />
             );
-        } else {
-            routeNodes.push(node);
         }
 
+        routeNodes.push(node);
+
         if (current.next) {
-            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines, visitedIds }));
+            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, townBGs, lines, visitedIds }));
         }
     };
 
     const routeNodes: ReactElement[] = [];
     const lines: ReactElement[] = [];
-    drawRouteNode({ current: generatedRoute, routeNodes, lines, visitedIds: new Set() });
+    const townBGs: ReactElement[] = [];
+    drawRouteNode({ current: generatedRoute, routeNodes, townBGs, lines, visitedIds: new Set() });
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
     const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
@@ -253,6 +259,7 @@ const Map = ({
                     <Pan userPosition={panPosition}>
                         <div className={classes.imageContainer} ref={containerRef}>
                             <svg className={classes.routeContainer} onContextMenu={(e) => e.preventDefault()}>
+                                {townBGs}
                                 {lines}
                                 {routeNodes}
                             </svg>
