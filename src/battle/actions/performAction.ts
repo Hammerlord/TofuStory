@@ -563,7 +563,7 @@ const handleSecondaryAction = ({
     actorId: string;
     context: ActionContext;
     parentContext: ActionContext;
-    updatedStatsProps: any;
+    updatedStatsProps: UpdatedStatsProps;
     isAutoCast: boolean;
     primaryActionTarget: CombatantInfo | NonCombatPlayerInfo | undefined;
     battle: BattleState;
@@ -629,6 +629,7 @@ const handleSecondaryAction = ({
             .filter((id): id is string => id !== undefined && id !== null);
 
         const source = context?.sourceChain?.at(-1);
+
         const updatedSecondary = getUpdatedStats({
             ...updatedStatsProps,
             actorId,
@@ -637,6 +638,7 @@ const handleSecondaryAction = ({
             selectedIndex: target.index,
             action: secondaryAction,
         });
+
         dispatch(applyStatChanges(updatedSecondary.map(({ statUpdate }) => statUpdate)));
 
         if (secondaryAction.returnParentCardToHand) {

@@ -74,7 +74,7 @@ export const getUpdatedStats = ({
 }: UpdatedStatsProps): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
     const actor = actorId ? getCombatantById(actorId) : undefined;
     const targets = targetIds.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
-    const recipients = recipientIds?.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
+    const recipients = recipientIds?.length && recipientIds?.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
     const triggerSource = context?.sourceChain?.at(-1);
 
     return (recipients || targets).map((target: CombatantInfo) => {

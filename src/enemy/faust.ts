@@ -204,7 +204,7 @@ export const ghostlyPuppeteerL: Minion = {
         animation: "float",
     },
     maxHP: 10,
-    armor: 65,
+    armor: 60,
     abilities: [
         {
             name: "Ghostly Mending",
