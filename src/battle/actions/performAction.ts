@@ -131,8 +131,7 @@ export const performAction = ({
                     parentContext,
                     updatedStatsProps,
                     isAutoCast,
-                    primaryActionTarget: findCombatantData(battle, combatants[selectedIndex]?.id),
-                    battle,
+                    primaryActionTarget: findCombatantData(getState().battle!, combatants[selectedIndex]?.id),
                 })
             );
         };
@@ -557,7 +556,6 @@ const handleSecondaryAction = ({
     updatedStatsProps,
     isAutoCast,
     primaryActionTarget,
-    battle,
 }: {
     secondaryAction: (ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean }) | undefined;
     actorId: string;
@@ -566,13 +564,13 @@ const handleSecondaryAction = ({
     updatedStatsProps: UpdatedStatsProps;
     isAutoCast: boolean;
     primaryActionTarget: CombatantInfo | NonCombatPlayerInfo | undefined;
-    battle: BattleState;
 }) => {
     return (
         dispatch: AppDispatch,
         getState: () => RootState
     ): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] | undefined => {
         const actorData = findCombatantData(getState().battle! as BattleState, actorId);
+        const battle = getState().battle!;
 
         if (
             !secondaryAction ||
