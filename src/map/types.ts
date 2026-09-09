@@ -44,6 +44,12 @@ export interface RouteNode {
     region: REGIONS;
 }
 
+/** A single point along a route at which its region switches from `Route.region` to a new one. */
+export interface RegionTransition {
+    atNodeIndex: number;
+    region: REGIONS;
+}
+
 export interface GeneratedRouteNode extends RouteNode {
     routeId: string;
     previousRouteId?: string;
@@ -71,7 +77,20 @@ export interface Route {
     id: string; // Unique identifier for this route
     /** Value up to 1. 1 = 100%. If not provided, the chance is 0. */
     cursedTreasureChance?: number;
-    nodes: RouteNode[];
+    /** Number of generated levels in this route, matching what `nodes.length` used to represent. */
+    numNodes: number;
+    /** Region for this route's nodes, from node 0 up to (but not including) `regionTransition.atNodeIndex`, if any. */
+    region: REGIONS;
+    /** If this route's region changes partway through, the index it switches at and the new region. */
+    regionTransition?: RegionTransition;
+    /** Index (within `numNodes`) of this route's boss encounter, if it has one. */
+    bossNodeIndex?: number;
+    /** Pool of possible encounter IDs for the boss node; one is chosen at random. */
+    bosses?: string[];
+    /** Town this route starts at, if it's used as an entry point into the middle of travel. */
+    startingTown?: TOWNS;
+    /** Town at the end of this route, if applicable. */
+    endingTown?: TOWNS;
     initialPlayerPosition?: {
         x: number;
         y: number;
