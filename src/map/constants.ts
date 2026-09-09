@@ -1,4 +1,20 @@
-import { ElliniaImage, HenesysImage, KerningCityImage, LithHarborImage, PerionImage, SleepywoodImage } from "../images";
+import {
+    BrickPlatformImage,
+    ElliniaImage,
+    GrassPlatformImage,
+    HenesysImage,
+    KerningCityImage,
+    LithHarborImage,
+    PavementPlatform2Image,
+    PavementPlatformImage,
+    PerionImage,
+    RockPlatform2Image,
+    RockPlatformImage,
+    RootsPlatformImage,
+    SleepywoodImage,
+    WoodPlatformImage,
+} from "../images";
+import { REGIONS } from "./regions";
 import { TOWNS } from "./types";
 
 export const TOWN_PLACES = {
@@ -18,6 +34,15 @@ export const TOWN_NODE_BACKGROUNDS = {
     [TOWNS.ELLINIA]: ElliniaImage,
     [TOWNS.PERION]: PerionImage,
     [TOWNS.SLEEPYWOOD]: SleepywoodImage,
+};
+
+export const REGION_PLATFORMS = {
+    [REGIONS.LITH_HARBOR]: [GrassPlatformImage],
+    [REGIONS.HENESYS]: [PavementPlatformImage, PavementPlatform2Image],
+    [REGIONS.KERNING]: [BrickPlatformImage],
+    [REGIONS.ELLINIA]: [WoodPlatformImage],
+    [REGIONS.SLEEPYWOOD]: [RootsPlatformImage],
+    [REGIONS.PERION]: [RockPlatformImage, RockPlatform2Image],
 };
 
 export const TOWN_STYLES = {

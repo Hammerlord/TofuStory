@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicatorImage, FlagImage, PersonalAnvilImage, TreasureChestImage } from "../images";
+import { ClickIndicatorImage, FlagImage, GrassPlatformImage, PersonalAnvilImage, TreasureChestImage } from "../images";
 import {
     CampingIcon,
     CrossedSwordsIcon,
@@ -13,10 +13,11 @@ import {
     XIcon,
 } from "../images/icons";
 import Overlay from "../view/Overlay";
-import { TOWN_NODE_BACKGROUNDS } from "./constants";
+import { REGION_PLATFORMS, TOWN_NODE_BACKGROUNDS } from "./constants";
 import Legend from "./Legend";
 import Pan from "./Pan";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
+import { getRandomItem } from "../utils";
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -92,7 +93,7 @@ const Map = ({
     visited = {},
     disableClick,
 }: {
-    onSelectNode?: (node: RouteNode) => void;
+    onSelectNode?: (node: GeneratedRouteNode) => void;
     playerLocationNode?: GeneratedRouteNode;
     generatedRoute?; // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     playerImage?: string;
@@ -126,14 +127,14 @@ const Map = ({
     const drawRouteNode = ({
         prev,
         current,
-        townBGs,
+        nodeBGs,
         routeNodes,
         lines,
         visitedIds,
     }: {
         prev?: GeneratedRouteNode;
         current: GeneratedRouteNode;
-        townBGs: ReactElement[];
+        nodeBGs: ReactElement[];
         routeNodes: ReactElement[];
         lines: ReactElement[];
         visitedIds: Set<string>;
@@ -214,10 +215,10 @@ const Map = ({
             </g>
         );
 
-        const townNodeBG = current.town && TOWN_NODE_BACKGROUNDS[current.town as keyof TOWN_NODE_BACKGROUNDS];
+        const townNodeBG = current.town && TOWN_NODE_BACKGROUNDS[current.town];
         if (townNodeBG) {
             const size = 400;
-            townBGs.push(
+            nodeBGs.push(
                 <image
                     key={`${current.id}-BG`}
                     href={townNodeBG}
@@ -228,19 +229,38 @@ const Map = ({
                     style={{ position: "absolute", zIndex: 0 }}
                 />
             );
+        } else {
+            const size = 54;
+            let platformImage: string = GrassPlatformImage;
+            const platformImageFromMap = REGION_PLATFORMS[current.region];
+            if (Array.isArray(platformImageFromMap)) {
+                platformImage = getRandomItem(platformImageFromMap);
+            }
+
+            nodeBGs.push(
+                <image
+                    key={`${current.id}-BG`}
+                    href={platformImage}
+                    x={x - size / 2}
+                    y={y}
+                    width={size}
+                    height={size}
+                    style={{ position: "absolute", zIndex: 0 }}
+                />
+            );
         }
 
         routeNodes.push(node);
 
         if (current.next) {
-            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, townBGs, lines, visitedIds }));
+            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, nodeBGs, lines, visitedIds }));
         }
     };
 
     const routeNodes: ReactElement[] = [];
     const lines: ReactElement[] = [];
-    const townBGs: ReactElement[] = [];
-    drawRouteNode({ current: generatedRoute, routeNodes, townBGs, lines, visitedIds: new Set() });
+    const nodeBGs: ReactElement[] = [];
+    drawRouteNode({ current: generatedRoute, routeNodes, nodeBGs: nodeBGs, lines, visitedIds: new Set() });
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
     const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
@@ -260,7 +280,7 @@ const Map = ({
                     <Pan userPosition={panPosition}>
                         <div className={classes.imageContainer} ref={containerRef}>
                             <svg className={classes.routeContainer} onContextMenu={(e) => e.preventDefault()}>
-                                {townBGs}
+                                {nodeBGs}
                                 {lines}
                                 {routeNodes}
                             </svg>
