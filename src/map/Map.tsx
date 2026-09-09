@@ -45,7 +45,7 @@ const useStyles = createUseStyles({
     tint: {
         position: "fixed",
         inset: 0,
-        background: "rgba(75, 75, 75, 0.75)",
+        background: "rgba(125, 125, 125, 0.6)",
         zIndex: 1,
     },
     canvasLayer: {
