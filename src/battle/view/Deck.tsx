@@ -96,8 +96,10 @@ const Deck = ({
     deckRef;
 }) => {
     const classes = useStyles();
-    const battle = useAppSelector((state) => state.battle);
-    const { deck, deckCycled }: { deck: CombatAbility[]; deckCycled: boolean } = battle;
+    // This component only renders in battle.
+    const deck = useAppSelector((state) => state.battle!.deck);
+    const deckCycled = useAppSelector((state) => state.battle!.deckCycled);
+
     const [deckSize, setDeckSize] = useState(deck.length); // This is purely for display animation purposes
 
     useEffect(() => {

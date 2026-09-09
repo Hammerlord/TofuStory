@@ -183,6 +183,7 @@ const cycleDeck = (context: ActionContext) => {
         updateBattle({
             discard: [],
             deck: shuffle(discard.slice()),
+            deckCycled: true,
         });
 
         playerSide.concat(enemySide).forEach((combatant) => {
