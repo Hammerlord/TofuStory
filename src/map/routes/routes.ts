@@ -634,6 +634,14 @@ export const routeLith: Route = {
         y: 0.7956483387239047,
     },
     specialEnemies: [goldenPig],
+    elites: {
+        minions: [snail],
+        single: [redSnail, slime, pig],
+        duo: [shroom],
+        trio: [blueSnail],
+        squad: [snail],
+        special: [],
+    },
     enemies: [
         [snail, blueSnail, redSnail, blueSnail, snail],
         [snail, redSnail, snail, redSnail, snail],

@@ -109,7 +109,7 @@ export const generateEliteSquad = ({
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.7));
     const finalDamageMod = Math.max(0, damageModifier - 1);
 
     const enemy = {
@@ -171,7 +171,7 @@ const generateEliteTriad = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, 2)]);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.6));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.7));
 
     const enemy = {
         ...baseEnemy,
@@ -226,7 +226,7 @@ const generateEliteDuo = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.7));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8));
 
     const enemy = {
         ...baseEnemy,
