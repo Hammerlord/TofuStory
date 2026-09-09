@@ -146,6 +146,7 @@ export const stun: Effect = {
     type: EFFECT_TYPES.STUN,
     class: EFFECT_CLASSES.DEBUFF,
     duration: 1,
+    maxStacks: 1,
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
@@ -206,6 +207,7 @@ export const freeze: Effect = {
     description: "Frozen targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
     defenseDown: 3,
     duration: 1,
+    maxStacks: 1,
     persistsWhenDead: true,
 };
 
