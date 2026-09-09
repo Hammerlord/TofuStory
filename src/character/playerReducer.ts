@@ -10,7 +10,7 @@ import { getMaxResources } from "../battle/utils";
 import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
-import { GeneratedRouteNode, NODE_TYPES, Route, TOWNS } from "../map/types";
+import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
 import { NUM_TRADING_POST_TRADES, NUM_TRANSMUTATIONS, ShopAbility, ShopItem } from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
@@ -56,7 +56,7 @@ export type CharacterState = {
     infamy: number;
     currentMapLocation: null | GeneratedRouteNode;
     currentTown: TOWNS | null;
-    route: Route | null;
+    route: GeneratedRouteNode | null;
     nodesVisited: { [nodeId: string]: true };
     townShops: { [key in TOWNS]?: TownShops };
     purchasedConsumables: {

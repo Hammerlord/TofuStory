@@ -93,7 +93,6 @@ const DevToolButton = () => {
     const [isBattle, setIsBattle] = useState(false);
     const [isSceneViewerOpen, setIsSceneViewerOpen] = useState(false);
     const [questName, setQuestName] = useState("");
-    const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
     const [treasurePuzzleName, setTreasurePuzzleName] = useState(null);
     const [isItemViewerOpen, setIsItemViewerOpen] = useState(false);
     const [isShopOpen, setIsShopOpen] = useState(false);
@@ -137,7 +136,6 @@ const DevToolButton = () => {
                                 <MenuItem onClick={() => setIsShopOpen((prev) => !prev)}>Shop Viewer</MenuItem>
                                 <MenuItem onClick={() => setIsTradingPostOpen((prev) => !prev)}>Trading Post</MenuItem>
                                 <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
-                                <MenuItem onClick={() => setIsMapDrawerOpen((prev) => !prev)}>Map Drawer</MenuItem>
                                 <MenuItem onClick={() => setIsFortuneBoxOpen((prev) => !prev)}>Fortune Box</MenuItem>
                                 <MenuItem onClick={() => setIsTransmutationOpen((prev) => !prev)}>Transmutation</MenuItem>
                             </MenuList>
@@ -190,13 +188,6 @@ const DevToolButton = () => {
                 <div className={classes.overlay}>
                     <div className={classes.inner}>
                         <Quest player={defaultCharacterProperties} onComplete={() => setQuestName(null)} />
-                    </div>
-                </div>
-            )}
-            {isMapDrawerOpen && (
-                <div className={classes.overlay}>
-                    <div className={classes.inner}>
-                        <Map enableDraw={true} />
                     </div>
                 </div>
             )}

@@ -27,8 +27,8 @@ export enum NODE_TYPES {
 
 export interface RouteNode {
     id?: string;
-    x: number;
-    y: number;
+    x?: number;
+    y?: number;
     type?: NODE_TYPES;
     encounter?: string; // This is usually a pre-configured overworld boss, identified by a string ID. See overworldBosses.ts.
     event?: EventScene;
@@ -45,6 +45,7 @@ export interface RouteNode {
 export interface GeneratedRouteNode extends RouteNode {
     routeId: string;
     previousRouteId?: string;
+    next?: GeneratedRouteNode[];
 }
 
 export interface EliteMap {

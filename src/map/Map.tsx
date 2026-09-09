@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicatorImage, TreasureChestImage, VictoriaIslandImage } from "../images";
+import { ClickIndicatorImage, TreasureChestImage } from "../images";
 import {
     CampingIcon,
     CrossedSwordsIcon,
@@ -14,23 +14,43 @@ import {
 import Overlay from "../view/Overlay";
 import Legend from "./Legend";
 import Pan from "./Pan";
-import { NODE_TYPES, Route, RouteNode } from "./types";
+import { BG_MAP, GeneratedRouteNode, NODE_TYPES, Route, RouteNode } from "./types";
 import classNames from "classnames";
 
 const useStyles = createUseStyles({
     imageContainer: {
-        width: "300%",
-        height: "300%",
-    },
-    image: {
-        width: "100%",
-        objectFit: "contain",
+        position: "relative",
+        width: "3600px",
+        height: "1800px",
     },
     root: {
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
         "& .react-transform-wrapper": {
             width: "100%",
             height: "100%",
         },
+    },
+    bgImage: {
+        position: "fixed",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        zIndex: 0,
+    },
+    tint: {
+        position: "fixed",
+        inset: 0,
+        background: "rgba(75, 75, 75, 0.75)",
+        zIndex: 1,
+    },
+    canvasLayer: {
+        position: "relative",
+        zIndex: 2,
+        height: "100%",
     },
     routeContainer: {
         position: "absolute",
@@ -41,7 +61,7 @@ const useStyles = createUseStyles({
     },
     routeNode: {
         position: "absolute",
-        filter: Array.from({ length: 3 })
+        filter: Array.from({ length: 2 })
             .map(() => "drop-shadow(0 0 2px rgba(255, 255, 230, 0.8))")
             .join(" "),
         cursor: "pointer",
@@ -54,27 +74,26 @@ const useStyles = createUseStyles({
 
 const NODE_ICON_SIZE = 24;
 const X_SIZE = 32;
+const NODE_MARGIN = 100;
+const toPixel = (fraction: number = 0, size: number) => NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
 
 const Map = ({
     onSelectNode,
     playerLocationNode,
     generatedRoute,
     playerImage,
-    enableDraw = false,
     visited = {},
     disableClick,
 }: {
     onSelectNode?: (node: RouteNode) => void;
-    playerLocationNode?: RouteNode;
+    playerLocationNode?: GeneratedRouteNode;
     generatedRoute?; // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     playerImage?: string;
-    enableDraw?: boolean;
     visited?: { [nodeId: string]: true };
     disableClick?: boolean;
 }) => {
     const classes = useStyles();
     const containerRef = useRef(null) as any;
-    const [positions, setPositions] = useState([]);
     const [container, setContainer] = useState({});
 
     const updateContainer = () => {
@@ -85,6 +104,7 @@ const Map = ({
     };
 
     useEffect(() => {
+        updateContainer();
         window.addEventListener("resize", updateContainer);
         return () => window.removeEventListener("resize", updateContainer);
     }, [containerRef.current]);
@@ -96,53 +116,38 @@ const Map = ({
         onSelectNode(node);
     };
 
-    // This is just for generating routes
-    const handleDraw = (e) => {
-        if (enableDraw && e.button === 0) {
-            const { left, width, top, height } = containerRef.current.getBoundingClientRect();
-            const newPositions = [...positions, { x: (e.clientX - left) / width, y: (e.clientY - top) / height }];
-            console.log(JSON.stringify(newPositions));
-            setPositions(newPositions);
-        }
-    };
-
-    const handleErase = (e, i) => {
-        if (enableDraw && e.button === 2) {
-            const newPositions = positions.slice();
-            newPositions.splice(i, 1);
-            setPositions(newPositions);
-            console.log(JSON.stringify(newPositions));
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    };
-
-    // prev and current are the output of generateTravelRoute
-    const drawRouteNode = ({ prev, current, routeNodes, lines }: any) => {
+    const drawRouteNode = ({ prev, current, routeNodes, lines, visitedIds }: any) => {
         if (!current) {
             return;
         }
         const { width = 0, height = 0 } = container as { width: number; height: number };
-        const x = current.x * width;
-        const y = current.y * height;
+        const x = toPixel(current.x, width);
+        const y = toPixel(current.y, height);
 
         if (prev) {
             lines.push(
                 <line
                     key={`${prev.id}-${current.id}-line`}
-                    x1={prev.x * width}
-                    y1={prev.y * height}
+                    x1={toPixel(prev.x, width)}
+                    y1={toPixel(prev.y, height)}
                     x2={x}
                     y2={y}
-                    stroke="black"
+                    stroke="rgba(5,5,5,0.5)"
                     strokeWidth={2}
+                    strokeDasharray="4 4"
+                    strokeLinecap="round"
                     style={{ position: "absolute", zIndex: 1 }}
                 />
             );
         }
 
+        if (visitedIds.has(current.id)) {
+            return;
+        }
+        visitedIds.add(current.id);
+
         const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
-        const isNext = prev?.id === playerLocationNode.id || (isPlayerPosition && !visited[current.id]);
+        const isNext = playerLocationNode?.next?.some((node) => node.id === current.id) || (isPlayerPosition && !visited[current.id]);
         let handleClickNodeCallback;
         if (isNext) {
             handleClickNodeCallback = () => handleClickNode(current);
@@ -188,46 +193,39 @@ const Map = ({
         );
 
         if (current.next) {
-            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines }));
+            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, lines, visitedIds }));
         }
     };
 
     const routeNodes = [];
     const lines = [];
-    drawRouteNode({ current: generatedRoute, routeNodes, lines });
+    drawRouteNode({ current: generatedRoute, routeNodes, lines, visitedIds: new Set() });
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
     const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
-    const absoluteNodeLocation = { x: (playerLocationNode?.x || 0) * -mapWidth, y: (playerLocationNode?.y || 0) * -mapHeight };
+    const absoluteNodeLocation = {
+        x: -toPixel(playerLocationNode?.x, mapWidth),
+        y: -toPixel(playerLocationNode?.y, mapHeight),
+    };
     const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
+    const bgRegion = playerLocationNode?.region || generatedRoute?.region;
 
     return (
         <Overlay>
             <div className={classes.root}>
-                <Pan userPosition={panPosition} style={{ minWidth: "2500px", width: "175%" }}>
-                    <img src={VictoriaIslandImage} className={classes.image} ref={containerRef} onLoad={updateContainer} />
-                    <svg className={classes.routeContainer} onClick={handleDraw} onContextMenu={(e) => e.preventDefault()}>
-                        {lines}
-                        {routeNodes}
-                        {enableDraw &&
-                            positions.map(({ x, y }, i) => {
-                                if (!mapWidth || !mapHeight) {
-                                    return;
-                                }
-                                return (
-                                    <circle
-                                        onMouseDown={(e) => handleErase(e, i)}
-                                        key={i}
-                                        cx={x * mapWidth}
-                                        cy={y * mapHeight}
-                                        r={9}
-                                        fill={"red"}
-                                    />
-                                );
-                            })}
-                    </svg>
-                </Pan>
-                {!enableDraw && <Legend />}
+                {bgRegion && <img src={BG_MAP[bgRegion]} className={classes.bgImage} />}
+                <div className={classes.tint} />
+                <div className={classes.canvasLayer}>
+                    <Pan userPosition={panPosition}>
+                        <div className={classes.imageContainer} ref={containerRef}>
+                            <svg className={classes.routeContainer} onContextMenu={(e) => e.preventDefault()}>
+                                {lines}
+                                {routeNodes}
+                            </svg>
+                        </div>
+                    </Pan>
+                </div>
+                <Legend />
             </div>
         </Overlay>
     );

@@ -14,6 +14,7 @@ const useStyles = createUseStyles({
         bottom: 16,
         color: "white",
         listStyle: "none",
+        zIndex: 3,
         "& li": {
             margin: "4px 0",
         },
