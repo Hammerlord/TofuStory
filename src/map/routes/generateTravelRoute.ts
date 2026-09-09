@@ -4,15 +4,35 @@ import { getRandomInt, getRandomItem, shuffle } from "./../../utils";
 
 const MIN_NODES_PER_LEVEL = 2;
 const MAX_NODES_PER_LEVEL = 3;
+const NODE_SPACING = 0.1;
+const BRANCH_OFFSET = 0.3;
 
 type Bookkeeping = {
     numEncountersSinceRestPoint: number;
     numNodesSinceLastTreasure: number;
 };
 
+const DISTANCE_EPSILON = 1e-9;
+
+const yDistance = (a: GeneratedRouteNode, b: GeneratedRouteNode) => Math.abs((a.y ?? 0) - (b.y ?? 0));
+
 const wireLevels = (fromLevel: GeneratedRouteNode[], toLevel: GeneratedRouteNode[]) => {
+    const numLinks =
+        fromLevel.length === toLevel.length ? Math.min(2, toLevel.length) : Math.max(1, Math.ceil(toLevel.length / fromLevel.length));
+
     fromLevel.forEach((node) => {
-        node.next = toLevel;
+        const closest = [...toLevel].sort((a, b) => yDistance(a, node) - yDistance(b, node));
+        const cutoffIndex = Math.min(numLinks, toLevel.length) - 1;
+        const cutoffDistance = yDistance(closest[cutoffIndex], node);
+        node.next = closest.filter((n) => yDistance(n, node) <= cutoffDistance + DISTANCE_EPSILON);
+    });
+
+    toLevel.forEach((target) => {
+        if (fromLevel.some((node) => node.next?.includes(target))) {
+            return;
+        }
+        const nearest = [...fromLevel].sort((a, b) => yDistance(a, target) - yDistance(b, target))[0];
+        (nearest.next ??= []).push(target);
     });
 };
 
@@ -74,14 +94,14 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         route,
         prevRoute,
         depth,
-        yRange,
+        center,
         bookkeeping,
         incomingLevelSize,
     }: {
         route: Route;
         prevRoute?: Route;
         depth: number;
-        yRange: [number, number];
+        center: number;
         bookkeeping: Bookkeeping;
         incomingLevelSize?: number;
     }): GeneratedRouteNode[] => {
@@ -157,20 +177,19 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             return node;
         };
 
-        const positionLevel = (level: GeneratedRouteNode[], levelDepth: number, range: [number, number]) => {
+        const positionLevel = (level: GeneratedRouteNode[], levelDepth: number, levelCenter: number) => {
             const x = totalLevels <= 1 ? 0 : levelDepth / (totalLevels - 1);
-            const mid = (range[0] + range[1]) / 2;
-            const verticalSpacingScale = 0.5;
+            const n = level.length;
             level.forEach((node, i) => {
                 node.x = x;
-                const y = range[0] + ((range[1] - range[0]) * (i + 1)) / (level.length + 1);
-                node.y = mid + (y - mid) * verticalSpacingScale;
+                const y = levelCenter + (i - (n - 1) / 2) * NODE_SPACING;
+                node.y = Math.max(0, Math.min(1, y));
             });
         };
 
         if (route.nodes.length === 0) {
             if (route.next?.length === 1) {
-                return buildSegment({ route: route.next[0], prevRoute: route, depth, yRange, bookkeeping, incomingLevelSize });
+                return buildSegment({ route: route.next[0], prevRoute: route, depth, center, bookkeeping, incomingLevelSize });
             }
             return [];
         }
@@ -188,7 +207,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         });
 
         levels.forEach((level, levelIndex) => {
-            positionLevel(level, depth + levelIndex, yRange);
+            positionLevel(level, depth + levelIndex, center);
 
             if (levelIndex > 0) {
                 wireLevels(levels[levelIndex - 1], level);
@@ -204,7 +223,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 route: route.next[0],
                 prevRoute: route,
                 depth: nextDepth,
-                yRange,
+                center,
                 bookkeeping: nextBookkeeping,
                 incomingLevelSize: lastLevel.length,
             });
@@ -229,7 +248,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                         node.previousRouteId = route.id;
                         return node;
                     });
-                    positionLevel(level, mergedDepth, yRange);
+                    positionLevel(level, mergedDepth, center);
                     wireLevels(mergedLevel, level);
                     mergedLevel = level;
                     ++mergedDepth;
@@ -238,14 +257,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 const bossNode = makeGeneratedNode(chosenBranch.nodes[bossIndex], NODE_TYPES.BOSS);
                 bossNode.routeId = chosenBranch.id;
                 bossNode.previousRouteId = route.id;
-                positionLevel([bossNode], mergedDepth, yRange);
+                positionLevel([bossNode], mergedDepth, center);
                 wireLevels(mergedLevel, [bossNode]);
                 ++mergedDepth;
 
-                const branchYRanges = nextRoutes.map((_, i): [number, number] => [
-                    yRange[0] + ((yRange[1] - yRange[0]) * i) / nextRoutes.length,
-                    yRange[0] + ((yRange[1] - yRange[0]) * (i + 1)) / nextRoutes.length,
-                ]);
+                const branchCenters = nextRoutes.map((_, i) => center + (i - (nextRoutes.length - 1) / 2) * BRANCH_OFFSET);
 
                 const branchEntryLevel = nextRoutes.map((nextRoute) => {
                     const regionSource = nextRoute.nodes[bossIndex + 1] || nextRoute.nodes[bossIndex];
@@ -254,8 +270,8 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 branchEntryLevel.forEach((node, i) => {
                     node.routeId = nextRoutes[i].id;
                     node.previousRouteId = route.id;
+                    positionLevel([node], mergedDepth, branchCenters[i]);
                 });
-                positionLevel(branchEntryLevel, mergedDepth, yRange);
                 wireLevels([bossNode], branchEntryLevel);
                 ++mergedDepth;
 
@@ -265,7 +281,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                         route: remainder,
                         prevRoute: route,
                         depth: mergedDepth,
-                        yRange: branchYRanges[i],
+                        center: branchCenters[i],
                         bookkeeping: nextBookkeeping,
                         incomingLevelSize: 1,
                     });
@@ -273,16 +289,13 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 });
             } else {
                 const groups = partition(lastLevel, nextRoutes.length);
+                const branchCenters = nextRoutes.map((_, i) => center + (i - (nextRoutes.length - 1) / 2) * BRANCH_OFFSET);
                 nextRoutes.forEach((nextRoute, i) => {
-                    const branchYRange: [number, number] = [
-                        yRange[0] + ((yRange[1] - yRange[0]) * i) / nextRoutes.length,
-                        yRange[0] + ((yRange[1] - yRange[0]) * (i + 1)) / nextRoutes.length,
-                    ];
                     const childFirstLevel = buildSegment({
                         route: nextRoute,
                         prevRoute: route,
                         depth: nextDepth,
-                        yRange: branchYRange,
+                        center: branchCenters[i],
                         bookkeeping: nextBookkeeping,
                         incomingLevelSize: groups[i].length,
                     });
@@ -297,7 +310,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
     const rootLevel = buildSegment({
         route: startingRoute,
         depth: 0,
-        yRange: [0, 1],
+        center: 0.5,
         bookkeeping: { numEncountersSinceRestPoint: 0, numNodesSinceLastTreasure: 0 },
     });
 
