@@ -19,13 +19,20 @@ const DISTANCE_EPSILON = 1e-9;
 const yDistance = (a: GeneratedRouteNode, b: GeneratedRouteNode) => Math.abs((a.y ?? 0) - (b.y ?? 0));
 
 const wireLevels = (fromLevel: GeneratedRouteNode[], toLevel: GeneratedRouteNode[]) => {
+    if (fromLevel.length === 0 || toLevel.length === 0) {
+        return;
+    }
+
     const numLinks =
         fromLevel.length === toLevel.length ? Math.min(2, toLevel.length) : Math.max(1, Math.ceil(toLevel.length / fromLevel.length));
 
     fromLevel.forEach((node) => {
         const closest = [...toLevel].sort((a, b) => yDistance(a, node) - yDistance(b, node));
+
         const cutoffIndex = Math.min(numLinks, toLevel.length) - 1;
+
         const cutoffDistance = yDistance(closest[cutoffIndex], node);
+
         node.next = closest.filter((n) => yDistance(n, node) <= cutoffDistance + DISTANCE_EPSILON);
     });
 
@@ -33,8 +40,38 @@ const wireLevels = (fromLevel: GeneratedRouteNode[], toLevel: GeneratedRouteNode
         if (fromLevel.some((node) => node.next?.includes(target))) {
             return;
         }
+
         const nearest = [...fromLevel].sort((a, b) => yDistance(a, target) - yDistance(b, target))[0];
+
         (nearest.next ??= []).push(target);
+    });
+};
+
+const wireRouteBranches = (fromLevel: GeneratedRouteNode[], branchEntryLevels: GeneratedRouteNode[][]) => {
+    if (fromLevel.length === 0 || branchEntryLevels.length === 0) {
+        return;
+    }
+
+    const entries = branchEntryLevels.map((level) => level[0]).filter((node): node is GeneratedRouteNode => node !== undefined);
+
+    if (entries.length === 0) {
+        return;
+    }
+
+    entries.forEach((entry) => {
+        const closestParents = [...fromLevel].sort((a, b) => yDistance(a, entry) - yDistance(b, entry));
+
+        const parent = closestParents[0];
+
+        if (!parent) {
+            return;
+        }
+
+        parent.next ??= [];
+
+        if (!parent.next.includes(entry)) {
+            parent.next.push(entry);
+        }
     });
 };
 
@@ -48,30 +85,6 @@ const partition = <T>(items: T[], numGroups: number): T[][] => {
 const regionAtIndex = (route: Route, index: number): REGIONS =>
     route.regionTransition && index >= route.regionTransition.atNodeIndex ? route.regionTransition.region : route.region;
 
-const sliceRouteAfterBoss = (route: Route, bossIndex: number): Route => {
-    const startIndex = bossIndex + 1;
-    return {
-        ...route,
-        numNodes: route.numNodes - startIndex,
-        region: regionAtIndex(route, startIndex),
-        regionTransition:
-            route.regionTransition && route.regionTransition.atNodeIndex > startIndex
-                ? { atNodeIndex: route.regionTransition.atNodeIndex - startIndex, region: route.regionTransition.region }
-                : undefined,
-        bossNodeIndex: undefined,
-        bosses: undefined,
-        startingTown: undefined,
-    };
-};
-
-const findCommonBossIndex = (routes: Route[]): number | null => {
-    const [first, ...rest] = routes;
-    if (first?.bossNodeIndex === undefined) {
-        return null;
-    }
-    return rest.every((r) => r.bossNodeIndex === first.bossNodeIndex) ? first.bossNodeIndex : null;
-};
-
 const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): GeneratedRouteNode => {
     const getTotalLevels = (route: Route): number => {
         if (!route.next?.length) {
@@ -80,12 +93,6 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         if (route.next.length === 1) {
             return route.numNodes + getTotalLevels(route.next[0]);
-        }
-
-        const bossIndex = findCommonBossIndex(route.next);
-        if (bossIndex !== null) {
-            const remainderLevels = Math.max(...route.next.map((nextRoute) => getTotalLevels(sliceRouteAfterBoss(nextRoute, bossIndex))));
-            return route.numNodes + bossIndex + 2 + remainderLevels;
         }
 
         return route.numNodes + Math.max(...route.next.map(getTotalLevels));
@@ -111,7 +118,8 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         depth,
         center,
         bookkeeping,
-        incomingLevelSize,
+        incomingLevelSize = 1,
+        isBranchEntry = false,
     }: {
         route: Route;
         prevRoute?: Route;
@@ -119,6 +127,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         center: number;
         bookkeeping: Bookkeeping;
         incomingLevelSize?: number;
+        isBranchEntry?: boolean;
     }): GeneratedRouteNode[] => {
         const routeId = route.id;
 
@@ -131,6 +140,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? uncommonBaseline) : 0;
         let numTradingPosts = 1;
         let numTransmutes = 1;
+
         let { numEncountersSinceRestPoint, numNodesSinceLastTreasure } = bookkeeping;
 
         const rollType = (): NODE_TYPES => {
@@ -149,10 +159,12 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             } else {
                 const rareTypes: NODE_TYPES[] = [];
 
-                // To give Trading Post a better chance at being useful, it should come after any treasure chests.
+                // To give Trading Post a better chance at being useful,
+                // it should come after any treasure chests.
                 if (numTradingPosts > 0 && numTreasures === 0) {
                     rareTypes.push(NODE_TYPES.TRADING_POST);
                 }
+
                 if (numTransmutes > 0) {
                     rareTypes.push(NODE_TYPES.TRANSMUTE);
                 }
@@ -199,6 +211,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const makeGeneratedNode = (base: Partial<RouteNode>, forcedType?: NODE_TYPES): GeneratedRouteNode => {
             const type = forcedType || rollType();
+
             if (!forcedType) {
                 applyBookkeeping(type);
             }
@@ -214,7 +227,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
             if (type === NODE_TYPES.TREASURE && !node.treasure) {
                 const isCursedTreasure = route.cursedTreasureChance && Math.random() <= route.cursedTreasureChance;
-                node.treasure = { mesos: [20, 40], curse: isCursedTreasure ? "damage" : undefined };
+
+                node.treasure = {
+                    mesos: [20, 40],
+                    curse: isCursedTreasure ? "damage" : undefined,
+                };
             }
 
             return node;
@@ -222,43 +239,105 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const positionLevel = (level: GeneratedRouteNode[], levelDepth: number, levelCenter: number) => {
             const x = totalLevels <= 1 ? 0 : levelDepth / (totalLevels - 1);
+
             const n = level.length;
+
             level.forEach((node, i) => {
                 node.x = x;
+
                 const y = levelCenter + (i - (n - 1) / 2) * NODE_SPACING;
+
                 node.y = Math.max(0, Math.min(1, y));
             });
         };
 
         if (route.numNodes === 0) {
-            if (route.next?.length === 1) {
-                return buildSegment({ route: route.next[0], prevRoute: route, depth, center, bookkeeping, incomingLevelSize });
+            const next = route.next || [];
+
+            if (next.length === 0) {
+                return [];
             }
-            return [];
+
+            if (next.length === 1) {
+                return buildSegment({
+                    route: next[0],
+                    prevRoute: route,
+                    depth,
+                    center,
+                    bookkeeping,
+                    incomingLevelSize,
+                    isBranchEntry,
+                });
+            }
+
+            const branchCenters = next.map((_, i) => center + (i - (next.length - 1) / 2) * BRANCH_OFFSET);
+
+            return next.flatMap((nextRoute, i) =>
+                buildSegment({
+                    route: nextRoute,
+                    prevRoute: route,
+                    depth,
+                    center: branchCenters[i],
+                    bookkeeping,
+                    incomingLevelSize: 1,
+                    isBranchEntry: true,
+                })
+            );
         }
 
         const levels: GeneratedRouteNode[][] = [];
+
         for (let idx = 0; idx < route.numNodes; idx++) {
             const region = regionAtIndex(route, idx);
 
             if (idx === 0 && route.startingTown !== undefined) {
-                levels.push([makeGeneratedNode({ region, town: route.startingTown }, NODE_TYPES.TOWN)]);
+                levels.push([
+                    makeGeneratedNode(
+                        {
+                            region,
+                            town: route.startingTown,
+                        },
+                        NODE_TYPES.TOWN
+                    ),
+                ]);
                 continue;
             }
 
             if (idx === route.numNodes - 1 && route.endingTown !== undefined) {
-                levels.push([makeGeneratedNode({ region, town: route.endingTown }, NODE_TYPES.TOWN)]);
+                levels.push([
+                    makeGeneratedNode(
+                        {
+                            region,
+                            town: route.endingTown,
+                        },
+                        NODE_TYPES.TOWN
+                    ),
+                ]);
                 continue;
             }
 
             if (idx === route.bossNodeIndex) {
                 const encounter = route.bosses && getRandomItem(route.bosses);
-                levels.push([makeGeneratedNode({ region, encounter }, NODE_TYPES.BOSS)]);
+
+                levels.push([
+                    makeGeneratedNode(
+                        {
+                            region,
+                            encounter,
+                        },
+                        NODE_TYPES.BOSS
+                    ),
+                ]);
                 continue;
             }
 
             const precedingLevelSize = idx === 0 ? incomingLevelSize : levels[idx - 1].length;
-            const count = getLevelNodeCount(precedingLevelSize);
+
+            /*
+             * A route reached through `route.next` always has exactly
+             * one entry node. Subsequent levels are free to branch normally.
+             */
+            const count = idx === 0 && isBranchEntry ? 1 : getLevelNodeCount(precedingLevelSize);
 
             if (!levels.length) {
                 levels.push(Array.from({ length: count }, () => makeGeneratedNode({ region }, NODE_TYPES.ENCOUNTER)));
@@ -278,96 +357,48 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const lastLevel = levels[levels.length - 1];
         const nextDepth = depth + levels.length;
-        const nextBookkeeping = { numEncountersSinceRestPoint, numNodesSinceLastTreasure };
 
-        if (route.next?.length === 1) {
-            const childFirstLevel = buildSegment({
-                route: route.next[0],
-                prevRoute: route,
-                depth: nextDepth,
-                center,
-                bookkeeping: nextBookkeeping,
-                incomingLevelSize: lastLevel.length,
-            });
-            wireLevels(lastLevel, childFirstLevel);
-        } else if (route.next && route.next.length > 1) {
-            const nextRoutes = route.next;
-            const bossIndex = findCommonBossIndex(nextRoutes);
+        const nextBookkeeping = {
+            numEncountersSinceRestPoint,
+            numNodesSinceLastTreasure,
+        };
 
-            if (bossIndex !== null) {
-                const chosenBranch = getRandomItem(nextRoutes) as Route;
-                let mergedLevel = lastLevel;
-                let mergedDepth = nextDepth;
+        const next = route.next || [];
 
-                for (let i = 0; i < bossIndex; i++) {
-                    const region = regionAtIndex(chosenBranch, i);
-                    const count = getLevelNodeCount(mergedLevel.length);
-                    const level = Array.from({ length: count }, () => {
-                        const node = makeGeneratedNode({ region });
-                        node.routeId = chosenBranch.id;
-                        node.previousRouteId = route.id;
-                        return node;
-                    });
-                    positionLevel(level, mergedDepth, center);
-                    wireLevels(mergedLevel, level);
-                    mergedLevel = level;
-                    ++mergedDepth;
-                }
-
-                const bossEncounter = chosenBranch.bosses && getRandomItem(chosenBranch.bosses);
-                const bossNode = makeGeneratedNode(
-                    { region: regionAtIndex(chosenBranch, bossIndex), encounter: bossEncounter },
-                    NODE_TYPES.BOSS
-                );
-                bossNode.routeId = chosenBranch.id;
-                bossNode.previousRouteId = route.id;
-                positionLevel([bossNode], mergedDepth, center);
-                wireLevels(mergedLevel, [bossNode]);
-                ++mergedDepth;
-
-                const branchCenters = nextRoutes.map((_, i) => center + (i - (nextRoutes.length - 1) / 2) * BRANCH_OFFSET);
-
-                const branchEntryLevel = nextRoutes.map((nextRoute) => {
-                    const regionIndex = Math.min(bossIndex + 1, nextRoute.numNodes - 1);
-                    return makeGeneratedNode({ region: regionAtIndex(nextRoute, regionIndex) });
-                });
-                branchEntryLevel.forEach((node, i) => {
-                    node.routeId = nextRoutes[i].id;
-                    node.previousRouteId = route.id;
-                    positionLevel([node], mergedDepth, branchCenters[i]);
-                });
-                wireLevels([bossNode], branchEntryLevel);
-                ++mergedDepth;
-
-                nextRoutes.forEach((nextRoute, i) => {
-                    const remainder = sliceRouteAfterBoss(nextRoute, bossIndex);
-                    const childFirstLevel = buildSegment({
-                        route: remainder,
-                        prevRoute: route,
-                        depth: mergedDepth,
-                        center: branchCenters[i],
-                        bookkeeping: nextBookkeeping,
-                        incomingLevelSize: 1,
-                    });
-                    wireLevels([branchEntryLevel[i]], childFirstLevel);
-                });
-            } else {
-                const groups = partition(lastLevel, nextRoutes.length);
-                const branchCenters = nextRoutes.map((_, i) => center + (i - (nextRoutes.length - 1) / 2) * BRANCH_OFFSET);
-                nextRoutes.forEach((nextRoute, i) => {
-                    const childFirstLevel = buildSegment({
-                        route: nextRoute,
-                        prevRoute: route,
-                        depth: nextDepth,
-                        center: branchCenters[i],
-                        bookkeeping: nextBookkeeping,
-                        incomingLevelSize: groups[i].length,
-                    });
-                    wireLevels(groups[i], childFirstLevel);
-                });
-            }
+        if (next.length === 0) {
+            return levels[0];
         }
 
+        const branchCenters = next.map((_, i) => center + (i - (next.length - 1) / 2) * BRANCH_OFFSET);
+
+        let groups: GeneratedRouteNode[][];
+        if (next.length > 1 && lastLevel.length >= next.length) {
+            groups = partition(lastLevel, next.length);
+        } else {
+            groups = next.map(() => lastLevel);
+        }
+
+        const branchEntryLevels: GeneratedRouteNode[][] = [];
+
+        next.forEach((nextRoute, i) => {
+            const wireLevel = groups[i];
+
+            const childFirstLevel = buildSegment({
+                route: nextRoute,
+                prevRoute: route,
+                depth: nextDepth,
+                center: branchCenters[i],
+                bookkeeping: nextBookkeeping,
+                incomingLevelSize: wireLevel.length,
+                isBranchEntry: true,
+            });
+
+            if (childFirstLevel.length > 0) {
+                branchEntryLevels.push(childFirstLevel);
+            }
+        });
+
+        wireRouteBranches(lastLevel, branchEntryLevels);
         return levels[0];
     };
 

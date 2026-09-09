@@ -40,6 +40,7 @@ import { Route, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
 import {
     ancientMixedGolemFight,
+    manoFight,
     mushmomFight,
     mutantSnailFight,
     pillagingBoarFight,
@@ -161,22 +162,6 @@ export const routeKerningToPerion: Route = {
 
 const toKerning: Route = {
     id: "to-kerning",
-    specialEnemies: [goldenPig],
-    elites: {
-        minions: [snail, blueSnail],
-        single: [orangeMushroom, octopus, bubbling],
-        duo: [stump, slime],
-        trio: [redSnail, shroom],
-        squad: [snail, blueSnail],
-    },
-    region: REGIONS.KERNING,
-    numNodes: 4,
-    endingTown: TOWNS.KERNING,
-    next: [],
-};
-
-const toKerningForest: Route = {
-    id: "kerning-forest",
     enemies: [
         [null, octopus, snail, octopus, null],
         [snail, null, orangeMushroom, null, snail],
@@ -202,11 +187,18 @@ const toKerningForest: Route = {
         [null, shroom, redSnail, shroom, null],
         [null, stump, null, stump, null],
     ],
-    region: REGIONS.LITH_HARBOR,
-    numNodes: 2,
-    bossNodeIndex: 1,
-    bosses: [mutantSnailFight.id],
-    next: [toKerning],
+    specialEnemies: [goldenPig],
+    elites: {
+        minions: [snail, blueSnail],
+        single: [orangeMushroom, octopus, bubbling],
+        duo: [stump, slime],
+        trio: [redSnail, shroom],
+        squad: [snail, blueSnail],
+    },
+    region: REGIONS.KERNING,
+    numNodes: 5,
+    endingTown: TOWNS.KERNING,
+    next: [],
 };
 
 export const routeElliniaSleepywood: Route = {
@@ -390,23 +382,6 @@ export const routeHenesysEllinia: Route = {
 
 export const toHenesys: Route = {
     id: "to-henesys",
-    specialEnemies: [goldenPig],
-    elites: {
-        minions: [snail, blueSnail],
-        single: [orangeMushroom, ribbonPig],
-        duo: [pig, slime, blueMushroom],
-        trio: [redSnail, shroom],
-        squad: [snail, blueSnail],
-    },
-    region: REGIONS.HENESYS,
-    numNodes: 4,
-    endingTown: TOWNS.HENESYS,
-    next: [],
-};
-
-export const toHenesysForest: Route = {
-    id: "henesys-forest",
-    specialEnemies: [goldenPig],
     enemies: [
         [blueSnail, null, ribbonPig, null, blueSnail],
         [null, orangeMushroom, null, orangeMushroom, null],
@@ -431,12 +406,18 @@ export const toHenesysForest: Route = {
         [null, slime, null, redSnail, null],
         [null, shroom, redSnail, shroom, null],
     ],
-    region: REGIONS.LITH_HARBOR,
-    regionTransition: { atNodeIndex: 1, region: REGIONS.HENESYS },
-    numNodes: 2,
-    bossNodeIndex: 1,
-    bosses: [manoEnemy.name],
-    next: [toHenesys],
+    specialEnemies: [goldenPig],
+    elites: {
+        minions: [snail, blueSnail],
+        single: [orangeMushroom, ribbonPig],
+        duo: [pig, slime, blueMushroom],
+        trio: [redSnail, shroom],
+        squad: [snail, blueSnail],
+    },
+    region: REGIONS.HENESYS,
+    numNodes: 5,
+    endingTown: TOWNS.HENESYS,
+    next: [],
 };
 
 export const routeLith: Route = {
@@ -474,8 +455,10 @@ export const routeLith: Route = {
         [null, null, slime, null, null],
     ],
     region: REGIONS.LITH_HARBOR,
-    numNodes: 5,
-    next: [toKerningForest, toHenesysForest],
+    numNodes: 7,
+    bossNodeIndex: 6,
+    bosses: [mutantSnailFight.id, manoFight.id],
+    next: [toKerning, toHenesys],
 };
 
 export const toLith: Route = {
@@ -491,12 +474,10 @@ export const ROUTE_ID_MAP = [
     routePerionSleepywood,
     routeKerningToPerion,
     toKerning,
-    toKerningForest,
     routeElliniaSleepywood,
     routeElliniaPerion,
     routeHenesysEllinia,
     toHenesys,
-    toHenesysForest,
     routeLith,
     toLith,
 ].reduce(
