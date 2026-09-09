@@ -1823,33 +1823,33 @@ export const tShirt: Item = {
 
 export const mesoItem: Item = {
     name: "Mesos",
-    description: "Grants 100 mesos when you pick this up.",
+    description: "Grants {{ pickUp.mesos }} mesos when you pick this up.",
     type: ITEM_TYPES.CONSUMABLE,
     image: MesoImage,
     pickUp: {
-        mesos: 100,
+        mesos: 150,
     },
 };
 
 export const bigMesoItem: Item = {
     name: "More Mesos",
-    description: "Grants 200 mesos when you pick this up.",
+    description: "Grants {{ pickUp.mesos }} mesos when you pick this up.",
     type: ITEM_TYPES.CONSUMABLE,
     rarity: RARITIES.UNCOMMON,
     image: MesoCoinImage,
     pickUp: {
-        mesos: 200,
+        mesos: 250,
     },
 };
 
 export const hugeMesoItem: Item = {
     name: "Many Mesos",
-    description: "Grants 300 mesos when you pick this up.",
+    description: "Grants {{ pickUp.mesos }}  mesos when you pick this up.",
     type: ITEM_TYPES.CONSUMABLE,
     rarity: RARITIES.RARE,
     image: MesoStackImage,
     pickUp: {
-        mesos: 300,
+        mesos: 350,
     },
 };
 

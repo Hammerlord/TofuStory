@@ -71,7 +71,7 @@ export const shrineScene: EventScene = {
                     ],
                 },
                 {
-                    text: "Wish for good fortune. [Gain 100 mesos.]",
+                    text: "Wish for good fortune. [Gain 150 mesos.]",
                     next: [
                         {
                             dialog: ["You hear the clink of coins, and..."],
