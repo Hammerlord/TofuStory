@@ -7,7 +7,7 @@ const MIN_NODES_PER_LEVEL = 2;
 const MAX_NODES_PER_LEVEL = 3;
 const NODE_SPACING = 0.1;
 const BRANCH_OFFSET = 0.35;
-const RARE_NODE_CHANCE = 0.15;
+const RARE_NODE_CHANCE = 0.2;
 
 type Bookkeeping = {
     numEncountersSinceRestPoint: number;
@@ -28,11 +28,8 @@ const wireLevels = (fromLevel: GeneratedRouteNode[], toLevel: GeneratedRouteNode
 
     fromLevel.forEach((node) => {
         const closest = [...toLevel].sort((a, b) => yDistance(a, node) - yDistance(b, node));
-
         const cutoffIndex = Math.min(numLinks, toLevel.length) - 1;
-
         const cutoffDistance = yDistance(closest[cutoffIndex], node);
-
         node.next = closest.filter((n) => yDistance(n, node) <= cutoffDistance + DISTANCE_EPSILON);
     });
 
@@ -42,7 +39,6 @@ const wireLevels = (fromLevel: GeneratedRouteNode[], toLevel: GeneratedRouteNode
         }
 
         const nearest = [...fromLevel].sort((a, b) => yDistance(a, target) - yDistance(b, target))[0];
-
         (nearest.next ??= []).push(target);
     });
 };
@@ -133,8 +129,9 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const numLevels = route.numNodes;
         const uncommonBaseline = Math.ceil(numLevels / 5);
-        let numEvents = uncommonBaseline;
+        const likelihood = 0.5;
 
+        let numEvents = uncommonBaseline;
         let numTreasures = uncommonBaseline;
         let numShops = uncommonBaseline;
         let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? uncommonBaseline) : 0;
@@ -143,18 +140,26 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         let { numEncountersSinceRestPoint, numNodesSinceLastTreasure } = bookkeeping;
 
-        const rollType = (): NODE_TYPES => {
+        const rollType = (prevLevel: GeneratedRouteNode[] | undefined): NODE_TYPES => {
             const types: NODE_TYPES[] = [];
+
+            const notInPrevLevel = (nodeType: NODE_TYPES) => {
+                if (!prevLevel) {
+                    return true;
+                }
+
+                return !prevLevel.some((n) => n.type === nodeType);
+            };
 
             if (numTreasures > 0 && numNodesSinceLastTreasure >= 3) {
                 types.push(NODE_TYPES.TREASURE);
             }
 
-            if (numEncountersSinceRestPoint >= 3) {
+            if (numEncountersSinceRestPoint >= 3 && notInPrevLevel(NODE_TYPES.RESTING_ZONE)) {
                 types.push(NODE_TYPES.RESTING_ZONE);
-            } else if (numEvents > 0) {
+            } else if (numEvents > 0 && Math.random() < likelihood) {
                 types.push(NODE_TYPES.EVENT);
-            } else if (numEliteEncounters > 0) {
+            } else if (numEliteEncounters > 0 && Math.random() < likelihood) {
                 types.push(NODE_TYPES.ELITE_ENCOUNTER);
             } else {
                 const rareTypes: NODE_TYPES[] = [];
@@ -171,7 +176,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
                 if (rareTypes.length > 0 && Math.random() < RARE_NODE_CHANCE) {
                     types.push(getRandomItem(rareTypes));
-                } else if (numShops > 0 && Math.random() < 0.5) {
+                } else if (numShops > 0 && Math.random() < likelihood && notInPrevLevel(NODE_TYPES.SHOP)) {
                     types.push(NODE_TYPES.SHOP);
                 } else {
                     types.push(NODE_TYPES.ENCOUNTER);
@@ -209,8 +214,16 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             }
         };
 
-        const makeGeneratedNode = (base: Partial<RouteNode>, forcedType?: NODE_TYPES): GeneratedRouteNode => {
-            const type = forcedType || rollType();
+        const makeGeneratedNode = ({
+            base,
+            forcedType,
+            prevLevel,
+        }: {
+            base: Partial<RouteNode>;
+            forcedType?: NODE_TYPES;
+            prevLevel: GeneratedRouteNode[] | undefined;
+        }): GeneratedRouteNode => {
+            const type = forcedType || rollType(prevLevel);
 
             if (!forcedType) {
                 applyBookkeeping(type);
@@ -239,14 +252,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const positionLevel = (level: GeneratedRouteNode[], levelDepth: number, levelCenter: number) => {
             const x = totalLevels <= 1 ? 0 : levelDepth / (totalLevels - 1);
-
             const n = level.length;
 
             level.forEach((node, i) => {
                 node.x = x;
-
                 const y = levelCenter + (i - (n - 1) / 2) * NODE_SPACING;
-
                 node.y = Math.max(0, Math.min(1, y));
             });
         };
@@ -289,29 +299,32 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         for (let idx = 0; idx < route.numNodes; idx++) {
             const region = regionAtIndex(route, idx);
+            const prevLevel: GeneratedRouteNode[] | undefined = levels[idx - 1];
 
             if (idx === 0 && route.startingTown !== undefined) {
                 levels.push([
-                    makeGeneratedNode(
-                        {
+                    makeGeneratedNode({
+                        base: {
                             region,
                             town: route.startingTown,
                         },
-                        NODE_TYPES.TOWN
-                    ),
+                        forcedType: NODE_TYPES.TOWN,
+                        prevLevel,
+                    }),
                 ]);
                 continue;
             }
 
             if (idx === route.numNodes - 1 && route.endingTown !== undefined) {
                 levels.push([
-                    makeGeneratedNode(
-                        {
+                    makeGeneratedNode({
+                        base: {
                             region,
                             town: route.endingTown,
                         },
-                        NODE_TYPES.TOWN
-                    ),
+                        forcedType: NODE_TYPES.TOWN,
+                        prevLevel,
+                    }),
                 ]);
                 continue;
             }
@@ -320,13 +333,14 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 const encounter = route.bosses && getRandomItem(route.bosses);
 
                 levels.push([
-                    makeGeneratedNode(
-                        {
+                    makeGeneratedNode({
+                        base: {
                             region,
                             encounter,
                         },
-                        NODE_TYPES.BOSS
-                    ),
+                        forcedType: NODE_TYPES.BOSS,
+                        prevLevel,
+                    }),
                 ]);
                 continue;
             }
@@ -340,11 +354,15 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             const count = idx === 0 && isBranchEntry ? 1 : getLevelNodeCount(precedingLevelSize);
 
             if (!levels.length) {
-                levels.push(Array.from({ length: count }, () => makeGeneratedNode({ region }, NODE_TYPES.ENCOUNTER)));
+                levels.push(
+                    Array.from({ length: count }, () =>
+                        makeGeneratedNode({ base: { region }, forcedType: NODE_TYPES.ENCOUNTER, prevLevel })
+                    )
+                );
                 continue;
             }
 
-            levels.push(Array.from({ length: count }, () => makeGeneratedNode({ region })));
+            levels.push(Array.from({ length: count }, () => makeGeneratedNode({ base: { region }, prevLevel })));
         }
 
         levels.forEach((level, levelIndex) => {
@@ -406,7 +424,10 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
         route: startingRoute,
         depth: 0,
         center: 0.5,
-        bookkeeping: { numEncountersSinceRestPoint: 0, numNodesSinceLastTreasure: 0 },
+        bookkeeping: {
+            numEncountersSinceRestPoint: 0,
+            numNodesSinceLastTreasure: 0,
+        },
     });
 
     return rootLevel[0];
