@@ -8,6 +8,12 @@ import { getRandomItem, moveHeadToTail, shuffle } from "./../utils";
 import { CHANCE_TO_SPAWN_SPECIAL_ENEMY } from "./constants";
 import { EliteMap, EliteOptions, Route } from "./types";
 
+// "Squad member" monsters tend to have very low HP so the multiplier is higher
+const SQUAD_HP_MULTIPLIER = 2;
+const TRIO_HP_MULTIPLIER = 1.8;
+const DUO_HP_MULTIPLIER = 1.8;
+const SINGLE_HP_MULTIPLIER = 1.8;
+
 const findAttackDamage = (minion: Minion): number => {
     let attackDamage = 0;
     let backupAttackDamage = 0;
@@ -109,7 +115,7 @@ export const generateEliteSquad = ({
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.7));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * SQUAD_HP_MULTIPLIER));
     const finalDamageMod = Math.max(0, damageModifier - 1);
 
     const enemy = {
@@ -171,7 +177,7 @@ const generateEliteTriad = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, 2)]);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.7));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * TRIO_HP_MULTIPLIER));
 
     const enemy = {
         ...baseEnemy,
@@ -226,7 +232,7 @@ const generateEliteDuo = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * DUO_HP_MULTIPLIER));
 
     const enemy = {
         ...baseEnemy,
@@ -315,7 +321,7 @@ const generateElite = ({
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const modifyTantrum = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * 1.8));
+    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * SINGLE_HP_MULTIPLIER));
 
     const enemy = {
         ...baseEnemy,
