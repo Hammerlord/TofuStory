@@ -48,7 +48,6 @@ const partition = <T>(items: T[], numGroups: number): T[][] => {
 const regionAtIndex = (route: Route, index: number): REGIONS =>
     route.regionTransition && index >= route.regionTransition.atNodeIndex ? route.regionTransition.region : route.region;
 
-/** Derives the route segment that continues after `route`'s boss node, used once the boss level has already been generated. */
 const sliceRouteAfterBoss = (route: Route, bossIndex: number): Route => {
     const startIndex = bossIndex + 1;
     return {
@@ -206,7 +205,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
             const node: GeneratedRouteNode = {
                 ...base,
-                id: base.id || uuid.v4(),
+                id: base.town ?? uuid.v4(),
                 type,
                 routeId,
                 previousRouteId: prevRoute?.id,

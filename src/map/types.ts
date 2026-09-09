@@ -13,6 +13,7 @@ import {
 import { Item } from "../item/types";
 import { EventScene } from "../scene/types";
 import { REGIONS } from "./regions";
+import { BattleState } from "../battle/types";
 
 export enum NODE_TYPES {
     ENCOUNTER = "encounter",
@@ -91,10 +92,6 @@ export interface Route {
     startingTown?: TOWNS;
     /** Town at the end of this route, if applicable. */
     endingTown?: TOWNS;
-    initialPlayerPosition?: {
-        x: number;
-        y: number;
-    };
     specialEnemies?: Minion[];
     /** If not provided, it will attempt to fallback on enemies from the preceding route */
     enemies?: (Minion | null)[][];

@@ -74,6 +74,7 @@ const routePerionSleepywood: Route = {
             [null, tauromacis, null, taurospear, null],
         ],
     },
+    startingTown: TOWNS.PERION,
     region: REGIONS.PERION,
     regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
     numNodes: 6,
@@ -267,6 +268,7 @@ export const routeElliniaSleepywood: Route = {
         [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
         [null, axeStump, null, axeStump, null],
     ],
+    startingTown: TOWNS.ELLINIA,
     region: REGIONS.ELLINIA,
     regionTransition: { atNodeIndex: 2, region: REGIONS.SLEEPYWOOD },
     numNodes: 6,
@@ -316,6 +318,7 @@ export const routeElliniaPerion: Route = {
         [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
         [null, axeStump, null, axeStump, null],
     ],
+    startingTown: TOWNS.ELLINIA,
     region: REGIONS.ELLINIA,
     regionTransition: { atNodeIndex: 3, region: REGIONS.PERION },
     numNodes: 9,
@@ -438,10 +441,6 @@ export const toHenesysForest: Route = {
 
 export const routeLith: Route = {
     id: "leaving-lith",
-    initialPlayerPosition: {
-        x: 0.15716753022452504,
-        y: 0.7956483387239047,
-    },
     specialEnemies: [goldenPig],
     elites: {
         minions: [snail],
@@ -481,10 +480,6 @@ export const routeLith: Route = {
 
 export const toLith: Route = {
     id: "lith-harbor",
-    initialPlayerPosition: {
-        x: 0.15873015873015872,
-        y: 0.730697961704756,
-    },
     region: REGIONS.LITH_HARBOR,
     numNodes: 1,
     endingTown: TOWNS.LITH_HARBOR,

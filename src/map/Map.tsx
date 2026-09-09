@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { ClickIndicatorImage, FlagImage, PersonalAnvilImage, TreasureChestImage } from "../images";
 import {
@@ -199,8 +199,8 @@ const Map = ({
         }
     };
 
-    const routeNodes = [];
-    const lines = [];
+    const routeNodes: ReactNode[] = [];
+    const lines: ReactNode[] = [];
     drawRouteNode({ current: generatedRoute, routeNodes, lines, visitedIds: new Set() });
 
     const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
@@ -210,7 +210,7 @@ const Map = ({
         y: -toPixel(playerLocationNode?.y, mapHeight),
     };
     const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
-    const bgRegion = playerLocationNode?.region || generatedRoute?.region;
+    const bgRegion: keyof typeof BG_MAP = playerLocationNode?.region || generatedRoute?.region;
 
     return (
         <Overlay>
