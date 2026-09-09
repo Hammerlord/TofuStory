@@ -10,7 +10,7 @@ import { BATTLE_TYPES, BattleState } from "../battle/types";
 import BattlefieldContainer from "../battle/view/BattleView";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
-import { INTRO_PAN_TIME, REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
+import { REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { KerningWorkshopImage, VictoriaIslandImage } from "../images";
 import { Item, RARITIES } from "../item/types";
@@ -474,7 +474,7 @@ const Main = () => {
             setTimeout(() => {
                 setScene(introScene);
                 setHideMapClickIndicator(false);
-            }, INTRO_PAN_TIME + 500);
+            }, 500);
         }
     };
 

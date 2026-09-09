@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { AnonymushroomImage } from "../images";
 import classNames from "classnames";
-import { INTRO_PAN_TIME, RE_PAN_TIME } from "../constants";
+import { RE_PAN_TIME } from "../constants";
 import { ButtonBase } from "@mui/material";
 
 const useStyles = createUseStyles({
@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
     userPositionContainer: {
         position: "fixed",
         right: "16px",
-        bottom: "372px",
+        bottom: "430px",
     },
     userPosition: {
         // Override MUI styles:
@@ -42,12 +42,10 @@ const Pan = ({
     userPosition,
     children,
     style,
-    disableIntroAnimate,
 }: {
     userPosition?: { x: number; y: number };
     children: React.ReactNode;
     style?: React.CSSProperties;
-    disableIntroAnimate?: boolean;
 }) => {
     const classes = useStyles();
 
@@ -58,7 +56,7 @@ const Pan = ({
 
     const interactionPosRef = useRef<[number, number] | null>(null);
     const isInteractingRef = useRef(false);
-
+    const [mounted, setMounted] = useState(false);
     const [isIntroPan, setIsIntroPan] = useState(true);
 
     const applyTransform = () => {
@@ -99,9 +97,15 @@ const Pan = ({
     };
 
     useEffect(() => {
-        if (!userPosition) return;
+        if (!mounted) {
+            setMounted(true);
+        }
+    }, [mounted]);
 
-        if (isIntroPan && disableIntroAnimate) {
+    useEffect(() => {
+        if (!userPosition || !mounted) return;
+
+        if (isIntroPan) {
             xRef.current = userPosition.x;
             yRef.current = userPosition.y;
             applyTransform();
@@ -109,18 +113,8 @@ const Pan = ({
             return;
         }
 
-        const panTime = isIntroPan ? INTRO_PAN_TIME : RE_PAN_TIME;
-
-        panToUserPosition(panTime);
-
-        if (isIntroPan) {
-            const timeout = setTimeout(() => {
-                setIsIntroPan(false);
-            }, panTime);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [userPosition?.x, userPosition?.y]);
+        panToUserPosition(RE_PAN_TIME);
+    }, [mounted, userPosition?.x, userPosition?.y]);
 
     const handleStartInteraction = (e) => {
         if (isIntroPan) return;
