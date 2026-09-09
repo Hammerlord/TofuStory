@@ -108,10 +108,13 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
     }): GeneratedRouteNode[] => {
         const routeId = route.id;
 
-        let numEvents = route.nodes.length < 3 ? 0 : 1;
-        let numTreasures = 2;
-        let numShops = 2;
-        let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? 2) : 0;
+        const numLevels = route.nodes.length;
+        let numEvents = numLevels < 3 ? 0 : 1;
+
+        const uncommonBaseline = Math.ceil(numLevels / 5);
+        let numTreasures = uncommonBaseline;
+        let numShops = uncommonBaseline;
+        let numEliteEncounters = route.elites ? (route.eliteOptions?.numElites ?? uncommonBaseline) : 0;
         let numTradingPosts = 1;
         let numTransmutes = 1;
         let { numEncountersSinceRestPoint, numNodesSinceLastTreasure } = bookkeeping;
@@ -259,8 +262,6 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             const bossIndex = findCommonBossIndex(nextRoutes);
 
             if (bossIndex !== null) {
-                // Every branch starts with the same shared filler + a boss node - collapse that
-                // prefix into a single path so all branches converge on ONE boss before diverging.
                 const chosenBranch = getRandomItem(nextRoutes) as Route;
                 let mergedLevel = lastLevel;
                 let mergedDepth = nextDepth;
