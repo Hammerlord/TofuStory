@@ -22,7 +22,7 @@ import { Combatant, Player } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import Icon from "../../icon/Icon";
-import { ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
+import { ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/utils";
@@ -33,7 +33,6 @@ import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
 import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { useBattlePhase } from "../hooks/useBattlePhase";
-import { usePreloadImages } from "../hooks/usePreloadImage";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BATTLEFIELD_SIDES, BattleState, CombatantInfo, EventGroup, PlayerSelectCardsPrompt } from "../types";
@@ -54,6 +53,7 @@ import WaveInfo from "./WaveInfo";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 import { isTargetedForAbility, shouldShowReticleForTarget } from "./targetHelpers";
 import ActionHistory from "./ActionHistory";
+import { usePreloadImages } from "../../hooks/usePreloadImage";
 
 const useStyles = createUseStyles({
     root: {
@@ -613,7 +613,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    usePreloadImages(playerSide, enemySide, hand, deck, discard);
+    usePreloadImages(ClearImage, playerSide, enemySide, hand, deck, discard);
 
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean =>
         isTargetedForAbility({

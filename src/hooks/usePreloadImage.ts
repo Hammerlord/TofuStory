@@ -1,13 +1,20 @@
 import { useEffect } from "react";
-import { ClearImage } from "../../images";
 
 // Preload character sprites, projectiles, etc. or they may be invisible
 export function usePreloadImages(...collections) {
     useEffect(() => {
         const imageUrls: Set<string> = new Set();
 
-        const traverse = (obj) => {
-            if (!obj || typeof obj !== "object") {
+        const traverse = (obj?: object | string) => {
+            if (!obj) {
+                return;
+            }
+
+            if (typeof obj === "string") {
+                imageUrls.add(obj);
+            }
+
+            if (typeof obj !== "object") {
                 return;
             }
 
@@ -21,7 +28,6 @@ export function usePreloadImages(...collections) {
         };
 
         collections.flat().forEach(traverse);
-        imageUrls.add(ClearImage);
 
         imageUrls.forEach((url) => {
             const image = new Image();

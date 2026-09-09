@@ -12,7 +12,8 @@ import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { REGULAR_BATTLE_LOOT_CHANCE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { KerningWorkshopImage, VictoriaIslandImage } from "../images";
+import { usePreloadImages } from "../hooks/usePreloadImage";
+import { KerningWorkshopImage, LithHarborImage, LithRegionBGImage } from "../images";
 import { Item, RARITIES } from "../item/types";
 import Camp from "../map/Camp";
 import Map from "../map/Map";
@@ -34,6 +35,7 @@ import { EventScene, SCENE_CONDITION_TYPES, SceneCondition } from "../scene/type
 import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
 import Transmutation from "../shops/Transmutation";
+import { store } from "../store";
 import { getRandomItem } from "../utils";
 import Overlay from "../view/Overlay";
 import CardRemovalGrid from "./CardRemovalGrid";
@@ -45,7 +47,6 @@ import Header from "./Header";
 import ItemRewards from "./ItemRewards";
 import Sound from "./Sound";
 import { saveGame } from "./gameFiles";
-import { store } from "../store";
 import { ItemRewardsOptions, PLAYER_CLASSES } from "./types";
 import { aggregateItemEffects } from "./utils";
 
@@ -181,13 +182,10 @@ const Main = () => {
         setOpenClassSelection(true);
     };
 
+    usePreloadImages(LithRegionBGImage, LithHarborImage);
+
     useEffect(() => {
         resetTravels();
-        // Preload the overworld map
-        const mapImage: string = VictoriaIslandImage;
-        const newImage = new Image();
-        newImage.src = mapImage;
-        window[mapImage] = newImage;
     }, []);
 
     useEffect(() => {
