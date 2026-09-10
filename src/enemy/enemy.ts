@@ -183,7 +183,7 @@ export const blueSnail: Minion = {
         {
             name: "Tackle",
             image: BlueSnailShellImage,
-            description: "Deal damage and gain 3 Armor.",
+            description: "Deal damage and gain {{ actions.0.secondaryAction.armor }} Armor.",
             actions: [
                 {
                     type: ACTION_TYPES.ATTACK,
@@ -194,7 +194,7 @@ export const blueSnail: Minion = {
                         ricochet: true,
                     },
                     secondaryAction: {
-                        armor: 3,
+                        armor: 2,
                     },
                 },
             ],
