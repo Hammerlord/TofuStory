@@ -71,10 +71,7 @@ export const checkCardActions = ({
         }
 
         if (cardsToDraw) {
-            const drawnCards = dispatch(drawCards({ ...cardsToDraw, context: context }));
-            if (drawnCards?.length) {
-                dispatch(enqueueEvent({ newCards: drawnCards, cardsAddedTo: "hand", context, options: { alwaysGroup: true } }));
-            }
+            dispatch(drawCards({ ...cardsToDraw, context: context }));
         }
 
         if (discardCardsFromHand) {

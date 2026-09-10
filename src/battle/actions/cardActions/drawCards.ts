@@ -25,6 +25,7 @@ import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
 import { applyAbilityEventEffects } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
+import { enqueueEvent } from "../enqueueEvent";
 
 const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
 
@@ -135,7 +136,11 @@ export const drawCards = ({
 
         dispatch(updateBattle(newState));
         dispatch(addCardsToHand(cardsToDraw));
-
+        if (!isOnTurnDraw) {
+            // Order matters: This is for ActionHistory/visual records, and should be grouped with the parent ability
+            // so it comes before handleOnDrawEvents, to avoid rolling it into any procs.
+            dispatch(enqueueEvent({ newCards: cardsToDraw, cardsAddedTo: "hand", context, options: { alwaysGroup: true } }));
+        }
         dispatch(handleOnDrawEvents({ cardsToDraw, bonus, context }));
 
         if (deckCycled) {
@@ -149,8 +154,6 @@ export const drawCards = ({
         }
 
         dispatch(recalculateEffectsFromAbilities());
-
-        return cardsToDraw;
     };
 };
 
