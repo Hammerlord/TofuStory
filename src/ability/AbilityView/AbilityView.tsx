@@ -342,7 +342,14 @@ const AbilityView = forwardRef(
             retain,
         } = ability;
 
-        const { target: targetType, type, secondaryDamage, destroyArmor = 0, numTargets = 0, addLastPlayedCards } = actions[0] || {};
+        const {
+            target: targetType,
+            type,
+            secondaryDamage,
+            destroyArmor = 0,
+            numExtraTargets: numTargets = 0,
+            addLastPlayedCards,
+        } = actions[0] || {};
         const cardImage = image || minion?.image;
         let imageNode = null;
 

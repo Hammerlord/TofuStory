@@ -100,7 +100,7 @@ export const administrator: Minion = {
                     damage: 15,
                     secondaryDamage: 7,
                     targetArea: 2,
-                    numTargets: 5,
+                    numExtraTargets: 5,
                 },
             ],
         },

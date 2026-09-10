@@ -31,7 +31,7 @@ const boulder: Minion = {
                     target: TARGET_TYPES.HOSTILE,
                     damage: 5,
                     targetArea: 2,
-                    numTargets: 2,
+                    numExtraTargets: 2,
                     animation: ANIMATION_TYPES.YOYO,
                     animationOptions: {
                         ricochet: true,

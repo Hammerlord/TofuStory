@@ -2470,7 +2470,7 @@ export const polearm: Item = {
                             animation: ANIMATION_TYPES.ONE_WAY_SPIN_FAST,
                             damage: 3,
                             icon: PolearmImage,
-                            numTargets: 2,
+                            numExtraTargets: 2,
                             targetArea: 5,
                         },
                     ],

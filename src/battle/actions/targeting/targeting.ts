@@ -33,7 +33,14 @@ export const calculateTargetIndices = ({
     targetedIndices: number[];
     area: number;
 } => {
-    const { numTargets: extraTargets = 0, excludePrimaryTarget, resurrect, affectsDeadCharacters, targetArea = 0, targetName } = action;
+    const {
+        numExtraTargets: extraTargets = 0,
+        excludePrimaryTarget,
+        resurrect,
+        affectsDeadCharacters,
+        targetArea = 0,
+        targetName,
+    } = action;
 
     const area = calculateActionArea({ action, actor: actorData, target: targetData, context });
 

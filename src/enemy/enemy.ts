@@ -278,7 +278,7 @@ export const redSnail: Minion = {
                     animationOptions: {
                         ricochet: true,
                     },
-                    numTargets: 1,
+                    numExtraTargets: 1,
                     targetArea: 2,
                     playbackTime: 750,
                 },

@@ -255,7 +255,8 @@ const getAbilityPreviews = ({
                 }
 
                 const { index } = combatantInfo;
-                const totalTargets = (currentAction?.numTargets || 0) + 1;
+                const numTargets = currentAction.numExtraTargets;
+                const totalTargets = numTargets ? numTargets + 1 : undefined;
                 const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
                 const isProc = statUpdate.context?.sourceChain?.at(-1)?.isProc;
                 const isProcHostileAction = isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;

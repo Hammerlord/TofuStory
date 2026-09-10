@@ -66,7 +66,7 @@ export const tauromacis: Minion = {
                     animationOptions: {
                         ricochet: true,
                     },
-                    numTargets: 2,
+                    numExtraTargets: 2,
                     targetArea: 2,
                 },
             ],
@@ -206,7 +206,7 @@ export const taurospear: Minion = {
                     animationOptions: {
                         ricochet: true,
                     },
-                    numTargets: 2,
+                    numExtraTargets: 2,
                     targetArea: 2,
                 },
             ],

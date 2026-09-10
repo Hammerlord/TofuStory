@@ -743,7 +743,7 @@ export const chainLightning: Ability = {
         {
             damage: 9,
             targetArea: 5,
-            numTargets: 4,
+            numExtraTargets: 4,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY_SPIN,
@@ -2227,7 +2227,7 @@ export const moonBolt: Ability = {
         {
             damage: 8,
             targetArea: 3,
-            numTargets: 2,
+            numExtraTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.YOYO,
@@ -3091,7 +3091,7 @@ export const fireworks: Ability = {
             },
             damage: 3,
             icon: RocketImage,
-            numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
+            numExtraTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
             effects: [{ ...burn, stacks: 2 }],
         },

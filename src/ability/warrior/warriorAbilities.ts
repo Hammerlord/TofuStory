@@ -584,7 +584,7 @@ export const hammerang: Ability = {
         {
             damage: 7,
             targetArea: 2,
-            numTargets: 2,
+            numExtraTargets: 2,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animationOptions: {

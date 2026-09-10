@@ -669,7 +669,7 @@ export type Action = {
     /** Only applicable to target type RANDOM or numTargets configured. If not supplied, it's 0. */
     targetArea?: number;
     // Hits random extra targets within targetArea
-    numTargets?: number;
+    numExtraTargets?: number;
     effects?: (string | Effect)[]; // If a string (name of effect) is provided, attempt to look up the corresponding effect
     description?: string;
     movement?: number;
