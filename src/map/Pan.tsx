@@ -36,7 +36,7 @@ const useStyles = createUseStyles({
 });
 
 // Since the player travels from left to right, move the centred X position closer to the left so that more nodes can be shown.
-const X_RATIO = 3;
+const X_OFFSET = -200;
 
 /**
  * Functionality for panning the overworld map around.
@@ -75,7 +75,7 @@ const Pan = ({
             return;
         }
 
-        const newUserPosX = userPosition.x / X_RATIO;
+        const newUserPosX = userPosition.x + X_OFFSET;
         const animation = containerRef.current?.animate(
             [
                 {
@@ -115,7 +115,7 @@ const Pan = ({
             if (isIntro) {
                 xRef.current = userPosition.x;
             } else {
-                xRef.current = X_RATIO;
+                xRef.current = userPosition.x + X_OFFSET;
             }
             yRef.current = userPosition.y;
             applyTransform();

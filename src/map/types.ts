@@ -30,8 +30,6 @@ export enum NODE_TYPES {
 
 export interface RouteNode {
     id?: string;
-    x?: number;
-    y?: number;
     type?: NODE_TYPES;
     encounter?: string; // This is usually a pre-configured overworld boss, identified by a string ID. See overworldBosses.ts.
     event?: EventScene;
@@ -42,7 +40,7 @@ export interface RouteNode {
     };
     cardRewards?: Ability[]; // If this is a battle, these abilities will be included in the card rewards screen upon victory
     town?: TOWNS;
-    region: REGIONS;
+    region?: REGIONS;
 }
 
 /** A single point along a route at which its region switches from `Route.region` to a new one. */
@@ -56,6 +54,8 @@ export interface GeneratedRouteNode extends RouteNode {
     routeId: string;
     previousRouteId?: string;
     next?: GeneratedRouteNode[];
+    x?: number;
+    y?: number;
 }
 
 export interface EliteMap {

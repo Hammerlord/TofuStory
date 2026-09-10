@@ -96,7 +96,7 @@ const Map = ({
 }: {
     onSelectNode: (node: GeneratedRouteNode) => void;
     playerLocationNode: GeneratedRouteNode | null;
-    generatedRoute?; // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
+    generatedRoute: GeneratedRouteNode | null;
     playerImage?: string;
     visited?: { [nodeId: string]: true };
     disableClick?: boolean;
@@ -134,7 +134,7 @@ const Map = ({
         visitedIds,
     }: {
         prev?: GeneratedRouteNode;
-        current: GeneratedRouteNode;
+        current: GeneratedRouteNode | null;
         nodeBGs: ReactElement[];
         routeNodes: ReactElement[];
         lines: ReactElement[];
