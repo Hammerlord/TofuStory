@@ -28,7 +28,7 @@ export const rageStone: Item = {
             disableDisplayIcon: true, // It is displayed above the attack power instead
             extraDisplayOptions: {
                 container: "right",
-                property: "onResourcesSpent.0.eventTriggeredTimes",
+                property: "onResourcesSpent.0.triggerSum",
                 modulo: "onResourcesSpent.0.triggerFrequencyFromSum",
             },
             onResourcesSpent: [
