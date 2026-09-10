@@ -94,8 +94,8 @@ const Map = ({
     visited = {},
     disableClick,
 }: {
-    onSelectNode?: (node: GeneratedRouteNode) => void;
-    playerLocationNode?: GeneratedRouteNode;
+    onSelectNode: (node: GeneratedRouteNode) => void;
+    playerLocationNode: GeneratedRouteNode | null;
     generatedRoute?; // Fix me: route is typeof the return value of generateTravelRoute, not Route (mistakenly written)
     playerImage?: string;
     visited?: { [nodeId: string]: true };
@@ -118,7 +118,7 @@ const Map = ({
         return () => window.removeEventListener("resize", updateContainer);
     }, [containerRef.current]);
 
-    const handleClickNode = (node: RouteNode) => {
+    const handleClickNode = (node: GeneratedRouteNode) => {
         if (disableClick) {
             return;
         }

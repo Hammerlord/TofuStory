@@ -55,7 +55,7 @@ const sleepywood: Route = {
     endingTown: TOWNS.SLEEPYWOOD,
 };
 
-const routePerionSleepywood: Route = {
+export const routePerionSleepywood: Route = {
     id: "perion-sleepywood",
     eliteOptions: {
         numElites: 3,
@@ -157,7 +157,6 @@ export const routeKerningToPerion: Route = {
     bosses: [stumpyFight.id, pillagingBoarFight.id],
     endingTown: TOWNS.PERION,
     cursedTreasureChance: 0.25,
-    next: [routePerionSleepywood],
 };
 
 const toKerning: Route = {
@@ -376,7 +375,6 @@ export const routeHenesysEllinia: Route = {
     bossNodeIndex: 4,
     bosses: [mushmomFight.id, strangePigFight.id, ancientMixedGolemFight.id],
     endingTown: TOWNS.ELLINIA,
-    next: [routeElliniaSleepywood],
     cursedTreasureChance: 0.25,
 };
 

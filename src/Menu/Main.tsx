@@ -22,7 +22,14 @@ import { REGIONS } from "../map/regions";
 import { events } from "../map/routes/eventList";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
 import { OVERWORLD_BOSS_ID_MAP } from "../map/routes/overworldBosses";
-import { ROUTE_ID_MAP, routeHenesysEllinia, routeKerningToPerion, toLith } from "../map/routes/routes";
+import {
+    ROUTE_ID_MAP,
+    routeElliniaSleepywood,
+    routeHenesysEllinia,
+    routeKerningToPerion,
+    routePerionSleepywood,
+    toLith,
+} from "../map/routes/routes";
 import { TOWN_MAP } from "../map/townMap";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
 import ScenePlayer from "../scene/ScenePlayer";
@@ -538,6 +545,18 @@ const Main = () => {
 
         if (town === TOWNS.HENESYS) {
             const route = generateTravelRoute({ startingRoute: routeHenesysEllinia });
+            dispatch(setRoute(route));
+            return;
+        }
+
+        if (town === TOWNS.ELLINIA) {
+            const route = generateTravelRoute({ startingRoute: routeElliniaSleepywood });
+            dispatch(setRoute(route));
+            return;
+        }
+
+        if (town === TOWNS.PERION) {
+            const route = generateTravelRoute({ startingRoute: routePerionSleepywood });
             dispatch(setRoute(route));
         }
     };
