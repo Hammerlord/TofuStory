@@ -118,14 +118,25 @@ export const stealth: Effect = {
     name: "Stealth",
     icon: CloudyIcon,
     canBeSilenced: true,
-    description: "Untargetable by most single-target abilities. Effect ends if this character attacks or is hit by area damage.",
+    description: "Negates the next {{ stacks }} single-target attacks. Effect ends if this character attacks or is hit by an area effect.",
+    stacks: 2,
     onAttack: {
         removeEffect: true,
     },
     onReceiveAttack: {
-        removeEffect: true,
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ACTION,
+                property: "area",
+                comparator: "eq",
+                value: 0,
+                isOffense: true,
+            },
+        ],
+        decrementStacks: 1,
     },
-    onReceiveDamage: {
+    onReceiveEffect: {
         conditions: [
             {
                 calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
@@ -133,6 +144,22 @@ export const stealth: Effect = {
                 property: "area",
                 comparator: "gt",
                 value: 0,
+                isOffense: true,
+            },
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+                hasEffectClass: EFFECT_CLASSES.DEBUFF,
+            },
+        ],
+        conditionOperator: "and",
+        removeEffect: true,
+    },
+    onReceiveDamage: {
+        conditions: [
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                sourceType: TRIGGER_SOURCE_TYPES.ACTION,
                 isOffense: true,
             },
         ],

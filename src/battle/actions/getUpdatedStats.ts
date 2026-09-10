@@ -9,13 +9,13 @@ import { calculateDamage } from "../calculateDamage";
 import { getMultiplier } from "../getMultiplier";
 import { passesValueComparison } from "../passesConditions";
 import { calculateMesoMultiplier } from "../utils";
-import { effectNameMap } from "./../../enemy/effect";
 import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
 import { hasEffectType } from "./combatantData";
 import { getHalveArmorAmount } from "./phases/checkHalveArmor";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { createCombatEffect, lookupEffect } from "../../character/effects/createCombatEffect";
+import { isNegatedByStealth } from "./targeting/targeting";
 
 export interface UpdatedCombatantStats {
     id?: string; // Unique identifier for this set of updates
@@ -43,6 +43,7 @@ export interface UpdatedCombatantStats {
     overkill?: number;
     context?: ActionContext;
     action?: Action; // Appended in previews, but is it generally used?
+    missed?: boolean;
 }
 
 export interface UpdatedStatsProps {
@@ -184,6 +185,7 @@ export const getUpdatedStats = ({
             moneyDiff = -targetMesos;
         }
 
+        const isNegated = isNegatedByStealth({ action, actor, target, context });
         const statUpdate: UpdatedCombatantStats = {
             id: uuid.v4(),
             combatantId: targetCombatant.id,
@@ -202,7 +204,8 @@ export const getUpdatedStats = ({
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
             context: context,
-            ...getStatusEffectDiff({ target, actor, action, context, multiplier, actionParent }),
+            missed: isNegated,
+            ...getStatusEffectDiff({ target, actor, action, context, multiplier, actionParent, isNegated }),
         };
 
         return {
@@ -233,6 +236,7 @@ const getStatusEffectDiff = ({
     context,
     multiplier,
     actionParent,
+    isNegated,
 }: {
     target: CombatantInfo;
     actor?: CombatantInfo | undefined;
@@ -240,6 +244,7 @@ const getStatusEffectDiff = ({
     context?: ActionContext | undefined;
     multiplier: number;
     actionParent?: ActionParent;
+    isNegated: boolean;
 }) => {
     const { effects: actionEffects = [], removeDebuffs, removeEffects = [] } = action;
     const triggerSource = context?.sourceChain?.at(-1);
@@ -249,6 +254,10 @@ const getStatusEffectDiff = ({
     const targetIsImmune = hasEffectType(target, EFFECT_TYPES.IMMUNITY);
 
     const isImmuneTo = (effect: Effect): boolean => {
+        if (isNegated) {
+            return true;
+        }
+
         const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
             (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
         );

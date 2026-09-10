@@ -1,10 +1,11 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
+import { CombatAbility, CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { UpdatedCombatantStats } from "../../battle/actions/getUpdatedStats";
 import Icon from "../../icon/Icon";
 import { Combatant } from "../types";
+import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 const PLAYBACK_TIME = 3000;
 
@@ -64,10 +65,11 @@ enum QUEUED_EFFECT_TYPES {
     ADDED = "added",
     FADED = "faded",
     IMMUNED = "immuned",
+    MISS = "missed",
 }
 
 type EffectQueued = {
-    effect: { id: string; icon?: string; name: string; stacks: number };
+    effect: { id: string; icon?: string; name: string; stacks?: number };
     type: QUEUED_EFFECT_TYPES;
 };
 
@@ -124,7 +126,7 @@ const StatusEffectAnnouncer = ({
         }
 
         // Only display effects that are visible via icon
-        const { effects = [], removedEffects = [], failedToApplyEffects = [], failedToAddCards } = statChanges;
+        const { effects = [], removedEffects = [], failedToApplyEffects = [], failedToAddCards, missed, context } = statChanges;
 
         const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean =>
             Boolean(effect.icon && !effect.disableDisplayIcon);
@@ -170,6 +172,14 @@ const StatusEffectAnnouncer = ({
                     newQueue.push({ effect: item, type: QUEUED_EFFECT_TYPES.IMMUNED });
                 }
             });
+
+        if (missed) {
+            const ability = context?.sourceChain?.find((a) => a.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source as CombatAbility;
+            if (ability) {
+                const effect = { id: ability.instanceId!, icon: ability.image, name: ability.name };
+                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.MISS });
+            }
+        }
 
         if (delay) {
             const timeout = setTimeout(() => {
@@ -261,6 +271,14 @@ const StatusEffectAnnouncer = ({
                         return (
                             <>
                                 Resisted <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}
+                            </>
+                        );
+                    }
+
+                    if (type === QUEUED_EFFECT_TYPES.MISS) {
+                        return (
+                            <>
+                                <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> MISS
                             </>
                         );
                     }

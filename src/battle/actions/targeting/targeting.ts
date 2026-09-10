@@ -1,14 +1,13 @@
 import _ from "lodash";
 import { isOffensiveAction } from "../../../ability/AbilityView/utils";
-import { ACTION_TYPES, Action, CONDITION_TARGETS, EFFECT_TYPES, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../../../ability/types";
+import { ACTION_TYPES, Action, CombatAbility, EFFECT_TYPES, TARGET_TYPES } from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
-import { BattleState } from "../../types";
-import { ActionContext, BATTLEFIELD_SIDES, CombatantInfo, NonCombatPlayerInfo, TriggerSource } from "../../types";
-import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
-import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
-import { findCombatantData } from "../combatantData";
 import { passesConditions } from "../../passesConditions";
+import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, NonCombatPlayerInfo } from "../../types";
+import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
+import { findCombatantData, hasEffectType } from "../combatantData";
+import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
 
 export const calculateTargetIndices = ({
     action,
@@ -408,7 +407,7 @@ export const calculateActionArea = ({
     battle,
 }: {
     action?: Action;
-    actor: CombatantInfo | NonCombatPlayerInfo;
+    actor?: CombatantInfo | NonCombatPlayerInfo;
     target?: CombatantInfo;
     context?: ActionContext;
     battle?: BattleState | null;
@@ -436,4 +435,40 @@ export const calculateActionArea = ({
     }
 
     return totalArea;
+};
+
+export const isNegatedByStealth = ({
+    action,
+    actor,
+    target,
+    context,
+}: {
+    action: Action;
+    actor?: CombatantInfo | NonCombatPlayerInfo;
+    target?: CombatantInfo;
+    context?: ActionContext;
+}): boolean => {
+    const isOffense = isOffensiveAction(action);
+    if (!isOffense) {
+        return false;
+    }
+
+    if (!hasEffectType(target, EFFECT_TYPES.STEALTH)) {
+        return false;
+    }
+
+    const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
+        (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
+    );
+
+    if (isPreviousActionTriggeredBypass || action.bypassStealth || action.bypassImmunity) {
+        return false;
+    }
+
+    const area = calculateActionArea({ action, actor, target, context });
+    if (area > 0) {
+        return false;
+    }
+
+    return true;
 };

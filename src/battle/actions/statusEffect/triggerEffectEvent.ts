@@ -22,7 +22,7 @@ import { getMultiplier } from "../../getMultiplier";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { ActionContext, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
-import { canTargetIfStealthed, isSilenced, isStunnedOrFrozen } from "../../utils";
+import { isSilenced, isStunnedOrFrozen } from "../../utils";
 import { checkHandleAutoCast } from "../autoCast";
 import { checkCardActions, handleDrawOriginalAbility } from "../cardActions/cardActions";
 import { applyAbilityEventEffects } from "../cardActions/utils";
@@ -33,7 +33,7 @@ import { checkInduce } from "../inducedAction";
 import { performAction } from "../performAction";
 import { aggregateStatUpdates } from "../playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
-import { autoSelectActionTarget, calculateTargetIndices } from "../targeting/targeting";
+import { autoSelectActionTarget, calculateTargetIndices, isNegatedByStealth } from "../targeting/targeting";
 import { onUseAbility, useAbility } from "../useAbility";
 import { checkUpdateEffectLifecycle, isTurnToTrigger } from "./effectLifecycle";
 
@@ -335,7 +335,7 @@ const triggerEffectEventFollowUpAbility = ({
 
             const { index, side } = selection;
             const target = getState().battle![side]?.[index];
-            const targetData = findCombatantData(getState().battle!, target?.id);
+            const targetInfo = findCombatantData(getState().battle!, target?.id);
 
             const actorInfo = findCombatantData(getState().battle!, ownerId);
             const actor = actorInfo?.combatant;
@@ -356,15 +356,11 @@ const triggerEffectEventFollowUpAbility = ({
                 return;
             }
 
-            if (
-                action.target &&
-                [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE].includes(action.target) &&
-                !canTargetIfStealthed(actor, target, action)
-            ) {
+            if (isNegatedByStealth({ actor: actorInfo, target: targetInfo, action, context })) {
                 return;
             }
 
-            if (passesConditions({ actor: actorInfo, target: targetData, battle: getState().battle!, proc: action, context })) {
+            if (passesConditions({ actor: actorInfo, target: targetInfo, battle: getState().battle!, proc: action, context })) {
                 abilityUsed = true;
 
                 dispatch(

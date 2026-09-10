@@ -2050,8 +2050,7 @@ export const eventBandit: Minion = {
                             effects: [
                                 {
                                     ...stealth,
-                                    description:
-                                        "Stealth and cannot be targeted directly. When this effect ends, the character will retreat.",
+                                    description: stealth.description + " When this effect ends, the character will retreat.",
                                     preventTurnAction: true,
                                     duration: 2,
                                     onEnd: {

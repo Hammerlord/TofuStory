@@ -29,7 +29,6 @@ export const battleWarnings = {
     minCardInHand: "That ability requires at least one other card in your hand.",
     promptFinishSelecting: "Finish selecting cards in the overlay prompt first.",
     minDepleted: "You haven't Depleted any other cards this battle.",
-    targetStealth: "That character is stealthed and cannot be targeted directly.",
     unplayable: "That card cannot be played.",
     targetTaunt: "You must target the enemy that has Taunt.",
     handFull: "Your hand is too full!",

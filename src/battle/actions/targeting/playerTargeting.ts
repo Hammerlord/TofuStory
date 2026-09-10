@@ -107,9 +107,6 @@ export const isValidTargetForPlayerAbility = ({
         }
 
         const targetedEnemy = enemySide[index];
-        if (isStealthed(targetedEnemy) && !area && !ability?.actions?.[0].bypassStealth) {
-            return false;
-        }
         if (isUntargetable(targetedEnemy)) {
             return false;
         }

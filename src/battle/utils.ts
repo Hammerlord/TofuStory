@@ -40,10 +40,6 @@ export const isSilenced = (character: Minion | Combatant | null): boolean => {
     return (character?.effects || [])?.some((effect) => effect.type === EFFECT_TYPES.SILENCE);
 };
 
-export const canTargetIfStealthed = (actor: Combatant, target: Combatant | null, action?: Action): boolean => {
-    return !isStealthed(target) || hasTruesight(actor) || Boolean(action?.bypassStealth);
-};
-
 export const isStealthed = (character?: Combatant | null): boolean => {
     if (!character) {
         return false;

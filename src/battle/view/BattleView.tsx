@@ -552,10 +552,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             return;
         }
 
-        const warnStealth = () => {
-            warn(battleWarnings.targetStealth);
-        };
-
         const warnTaunt = () => {
             warn(battleWarnings.targetTaunt);
         };
@@ -579,8 +575,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
-            } else if (!canTargetIfStealthed(selectedMinion, target, abilityToUse?.actions?.[0])) {
-                warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
                 e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
@@ -598,8 +592,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 }
 
                 handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
-            } else if (!canTargetIfStealthed(player, target, abilityToUse?.actions?.[0])) {
-                warnStealth();
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
                 e.stopPropagation(); // Don't deselect the ability if you get a taunt warning

@@ -12,6 +12,7 @@ import {
 import { Item } from "../item/types";
 import { hasEffectType } from "./actions/combatantData";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
+import { isNegatedByStealth } from "./actions/targeting/targeting";
 import { DAMAGE_COEFF } from "./constants";
 import { getMultiplier } from "./getMultiplier";
 import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo } from "./types";
@@ -48,7 +49,9 @@ export const calculateDamage = ({
 
     if (
         !action.bypassImmunity &&
-        (hasEffectType(target, EFFECT_TYPES.IMMUNITY) || (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY)))
+        (hasEffectType(target, EFFECT_TYPES.IMMUNITY) ||
+            (isAttack && hasEffectType(target, EFFECT_TYPES.ATTACK_IMMUNITY)) ||
+            isNegatedByStealth({ action, actor, target, context }))
     ) {
         return 0;
     }
