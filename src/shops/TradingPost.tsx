@@ -407,7 +407,7 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
     const { player, townShops } = useAppSelector((state) => state.character);
     const [tradesRemaining, setTradesRemaining] = useState(NUM_TRADING_POST_TRADES);
     const [vendorItems, setVendorItems] = useState(generateTradingPostInventory(player));
-    const townTradingPost = townShops[town]?.tradingPost;
+    const townTradingPost = town ? townShops[town]?.tradingPost : undefined;
 
     const dispatch = useAppDispatch();
 

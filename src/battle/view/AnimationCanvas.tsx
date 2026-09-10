@@ -2,20 +2,10 @@ import classNames from "classnames";
 import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
-import {
-    Ability,
-    ACTION_TYPES,
-    ActionAnimation,
-    ANIMATION_TYPES,
-    AnimationOptions,
-    CARD_PILE_TYPES,
-    CardPileType,
-    CombatAbility,
-} from "../../ability/types";
+import { Ability, ACTION_TYPES, ActionAnimation, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
-    playFadeInAnimation,
     playHomingAnimation,
     playShakeAnimation,
     playStompAnimation,
@@ -24,14 +14,14 @@ import {
     refreshToPile,
     sendToPile,
 } from "../../character/animations";
+import { Combatant } from "../../character/types";
 import { DECK_CYCLE_TIME } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { MapleLeavesImage } from "../../images";
+import { getRandomItem } from "../../utils";
 import { CARD_ADDED_PLAYBACK_SPEED, CARD_DEPLETED_PLAYBACK_SPEED } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, Event, EventGroup } from "../types";
-import { Combatant } from "../../character/types";
-import { getRandomItem } from "../../utils";
+import { BATTLEFIELD_SIDES, EventGroup } from "../types";
 
 const PROJECTILE_WIDTH = 50;
 const PROJECTILE_HEIGHT = 50;
@@ -170,21 +160,21 @@ const AnimationCanvas = ({
     depleteRef,
 }: {
     eventGroup?: EventGroup;
-    allyRefs?: any[];
-    enemyRefs?: any[];
-    battlefieldRef;
-    deckRef;
-    discardRef;
-    depleteRef;
+    allyRefs?: RefObject<HTMLElement>[];
+    enemyRefs?: RefObject<HTMLElement>[];
+    battlefieldRef: RefObject<HTMLElement>;
+    deckRef: RefObject<HTMLElement>;
+    discardRef: RefObject<HTMLElement>;
+    depleteRef: RefObject<HTMLElement>;
 }) => {
-    const { id: eventId, playbackTime, playerSide = [], enemySide = [], displacements } = eventGroup || {};
+    const { id: eventId, playbackTime = 0, playerSide = [], enemySide = [], displacements } = eventGroup || {};
     const { actorId, targetSide, selectedIndex, allTargetIndices = [], action } = eventGroup?.events[0] || {};
 
-    const deck = useAppSelector((state) => state.battle?.deck);
-    const deckCycled = useAppSelector((state) => state.battle?.deckCycled);
+    const deck = useAppSelector((state) => state.battle!.deck);
+    const deckCycled = useAppSelector((state) => state.battle!.deckCycled);
     const dispatch = useAppDispatch();
 
-    const getIndexFromCharacterId = (characterId: string): number => {
+    const getIndexFromCharacterId = (characterId?: string): number | undefined => {
         if (!characterId) {
             return;
         }
@@ -195,7 +185,7 @@ const AnimationCanvas = ({
         return enemySide.findIndex((enemy) => characterId === enemy?.id);
     };
 
-    const getRefFromCharacterId = (characterId: string): React.RefObject<HTMLElement> => {
+    const getRefFromCharacterId = (characterId?: string): RefObject<HTMLElement> | undefined => {
         if (!characterId) {
             return;
         }
@@ -210,11 +200,12 @@ const AnimationCanvas = ({
         }
     };
 
-    const getCombatantFromId = (characterId: string): Combatant | null => {
+    const getCombatantFromId = (characterId?: string): Combatant | null | undefined => {
         if (!characterId) {
             return;
         }
-        return playerSide.concat(enemySide).find((c) => c?.id === characterId);
+
+        return playerSide.concat(enemySide).find((c: Combatant | null) => c?.id === characterId);
     };
 
     const targets = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
@@ -224,7 +215,7 @@ const AnimationCanvas = ({
             const ref = targets[i];
             return ref?.current ? { element: ref.current, index: i } : null;
         })
-        .filter((v): v is { element: HTMLElement | null; index: number } => !!v);
+        .filter((v): v is { element: HTMLElement; index: number } => !!v);
 
     const actorElement = getRefFromCharacterId(actorId)?.current;
     const addCardRefs = Array.from({ length: 5 }).map(() => useRef(null) as any);
@@ -238,7 +229,7 @@ const AnimationCanvas = ({
         return getCenterCoords(discardRef.current);
     }, [discardRef?.current]);
 
-    const { icon, animation, animationOptions, animations = [], type: actionType } = action || {};
+    const { icon, animation, animationOptions, animations = [], type: actionType, damage: actionDamage = 0 } = action || {};
 
     const classes = useStyles({})();
 
@@ -274,7 +265,7 @@ const AnimationCanvas = ({
             if (actionType === ACTION_TYPES.ATTACK) {
                 const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
                 let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
-                const windup = actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * action.damage) : 0;
+                const windup = actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * actionDamage) : 0;
 
                 playTravelAnimation({
                     from: actorElement,
@@ -378,7 +369,7 @@ const AnimationCanvas = ({
     }, [deckCycled, deck]);
 
     const projectileGroups = [{ image: icon, type: animation, options: animationOptions }, ...animations];
-    const actor: { element: HTMLElement | null; combatant: Combatant; index: number } = {
+    const actor: { element: HTMLElement | undefined; combatant: Combatant | null | undefined; index: number | undefined } = {
         element: actorElement,
         combatant: getCombatantFromId(actorId),
         index: getIndexFromCharacterId(actorId),
@@ -398,9 +389,13 @@ const AnimationCanvas = ({
                 />
             ))}
             <div className={classes.center}>
-                {eventGroup?.addCards?.map((addCards: { cards: CombatAbility[] }) =>
-                    addCards.cards.map((ability: CombatAbility, i) => (
-                        <div className={classes.abilityContainer} ref={addCardRefs[i]} key={ability.instanceId || i}>
+                {eventGroup?.addCards?.map((addCards: { cards: CombatAbility[] | Ability[] }) =>
+                    addCards.cards.map((ability: CombatAbility | Ability, i) => (
+                        <div
+                            className={classes.abilityContainer}
+                            ref={addCardRefs[i]}
+                            key={"instanceId" in ability ? ability.instanceId : i}
+                        >
                             <AbilityView ability={ability} disableGlow={true} />
                         </div>
                     ))
@@ -557,6 +552,7 @@ const Projectile = ({
         }
 
         const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
+
         if (animationType === ANIMATION_TYPES.HOMING) {
             if (Array.isArray(targets)) {
                 targets.forEach((t) => {
@@ -594,6 +590,7 @@ const Projectile = ({
             object,
             playbackTime: playbackTime - adjustTimingByDistance,
             delay,
+            startEase: undefined,
         });
     }, [eventId]);
 

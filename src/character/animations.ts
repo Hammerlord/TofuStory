@@ -55,6 +55,8 @@ export const playTravelAnimation = ({
     fadeIn = false,
     fill,
     delay,
+    startEase = "ease-out",
+    endEase = "ease-in",
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
     from: HTMLElement;
@@ -70,6 +72,8 @@ export const playTravelAnimation = ({
     fadeIn?: boolean | "fast";
     fill?: "forwards";
     delay?: number;
+    startEase?: "ease-in" | "ease-out";
+    endEase?: "ease-in" | "ease-out";
 }) => {
     if (!from || !to || (Array.isArray(to) && !to.length)) {
         return;
@@ -225,8 +229,8 @@ export const playTravelAnimation = ({
         });
     }
 
-    animationFrames[0].easing = "ease-out";
-    animationFrames[animationFrames.length - 1].easing = "ease-in";
+    animationFrames[0].easing = startEase;
+    animationFrames[animationFrames.length - 1].easing = endEase;
 
     // Guard against the Web Animations API throwing when offsets are not
     // monotonically non-decreasing. Don't know why this is happening all of a sudden though...
