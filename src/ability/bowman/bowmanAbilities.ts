@@ -2906,7 +2906,7 @@ export const stimulant: Ability = {
     image: CupOfCoffeeImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
-    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> <b>Bide.</b>",
+    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b>",
     overrideBodyText: true,
     actions: [
         {
