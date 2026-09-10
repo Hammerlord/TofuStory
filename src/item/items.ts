@@ -3046,7 +3046,7 @@ export const spikyCollar: Item = {
 
 export const olympus: Item = {
     name: "Olympus",
-    description: "When you gain Aim, gain +1 more Aim.",
+    description: "When you gain Aim, gain +{{ effects.0.onApplyEffect.effects.0.stacks }} more Aim.",
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
     image: OlympusImage,
@@ -3068,7 +3068,7 @@ export const olympus: Item = {
                 effects: [
                     {
                         ...aimEffect,
-                        stacks: 1,
+                        stacks: 2,
                     },
                 ],
             },

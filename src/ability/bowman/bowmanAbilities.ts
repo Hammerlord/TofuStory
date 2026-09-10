@@ -1596,7 +1596,7 @@ export const snipe: Ability = {
     },
     actions: [
         {
-            damage: 17,
+            damage: 20,
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
             animation: ANIMATION_TYPES.ONE_WAY,
@@ -1606,7 +1606,7 @@ export const snipe: Ability = {
                 effects: [
                     {
                         ...aimEffect,
-                        stacks: 5,
+                        stacks: 7,
                     },
                 ],
             },
@@ -1616,7 +1616,7 @@ export const snipe: Ability = {
         {
             actions: [
                 {
-                    damage: 6,
+                    damage: 7,
                     secondaryAction: {
                         effects: [
                             {
@@ -2672,7 +2672,7 @@ export const poise: Ability = {
     name: "Poise",
     overrideBodyText: true,
     resourceCost: 1,
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim</b>",
+    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b>",
     rarity: RARITIES.COMMON,
     image: ChestnutLeafImage,
     actions: [
