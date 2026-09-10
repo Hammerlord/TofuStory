@@ -3,7 +3,7 @@ import { CARD_PILE_TYPES, CombatAbility, FROM_CARD_PILE_TYPES, MoveCards } from 
 import { shuffle } from "../../../utils";
 import { passesValueComparison } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
-import { BattleState } from "../../types";
+import { BattleState, TRIGGER_SOURCE_TYPES } from "../../types";
 import { ActionContext, TriggerSource } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
@@ -17,7 +17,7 @@ export const handleMoveCards = ({ moveCards, context }: { moveCards: MoveCards; 
         if (from === to) {
             return;
         }
-        const source = context?.sourceChain?.at(-1);
+        const source = context?.sourceChain?.find((s) => s.type === TRIGGER_SOURCE_TYPES.ABILITY);
         const parentCardId = (source?.source as CombatAbility)?.instanceId;
 
         const moveFromPile = (fromPile: CombatAbility[]): { updatedFromPile: CombatAbility[]; movedCards: CombatAbility[] } => {
