@@ -141,7 +141,7 @@ const getRotation = (animation: ANIMATION_TYPES) => {
     if ([ANIMATION_TYPES.YOYO, ANIMATION_TYPES.ONE_WAY_SPIN].includes(animation)) {
         return 360;
     }
-    if ([ANIMATION_TYPES.SPIN].includes(animation)) {
+    if ([ANIMATION_TYPES.SPIN, ANIMATION_TYPES.CONSUMABLE].includes(animation)) {
         return 720;
     }
     return 0;
@@ -234,6 +234,10 @@ const AnimationCanvas = ({
     const classes = useStyles({})();
 
     useEffect(() => {
+        if (!actorElement) {
+            return;
+        }
+
         const handleCharacterAnimation = (animationConfig: ActionAnimation) => {
             let { type: animationType, options } = animationConfig;
             options = {

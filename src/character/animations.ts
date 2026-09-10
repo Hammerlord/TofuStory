@@ -1,5 +1,14 @@
 import { getRandomArbitrary } from "./../utils";
 
+type TravelCoordinates = {
+    x: number;
+    x2: number;
+    y: number;
+    y2: number;
+    xDiff: number;
+    yDiff: number;
+};
+
 export const getCenterCoords = (element: HTMLElement): { x: number; y: number } => {
     const { x, y, height, width } = element.getBoundingClientRect();
     return {
@@ -8,20 +17,26 @@ export const getCenterCoords = (element: HTMLElement): { x: number; y: number } 
     };
 };
 
-export const getTargetPoints = ({ from, to }) => {
+export const getTargetPoints = ({ from, to }: { from: HTMLElement; to: HTMLElement }) => {
     const { x, y } = getCenterCoords(from);
     const { x: x2, y: y2 } = getCenterCoords(to);
 
     return { x, y, x2, y2 };
 };
 
-export const getRotationToFaceTarget = ({ x, y, x2, y2 }): number => {
+export const getRotationToFaceTarget = ({ x, y, x2, y2 }: { x: number; y: number; x2: number; y2: number }): number => {
     const yDist = y - y2;
     const xDist = x - x2;
     return Math.atan(xDist / yDist) * (180 / Math.PI) * -1;
 };
 
-const getTotalTravelDistance = ({ travelCoordinates, returnToOrigin }): number => {
+const getTotalTravelDistance = ({
+    travelCoordinates,
+    returnToOrigin,
+}: {
+    travelCoordinates: TravelCoordinates[];
+    returnToOrigin: boolean;
+}): number => {
     if (!travelCoordinates.length) {
         return 0;
     }
@@ -140,7 +155,7 @@ export const playTravelAnimation = ({
         acc.push({ x, x2, y, y2, xDiff, yDiff });
 
         return acc;
-    }, []);
+    }, [] as TravelCoordinates[]);
 
     const totalTravelDistance = getTotalTravelDistance({
         travelCoordinates,
@@ -219,7 +234,7 @@ export const playTravelAnimation = ({
         animationFrames.push({
             transform: `translateX(${xDiff}px) translateY(${yDiff}px) rotate(${rotation}deg)`,
             opacity: 1,
-            offset: travelDist / totalTravelDistance || null,
+            offset: travelDist / totalTravelDistance || undefined,
         });
     });
 
@@ -314,7 +329,7 @@ export const playTossUpAnimation = ({
     playbackTime = 750,
     delay,
     flash = true,
-    spin = true,
+    spin,
     flipY: flipY = false,
 }: {
     object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
@@ -322,12 +337,23 @@ export const playTossUpAnimation = ({
     playbackTime?: number;
     delay?: number;
     flash?: boolean;
-    spin?: boolean;
+    spin?: number | number;
     flipY?: boolean;
 }) => {
     const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+    let spinAmount;
+    if (typeof spin === "number") {
+        spinAmount = spin;
+    } else if (spin) {
+        spinAmount = 720;
+    }
 
-    const animationFrames = [
+    const animationFrames: {
+        transform: string;
+        filter?: string;
+        opacity: number;
+        easing: string;
+    }[] = [
         {
             transform: `translateY(0)${flipY ? " rotateY(0deg)" : ""}`,
             filter: "brightness(1)",
@@ -335,7 +361,7 @@ export const playTossUpAnimation = ({
             easing: "ease-out",
         },
         {
-            transform: [spin ? "translateY(-300%) rotate(360deg)" : "translateY(-300%)", flipY ? "rotateY(180deg)" : ""]
+            transform: [spinAmount ? `translateY(-300%) rotate(${spinAmount / 2}deg)` : "translateY(-300%)", flipY ? "rotateY(180deg)" : ""]
                 .filter(Boolean)
                 .join(" "),
             opacity: 1,
@@ -343,7 +369,9 @@ export const playTossUpAnimation = ({
             easing: "ease-in-out",
         },
         {
-            transform: [spin ? "translateY(0) rotate(720deg)" : "translateY(0)", flipY ? "rotateY(360deg)" : ""].filter(Boolean).join(" "),
+            transform: [spinAmount ? `translateY(0) rotate(${spinAmount}deg)` : "translateY(0)", flipY ? "rotateY(360deg)" : ""]
+                .filter(Boolean)
+                .join(" "),
             opacity: 0,
             filter: "brightness(1.5)",
             easing: "ease-in",
@@ -367,7 +395,7 @@ export const playTossUpAnimation = ({
 /**
  * Quickly shake `object` vertically.
  */
-export const playShakeAnimation = ({ object, delay, playbackTime }) => {
+export const playShakeAnimation = ({ object, delay, playbackTime }: { object: HTMLElement; delay?: number; playbackTime: number }) => {
     const animationFrames = [
         {
             transform: "translateY(0%)",
@@ -518,7 +546,17 @@ export const sendToPile = ({
 /**
  * Animation for when the deck has cycled and discard cards move back into the deck. It's a bit faster/different than sendToPile.
  */
-export const refreshToPile = ({ object, to, playbackTime, delay }) => {
+export const refreshToPile = ({
+    object,
+    to,
+    playbackTime,
+    delay,
+}: {
+    object: HTMLElement;
+    playbackTime?: number;
+    to: HTMLElement;
+    delay?: number;
+}) => {
     const { x, y } = getCenterCoords(object);
     const { x: x2, y: y2 } = getCenterCoords(to);
     const xDiff = x2 - x; // *3 because of 0.3 scale
@@ -560,7 +598,7 @@ export const refreshToPile = ({ object, to, playbackTime, delay }) => {
 /**
  * `object` plays a "stomping" animation. The element gets compressed and stretched.
  */
-export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
+export const playStompAnimation = ({ object, playbackTime = 1000 }: { object: HTMLElement; playbackTime?: number }) => {
     const animationFrames = [
         {
             transform: "translateY(0)",
@@ -596,7 +634,7 @@ export const playStompAnimation = ({ object, playbackTime = 1000 }) => {
     });
 };
 
-export const playDyingAnimation = ({ object, playbackTime = 750 }) => {
+export const playDyingAnimation = ({ object, playbackTime = 750 }: { object: HTMLElement; playbackTime?: number }) => {
     const animationFrames = [
         {
             transform: "translateY(0)",
@@ -615,8 +653,18 @@ export const playDyingAnimation = ({ object, playbackTime = 750 }) => {
     });
 };
 
-export const playHitAnimation = ({ object, playbackTime = 300, delta, delay = 0 }) => {
-    const inverse = (num) => -num;
+export const playHitAnimation = ({
+    object,
+    playbackTime = 300,
+    delta,
+    delay = 0,
+}: {
+    object: HTMLElement;
+    playbackTime?: number;
+    delta: number;
+    delay?: number;
+}) => {
+    const inverse = (num: number) => -num;
 
     const animationFrames = [
         {
@@ -696,7 +744,15 @@ export const playFadeInAnimation = ({
     });
 };
 
-export const playExpandContractAnimation = ({ object, playbackTime = 300, max = 2 }) => {
+export const playExpandContractAnimation = ({
+    object,
+    playbackTime = 300,
+    max = 2,
+}: {
+    object: HTMLElement;
+    playbackTime?: number;
+    max?: number;
+}) => {
     const animationFrames: any[] = [
         {
             scale: 1,

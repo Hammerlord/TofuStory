@@ -616,7 +616,7 @@ export type AnimationOptions = {
     width?: number;
     height?: number;
     opacity?: number; // Should be a decimal with a max value of 1
-    flash?: number; // Duration of a single flash, in milliseconds. Smaller MS = faster flashing
+    flash?: boolean;
     fadeOut?: boolean;
     sidewinder?: boolean; // If true, projectile takes an indirect route toward the target
     brightness?: number; // Value of 1 is normal brightness
