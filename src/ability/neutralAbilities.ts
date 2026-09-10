@@ -11,6 +11,7 @@ import {
     RedSnailShellImage,
     SkeletonOfHorrorImage,
     SnailShellImage,
+    SprintImage,
     StompImage,
     VaultImage,
     ZakumArmLeft2Image,
@@ -568,6 +569,35 @@ export const outrage: Ability = {
     ],
 };
 
+export const sprint: Ability = {
+    name: "Sprint",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 0,
+    image: SprintImage,
+    depletedOnUse: true,
+    description: "Draw {{ actions.0.drawCards.amount }} cards.",
+    actions: [
+        {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.SELF,
+            drawCards: {
+                amount: 4,
+            },
+        },
+    ],
+    upgrades: [
+        {
+            actions: [
+                {
+                    drawCards: {
+                        amount: 2,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 export const NEUTRAL_ABILITIES = [
     shellThrow,
     bounce,
@@ -581,4 +611,5 @@ export const NEUTRAL_ABILITIES = [
     combatOrders,
     vault,
     outrage,
+    sprint,
 ];

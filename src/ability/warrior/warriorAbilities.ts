@@ -73,7 +73,6 @@ import {
     SpearSweepImage,
     SpikeBallImage,
     SpikedMaceImage,
-    SprintImage,
     SquareHammerImage,
     SteelTriggerImage,
     TornadoImage,
@@ -91,17 +90,17 @@ import {
     armorUp,
     attackDown,
     attackPower,
+    bideEffect,
     bleed,
+    defDown,
     directDamageTaken,
     immunity,
-    bideEffect,
     silence,
     stealth,
     stun,
     taunt,
     thorns,
     ward,
-    defDown,
 } from "../Effects";
 import {
     ACTION_TYPES,
@@ -3236,35 +3235,6 @@ export const frenzy: Ability = {
     upgrades: [
         {
             resourceCost: -1,
-        },
-    ],
-};
-
-export const sprint: Ability = {
-    name: "Sprint",
-    rarity: RARITIES.UNCOMMON,
-    resourceCost: 0,
-    image: SprintImage,
-    depletedOnUse: true,
-    description: "Draw {{ actions.0.drawCards.amount }} cards.",
-    actions: [
-        {
-            type: ACTION_TYPES.EFFECT,
-            target: TARGET_TYPES.SELF,
-            drawCards: {
-                amount: 4,
-            },
-        },
-    ],
-    upgrades: [
-        {
-            actions: [
-                {
-                    drawCards: {
-                        amount: 2,
-                    },
-                },
-            ],
         },
     ],
 };
