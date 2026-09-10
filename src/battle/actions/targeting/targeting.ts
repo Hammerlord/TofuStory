@@ -44,7 +44,6 @@ export const calculateTargetIndices = ({
     const area = calculateActionArea({ action, actor: actorData, target: targetData, context });
 
     let extraTargetIndices = getValidTargetIndices(battle[side], action.area || 0, {
-        excludeStealth: action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK,
         excludeIndex: selectedIndex,
     }).filter((i) => Math.abs(i - selectedIndex) <= targetArea);
 
@@ -184,7 +183,6 @@ export const getValidTargetIndicesForAction = ({
 
         const hostilePlayerIndex = hostile.findIndex((combatant) => combatant?.isPlayer);
         const targetIndices = getValidTargetIndices(hostile, action.area, {
-            excludeStealth: true,
             onlyTaunt: true,
             onlyPriorityTarget: true,
         }).filter((i) => {
@@ -207,7 +205,6 @@ export const getValidTargetIndicesForAction = ({
 
     if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
         return getValidTargetIndices(hostile, action.area, {
-            excludeStealth: !hasTruesight(actorData.combatant),
             onlyTaunt: true,
             onlyPriorityTarget: true,
         })
@@ -331,14 +328,13 @@ export const getValidTargetIndices = (
     characters: (Combatant | null)[],
     area: number | undefined,
     options: {
-        excludeStealth?: boolean;
         excludeIndex?: number;
         onlyTaunt?: boolean;
         excludeUntargetable?: boolean;
         onlyPriorityTarget?: boolean;
     } = {}
 ): number[] => {
-    const { excludeStealth, excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
+    const { excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
 
     const getIndicesForEffectType = (effectType: EFFECT_TYPES) => {
         const effectIndices: number[] = [];
@@ -381,10 +377,9 @@ export const getValidTargetIndices = (
     characters.forEach((character: Combatant | null, i: number) => {
         const hp = character?.HP || 0;
         if (hp > 0) {
-            const notStealth = !excludeStealth || !isStealthed(character);
             const notExcluded = excludeIndex !== i;
             const untargetable = excludeUntargetable && isUntargetable(character);
-            if (notStealth && notExcluded && !untargetable) {
+            if (notExcluded && !untargetable) {
                 indices[i] = true;
             }
         } else if (area >= 1) {

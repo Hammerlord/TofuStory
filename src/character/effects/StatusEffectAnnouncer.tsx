@@ -145,6 +145,15 @@ const StatusEffectAnnouncer = ({
         };
 
         const newQueue = [...queue];
+
+        if (missed) {
+            const ability = context?.sourceChain?.find((a) => a.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source as CombatAbility;
+            if (ability) {
+                const effect = { id: ability.instanceId!, icon: ability.image, name: ability.name };
+                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.MISS });
+            }
+        }
+
         aggregate(effects.filter(isVisible)).forEach((effect) => {
             if (!isAlreadyQueued(effect, QUEUED_EFFECT_TYPES.ADDED)) {
                 newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.ADDED });
@@ -172,14 +181,6 @@ const StatusEffectAnnouncer = ({
                     newQueue.push({ effect: item, type: QUEUED_EFFECT_TYPES.IMMUNED });
                 }
             });
-
-        if (missed) {
-            const ability = context?.sourceChain?.find((a) => a.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source as CombatAbility;
-            if (ability) {
-                const effect = { id: ability.instanceId!, icon: ability.image, name: ability.name };
-                newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.MISS });
-            }
-        }
 
         if (delay) {
             const timeout = setTimeout(() => {
