@@ -121,7 +121,10 @@ export const playTravelAnimation = ({
     const originOffsetY = freezeAxis === "y" ? 0 : y - objectCoords.y;
 
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
-        const { x: toX, y: toY } = getCenterCoords(element);
+        let { x: toX, y: toY } = getCenterCoords(element);
+        const maxOffset = 3;
+        toX += getRandomArbitrary(-maxOffset, maxOffset);
+        toY += getRandomArbitrary(-maxOffset, maxOffset);
 
         // If the target coordinates are 0,0 (upper left of the screen) then the destination is invalid (probably due to element not having rendered).
         // Skip the animation rather than have the character fly to 0,0.
