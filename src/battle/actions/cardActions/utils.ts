@@ -39,7 +39,7 @@ export const prepareForDiscard = ({
                     effects: (ability.effects || []).filter((e) => {
                         const { removeOnDiscard = true, removeOnPlay = true } = e;
                         if (removeOnDiscard) {
-                            return true;
+                            return false;
                         }
 
                         if (removeOnPlay) {
