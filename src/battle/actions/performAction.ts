@@ -641,7 +641,8 @@ const handleSecondaryAction = ({
 
         if (secondaryAction.returnParentCardToHand) {
             // Tada, it copies and deletes the old card, and adds the copy with a new id to the hand
-            const ability: CombatAbility | undefined = source?.source as CombatAbility;
+            const ability: CombatAbility | undefined = context?.sourceChain?.find((s) => s.type === TRIGGER_SOURCE_TYPES.ABILITY)
+                ?.source as CombatAbility;
 
             if (ability) {
                 ability.instanceId && dispatch(deleteCard(ability.instanceId));
