@@ -61,6 +61,7 @@ import {
     MatchaManLeafImage,
     MeatImage,
     MortalBlowImage,
+    PartingShotImage,
     PhoenixEggImage,
     PhoenixImage,
     PiercingArrowImage,
@@ -3954,6 +3955,53 @@ export const doomShot: Ability = {
                     damage: 5,
                 },
             ],
+        },
+    ],
+};
+
+export const arrowRain: Ability = {
+    name: "Arrow Rain",
+    description:
+        "While this is <b>Depleted,</b> deal <b>{{ onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> to all enemies on turn start.",
+    rarity: RARITIES.RARE,
+    image: PartingShotImage,
+    resourceCost: 2,
+    depletedOnUse: true,
+    actions: [
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+        },
+    ],
+    onTurnStart: {
+        inPile: ["depleted"],
+        ability: {
+            name: "Arrow Rain",
+            image: PartingShotImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    icon: AvengersArrowImage,
+                    animationOptions: bowmanAnimationOption,
+                    area: 5,
+                    damage: 7,
+                },
+            ],
+        },
+    },
+    upgrades: [
+        {
+            onTurnStart: {
+                ability: {
+                    actions: [
+                        {
+                            damage: 2,
+                        },
+                    ],
+                },
+            },
         },
     ],
 };

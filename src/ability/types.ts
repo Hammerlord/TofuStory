@@ -871,6 +871,7 @@ export interface Ability {
     effectsWhileOwned?: Effect[];
     /** Something that happens when an ability is used (not necessarily this one) */
     onAbility?: AbilityEvent;
+    onTurnStart?: AbilityEvent;
     /** Something that happens when this specific ability is used */
     onUse?: AbilityEvent;
     /** Something that happens when you draw this card. */

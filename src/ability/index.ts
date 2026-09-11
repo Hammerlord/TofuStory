@@ -76,6 +76,7 @@ import {
     blitz,
     springload,
     doomShot,
+    arrowRain,
 } from "./bowman/bowmanAbilities";
 import {
     abominableSnowman,
@@ -490,6 +491,7 @@ export const JOB_CARD_MAP = {
             blitz,
             springload,
             doomShot,
+            arrowRain,
         ],
         starters: [puppetAbility, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
     },

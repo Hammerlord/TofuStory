@@ -564,6 +564,7 @@ export { default as PanlidImage } from "./Panlid.png";
 export { default as ParalyzeImage } from "./Paralyze.png";
 export { default as ParashockGuardImage } from "./ParashockGuard.png";
 export { default as ParfaitCupcakeImage } from "./ParfaitCupcake.png";
+export { default as PartingShotImage } from "./PartingShot.png";
 export { default as PavementPlatformImage } from "./PavementPlatform.png";
 export { default as PavementPlatform2Image } from "./PavementPlatform2.png";
 export { default as PawnChessPieceImage } from "./PawnChessPiece.png";

@@ -3,6 +3,7 @@ import {
     Ability,
     AbilityEvent,
     Action,
+    CARD_PILE_TYPES,
     CardPileType,
     CombatAbility,
     CombatEffect,
@@ -621,7 +622,6 @@ export const checkEventTrigger = ({
 
             const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
             const triggerSum = (effectEvent.triggerSum || 0) + (context?.trackSumAmount || 1);
-
             dispatch(updateEffectEventTriggeredTimes({ combatantId, effectEventKey, eventTriggeredTimes, triggerSum, effectId: id }));
 
             const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
@@ -681,7 +681,7 @@ export const checkEventTrigger = ({
         });
 
         if (combatant.isPlayer && !fromProc) {
-            dispatch(triggerCardEffectEvents({ effectEventKey, context, source }));
+            dispatch(triggerCardEffectEvents({ effectEventKey, context, actorId: source?.actorId || combatant.id }));
         }
     };
 };
@@ -745,15 +745,14 @@ const updateEffectEventTriggeredTimes = ({
 const triggerCardEffectEvents = ({
     effectEventKey,
     context,
-    source,
+    actorId,
 }: {
     effectEventKey: EFFECT_EVENT_KEYS;
     context: ActionContext;
-    source?: TriggerSource;
+    actorId?: string;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { playerSide, hand } = getState().battle!;
-        const actorId = source?.actorId;
+        const { playerSide } = getState().battle!;
         if (!actorId) {
             return;
         }
@@ -763,24 +762,29 @@ const triggerCardEffectEvents = ({
             return;
         }
 
-        hand.forEach((card: CombatAbility) => {
-            const cardEvent = card[effectEventKey as keyof CombatAbility] as AbilityEvent | undefined;
-            if (!cardEvent) {
-                return;
-            }
+        const checkEventAbility = (pileName: CardPileType) => {
+            const pile = getState().battle![pileName];
+            pile.forEach((card: CombatAbility) => {
+                const event = card[effectEventKey as keyof CombatAbility] as AbilityEvent | undefined;
+                if (!event || (event?.inPile && !event.inPile.includes(pileName))) {
+                    return card;
+                }
 
-            const ability = cardEvent.ability;
-            if (ability && passesChance(cardEvent.chance)) {
-                dispatch(
-                    useAbility({
-                        ability,
-                        actorId,
-                        isProc: true,
-                        context,
-                    })
-                );
-            }
-        });
+                const ability = event.ability;
+                if (ability && passesChance(event.chance)) {
+                    dispatch(
+                        useAbility({
+                            ability,
+                            actorId,
+                            isProc: true,
+                            context,
+                        })
+                    );
+                }
+            });
+        };
+
+        Object.values(CARD_PILE_TYPES).forEach(checkEventAbility);
 
         const applyEffects = (pileName: CardPileType) => {
             const pile = getState().battle![pileName];
