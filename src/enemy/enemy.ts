@@ -2150,7 +2150,6 @@ export const miniKargo: Minion = {
                         calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
                         comparator: "eq",
                         name: "Wild Kargo",
-                        //numFriendly: 1, // This is assuming Mini Kargo is the only one alive
                     },
                 ],
                 effects: [
@@ -2213,6 +2212,7 @@ export const wildKargo: Minion = {
                     effects: [
                         {
                             ...bleed,
+                            stacks: 2,
                         },
                     ],
                 },
@@ -2241,6 +2241,7 @@ export const wildKargo: Minion = {
         },
         {
             name: "Rip And Tear",
+            description: "Inflicts Bleed each hit.",
             image: FangImage,
             resourceCost: 3,
             castTime: 1,
@@ -2257,6 +2258,7 @@ export const wildKargo: Minion = {
                     effects: [
                         {
                             ...bleed,
+                            stacks: 1,
                         },
                     ],
                 },
@@ -2267,6 +2269,7 @@ export const wildKargo: Minion = {
                     effects: [
                         {
                             ...bleed,
+                            stacks: 1,
                         },
                     ],
                 },
