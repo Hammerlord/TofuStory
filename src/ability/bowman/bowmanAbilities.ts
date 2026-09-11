@@ -1101,7 +1101,7 @@ export const chargedShot: Ability = {
             icon: AvengersArrowImage,
             animationOptions: {
                 ...bowmanAnimationOption,
-                flash: 200,
+                flash: true,
                 width: 50,
                 height: 50,
                 weapon: {
@@ -2028,7 +2028,7 @@ export const shatteringArrow: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "<b>Pierce.</b> <br/> Destroy <b>{{ actions.0.destroyArmor }}</b> {{{ _armor_ }}}. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.0.destroyArmor }}</b> more.",
+        "<b>Pierce.</b> <b>Critical:</b> Hit again for <b>{{ actions.1.damage }} {{{ _damage_ }}}.</b> Deals <b>x2 {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
     overrideBodyText: true,
     onDraw: {
         chance: 0,
@@ -2050,19 +2050,43 @@ export const shatteringArrow: Ability = {
             animationOptions: bowmanAnimationOption,
             bypassImmunity: true,
             bypassStealth: true,
-            destroyArmor: 0.2,
-            bonus: [
+            bonus: {
+                damage: 9,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        armor: 0,
+                        comparator: "gt",
+                    },
+                ],
+            },
+        },
+        {
+            conditions: [
                 {
-                    destroyArmor: 0.2,
-                    conditions: [
-                        {
-                            sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
-                            calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-                            hasAbilityEffectName: CRITICAL_KEYWORD,
-                        },
-                    ],
+                    sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
+                    calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                    hasAbilityEffectName: CRITICAL_KEYWORD,
                 },
             ],
+            damage: 3,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            bypassImmunity: true,
+            bypassStealth: true,
+            bonus: {
+                damage: 3,
+                conditions: [
+                    {
+                        calculationTarget: TRIGGER_TARGET_TYPES.TARGET,
+                        armor: 0,
+                        comparator: "gt",
+                    },
+                ],
+            },
         },
     ],
     upgrades: [
@@ -2070,6 +2094,15 @@ export const shatteringArrow: Ability = {
             actions: [
                 {
                     damage: 3,
+                    bonus: {
+                        damage: 3,
+                    },
+                },
+                {
+                    damage: 1,
+                    bonus: {
+                        damage: 1,
+                    },
                 },
             ],
         },
@@ -2396,7 +2429,7 @@ const fireBurst: Ability = {
                     options: {
                         rotate: 135,
                         rotateToFaceTarget: true,
-                        flash: 600,
+                        flash: true,
                     },
                 },
             ],
@@ -3229,7 +3262,7 @@ export const fleetFoot: Ability = {
 
 export const bountyOrNothing: Ability = {
     name: "Bounty Or Nothing",
-    rarity: RARITIES.UNCOMMON,
+    rarity: RARITIES.RARE,
     overrideBodyText: true,
     image: HarvestDamageSkinImage,
     unplayable: true,
@@ -3934,6 +3967,7 @@ export const doomShot: Ability = {
             {
                 resourceCost: -1,
                 removeOnDiscard: false,
+                removeOnPlay: false,
             },
         ],
     },
@@ -3969,8 +4003,13 @@ export const arrowRain: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            icon: AvengersArrowImage,
+            animationOptions: bowmanAnimationOption,
+            area: 2,
+            damage: 7,
         },
     ],
     onTurnStart: {
@@ -3993,6 +4032,11 @@ export const arrowRain: Ability = {
     },
     upgrades: [
         {
+            actions: [
+                {
+                    damage: 2,
+                },
+            ],
             onTurnStart: {
                 ability: {
                     actions: [
