@@ -457,24 +457,26 @@ export const TransmutationView = ({
                         <>
                             <div className={classes.transmutesRemainingLabel}>Transmutations left: {numTransmutations}</div>
 
-                            <span
-                                className={classNames({
-                                    [classes.highlightAnimation]: selectedCard && numTransmutations,
-                                })}
-                            >
-                                <Button
-                                    disabled={!selectedCard || !numTransmutations || player.mesos < cost}
-                                    onClick={handleClickTransmute}
-                                    color="primary"
+                            {numTransmutations > 0 && (
+                                <span
+                                    className={classNames({
+                                        [classes.highlightAnimation]: selectedCard && numTransmutations,
+                                    })}
                                 >
-                                    {Boolean(cost) && (
-                                        <>
-                                            Transmute [pay {cost} <Icon icon={MesoCoinImage} size={"xs"} />]
-                                        </>
-                                    )}
-                                    {!cost && "Transmute"}
-                                </Button>
-                            </span>
+                                    <Button
+                                        disabled={!selectedCard || !numTransmutations || player.mesos < cost}
+                                        onClick={handleClickTransmute}
+                                        color="primary"
+                                    >
+                                        {Boolean(cost) && (
+                                            <>
+                                                Transmute [pay {cost} <Icon icon={MesoCoinImage} size={"xs"} />]
+                                            </>
+                                        )}
+                                        {!cost && "Transmute"}
+                                    </Button>
+                                </span>
+                            )}
                         </>
                     )}
                 </div>
@@ -499,7 +501,8 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
     const townWorkshop = townShops[town]?.workshop;
     const numTownTransmutes = townWorkshop?.numTransmutesRemaining;
     const [numTransmutes, setNumTransmutes] = useState(BASE_NUM_TRANSMUTATIONS);
-    const cost = numTransmutes === BASE_NUM_TRANSMUTATIONS ? 0 : TRANSMUTATION_PRICE;
+    const numTransmutations = townWorkshop ? numTownTransmutes : numTransmutes;
+    const cost = numTransmutations === BASE_NUM_TRANSMUTATIONS ? 0 : TRANSMUTATION_PRICE;
 
     const decrementNumTransmutes = () => {
         if (townWorkshop) {
@@ -532,7 +535,7 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
             onClickTransmute={handleClickTransmute}
             onTransmuted={handleTransmuted}
             onCancelTransmute={decrementNumTransmutes}
-            numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
+            numTransmutations={numTransmutations}
             cost={cost}
             backdrop={backdrop}
         />
