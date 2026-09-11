@@ -157,20 +157,9 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
 export const getCardPool = (player: Player, deck: CombatAbility[]) => {
     const { starters, all } = JOB_CARD_MAP[player.class];
 
-    const disabledCards = player.items.reduce((acc, item) => {
-        if (Array.isArray(item.disableCardsFromBeingFound)) {
-            item.disableCardsFromBeingFound.forEach((itemName: string) => (acc[itemName] = true));
-        }
-        return acc;
-    }, {});
+    const disabledCards = new Set(player.items.flatMap((item) => item.disableCardsFromBeingFound ?? []));
 
-    const ownedUniqueCards = deck.reduce((acc, ability) => {
-        if (ability.isUnique) {
-            acc[ability.name] = true;
-        }
-
-        return acc;
-    }, {});
+    const ownedUniqueCards = new Set(deck.filter((card) => card.isUnique).map((card) => card.name));
 
     return [
         ...all.map((card) => {
@@ -181,7 +170,7 @@ export const getCardPool = (player: Player, deck: CombatAbility[]) => {
         }),
     ]
         .concat(NEUTRAL_ABILITIES)
-        .filter((ability) => !ownedUniqueCards[ability.name] && !disabledCards[ability.name]);
+        .filter((ability) => !ownedUniqueCards.has(ability.name) && !disabledCards.has(ability.name));
 };
 
 export const getCardChoicesFromItems = ({
@@ -192,24 +181,18 @@ export const getCardChoicesFromItems = ({
     deck: CombatAbility[];
     player: Player;
     battleType?: BATTLE_TYPES;
-}) => {
-    const ownedUniqueCards = deck.reduce((acc, ability) => {
-        if (ability.isUnique) {
-            acc[ability.name] = true;
-        }
-
-        return acc;
-    }, {});
+}): { choices: Ability[]; numChoices: number } => {
+    const ownedUniqueCards = new Set(deck.filter((card) => card.isUnique).map((card) => card.name));
 
     const { choices, numChoices } = player.items.reduce(
         (acc, item: Item) => {
-            const { amount = 0, battleTypes, abilities: initAbilities = [] } = item.abilityChoices || {};
-            if (battleTypes && !battleTypes.includes(battleType)) {
+            const { amount = 0, battleTypes: battleTypeFilters, abilities: initAbilities = [] } = item.abilityChoices || {};
+            if (battleTypeFilters && battleType && !battleTypeFilters.includes(battleType)) {
                 return acc;
             }
 
             const { choices, numChoices } = acc;
-            const abilities = initAbilities.filter((ability) => !ownedUniqueCards[ability.name]);
+            const abilities = initAbilities.filter((ability) => !ownedUniqueCards.has(ability.name));
             if (abilities.length) {
                 choices.push(getRandomItem(abilities));
             }
@@ -219,7 +202,7 @@ export const getCardChoicesFromItems = ({
                 numChoices: numChoices + amount,
             };
         },
-        { choices: [], numChoices: 0 }
+        { choices: [], numChoices: 0 } as { choices: Ability[]; numChoices: number }
     );
 
     return { choices, numChoices };
@@ -234,18 +217,9 @@ export const filterUnobtainableItems = ({
     excludeItems?: Item[];
     itemsToFilter: Item[];
 }) => {
-    const filterOut = playerItems.reduce((acc, item: Item) => {
-        acc[item.name] = true;
+    const filterOut = new Set(playerItems.flatMap((item) => [item.name, ...(item.exclusive ?? [])]));
 
-        if (Array.isArray(item.exclusive)) {
-            item.exclusive.forEach((itemName: string) => (acc[itemName] = true));
-        }
-        return acc;
-    }, {});
+    excludeItems?.forEach((item) => filterOut.add(item.name));
 
-    (excludeItems || []).forEach((item) => {
-        filterOut[item.name] = true;
-    });
-
-    return itemsToFilter.filter((item) => !filterOut[item.name]);
+    return itemsToFilter.filter((item) => !filterOut.has(item.name));
 };

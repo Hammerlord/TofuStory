@@ -210,7 +210,7 @@ export const TransmutationView = ({
     onTransmuted: (options: { card: string; for: CombatAbility }) => void;
     onCancelTransmute: () => void;
     player: Player;
-    onExit?;
+    onExit?: () => void;
     numTransmutations: number; // How many transmutations the player can perform for this session
     disableBackdrop?: boolean; // Disable background image
     backdrop?: string; // Custom background image
@@ -218,25 +218,36 @@ export const TransmutationView = ({
 }) => {
     const [selectedCard, setSelectedCard] = useState<CombatAbility | null>(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
-    const [isPlayingAnimation, setIsPlayingAnimation] = useState(false);
+    const [isPlayingAnimation, setIsPlayingAnimation] = useState<boolean>(false);
 
-    const [transmutationOptions, setTransmutationOptions] = useState(null);
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
-    const [showDeck, setShowingDeck] = useState(false);
+    const [transmutationOptions, setTransmutationOptions] = useState<CombatAbility[] | null>(null);
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+    const [showDeck, setShowingDeck] = useState<boolean>(false);
 
     const classes = useStyles({ backdrop } as any);
-    const selectedCardRef = useRef(null);
+    const selectedCardRef = useRef<HTMLElement | null>(null);
     const optionsRefs = Array.from({ length: 10 }).map(() => useRef(null));
 
     useEffect(() => {
-        if (!isPlayingAnimation) {
+        if (!isPlayingAnimation || !selectedCardRef.current) {
             return;
         }
 
         const animations = playExplodeAnimation({ from: selectedCardRef.current, maxScale: 1.5, playbackTime: 500 });
-        animations[animations.length - 1].onfinish = () => {
-            setIsPlayingAnimation(false);
-            transmute();
+        if (!animations.length) {
+            return;
+        }
+
+        const last = animations[animations.length - 1];
+        if (last) {
+            last.onfinish = () => {
+                setIsPlayingAnimation(false);
+                transmute();
+            };
+        }
+
+        return () => {
+            animations.forEach((a) => a?.cancel());
         };
     }, [isPlayingAnimation]);
 
