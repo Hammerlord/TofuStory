@@ -1,32 +1,30 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import * as uuid from "uuid";
 import DeckViewer from "../Menu/DeckViewer";
 import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "../Menu/utils";
 import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
-import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
+import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
+import { createCombatAbility } from "../ability/createCombatAbility";
 import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
+import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { CARD_CHOICE_UPGRADE_RATE, COMMON_STYLES, NUM_CARD_CHOICES, RARE_CARD_CHOICE_UPGRADE_RATE } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
-import { ElliniaWeaponStoreImage } from "../images";
+import { ElliniaWeaponStoreImage, MesoCoinImage } from "../images";
 import { QuestionMarkIcon } from "../images/icons";
-import { Item, RARITIES } from "../item/types";
+import { RARITIES } from "../item/types";
 import { rollRarity } from "../item/utils";
+import { TOWNS } from "../map/types";
 import { shuffle } from "../utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import LeaveButton from "./LeaveButton";
-import { TOWNS } from "../map/types";
-import { playerStateSlice } from "../character/playerReducer";
-import { NUM_TRANSMUTATIONS } from "./constants";
-import { DEFAULT_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
-import { createCombatAbility } from "../ability/createCombatAbility";
+import { BASE_NUM_TRANSMUTATIONS, TRANSMUTATION_PRICE } from "./constants";
 
 const HEADER_BAR = 72;
 
@@ -193,26 +191,30 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updateTownShop, updateDeck } = playerStateSlice.actions;
+const { updateTownShop, updateDeck, updateMesos } = playerStateSlice.actions;
 
 export const TransmutationView = ({
     deck,
-    onTransmute,
+    onClickTransmute,
+    onTransmuted,
     onCancelTransmute,
     player,
     onExit,
     numTransmutations,
     disableBackdrop,
     backdrop,
+    cost,
 }: {
     deck: CombatAbility[];
-    onTransmute: (options: { card: string; for: CombatAbility }) => void;
+    onClickTransmute: () => void;
+    onTransmuted: (options: { card: string; for: CombatAbility }) => void;
     onCancelTransmute: () => void;
     player: Player;
     onExit?;
     numTransmutations: number; // How many transmutations the player can perform for this session
     disableBackdrop?: boolean; // Disable background image
     backdrop?: string; // Custom background image
+    cost: number;
 }) => {
     const [selectedCard, setSelectedCard] = useState<CombatAbility | null>(null);
     const selectedCardRarity = selectedCard ? selectedCard.rarity || RARITIES.COMMON : undefined;
@@ -311,7 +313,7 @@ export const TransmutationView = ({
     };
 
     const handleConfirmClick = () => {
-        onTransmute({ card: selectedCard.instanceId, for: transmutationOptions[selectedOptionIndex] });
+        onTransmuted({ card: selectedCard.instanceId, for: transmutationOptions[selectedOptionIndex] });
         setSelectedCard(null);
         setTransmutationOptions(null);
         setSelectedOptionIndex(null);
@@ -337,16 +339,21 @@ export const TransmutationView = ({
         onExit && onExit();
     };
 
+    const handleClickTransmute = () => {
+        setIsPlayingAnimation(true);
+        onClickTransmute();
+    };
+
     return (
         <Overlay>
             <div className={classes.transmutationRoot}>
                 {!disableBackdrop && <div className={classes.backdrop} />}
                 <div className={classes.titleContainer}>
-                    <h2>Transmute an Ability</h2>
+                    <h2>Transmute Ability</h2>
                 </div>
                 {!transmutationOptions && (
                     <>
-                        <p>Replace an ability in your deck with 1 of 3 card options.</p>
+                        <p>Replace a card in your deck with 1 of 3 options.</p>
 
                         <div className={classes.doneContainer}>
                             <LeaveButton onClick={handleClickExit} text="Leave" />
@@ -437,7 +444,7 @@ export const TransmutationView = ({
 
                     {!transmutationOptions && (
                         <>
-                            <div className={classes.transmutesRemainingLabel}>Transmutations remaining: {numTransmutations}</div>
+                            <div className={classes.transmutesRemainingLabel}>Transmutations left: {numTransmutations}</div>
 
                             <span
                                 className={classNames({
@@ -445,11 +452,16 @@ export const TransmutationView = ({
                                 })}
                             >
                                 <Button
-                                    disabled={!selectedCard || !numTransmutations}
-                                    onClick={() => setIsPlayingAnimation(true)}
+                                    disabled={!selectedCard || !numTransmutations || player.mesos < cost}
+                                    onClick={handleClickTransmute}
                                     color="primary"
                                 >
-                                    Transmute
+                                    {Boolean(cost) && (
+                                        <>
+                                            Transmute [pay {cost} <Icon icon={MesoCoinImage} size={"xs"} />]
+                                        </>
+                                    )}
+                                    {!cost && "Transmute"}
                                 </Button>
                             </span>
                         </>
@@ -475,7 +487,8 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
     const dispatch = useAppDispatch();
     const townWorkshop = townShops[town]?.workshop;
     const numTownTransmutes = townWorkshop?.numTransmutesRemaining;
-    const [numTransmutes, setNumTransmutes] = useState(NUM_TRANSMUTATIONS);
+    const [numTransmutes, setNumTransmutes] = useState(BASE_NUM_TRANSMUTATIONS);
+    const cost = numTransmutes === BASE_NUM_TRANSMUTATIONS ? 0 : TRANSMUTATION_PRICE;
 
     const decrementNumTransmutes = () => {
         if (townWorkshop) {
@@ -485,7 +498,7 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
         }
     };
 
-    const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+    const handleTransmuted = (options: { card: string; for: CombatAbility }) => {
         const { card: cardId, for: forCard } = options || {};
         const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
         if (cardIndex > -1) {
@@ -496,14 +509,20 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
         }
     };
 
+    const handleClickTransmute = () => {
+        dispatch(updateMesos(-cost));
+    };
+
     return (
         <TransmutationView
             onExit={onExit}
             deck={deck}
             player={player}
-            onTransmute={handleTransmute}
+            onClickTransmute={handleClickTransmute}
+            onTransmuted={handleTransmuted}
             onCancelTransmute={decrementNumTransmutes}
             numTransmutations={townWorkshop ? numTownTransmutes : numTransmutes}
+            cost={cost}
             backdrop={backdrop}
         />
     );

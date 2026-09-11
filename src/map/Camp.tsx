@@ -10,7 +10,7 @@ import { CampfireImage, HerbsImage, PerionCampImage, PersonalAnvilImage, WeaponM
 import { Item } from "../item/types";
 import { TransmutationView } from "../shops/Transmutation";
 import Button from "../view/Button";
-import { NUM_TRANSMUTATIONS } from "../shops/constants";
+import { BASE_NUM_TRANSMUTATIONS } from "../shops/constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -125,7 +125,7 @@ const Camp = ({
     const [completedActivities, setCompletedActivities] = useState({});
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
-    const [numTransmutations, setNumTransmutations] = useState(NUM_TRANSMUTATIONS);
+    const [numTransmutations, setNumTransmutations] = useState(BASE_NUM_TRANSMUTATIONS);
     const [isTransmutingAbility, setIsTransmutingAbility] = useState(false);
     const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
         1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
@@ -191,7 +191,7 @@ const Camp = ({
     if (isTransmutingAbility) {
         return (
             <TransmutationView
-                onTransmute={handleTransmute}
+                onTransmuted={handleTransmute}
                 onCancelTransmute={finishTransmute}
                 deck={deck}
                 player={player}

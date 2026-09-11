@@ -224,7 +224,7 @@ const DevToolButton = () => {
                         return card;
                     })}
                     player={defaultCharacterProperties}
-                    onTransmute={() => {}}
+                    onTransmuted={() => {}}
                     onCancelTransmute={() => {}}
                     onExit={() => setIsTransmutationOpen(false)}
                     numTransmutations={2}
