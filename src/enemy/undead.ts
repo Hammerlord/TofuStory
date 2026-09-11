@@ -117,6 +117,7 @@ export const agonyCard: Ability = {
         "While this is in your hand, self-inflict {{ onAbility.ability.actions.0.damage }} {{{ _damage_ }}} for every card you play.",
     unplayable: true,
     onAbility: {
+        inPile: ["hand"],
         ability: {
             name: "Agony",
             image: SkeletonOfHorrorImage,
