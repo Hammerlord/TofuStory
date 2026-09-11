@@ -48,13 +48,6 @@ import {
     stumpyFight,
 } from "./overworldBosses";
 
-const sleepywood: Route = {
-    id: "to-sleepywood",
-    region: REGIONS.SLEEPYWOOD,
-    numNodes: 1,
-    endingTown: TOWNS.SLEEPYWOOD,
-};
-
 export const routePerionSleepywood: Route = {
     id: "perion-sleepywood",
     eliteOptions: {
@@ -78,8 +71,9 @@ export const routePerionSleepywood: Route = {
     startingTown: TOWNS.PERION,
     region: REGIONS.PERION,
     regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
-    numNodes: 6,
-    next: [sleepywood],
+    endingTown: TOWNS.SLEEPYWOOD,
+    numNodes: 7,
+    cursedTreasureChance: 0.25,
 };
 
 export const routeKerningToPerion: Route = {
@@ -261,9 +255,10 @@ export const routeElliniaSleepywood: Route = {
     ],
     startingTown: TOWNS.ELLINIA,
     region: REGIONS.ELLINIA,
-    regionTransition: { atNodeIndex: 2, region: REGIONS.SLEEPYWOOD },
-    numNodes: 6,
-    next: [sleepywood],
+    regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
+    numNodes: 7,
+    endingTown: TOWNS.SLEEPYWOOD,
+    cursedTreasureChance: 0.25,
 };
 
 export const routeElliniaPerion: Route = {
@@ -468,7 +463,6 @@ export const toLith: Route = {
 };
 
 export const ROUTE_ID_MAP = [
-    sleepywood,
     routePerionSleepywood,
     routeKerningToPerion,
     toKerning,
