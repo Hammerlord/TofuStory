@@ -69,10 +69,12 @@ export const calculateBonus = ({
                 const drawCardsAmount = (bonus?.drawCards?.amount || 0) + (drawCards?.amount || 0);
                 const drawCardsObj = drawCardsAmount ? { amount: drawCardsAmount } : undefined;
 
-                const totalBonusEffects = bonusEffects.map((effect) => ({
-                    ...effect,
-                    stacks: (effect.stacks || 1) * multiplier,
-                }));
+                const totalBonusEffects = bonusEffects
+                    .map((effect) => ({
+                        ...effect,
+                        stacks: (effect.stacks || 1) * multiplier,
+                    }))
+                    .filter((effect) => effect.stacks !== 0);
 
                 return {
                     ...acc,
