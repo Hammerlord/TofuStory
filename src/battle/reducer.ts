@@ -48,9 +48,9 @@ export function computeAddCardsToHand(state: BattleState, newCards: CombatAbilit
     let cardsOverflowedToDiscard: CombatAbility[] = [];
     let notification: Notification | undefined;
 
-    if (newHand.length >= MAX_HAND_SIZE) {
-        const toDiscard = newHand.slice(MAX_HAND_SIZE);
-        newHand = newHand.slice(0, MAX_HAND_SIZE);
+    if (newHand.length > MAX_HAND_SIZE) {
+        const toDiscard = newHand.slice(0, newHand.length - MAX_HAND_SIZE);
+        newHand = newHand.slice(-MAX_HAND_SIZE);
         const player = state.playerSide.find((combatant) => combatant?.isPlayer) as Player;
         cardsOverflowedToDiscard = prepareForDiscard({ cards: toDiscard, player, battle: state });
         newDiscard.unshift(...cardsOverflowedToDiscard);
