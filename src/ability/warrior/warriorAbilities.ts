@@ -3172,7 +3172,6 @@ const frenzyEffect: Effect = {
             disableTriggerFromProcs: true,
             targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
             applyAbilityEffects: {
-                pile: CARD_PILE_TYPES.HAND,
                 filters: [
                     {
                         property: "name",

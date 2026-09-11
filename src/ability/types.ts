@@ -684,7 +684,7 @@ export type Action = {
         // How many cards should be affected. Randomly chosen, eg. 2 will pick 2 random cards in that pile to apply the affect on.
         // If not supplied, it's all the cards (you may want this when applying an effect to all cards in hand, for example).
         amount?: number;
-        pile: CardPileType;
+        pile?: CardPileType;
         abilityEffects: AbilityEffect[];
         // If "random-pick", one of abilityEffects[] is randomly chosen to be applied
         mode?: "random-pick";
