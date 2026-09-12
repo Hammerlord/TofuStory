@@ -373,12 +373,16 @@ export const generateWaves = ({
     route: Route;
     fallbackRoute?: Route;
     previousEncounters: Wave[][];
-}): Wave[] => {
+}): Wave[] | undefined => {
     const numWaves = getRandomItem([1, 2]);
 
     const waves: Wave[] = [];
-    const baseEnemyPool: Minion[][] =
+    const baseEnemyPool: Minion[][] | undefined =
         numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
+
+    if (!baseEnemyPool) {
+        return;
+    }
 
     let enemyPool: Minion[][] = baseEnemyPool.slice();
 

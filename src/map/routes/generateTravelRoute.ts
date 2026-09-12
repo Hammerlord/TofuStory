@@ -178,8 +178,10 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                     types.push(getRandomItem(rareTypes));
                 } else if (numShops > 0 && Math.random() < likelihood && notInPrevLevel(NODE_TYPES.SHOP)) {
                     types.push(NODE_TYPES.SHOP);
-                } else {
+                } else if (route.enemies || route.multiWaveEnemies) {
                     types.push(NODE_TYPES.ENCOUNTER);
+                } else if (numEliteEncounters > 0) {
+                    types.push(NODE_TYPES.ELITE_ENCOUNTER);
                 }
             }
 
@@ -297,11 +299,11 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
         const levels: GeneratedRouteNode[][] = [];
 
-        for (let idx = 0; idx < route.numNodes; idx++) {
-            const region = regionAtIndex(route, idx);
-            const prevLevel: GeneratedRouteNode[] | undefined = levels[idx - 1];
+        for (let i = 0; i < route.numNodes; i++) {
+            const region = regionAtIndex(route, i);
+            const prevLevel: GeneratedRouteNode[] | undefined = levels[i - 1];
 
-            if (idx === 0 && route.startingTown !== undefined) {
+            if (i === 0 && route.startingTown !== undefined) {
                 levels.push([
                     makeGeneratedNode({
                         base: {
@@ -315,7 +317,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 continue;
             }
 
-            if (idx === route.numNodes - 1 && route.endingTown !== undefined) {
+            if (i === route.numNodes - 1 && route.endingTown !== undefined) {
                 levels.push([
                     makeGeneratedNode({
                         base: {
@@ -329,7 +331,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 continue;
             }
 
-            if (idx === route.bossNodeIndex) {
+            if (i === route.bossNodeIndex) {
                 const encounter = route.bosses && getRandomItem(route.bosses);
 
                 levels.push([
@@ -345,13 +347,13 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 continue;
             }
 
-            const precedingLevelSize = idx === 0 ? incomingLevelSize : levels[idx - 1].length;
+            const precedingLevelSize = i === 0 ? incomingLevelSize : levels[i - 1].length;
 
             /*
              * A route reached through `route.next` always has exactly
              * one entry node. Subsequent levels are free to branch normally.
              */
-            const count = idx === 0 && isBranchEntry ? 1 : getLevelNodeCount(precedingLevelSize);
+            const count = i === 0 && isBranchEntry ? 1 : getLevelNodeCount(precedingLevelSize);
 
             if (!levels.length) {
                 levels.push(

@@ -72,7 +72,7 @@ export const routePerionSleepywood: Route = {
     region: REGIONS.PERION,
     regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
     endingTown: TOWNS.SLEEPYWOOD,
-    numNodes: 7,
+    numNodes: 8,
     cursedTreasureChance: 0.25,
 };
 
@@ -256,7 +256,7 @@ export const routeElliniaSleepywood: Route = {
     startingTown: TOWNS.ELLINIA,
     region: REGIONS.ELLINIA,
     regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
-    numNodes: 7,
+    numNodes: 8,
     endingTown: TOWNS.SLEEPYWOOD,
     cursedTreasureChance: 0.25,
 };
