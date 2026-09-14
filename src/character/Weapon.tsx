@@ -172,24 +172,15 @@ const Weapon = ({
 }) => {
     const options = wielder?.weaponImageOptions;
     const classes = useStyles(options as any);
-    const { action, source } = (event?.actorId === wielder?.id && event) || {};
-    const { type, area } = action || {};
+    const { action } = (event?.actorId === wielder?.id && event) || {};
+    // The event action already has area effects applied onto it
+    const { type, area = 0 } = action || {};
     const weaponRef = useRef(null);
     const afterImagesRefs = Array.from({ length: 3 }).map(() => useRef(null));
-    const animationRefs = useRef([]);
+    const animationRefs = useRef<Animation[]>([]);
     const weaponAnimationOptions = action?.animationOptions?.weapon || {};
 
-    const battle = useAppSelector((state) => state?.battle);
-    const wielderInfo = battle ? findCombatantData(battle, wielder?.id) : { combatant: wielder };
-    const context: ActionContext = { name: "Weapon View", sourceChain: source ? [source] : [] };
-    const totalArea = battle
-        ? calculateActionArea({
-              action: action,
-              actor: wielderInfo,
-              context,
-          })
-        : area || 0;
-    const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !totalArea;
+    const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !area;
     const isRotateWeaponToFaceTarget = weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
 
     const rotation = useMemo(() => {
@@ -209,14 +200,14 @@ const Weapon = ({
             return;
         }
         animationRefs.current?.forEach((a) => a.cancel());
-        if (totalArea === 1) {
+        if (area === 1) {
             animationRefs.current = [
                 swing({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
                     return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 110 });
                 }),
             ];
-        } else if (totalArea >= 2) {
+        } else if (area >= 2) {
             animationRefs.current = [
                 whirl({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
