@@ -39,7 +39,10 @@ export const isWithinPlayerAbilityArea = ({
     const action = ability.actions[0];
     const context: ActionContext = {
         name: "Player Ability Area Check",
-        sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+        sourceChain: [
+            { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            { source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
+        ],
     };
     const area = calculateActionArea({ action, actor, context, battle }) || action?.area || 0;
     return Math.abs(selectedIndex - targetIndex) <= area;
