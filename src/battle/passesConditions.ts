@@ -15,6 +15,7 @@ import {
 import { ActionContext, BattleState, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
 import { Combatant } from "../character/types";
+import { findCombatantData } from "./actions/combatantData";
 
 type GetCombatantCalcTargetFn = (
     targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
@@ -122,6 +123,7 @@ export const passesConditions = ({
                 actor,
                 target,
                 allTargets,
+                battle,
             });
         };
 
@@ -534,6 +536,7 @@ const getCalculationCombatantTarget = ({
     actor,
     target,
     allTargets = [],
+    battle,
 }: {
     calculationTarget: CONDITION_TARGETS | TRIGGER_TARGET_TYPES;
     effectApplier?: NonCombatPlayerInfo | CombatantInfo;
@@ -541,6 +544,7 @@ const getCalculationCombatantTarget = ({
     actor?: NonCombatPlayerInfo | CombatantInfo;
     target?: NonCombatPlayerInfo | CombatantInfo;
     allTargets?: NonCombatPlayerInfo[] | CombatantInfo[];
+    battle?: BattleState | null;
 }) => {
     if (calculationTarget === CONDITION_TARGETS.ACTOR) {
         return actor;
@@ -556,6 +560,15 @@ const getCalculationCombatantTarget = ({
 
     if (calculationTarget === TRIGGER_TARGET_TYPES.ALL_TARGETS) {
         return allTargets.filter((data): data is CombatantInfo => data !== undefined);
+    }
+
+    if (calculationTarget === TRIGGER_TARGET_TYPES.PLAYER) {
+        if (battle) {
+            const player = battle.playerSide.find((c) => c?.isPlayer);
+            return findCombatantData(battle, player?.id);
+        }
+
+        return;
     }
 
     // Why can this be an array?
