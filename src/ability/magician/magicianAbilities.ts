@@ -3822,3 +3822,82 @@ export const chromatic: Ability = {
         },
     ],
 };
+
+export const fullMoon: Ability = {
+    name: "Full Moon",
+    description:
+        "While this is <b>Depleted,</b> deal <b>{{ onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> to enemies / <b>{{ onTurnStart.ability.actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b> to allies on turn start.",
+    rarity: RARITIES.RARE,
+    image: FullMoonImage,
+    resourceCost: 2,
+    depletedOnUse: true,
+    actions: [
+        {
+            type: ACTION_TYPES.RANGE_ATTACK,
+            target: TARGET_TYPES.HOSTILE,
+            animation: ANIMATION_TYPES.ONE_WAY,
+            animations: [
+                {
+                    image: FullMoonImage,
+                    type: ANIMATION_TYPES.ACTION_EXPLODE,
+                },
+            ],
+            area: 2,
+            damage: 4,
+            secondaryAction: {
+                armor: 3,
+                area: 2,
+            },
+        },
+    ],
+    onTurnStart: {
+        inPile: ["depleted"],
+        ability: {
+            name: "Full Moon",
+            image: FullMoonImage,
+            actions: [
+                {
+                    type: ACTION_TYPES.RANGE_ATTACK,
+                    target: TARGET_TYPES.HOSTILE,
+                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animations: [
+                        {
+                            image: FullMoonImage,
+                            type: ANIMATION_TYPES.ACTION_EXPLODE,
+                        },
+                    ],
+                    area: 2,
+                    damage: 4,
+                    secondaryAction: {
+                        armor: 3,
+                        area: 2,
+                    },
+                },
+            ],
+        },
+    },
+    upgrades: [
+        {
+            actions: [
+                {
+                    damage: 1,
+                    secondaryAction: {
+                        armor: 1,
+                    },
+                },
+            ],
+            onTurnStart: {
+                ability: {
+                    actions: [
+                        {
+                            damage: 1,
+                            secondaryAction: {
+                                armor: 1,
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+};

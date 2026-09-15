@@ -123,7 +123,6 @@ import {
     magicClaw,
     magicFang,
     magicGuard,
-    manaGem,
     meditation,
     metronome,
     moltenLaser,
@@ -157,6 +156,7 @@ import {
     zap,
     volatileMagic,
     chromatic,
+    fullMoon,
 } from "./magician/magicianAbilities";
 
 import {
@@ -295,7 +295,6 @@ export const JOB_CARD_MAP = {
             moonlight,
             zap,
             frostfireBlast,
-            manaGem,
             wardBooster,
             icicles,
             ifrit,
@@ -324,6 +323,7 @@ export const JOB_CARD_MAP = {
             thunderSpear,
             wyvernAbility,
             chromatic,
+            fullMoon,
         ],
         starters: [empower, energyBolt, energyBolt, energyBolt, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
     },

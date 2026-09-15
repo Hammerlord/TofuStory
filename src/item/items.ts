@@ -3141,7 +3141,7 @@ export const silverSnowboard: Item = {
     rarity: RARITIES.UNCOMMON,
     image: SilverSnowboardImage,
     applyEffectsToSummons: true,
-    description: "Gain an additional +{{ effects.0.attackPower }} {{{ _attUp_ }}} against {{{ _stun_ }}} or {{{ _freeze_ }}} targets.",
+    description: "Gain +{{ effects.0.attackPower }} {{{ _attUp_ }}} vs. {{{ _stun_ }}} or {{{ _freeze_ }}} targets.",
     effects: [
         {
             name: "Silver Snowboard",
