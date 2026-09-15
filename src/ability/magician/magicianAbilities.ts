@@ -3777,7 +3777,7 @@ export const wyvernAbility: Ability = {
 export const chromatic: Ability = {
     name: "Chromatic Blast",
     rarity: RARITIES.UNCOMMON,
-    resourceCost: 3,
+    resourceCost: 4,
     image: MidnightMagicianCapeImage,
     description:
         "Apply <b>Doom</b>, {{{ _chill_ }}} and <b>{{ actions.0.effects.2.stacks }}</b> {{{ _burn_ }}} {{{ _poison_ }}} {{{ _bleed_ }}}.",
@@ -3789,6 +3789,9 @@ export const chromatic: Ability = {
                 {
                     image: MidnightMagicianCapeImage,
                     type: ANIMATION_TYPES.BEAM,
+                    options: {
+                        spin: 360,
+                    },
                 },
             ],
             effects: [
@@ -3796,6 +3799,7 @@ export const chromatic: Ability = {
                 {
                     ...chill,
                     duration: 2,
+                    stacks: 1,
                 },
                 {
                     ...burn,
@@ -3816,7 +3820,7 @@ export const chromatic: Ability = {
         {
             actions: [
                 {
-                    effects: [{}, {}, { stacks: 1 }, { stacks: 1 }, { stacks: 1 }],
+                    effects: [{}, { stacks: 1 }, { stacks: 1 }, { stacks: 1 }, { stacks: 1 }],
                 },
             ],
         },
