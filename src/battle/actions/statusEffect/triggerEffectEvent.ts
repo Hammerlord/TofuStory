@@ -318,7 +318,7 @@ const triggerEffectEventFollowUpAbility = ({
 
         const abilityContext: ActionContext = {
             ...procContext,
-            sourceChain: [...(procContext.sourceChain || []), { source: ability }],
+            sourceChain: [...(procContext.sourceChain || []), { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
         };
 
         ability?.actions.forEach((action: Action) => {
@@ -477,7 +477,7 @@ export const onEffectEventTrigger = ({
             targetId: source?.targetId,
             statUpdate: source?.statUpdate,
         };
-        const procContext: ActionContext = { ...context, sourceChain: [...(context?.sourceChain || []), procTriggerSource] };
+        const procContext: ActionContext = { ...context, isProc: true, sourceChain: [...(context?.sourceChain || []), procTriggerSource] };
 
         dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, context: procContext }));
         dispatch(checkCardActions({ action: other, context: procContext }));
