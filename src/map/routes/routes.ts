@@ -214,6 +214,7 @@ export const routeElliniaSleepywood: Route = {
             [null, darkStoneGolem, null, darkStoneGolem, null],
         ],
     },
+    /*
     enemies: [
         [
             stump,
@@ -253,6 +254,7 @@ export const routeElliniaSleepywood: Route = {
         [elliniaGreenMushroom, null, stump, null, elliniaGreenMushroom],
         [null, axeStump, null, axeStump, null],
     ],
+    */
     startingTown: TOWNS.ELLINIA,
     region: REGIONS.ELLINIA,
     regionTransition: { atNodeIndex: 3, region: REGIONS.SLEEPYWOOD },
