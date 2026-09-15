@@ -3523,22 +3523,8 @@ export const mysticDoor: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: MysticDoorImage,
     resourceCost: 1,
-    description: "Draw {{ actions.0.drawCards.amount }} cards. <br/> <b>Charged:</b> Draw from your discard instead.",
+    description: "Draw {{ actions.1.drawCards.amount }} cards. <br/> <b>Charged:</b> Draw from your discard instead.",
     actions: [
-        {
-            target: TARGET_TYPES.SELF,
-            type: ACTION_TYPES.EFFECT,
-            drawCards: {
-                amount: 2,
-            },
-            conditions: [
-                {
-                    calculationTarget: CONDITION_TARGETS.ACTOR,
-                    comparator: "not",
-                    hasEffect: "Charged",
-                },
-            ],
-        },
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
@@ -3553,6 +3539,14 @@ export const mysticDoor: Ability = {
                     hasEffect: "Charged",
                 },
             ],
+            stopAction: true,
+        },
+        {
+            target: TARGET_TYPES.SELF,
+            type: ACTION_TYPES.EFFECT,
+            drawCards: {
+                amount: 2,
+            },
         },
     ],
     upgrades: [
