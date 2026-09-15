@@ -77,8 +77,6 @@ export const getUpdatedStats = ({
     const targets = targetIds.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
     const recipients = recipientIds?.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
 
-    const triggerSource = context?.sourceChain?.at(-1);
-
     return (recipients?.length ? recipients : targets).map((target: CombatantInfo) => {
         const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants = [] } = target;
         const action = calculateBonus({
@@ -113,7 +111,7 @@ export const getUpdatedStats = ({
             allTargets: targets,
             actor,
             actionParent,
-            source: triggerSource,
+            context,
             deck,
             hand,
             discard,

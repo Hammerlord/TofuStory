@@ -35,7 +35,6 @@ export const calculateBonus = ({
     }
 
     const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
-    const source = context?.sourceChain?.at(-1);
 
     return bonuses.reduce(
         (acc: Action, bonus: Bonus) => {
@@ -46,7 +45,7 @@ export const calculateBonus = ({
                 allTargets,
                 multiplier: bonus.multiplier,
                 actionParent,
-                source,
+                context,
                 deck,
                 hand,
                 discard,

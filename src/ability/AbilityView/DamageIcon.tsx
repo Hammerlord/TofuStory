@@ -76,14 +76,6 @@ export const getDamageStatistics = ({
     });
 
     const withAttackPower = withArea.map((action: Action) => {
-        const multiplier = getMultiplier({
-            actor: actorInfo,
-            multiplier: action.multiplier,
-            deck,
-            hand,
-            discard,
-        });
-
         const resourceCost = getPlayerAbilityResourceCost({
             combatant: actorInfo?.combatant,
             effects: ability.effects || [],
@@ -102,6 +94,15 @@ export const getDamageStatistics = ({
                 { source: action, type: TRIGGER_SOURCE_TYPES.ACTION },
             ],
         };
+
+        const multiplier = getMultiplier({
+            actor: actorInfo,
+            multiplier: action.multiplier,
+            context,
+            deck,
+            hand,
+            discard,
+        });
 
         const damageProps = {
             actor: actorInfo,

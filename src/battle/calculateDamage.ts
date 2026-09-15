@@ -97,6 +97,7 @@ export const calculateDamage = ({
                 target,
                 allTargets: [target],
                 multiplier: multiplierConfig,
+                context,
                 hand,
                 deck,
                 discard,

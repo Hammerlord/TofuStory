@@ -24,7 +24,7 @@ export const getMultiplier = ({
     sourceTargets = [],
     actionParent,
     multiplier,
-    source,
+    context,
     deck = [],
     hand = [],
     discard = [],
@@ -35,7 +35,7 @@ export const getMultiplier = ({
     sourceTargets?: (NonCombatPlayerInfo | CombatantInfo)[];
     actionParent?: ActionParent;
     multiplier?: Multiplier;
-    source?: TriggerSource;
+    context: ActionContext;
     deck: CombatAbility[];
     hand: CombatAbility[];
     discard: CombatAbility[];
@@ -61,6 +61,7 @@ export const getMultiplier = ({
         return sourceTargets.length * numValue;
     }
 
+    const source = context?.sourceChain?.at(-1);
     if (type === MULTIPLIER_TYPES.OVERHEALING) {
         return (source?.statUpdate?.overhealing || 0) * numValue;
     }
@@ -73,10 +74,11 @@ export const getMultiplier = ({
         return (source?.statUpdate?.rawDamage || 0) * numValue;
     }
 
+    const abilitySource = context?.sourceChain?.find((s) => s.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source;
     if (type === MULTIPLIER_TYPES.ALL_CARDS || type === MULTIPLIER_TYPES.CARDS_IN_HAND) {
         const cardsToCheck: CombatAbility[] = hand.filter((card: CombatAbility) => {
             // Greater Bolt should not affect itself
-            return card.instanceId !== (source?.source as CombatAbility)?.instanceId;
+            return card.instanceId !== (abilitySource as CombatAbility)?.instanceId;
         });
 
         if (type === MULTIPLIER_TYPES.ALL_CARDS) {
@@ -90,7 +92,7 @@ export const getMultiplier = ({
         let filtered = cardsToCheck.filter((card) => {
             return filters.some(({ property, value, comparator }) => {
                 const val = _.get(card, property);
-                passesValueComparison({ val, otherVal: value, comparator });
+                return passesValueComparison({ val, otherVal: value, comparator });
             });
         }).length;
 
@@ -117,10 +119,15 @@ export const getMultiplier = ({
         }, 0);
     }
 
-    // @ts-ignore -- We are checking the existence of resourceCost here either way
-    if (type === MULTIPLIER_TYPES.RESOURCES_SPENT && typeof actionParent?.resourceCost === "number") {
-        // @ts-ignore
-        return actionParent.resourceCost;
+    if (type === MULTIPLIER_TYPES.RESOURCES_SPENT) {
+        const baseResourceCost = (abilitySource as CombatAbility)?.resourceCost;
+        if (typeof baseResourceCost === "number") {
+            return baseResourceCost;
+        }
+
+        if (baseResourceCost === "x") {
+            return combatant?.resources || 0;
+        }
     }
 
     if (!combatant) {

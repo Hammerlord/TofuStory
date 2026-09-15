@@ -279,6 +279,7 @@ export const performAction = ({
         const multiplier = getMultiplier({
             multiplier: action.multiplier,
             actor: actorData,
+            context,
             ...(getState().battle! as BattleState),
         });
 

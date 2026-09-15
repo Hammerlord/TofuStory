@@ -490,6 +490,7 @@ export const onEffectEventTrigger = ({
         if (postCardActionsOwner?.combatant?.isPlayer) {
             const multiplier = getMultiplier({
                 ...getState().battle!,
+                context,
                 multiplier: multiplierConfig,
                 actor: postCardActionsOwner,
             });
