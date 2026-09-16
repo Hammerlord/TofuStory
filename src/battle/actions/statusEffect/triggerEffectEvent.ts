@@ -105,7 +105,7 @@ const checkEffectEventTriggerGate = ({
             actor: caster,
             target: caster,
             allTargets: [caster],
-            source: source,
+            context,
             multiplier: effectEvent.multiplier,
             actionParent: source?.source,
         });
