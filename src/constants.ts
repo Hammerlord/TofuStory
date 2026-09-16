@@ -4,7 +4,12 @@ export const COLOR_RARITY_RARE = "#ffda72";
 
 export const COMMON_ITEM_CHANCE = 0.55;
 export const UNCOMMON_ITEM_CHANCE = 0.35;
-export const RARE_ITEM_CHANCE = 0.01;
+export const RARE_ITEM_CHANCE = 0.05;
+export const BASE_RARE_ITEM_CHANCE = -0.1;
+export const RARE_ITEM_CHANCE_INCREMENT = 0.1;
+
+export const BASE_RARE_CARD_CHANCE = -0.1;
+export const RARE_CARD_CHANCE_INCREMENT = 0.1;
 
 export const BOSS_RARE_RATE = 0.3;
 export const BOSS_UNCOMMON_RATE = 0.25;

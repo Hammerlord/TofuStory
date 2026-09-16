@@ -133,6 +133,8 @@ const {
     setNumNormalEncountersSinceLoot,
     resetRareCardChance,
     increaseRareCardChance,
+    resetRareItemChance,
+    increaseRareItemChance,
 } = playerStateSlice.actions;
 const { closeBattle, useConsumable: battleUseConsumable } = battleStateSlice.actions;
 
@@ -423,9 +425,26 @@ const Main = () => {
         handleExitBattle();
     };
 
-    const handleCloseItemRewards = () => {
+    const handleRareItemBonusAfterItemChoices = (rolledItems: Item[]) => {
+        const isRolledRare = rolledItems.some((item) => item.rarity === RARITIES.RARE);
+
+        if (isRolledRare) {
+            dispatch(resetRareItemChance());
+        } else {
+            dispatch(increaseRareItemChance());
+        }
+    };
+
+    const handleCloseItemRewards = (rolledItems: Item[]) => {
+        handleRareItemBonusAfterItemChoices(rolledItems);
         setItemRewardsOptions(null);
         handleExitBattle();
+    };
+
+    const handleCloseTreasureChest = (rolledItems: Item[]) => {
+        handleRareItemBonusAfterItemChoices(rolledItems);
+        setTreasure(null);
+        saveGame(store.getState().character);
     };
 
     const handleSelectClass = (selectedClass: PLAYER_CLASSES, deck: Ability[]) => {
@@ -702,10 +721,7 @@ const Main = () => {
 
                     {treasure && (
                         <TreasureBox
-                            onExit={() => {
-                                setTreasure(null);
-                                saveGame(store.getState().character);
-                            }}
+                            onExit={handleCloseTreasureChest}
                             onLoot={handleObtainLoot}
                             /**Puzzle={treasure.puzzle}**/
                             initItems={treasure.items}

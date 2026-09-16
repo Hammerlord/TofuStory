@@ -21,6 +21,7 @@ import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 import { RANDOM_BOSSES } from "../map/randomBosses";
 import { BattleStatistics } from "../battle/types";
 import { createCombatAbility } from "../ability/createCombatAbility";
+import { BASE_RARE_CARD_CHANCE, BASE_RARE_ITEM_CHANCE, RARE_CARD_CHANCE_INCREMENT, RARE_ITEM_CHANCE_INCREMENT } from "../constants";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -65,6 +66,7 @@ export type CharacterState = {
     rolledBosses: { [townName: string]: string };
     numNormalEncountersSinceLoot: number;
     rareCardBonusChance: number; // Rare card drop pity system that scales with battles completed
+    rareItemBonusChance: number; // Same as above but for items
 };
 
 const getRolledBosses = () => {
@@ -96,7 +98,8 @@ const INITIAL_STATE: CharacterState = {
     purchasedConsumables: {},
     rolledBosses: {}, // For randomly generated bosses, set the chosen boss here
     numNormalEncountersSinceLoot: 0, // To normalize the rate of normal encounter loot drops
-    rareCardBonusChance: -0.05, // Pity system for rare cards
+    rareCardBonusChance: BASE_RARE_CARD_CHANCE, // Pity system for rare cards
+    rareItemBonusChance: BASE_RARE_ITEM_CHANCE,
 };
 
 export type ActivityHistoryLog = {
@@ -473,13 +476,25 @@ export const playerStateSlice = createSlice({
         resetRareCardChance: (state) => {
             return {
                 ...state,
-                rareCardBonusChance: 0,
+                rareCardBonusChance: BASE_RARE_CARD_CHANCE,
             };
         },
         increaseRareCardChance: (state) => {
             return {
                 ...state,
-                rareCardBonusChance: state.rareCardBonusChance + 0.1,
+                rareCardBonusChance: state.rareCardBonusChance + RARE_CARD_CHANCE_INCREMENT,
+            };
+        },
+        resetRareItemChance: (state) => {
+            return {
+                ...state,
+                rareItemBonusChance: BASE_RARE_ITEM_CHANCE,
+            };
+        },
+        increaseRareItemChance: (state) => {
+            return {
+                ...state,
+                rareItemBonusChance: state.rareItemBonusChance + RARE_ITEM_CHANCE_INCREMENT,
             };
         },
     },

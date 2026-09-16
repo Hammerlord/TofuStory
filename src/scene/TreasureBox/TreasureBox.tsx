@@ -226,7 +226,7 @@ const TreasureBox = ({
     player,
     curse,
 }: {
-    onExit: any;
+    onExit: (rolledItems: Item[]) => void;
     initItems?: Item[];
     initMesos?: number | number[]; // [min, max]
     title?: string;
@@ -296,7 +296,7 @@ const TreasureBox = ({
 
     const handleClickSelect = () => {
         onLoot({ mesos, items: selectedItemIndices.map((i) => items[i]) });
-        onExit();
+        onExit(items);
     };
 
     const handleClickItem = (index: number) => {

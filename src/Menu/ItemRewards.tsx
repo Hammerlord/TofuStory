@@ -88,7 +88,7 @@ const ItemRewards = ({
 }: {
     player: Player;
     onLoot: ({ items }: { items: Item[] }) => void;
-    onClose: () => void;
+    onClose: (rolledItems: Item[]) => void;
     rewardType?: BATTLE_TYPES;
     // Eg. encounter-specific item(s); it takes the place of the auto-generated item from elites/bosses
     overrideItemChoices?: Item[];
@@ -180,7 +180,7 @@ const ItemRewards = ({
 
     const handleClickSelect = () => {
         onLoot({ items: selectedItemIndices.map((i) => itemChoices[i]) });
-        onClose();
+        onClose(itemChoices);
     };
 
     return (
