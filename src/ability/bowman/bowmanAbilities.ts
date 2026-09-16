@@ -4005,9 +4005,11 @@ export const arrowRain: Ability = {
         {
             type: ACTION_TYPES.RANGE_ATTACK,
             target: TARGET_TYPES.HOSTILE,
-            animation: ANIMATION_TYPES.ONE_WAY,
+            animation: ANIMATION_TYPES.PROJECTILE_RAIN,
             icon: AvengersArrowImage,
-            animationOptions: bowmanAnimationOption,
+            animationOptions: {
+                rotate: -45,
+            },
             area: 2,
             damage: 7,
         },
@@ -4021,9 +4023,11 @@ export const arrowRain: Ability = {
                 {
                     type: ACTION_TYPES.RANGE_ATTACK,
                     target: TARGET_TYPES.HOSTILE,
-                    animation: ANIMATION_TYPES.ONE_WAY,
+                    animation: ANIMATION_TYPES.PROJECTILE_RAIN,
                     icon: AvengersArrowImage,
-                    animationOptions: bowmanAnimationOption,
+                    animationOptions: {
+                        rotate: -45,
+                    },
                     area: 5,
                     damage: 7,
                 },

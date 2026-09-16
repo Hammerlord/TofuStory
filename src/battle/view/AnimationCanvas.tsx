@@ -7,6 +7,7 @@ import {
     getCenterCoords,
     playExplodeAnimation,
     playHomingAnimation,
+    playProjectileRainAnimation,
     playShakeAnimation,
     playStompAnimation,
     playTossUpAnimation,
@@ -130,6 +131,7 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
 
 const DISPLACEMENT_SPEED = 500;
 const MAX_BEAM_PROJECTILES = 5;
+const DEFAULT_PROJECTILE_RAIN_COUNT = 2;
 const NUM_SPACES_AWAY_DELAY = 30;
 
 const { updateBattle } = battleStateSlice.actions;
@@ -438,11 +440,16 @@ const ProjectileGroup = ({
 }) => {
     const { options, type: animationType } = actionAnimation;
 
-    // "Beam" animations shoot a bunch of projectile images
-    const beamProjectileMultiplier = animationType === ANIMATION_TYPES.BEAM ? MAX_BEAM_PROJECTILES : 1;
+    // "Beam" animations shoot a bunch of projectile images, while "projectile rain" drops a couple per target
+    const projectileMultiplier =
+        animationType === ANIMATION_TYPES.BEAM
+            ? MAX_BEAM_PROJECTILES
+            : animationType === ANIMATION_TYPES.PROJECTILE_RAIN
+              ? options?.projectileCount ?? DEFAULT_PROJECTILE_RAIN_COUNT
+              : 1;
 
     if (options?.ricochet) {
-        return Array.from({ length: beamProjectileMultiplier }).map((_, i) => (
+        return Array.from({ length: projectileMultiplier }).map((_, i) => (
             <Projectile
                 target={allTargets}
                 playbackTime={playbackTime}
@@ -456,7 +463,7 @@ const ProjectileGroup = ({
     }
 
     return allTargets.map((target) =>
-        Array.from({ length: beamProjectileMultiplier }).map((_, i) => (
+        Array.from({ length: projectileMultiplier }).map((_, i) => (
             <Projectile
                 target={target}
                 playbackTime={playbackTime}
@@ -556,6 +563,30 @@ const Projectile = ({
         }
 
         const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
+
+        if (animationType === ANIMATION_TYPES.PROJECTILE_RAIN) {
+            if (Array.isArray(targets)) {
+                targets.forEach((t) => {
+                    playProjectileRainAnimation({
+                        ...options,
+                        to: t,
+                        object,
+                        playbackTime,
+                        delay,
+                    });
+                });
+            } else {
+                playProjectileRainAnimation({
+                    ...options,
+                    to: targets,
+                    object,
+                    playbackTime,
+                    delay,
+                });
+            }
+
+            return;
+        }
 
         if (animationType === ANIMATION_TYPES.HOMING) {
             if (Array.isArray(targets)) {

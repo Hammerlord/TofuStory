@@ -839,3 +839,58 @@ export const playHomingAnimation = ({
         fill: "forwards",
     });
 };
+
+export const playProjectileRainAnimation = ({
+    object,
+    to,
+    playbackTime = 500,
+    delay,
+    rotate = 0,
+    spread = 75,
+    distance = 300,
+}: {
+    object: HTMLElement;
+    to: HTMLElement;
+    playbackTime?: number;
+    delay?: number;
+    rotate?: number; // Degrees; the projectile's sprite orientation while it falls
+    spread?: number; // Horizontal variance (in px) of where each projectile starts
+    distance?: number; // How far above the target each projectile starts (in px)
+}) => {
+    const { x: toX, y: toY } = getCenterCoords(to);
+
+    const { width, height } = object.getBoundingClientRect();
+    const targetX = toX - width / 2;
+    const targetY = toY - height / 2;
+
+    const fromX = targetX + getRandomArbitrary(-spread, spread);
+    const fromY = targetY - getRandomArbitrary(distance - 100, distance);
+
+    object.style.position = "fixed";
+    object.style.left = "0px";
+    object.style.top = "0px";
+
+    const animationFrames = [
+        {
+            transform: `translate(${fromX}px, ${fromY}px) rotate(${rotate}deg)`,
+            opacity: 0,
+            offset: 0,
+        },
+        {
+            transform: `translate(${fromX}px, ${targetY}px) rotate(${rotate}deg)`,
+            opacity: 1,
+            offset: 0.6,
+        },
+        {
+            transform: `translate(${fromX}px, ${targetY}px) rotate(${rotate}deg)`,
+            opacity: 0,
+            offset: 1,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
+        fill: "forwards",
+    });
+};

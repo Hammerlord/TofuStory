@@ -630,6 +630,7 @@ export type AnimationOptions = {
         rotateToFaceTarget?: boolean; // For ranged attacks where the weapon should face the target
     };
     spin?: number; // Custom degrees to spin; animations like ONE_WAY_SPIN etc. already come with defaults
+    projectileCount?: number; // How many projectiles a PROJECTILE_RAIN animation drops on each target
 };
 
 export type ActionAnimation = {
@@ -930,6 +931,7 @@ export enum ANIMATION_TYPES {
     CONSUMABLE = "consumable", // Eat a consumable
     FIREWORKS = "fireworks",
     HOMING = "homing", // Display an image on the target
+    PROJECTILE_RAIN = "projectile-rain", // 'icon' projectiles fall vertically from above each target
 }
 
 /**
