@@ -236,11 +236,11 @@ const TreasureBox = ({
     curse?: "damage";
 }) => {
     const classes = useStyles();
-    const [isChestUnlocked, setIsChestUnlocked] = useState(!Puzzle);
-    const [isChestOpened, setIsChestOpened] = useState(false);
-    const [items, setItems] = useState([]);
-    const [selectedItemIndices, setSelectedItemIndices]: [number[], Function] = useState([]);
-    const [mesos, setMesos] = useState(0);
+    const [isChestUnlocked, setIsChestUnlocked] = useState<boolean>(!Puzzle);
+    const [isChestOpened, setIsChestOpened] = useState<boolean>(false);
+    const [items, setItems] = useState<Item[]>([]);
+    const [selectedItemIndices, setSelectedItemIndices] = useState<number[]>([]);
+    const [mesos, setMesos] = useState<number>(0);
     const dispatch = useAppDispatch();
 
     const handleClickChest = () => {
@@ -258,7 +258,7 @@ const TreasureBox = ({
             }
         } else {
             const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
-            const treasure = [];
+            const treasure: Item[] = [];
             Array.from({ length: curse ? CURSED_NUM_CHOICES : BASE_NUM_CHOICES }).forEach(() => {
                 const equipment = getRandomItem(rollItemPool({ player, bonuses, excludeItems: treasure }));
                 if (equipment) {

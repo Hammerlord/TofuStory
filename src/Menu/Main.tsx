@@ -346,7 +346,7 @@ const Main = () => {
                 } else if (node.type === NODE_TYPES.EVENT) {
                     handleEventNode(node);
                 } else if (node.type === NODE_TYPES.TOWN) {
-                    dispatch(setTown(node.town));
+                    dispatch(setTown(node.town!));
                 }
             };
             handleTransition(callback);

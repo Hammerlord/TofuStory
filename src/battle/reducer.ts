@@ -78,19 +78,19 @@ export const battleStateSlice = createSlice({
     reducers: {
         promptPlayerSelectCards: (state, action: PayloadAction<PlayerSelectCardsPrompt>) => {
             return {
-                ...state,
+                ...state!,
                 selectCardsPrompt: action.payload,
             };
         },
         closePlayerSelectCardsPrompt: (state) => {
             return {
-                ...state,
+                ...state!,
                 selectCardsPrompt: null,
             };
         },
         updateBattle: (state, action: PayloadAction<Partial<BattleState>>) => {
             return {
-                ...state,
+                ...state!,
                 ...action.payload,
             };
         },
@@ -132,16 +132,16 @@ export const battleStateSlice = createSlice({
         },
         updateBattleState: (state, action: PayloadAction<BATTLE_STATES>) => {
             // If the fight is over, don't overwrite the state
-            if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state.state)) {
+            if ([BATTLE_STATES.VICTORY, BATTLE_STATES.DEFEAT].includes(state!.state)) {
                 return state;
             }
 
             // If the wave is over due to end of turn effects like DoTs or Charged Bolt, don't proceed to the enemy's turn
-            if (state.state === BATTLE_STATES.WAVE_END && action.payload === BATTLE_STATES.TURN_ENDING) {
+            if (state!.state === BATTLE_STATES.WAVE_END && action.payload === BATTLE_STATES.TURN_ENDING) {
                 return state;
             }
             return {
-                ...state,
+                ...state!,
                 state: action.payload,
             };
         },
@@ -149,8 +149,8 @@ export const battleStateSlice = createSlice({
             const { name, healing = 0, resources = 0, stacks = 0 } = action.payload || {};
 
             return {
-                ...state,
-                playerSide: state.playerSide.map((combatant: Combatant | null) => {
+                ...state!,
+                playerSide: state!.playerSide.map((combatant: Combatant | null) => {
                     if (!combatant?.isPlayer) {
                         return combatant;
                     }
@@ -183,20 +183,20 @@ export const battleStateSlice = createSlice({
         },
         setNotification: (state, action: PayloadAction<Notification>) => {
             return {
-                ...state,
+                ...state!,
                 notification: action.payload,
             };
         },
         selectHandAbility: (state, action: PayloadAction<string | null>) => {
             return {
-                ...state,
+                ...state!,
                 selectedAllyId: null,
                 selectedHandAbilityId: action.payload,
             };
         },
         selectAlly: (state, action: PayloadAction<string | null>) => {
             return {
-                ...state,
+                ...state!,
                 selectedAllyId: action.payload,
                 selectedHandAbilityId: null,
             };
@@ -205,7 +205,7 @@ export const battleStateSlice = createSlice({
             const { hand, discard, notification } = computeAddCardsToHand(state!, action.payload);
 
             return {
-                ...state,
+                ...state!,
                 hand,
                 discard,
                 ...(notification ? { notification } : {}),

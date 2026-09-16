@@ -418,7 +418,7 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
         if (townTradingPost) {
             dispatch(
                 updateTownShop({
-                    town,
+                    town: town!,
                     shopKey: "tradingPost",
                     shopState: {
                         numTradesRemaining: townTradingPost.numTradesRemaining - 1,

@@ -409,7 +409,7 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
 
     const handleRefresh = (cost: number) => {
         if (shopStateRedux) {
-            dispatch(refreshTownItemShop(town));
+            dispatch(refreshTownItemShop(town!));
         } else {
             setShopState((prev) => ({ ...prev, ...generateShopInventory({ player, deck }), usedNumRefreshes: prev.usedNumRefreshes + 1 }));
         }
@@ -441,7 +441,7 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
 
     const handleUpdateShopState = (obj) => {
         if (shopStateRedux) {
-            dispatch(updateTownShop({ town, shopKey: "shop", shopState: obj }));
+            dispatch(updateTownShop({ town: town!, shopKey: "shop", shopState: obj }));
         } else {
             setShopState((prev) => ({ ...prev, ...obj }));
         }

@@ -158,7 +158,7 @@ export const playerStateSlice = createSlice({
             return INITIAL_STATE;
         },
         loseItems: (state: CharacterState, action: PayloadAction<String[]>) => {
-            const player = state.player;
+            const player = state.player!;
             const lostItemNames = action.payload;
 
             const remainingItems = player.items
@@ -168,14 +168,15 @@ export const playerStateSlice = createSlice({
                         return item;
                     }
 
-                    if (item.stacks > 1) {
+                    const stacks = item.stacks ?? 0;
+                    if (stacks > 1) {
                         return {
                             ...item,
-                            stacks: item.stacks - 1,
+                            stacks: stacks - 1,
                         };
                     }
                 })
-                .filter((v) => v);
+                .filter((v): v is Item => !!v);
 
             const newPlayer = {
                 ...player,
@@ -259,7 +260,7 @@ export const playerStateSlice = createSlice({
             return {
                 ...state,
                 player: {
-                    ...state.player,
+                    ...player,
                     effects: aggregateItemEffects(newItems),
                     items: newItems,
                     mesos: updatedMesos,
@@ -271,15 +272,15 @@ export const playerStateSlice = createSlice({
             const incomingMesos = action.payload || 0;
             let updated = 0;
             if (incomingMesos > 0) {
-                updated = state.player.mesos + calculateMesoMultiplier({ player: state.player, mesos: incomingMesos });
+                updated = state.player!.mesos + calculateMesoMultiplier({ player: state.player!, mesos: incomingMesos });
             } else {
-                updated = Math.max(0, state.player.mesos + incomingMesos);
+                updated = Math.max(0, state.player!.mesos + incomingMesos);
             }
 
             return {
                 ...state,
                 player: {
-                    ...state.player,
+                    ...state.player!,
                     mesos: updated,
                 },
             };
@@ -377,7 +378,7 @@ export const playerStateSlice = createSlice({
             const node = action.payload;
             return {
                 ...state,
-                nodesVisited: { ...state.nodesVisited, [node]: true },
+                nodesVisited: { ...state.nodesVisited, [node]: true as const },
             };
         },
         setRoute: (state: CharacterState, action) => {
@@ -388,7 +389,7 @@ export const playerStateSlice = createSlice({
                 currentMapLocation: route,
             };
         },
-        setTown: (state: CharacterState, action: PayloadAction<TOWNS>) => {
+        setTown: (state: CharacterState, action: PayloadAction<TOWNS | null>) => {
             const townName = action.payload;
             const newState = {
                 ...state,
@@ -400,12 +401,12 @@ export const playerStateSlice = createSlice({
                     ...newState.townShops,
                     [townName]: {
                         shop: {
-                            ...generateShopInventory({ player: state.player, deck: state.deck }),
+                            ...generateShopInventory({ player: state.player!, deck: state.deck }),
                             usedFreeFood: 0,
                             usedNumRefreshes: 0,
                         },
                         tradingPost: {
-                            items: generateTradingPostInventory(state.player),
+                            items: generateTradingPostInventory(state.player!),
                             numTradesRemaining: NUM_TRADING_POST_TRADES,
                         },
                         workshop: {
@@ -417,7 +418,7 @@ export const playerStateSlice = createSlice({
 
             return newState;
         },
-        updateTownShop: (state: CharacterState, action: PayloadAction<{ town: TOWNS; shopKey: string; shopState: any }>) => {
+        updateTownShop: (state: CharacterState, action: PayloadAction<{ town: TOWNS; shopKey: keyof TownShops; shopState: any }>) => {
             const { town, shopKey, shopState } = action.payload;
             if (!shopKey) {
                 return state;
@@ -458,7 +459,7 @@ export const playerStateSlice = createSlice({
                         ...state.townShops[town],
                         shop: {
                             ...state.townShops?.[town]?.shop,
-                            ...generateShopInventory({ player: state.player, deck: state.deck }),
+                            ...generateShopInventory({ player: state.player!, deck: state.deck }),
                             usedNumRefreshes: (state.townShops?.[town]?.shop?.usedNumRefreshes || 0) + 1,
                         },
                     },

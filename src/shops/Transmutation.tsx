@@ -506,7 +506,7 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
 
     const decrementNumTransmutes = () => {
         if (townWorkshop) {
-            dispatch(updateTownShop({ town, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
+            dispatch(updateTownShop({ town: town!, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
         } else {
             setNumTransmutes((prev) => prev - 1);
         }

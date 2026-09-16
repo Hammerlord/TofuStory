@@ -566,7 +566,7 @@ const ScenePlayer = ({
     };
 
     const handleClickItemsObtained = () => {
-        dispatch(acquireItems(itemsObtainedFromScene));
+        dispatch(acquireItems(itemsObtainedFromScene!));
 
         if (dialogIndex < script.length - 1) {
             enterNode(script[dialogIndex + 1], script, dialogIndex + 1);

@@ -346,7 +346,7 @@ export interface Minion {
     items?: Item[];
     weapon?: string;
     weaponImageOptions?: WeaponImageOptions;
-    projectileOverride?: string; // For ranged attacks, this overrides the projectile image
+    projectileOverride?: string | string[]; // For ranged attacks, this overrides the projectile image
     controllable?: boolean; // Player-only property. If true, the character can be selected to make an attack as directed by the player.
     // If true, the character doesn't attempt to make any move on its own. Think characters that are like rocks, objects.
     cantMove?: boolean;
