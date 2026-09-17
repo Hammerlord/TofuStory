@@ -5,7 +5,8 @@
     "main": "index.js",
     "homepage": "https://hammerlord.github.io/TofuStory",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "vitest run",
+        "test:watch": "vitest",
         "start": "vite",
         "dev": "vite",
         "build": "vite build",
@@ -43,6 +44,7 @@
         "gh-pages": "^3.2.3",
         "typescript": "^5.0.4",
         "vite": "^6.1.6",
-        "vite-plugin-svgr": "^4.3.0"
+        "vite-plugin-svgr": "^4.3.0",
+        "vitest": "^3.2.7"
     }
 }
