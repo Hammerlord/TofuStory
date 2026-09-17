@@ -1,0 +1,167 @@
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("../../../../ability/AbilityView/utils", () => ({
+    isOffensiveAction: () => false,
+}));
+
+vi.mock("../../../../battle/utils", () => ({
+    isUntargetable: () => false,
+    isStealthed: () => false,
+    hasTruesight: () => false,
+}));
+
+vi.mock("../../../../battle/passesConditions", () => ({
+    passesConditions: () => true,
+}));
+
+vi.mock("../../../../battle/actions/combatantData", () => {
+    const SIDES = ["playerSide", "enemySide"];
+    return {
+        findCombatantData: (battle: any, combatantId?: string) => {
+            if (!battle) {
+                return undefined;
+            }
+            for (const friendlySide of SIDES) {
+                const friendly = battle[friendlySide] || [];
+                const combatant = friendly.find((f: any) => f?.id === combatantId);
+                if (combatant) {
+                    const hostileSide = friendlySide === "playerSide" ? "enemySide" : "playerSide";
+                    return {
+                        combatant,
+                        index: friendly.indexOf(combatant),
+                        friendly,
+                        hostile: battle[hostileSide] || [],
+                        friendlySide,
+                        hostileSide,
+                    };
+                }
+            }
+            return undefined;
+        },
+        hasEffectType: () => false,
+    };
+});
+
+vi.mock("../../../../battle/actions/statusEffect/getEnabledEffects", () => ({
+    getEnabledEffects: () => [],
+}));
+
+import { ACTION_TYPES, Action, CombatEffect, EFFECT_TYPES, TARGET_TYPES } from "../../../../ability/types";
+import { Combatant } from "../../../../character/types";
+import { BATTLEFIELD_SIDES, CombatantInfo } from "../../../../battle/types";
+import { autoSelectActionTarget, getValidTargetIndicesForAction } from "../targeting";
+
+const makeCombatant = (overrides: Partial<Combatant> = {}): Combatant => ({
+    id: "combatant",
+    name: "Combatant",
+    image: "",
+    isPlayer: false,
+    HP: 100,
+    maxHP: 100,
+    armor: 0,
+    resources: 0,
+    resourcesPerTurn: 0,
+    effects: [],
+    turnHistory: [],
+    abilities: [],
+    abilityHistory: [],
+    items: [],
+    mesos: 0,
+    damage: 1,
+    ...overrides,
+});
+
+const tauntEffect: CombatEffect = { type: EFFECT_TYPES.TAUNT } as CombatEffect;
+
+const rolloutAction: Action = {
+    type: ACTION_TYPES.ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+    damage: 3,
+    secondaryDamage: 1,
+    numExtraTargets: 1,
+    targetArea: 2,
+    playbackTime: 750,
+};
+
+const playerSide: (Combatant | null)[] = [
+    makeCombatant({ id: "player", name: "Player", isPlayer: true, HP: 50 }),
+    null,
+    null,
+    makeCombatant({ id: "taunt-minion", name: "Taunting Minion", effects: [tauntEffect] }),
+    null,
+];
+
+const enemySide: (Combatant | null)[] = [makeCombatant({ id: "red-snail", name: "Red Snail" }), null, null, null, null];
+
+const actorData: CombatantInfo = {
+    combatant: enemySide[0]!,
+    index: 0,
+    friendly: enemySide,
+    hostile: playerSide,
+    friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+    hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+};
+
+describe("getValidTargetIndicesForAction", () => {
+    it("finds a taunting minion beyond the target area radius when there is no initial selection (Rollout regression)", () => {
+        const validIndices = getValidTargetIndicesForAction({ action: rolloutAction, actorData });
+
+        expect(validIndices).toEqual([{ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE }]);
+    });
+
+    it("returns every alive hostile target when there is no taunt and no priority target", () => {
+        const noTauntPlayerSide: (Combatant | null)[] = [
+            makeCombatant({ id: "player", name: "Player", isPlayer: true, HP: 50 }),
+            null,
+            null,
+            makeCombatant({ id: "minion", name: "Minion", HP: 20 }),
+            null,
+        ];
+
+        const validIndices = getValidTargetIndicesForAction({
+            action: rolloutAction,
+            actorData: { ...actorData, hostile: noTauntPlayerSide },
+        });
+
+        expect(validIndices).toEqual([
+            { index: 0, side: BATTLEFIELD_SIDES.PLAYER_SIDE },
+            { index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE },
+        ]);
+    });
+
+    it("still restricts to targets near an existing selection", () => {
+        const twoTauntsPlayerSide: (Combatant | null)[] = [
+            makeCombatant({ id: "taunt-0", name: "Taunting Minion", effects: [tauntEffect] }),
+            null,
+            null,
+            makeCombatant({ id: "taunt-3", name: "Taunting Minion", effects: [tauntEffect] }),
+            null,
+        ];
+
+        const randomHostileAction: Action = {
+            type: ACTION_TYPES.ATTACK,
+            target: TARGET_TYPES.RANDOM_HOSTILE,
+            damage: 3,
+            targetArea: 2,
+        };
+
+        const validIndices = getValidTargetIndicesForAction({
+            action: randomHostileAction,
+            actorData: { ...actorData, hostile: twoTauntsPlayerSide },
+            initialSelectedIndex: 0,
+            initialSelectedSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        });
+
+        expect(validIndices).toEqual([{ index: 0, side: BATTLEFIELD_SIDES.PLAYER_SIDE }]);
+    });
+});
+
+describe("autoSelectActionTarget", () => {
+    it("rolls a fresh target for Rollout instead of finding nothing (no-target bug)", () => {
+        const battle = { playerSide, enemySide } as any;
+
+        const target = autoSelectActionTarget({ action: rolloutAction, actorId: "red-snail", battle });
+
+        expect(target).toEqual({ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
+    });
+});

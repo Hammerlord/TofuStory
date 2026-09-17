@@ -161,6 +161,15 @@ export const getValidTargetIndicesForAction = ({
     const actorId = combatant?.id;
     const { targetArea: area = 0, target, targetName, excludeActor, radiate } = action || {};
 
+    // Only constrain targets to be near an already-selected index when there is one;
+    // without a selection (a fresh roll) any valid target is acceptable.
+    const isNearInitialSelection = (i: number): boolean => {
+        if (typeof initialSelectedIndex !== "number" || !initialSelectedSide) {
+            return true;
+        }
+        return Math.abs(i - initialSelectedIndex) <= (area || Infinity);
+    };
+
     if (radiate) {
         return [
             {
@@ -185,9 +194,7 @@ export const getValidTargetIndicesForAction = ({
         const targetIndices = getValidTargetIndices(hostile, action.area, {
             onlyTaunt: true,
             onlyPriorityTarget: true,
-        }).filter((i) => {
-            return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
-        });
+        }).filter((i) => isNearInitialSelection(i));
 
         if (hostilePlayerIndex > -1 && targetIndices.includes(hostilePlayerIndex)) {
             return [
@@ -208,17 +215,13 @@ export const getValidTargetIndicesForAction = ({
             onlyTaunt: true,
             onlyPriorityTarget: true,
         })
-            .filter((i) => {
-                return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
-            })
+            .filter((i) => isNearInitialSelection(i))
             .map((index) => ({ index, side: hostileSide }));
     }
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
         const targetIndices = getValidTargetIndices(hostile, action.area, { onlyTaunt: true, onlyPriorityTarget: true })
-            .filter((i) => {
-                return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
-            })
+            .filter((i) => isNearInitialSelection(i))
             .map((index) => ({ index, side: hostileSide }));
 
         if (targetIndices.length) {
@@ -243,7 +246,7 @@ export const getValidTargetIndicesForAction = ({
                 return false;
             }
 
-            return Math.abs(i - (initialSelectedIndex || 0)) <= (area || Infinity);
+            return isNearInitialSelection(i);
         });
 
         return [
