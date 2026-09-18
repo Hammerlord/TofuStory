@@ -1644,6 +1644,16 @@ export const lockOn: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             bypassStealth: true,
+            animations: [
+                {
+                    type: ANIMATION_TYPES.TARGET_MARKER,
+                    image: BullseyeIcon,
+                    options: {
+                        width: 80,
+                        height: 80,
+                    },
+                },
+            ],
             effects: [
                 {
                     ...defDown,
@@ -3756,6 +3766,16 @@ const meerkatScout: Ability = {
             target: TARGET_TYPES.HOSTILE,
             type: ACTION_TYPES.EFFECT,
             bypassStealth: true,
+            animations: [
+                {
+                    type: ANIMATION_TYPES.TARGET_MARKER,
+                    image: BullseyeIcon,
+                    options: {
+                        width: 80,
+                        height: 80,
+                    },
+                },
+            ],
             effects: [
                 {
                     ...defDown,
@@ -3767,7 +3787,7 @@ const meerkatScout: Ability = {
                 effects: [
                     {
                         ...aimEffect,
-                        stacks: 2,
+                        stacks: 1,
                     },
                 ],
                 target: TARGET_TYPES.PLAYER,
@@ -3792,6 +3812,9 @@ const meerkatMinion: Minion = {
             onTurnStart: {
                 ability: { ...meerkatScout, actions: meerkatScout.actions.map((a) => ({ ...a })) },
             },
+            onSummoned: {
+                ability: { ...meerkatScout, actions: meerkatScout.actions.map((a) => ({ ...a })) },
+            },
         },
     ],
 };
@@ -3801,7 +3824,7 @@ export const meerkatAbility: Ability = {
     rarity: RARITIES.UNCOMMON,
     resourceCost: 1,
     description:
-        "<b>Inert.</b> <b>Turn Start:</b> Grants you <b>{{ minion.effects.0.onTurnStart.ability.actions.0.secondaryAction.effects.0.stacks }} Aim</b> and applies <b>{{ minion.effects.0.onTurnStart.ability.actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> to an enemy.",
+        "<b>Inert.</b> <b>Summon</b> + <b>Turn Start:</b> Grants you <b>{{ minion.effects.0.onTurnStart.ability.actions.0.secondaryAction.effects.0.stacks }} Aim</b> and applies <b>{{ minion.effects.0.onTurnStart.ability.actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> to an enemy.",
     image: MeerkatImage,
     minion: meerkatMinion,
     actions: [],
@@ -3827,6 +3850,21 @@ export const meerkatAbility: Ability = {
                 effects: [
                     {
                         onTurnStart: {
+                            ability: {
+                                actions: [
+                                    {
+                                        secondaryAction: {
+                                            effects: [
+                                                {
+                                                    stacks: 1,
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        onSummoned: {
                             ability: {
                                 actions: [
                                     {

@@ -10,6 +10,7 @@ import {
     playProjectileRainAnimation,
     playShakeAnimation,
     playStompAnimation,
+    playTargetMarkerAnimation,
     playTossUpAnimation,
     playTravelAnimation,
     refreshToPile,
@@ -600,6 +601,28 @@ const Projectile = ({
                 });
             } else {
                 playHomingAnimation({
+                    ...options,
+                    to: targets,
+                    object,
+                    playbackTime,
+                });
+            }
+
+            return;
+        }
+
+        if (animationType === ANIMATION_TYPES.TARGET_MARKER) {
+            if (Array.isArray(targets)) {
+                targets.forEach((t) => {
+                    playTargetMarkerAnimation({
+                        ...options,
+                        to: t,
+                        object,
+                        playbackTime,
+                    });
+                });
+            } else {
+                playTargetMarkerAnimation({
                     ...options,
                     to: targets,
                     object,

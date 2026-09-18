@@ -931,6 +931,7 @@ export enum ANIMATION_TYPES {
     CONSUMABLE = "consumable", // Eat a consumable
     FIREWORKS = "fireworks",
     HOMING = "homing", // Display an image on the target
+    TARGET_MARKER = "target-marker", // Display an image directly on the target (no travel)
     PROJECTILE_RAIN = "projectile-rain", // 'icon' projectiles fall vertically from above each target
 }
 

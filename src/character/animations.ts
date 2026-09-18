@@ -840,6 +840,55 @@ export const playHomingAnimation = ({
     });
 };
 
+export const playTargetMarkerAnimation = ({
+    object,
+    playbackTime = 500,
+    to,
+}: {
+    object: HTMLElement;
+    to: HTMLElement;
+    playbackTime?: number;
+}) => {
+    let { x: toX, y: toY } = getCenterCoords(to);
+
+    const { width, height } = object.getBoundingClientRect();
+    toX -= width / 2;
+    toY -= height / 2;
+
+    object.style.position = "fixed";
+    object.style.left = "0px";
+    object.style.top = "0px";
+
+    const animationFrames = [
+        {
+            transform: `translate(${toX}px, ${toY}px) scale(0.5)`,
+            opacity: 0,
+            offset: 0,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px) scale(1.2)`,
+            opacity: 1,
+            offset: 0.35,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px) scale(1)`,
+            opacity: 0.75,
+            offset: 0.7,
+        },
+        {
+            transform: `translate(${toX}px, ${toY}px) scale(1)`,
+            opacity: 1,
+            offset: 1,
+        },
+    ];
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        easing: "ease-out",
+        fill: "forwards",
+    });
+};
+
 export const playProjectileRainAnimation = ({
     object,
     to,
