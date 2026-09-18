@@ -906,11 +906,11 @@ export const playProjectileRainAnimation = ({
     spread?: number; // Horizontal variance (in px) of where each projectile starts
     distance?: number; // How far above the target each projectile starts (in px)
 }) => {
-    const { x: toX, y: toY } = getCenterCoords(to);
-
     const { width, height } = object.getBoundingClientRect();
-    const targetX = toX - width / 2;
-    const targetY = toY - height / 2;
+    const { left, width: targetWidth, bottom } = to.getBoundingClientRect();
+
+    const targetX = left + targetWidth / 2 - width / 2;
+    const targetY = bottom - height;
 
     const fromX = targetX + getRandomArbitrary(-spread, spread);
     const fromY = targetY - getRandomArbitrary(distance - 100, distance);
