@@ -60,6 +60,7 @@ import {
     MarksmanshipImage,
     MatchaManLeafImage,
     MeatImage,
+    MeerkatImage,
     MortalBlowImage,
     PartingShotImage,
     PhoenixEggImage,
@@ -3748,6 +3749,105 @@ export const doomHeraldAbility: Ability = {
     ],
 };
 
+const meerkatScout: Ability = {
+    name: "Scout",
+    actions: [
+        {
+            target: TARGET_TYPES.HOSTILE,
+            type: ACTION_TYPES.EFFECT,
+            bypassStealth: true,
+            effects: [
+                {
+                    ...defDown,
+                    duration: 1,
+                    stacks: 1,
+                },
+            ],
+            secondaryAction: {
+                effects: [
+                    {
+                        ...aimEffect,
+                        stacks: 2,
+                    },
+                ],
+                target: TARGET_TYPES.PLAYER,
+            },
+        },
+    ],
+};
+
+const meerkatMinion: Minion = {
+    name: "Meerkat",
+    maxHP: 5,
+    image: MeerkatImage,
+    cantMove: true,
+    abilities: [meerkatScout],
+    effects: [
+        {
+            name: "Scouter",
+            type: EFFECT_TYPES.NONE,
+            class: EFFECT_CLASSES.BUFF,
+            icon: BullseyeIcon,
+            description: "Granting Aim and applying DEF Down.",
+            onTurnStart: {
+                ability: { ...meerkatScout, actions: meerkatScout.actions.map((a) => ({ ...a })) },
+            },
+        },
+    ],
+};
+
+export const meerkatAbility: Ability = {
+    name: "Meerkat",
+    rarity: RARITIES.UNCOMMON,
+    resourceCost: 1,
+    description:
+        "<b>Inert.</b> <b>Turn Start:</b> Grants you <b>{{ minion.effects.0.onTurnStart.ability.actions.0.secondaryAction.effects.0.stacks }} Aim</b> and applies <b>{{ minion.effects.0.onTurnStart.ability.actions.0.effects.0.stacks }} {{{ _defDown_ }}}</b> to an enemy.",
+    image: MeerkatImage,
+    minion: meerkatMinion,
+    actions: [],
+    upgrades: [
+        {
+            minion: {
+                maxHP: 2,
+                abilities: [
+                    {
+                        actions: [
+                            {
+                                secondaryAction: {
+                                    effects: [
+                                        {
+                                            stacks: 1,
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        onTurnStart: {
+                            ability: {
+                                actions: [
+                                    {
+                                        secondaryAction: {
+                                            effects: [
+                                                {
+                                                    stacks: 1,
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+};
+
 export const callCompanion: Ability = {
     name: "Call Companion",
     resourceCost: 1,
@@ -3783,7 +3883,7 @@ export const callCompanion: Ability = {
             icon: BreadImage,
             summon: [
                 {
-                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion],
+                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion, meerkatMinion],
                     tributePossible: true,
                 },
             ],
