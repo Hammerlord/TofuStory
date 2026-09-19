@@ -9,8 +9,8 @@ import { Player } from "../character/types";
 import { CampfireImage, HerbsImage, PerionCampImage, PersonalAnvilImage, WeaponMasteryImage } from "../images";
 import { Item } from "../item/types";
 import { TransmutationView } from "../shops/Transmutation";
+import { NUM_CAMP_TRANSMUTATIONS } from "../shops/constants";
 import Button from "../view/Button";
-import { BASE_NUM_TRANSMUTATIONS } from "../shops/constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -125,7 +125,7 @@ const Camp = ({
     const [completedActivities, setCompletedActivities] = useState({});
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [isUpgradingAbility, setIsUpgradingAbility] = useState(false);
-    const [numTransmutations, setNumTransmutations] = useState(BASE_NUM_TRANSMUTATIONS);
+    const [numTransmutations, setNumTransmutations] = useState(NUM_CAMP_TRANSMUTATIONS);
     const [isTransmutingAbility, setIsTransmutingAbility] = useState(false);
     const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
         1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
@@ -162,11 +162,14 @@ const Camp = ({
             setIsTransmutingAbility(false);
             completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
         } else {
-            setNumActivitiesRemaining((prev) => prev - 1);
+            setNumActivitiesRemaining((prev) => Math.max(0, prev - 1));
         }
     };
 
     const handleTransmute = (options: { card: string; for: CombatAbility }) => {
+        if (numTransmutations !== 1 && numActivitiesRemaining <= 0) {
+            return;
+        }
         const { card: cardId, for: forCard } = options || {};
         const cardIndex = deck.findIndex((ability) => ability.instanceId === cardId);
         if (cardIndex > -1) {
