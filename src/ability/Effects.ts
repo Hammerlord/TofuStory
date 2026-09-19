@@ -219,6 +219,7 @@ export const chill: Effect = {
     duration: 2,
     attackPower: -1,
     defenseDown: 1,
+    maxStacks: 3,
     maxApplications: 3,
     maxDuration: 10,
     description: "Applies <b>1 {{{ _attDown_ }}} ATT Down</b> and <b>{{{ _defDown_ }}} DEF Down,</b> up to {{ maxApplications }}.",
