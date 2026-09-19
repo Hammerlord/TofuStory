@@ -85,6 +85,7 @@ const ItemRewards = ({
     itemRewards = [],
     disableAttainConsumable,
     numChoicesOffered = BASE_NUM_CHOICES,
+    rareItemBonusChance = 0,
 }: {
     player: Player;
     onLoot: ({ items }: { items: Item[] }) => void;
@@ -95,6 +96,7 @@ const ItemRewards = ({
     itemRewards?: Item[]; // Items which are granted automatically without having to choose
     disableAttainConsumable?: boolean;
     numChoicesOffered?: number;
+    rareItemBonusChance?: number; // Pity system for rare items
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState<Item[]>([]);
@@ -104,13 +106,13 @@ const ItemRewards = ({
     useEffect(() => {
         const items = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: overrideItemChoices || [] });
         if (!overrideItemChoices && items.length < numChoicesOffered) {
-            let rareBonus = 0;
+            let rareBonus = rareItemBonusChance;
             let uncommonBonus = 0;
             if (rewardType === BATTLE_TYPES.BOSS) {
-                rareBonus = BOSS_RARE_RATE;
+                rareBonus += BOSS_RARE_RATE;
                 uncommonBonus = BOSS_UNCOMMON_RATE;
             } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-                rareBonus = ELITE_RARE_RATE;
+                rareBonus += ELITE_RARE_RATE;
                 uncommonBonus = ELITE_UNCOMMON_RATE;
             }
             const itemPool = rollItemPool({

@@ -178,6 +178,7 @@ const Main = () => {
         battleHistory = [],
         numNormalEncountersSinceLoot = 0,
         rareCardBonusChance,
+        rareItemBonusChance,
     } = character || {};
     const [openClassSelection, setOpenClassSelection] = useState(true);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
@@ -716,7 +717,13 @@ const Main = () => {
                         />
                     )}
                     {itemRewardsOptions && (
-                        <ItemRewards onLoot={handleObtainLoot} onClose={handleCloseItemRewards} player={player} {...itemRewardsOptions} />
+                        <ItemRewards
+                            onLoot={handleObtainLoot}
+                            onClose={handleCloseItemRewards}
+                            player={player}
+                            rareItemBonusChance={rareItemBonusChance}
+                            {...itemRewardsOptions}
+                        />
                     )}
 
                     {treasure && (
