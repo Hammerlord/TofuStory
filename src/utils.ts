@@ -73,6 +73,13 @@ export const passesChance = (chance: number | any): boolean => {
     return Math.random() <= chance;
 };
 
+export const shouldDisableChanceInPreview = (
+    chance: number | undefined,
+    isPreviewMode: boolean | undefined,
+): boolean => {
+    return Boolean(isPreviewMode && typeof chance === "number" && chance < 1);
+};
+
 // If displaying a percentage, show "25%" instead of "0.25x" for values 0 < n < 1.
 // !!! This action is destructive! Must clone deep beforehand !!!
 export const traverseForNestedPercentages = (obj) => {

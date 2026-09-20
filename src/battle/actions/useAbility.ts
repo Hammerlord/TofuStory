@@ -10,7 +10,7 @@ import {
     EFFECT_EVENT_KEYS,
     TARGET_TYPES,
 } from "../../ability/types";
-import { getRandomInt, passesChance } from "../../utils";
+import { getRandomInt, passesChance, shouldDisableChanceInPreview } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
 import { getPlayerAbilityResourceCost } from "./playerAbility";
@@ -203,7 +203,13 @@ export const useAbility = ({
         const handleActions = () => {
             for (let i = 0; i < actions.length; ++i) {
                 const action = actions[i];
-                if (!passesChance(action.chance)) {
+                if (
+                    shouldDisableChanceInPreview(
+                        action.chance,
+                        parentContext?.isPreviewMode,
+                    ) ||
+                    !passesChance(action.chance)
+                ) {
                     continue;
                 }
 

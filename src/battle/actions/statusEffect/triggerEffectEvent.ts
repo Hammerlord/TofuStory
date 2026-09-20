@@ -17,7 +17,7 @@ import { Combatant, Player } from "../../../character/types";
 import { abilityNameMap } from "../../../enemy";
 import { Item } from "../../../item/types";
 import { AppDispatch, RootState } from "../../../store";
-import { passesChance } from "../../../utils";
+import { passesChance, shouldDisableChanceInPreview } from "../../../utils";
 import { calculateBonus } from "../../calculateBonus";
 import { getMultiplier } from "../../getMultiplier";
 import { passesConditions } from "../../passesConditions";
@@ -132,7 +132,11 @@ const checkEffectEventTriggerGate = ({
                 isTargetSelected: false,
             }) || {};
 
-        const chanceCheckPass = Math.random() < chanceWithBonus * chanceMultiplier;
+        const chanceCheckPass =
+            !shouldDisableChanceInPreview(
+                chanceWithBonus * chanceMultiplier,
+                context?.isPreviewMode,
+            ) && Math.random() < chanceWithBonus * chanceMultiplier;
         if (!chanceCheckPass) {
             return false;
         }
@@ -873,7 +877,11 @@ const triggerCardEffectEvents = ({
                 }
 
                 const ability = event.ability;
-                if (ability && passesChance(event.chance)) {
+                if (
+                    ability &&
+                    !shouldDisableChanceInPreview(event.chance, context?.isPreviewMode) &&
+                    passesChance(event.chance)
+                ) {
                     dispatch(
                         useAbility({
                             ability,
