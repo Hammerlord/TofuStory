@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
 // Preload character sprites, projectiles, etc. or they may be invisible
+const preloadedUrls = new Set<string>();
+
 export function usePreloadImages(...collections) {
     useEffect(() => {
         const imageUrls: Set<string> = new Set();
@@ -30,15 +32,11 @@ export function usePreloadImages(...collections) {
         collections.flat().forEach(traverse);
 
         imageUrls.forEach((url) => {
+            if (preloadedUrls.has(url)) return;
+            preloadedUrls.add(url);
             const image = new Image();
             image.src = url;
             window[url] = image;
         });
-
-        return () => {
-            imageUrls.forEach((url) => {
-                delete window[url];
-            });
-        };
     }, collections);
 }
