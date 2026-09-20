@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { burn, chill } from "../../../ability/Effects";
+import { burn, chill, taunt } from "../../../ability/Effects";
 import { CombatEffect } from "../../../ability/types";
 import { createCombatEffect } from "../../../character/effects/createCombatEffect";
 import { calculateEffectChanges } from "../calculateEffectChanges";
@@ -15,6 +15,12 @@ const getTotalStacks = (effects: CombatEffect[]): number =>
 
 const getTotalDuration = (effects: CombatEffect[]): number =>
     getChills(effects).reduce((acc, effect) => acc + (effect.duration || 0), 0);
+
+const applyTauntTimes = (count: number): CombatEffect[] =>
+    Array.from({ length: count }, () => createCombatEffect(taunt));
+
+const getTaunts = (effects: CombatEffect[]): CombatEffect[] =>
+    effects.filter((effect) => effect.name === taunt.name);
 
 describe("calculateEffectChanges", () => {
     it("caps Blizzard's Chill applications at 3 (maxApplications) for a fresh target", () => {
@@ -43,5 +49,16 @@ describe("calculateEffectChanges", () => {
         const burns = result.filter((effect) => effect.name === burn.name);
         expect(burns).toHaveLength(1);
         expect(burns[0].stacks).toBe(4);
+    });
+
+    it("does not overwrite an existing infinite duration effect's duration via the pandemic branch", () => {
+        const existingTaunt = createCombatEffect(taunt);
+        expect(existingTaunt.duration).toBe(Infinity);
+
+        const result = calculateEffectChanges([createCombatEffect(taunt)], [existingTaunt]);
+        const taunts = getTaunts(result);
+
+        expect(taunts).toHaveLength(1);
+        expect(taunts[0].duration).toBe(Infinity);
     });
 });

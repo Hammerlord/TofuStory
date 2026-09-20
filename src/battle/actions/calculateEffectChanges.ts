@@ -105,12 +105,17 @@ export const calculateEffectChanges = (
                     incomingEffect.maxStacks || Infinity,
                 );
 
+                const newDuration =
+                    updatedEffects[i].duration === Infinity
+                        ? Infinity
+                        : Math.min(
+                              effect.maxDuration,
+                              (updatedEffects[i].duration || 0) + (incomingEffect.duration || 0),
+                          );
+
                 updatedEffects[i] = {
                     ...updatedEffects[i],
-                    duration: Math.min(
-                        effect.maxDuration,
-                        (updatedEffects[i].duration || 0) + (incomingEffect.duration || 0),
-                    ),
+                    duration: newDuration,
                     stacks: Math.min(
                         currentStacks + (incomingEffect.stacks || 1),
                         stacksAllowed,
