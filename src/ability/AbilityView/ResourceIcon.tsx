@@ -63,7 +63,8 @@ const AbilityResourceIcon = ({
         return acc + (e.resourceCost || 0);
     }, 0);
     const playerResources = typeof player?.resources === "number" ? player?.resources : Infinity;
-    const totalResourceCost = resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffects);
+    const totalResourceCost =
+        resourceCost === "x" ? "X" : Math.max(0, resourceCost + resourceCostFromEffects);
 
     useEffect(() => {
         if (!isInitialized) {
@@ -95,7 +96,10 @@ const AbilityResourceIcon = ({
         className = {
             [classes.bonus]: resourceCostFromEffects < 0 || highlightResourceCount,
             [classes.penalty]: resourceCostFromEffects > 0,
-            [classes.cannotUse]: totalResourceCost === "X" ? playerResources === 0 : totalResourceCost > playerResources,
+            [classes.cannotUse]:
+                totalResourceCost === "X"
+                    ? playerResources === 0
+                    : totalResourceCost > playerResources,
         };
     } else if (highlightResourceCount) {
         className = {

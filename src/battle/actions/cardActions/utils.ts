@@ -81,7 +81,8 @@ export const applyAbilityEventEffects = ({
         return ability;
     }
 
-    const effectsToApply = mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
+    const effectsToApply =
+        mode === "random-pick" ? [getRandomItem(abilityEffects)].filter((v) => v) : abilityEffects;
     const actor = findCombatantData(battle, player?.id);
 
     if (!passesConditions({ context, actor, proc: event, battle })) {

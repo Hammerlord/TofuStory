@@ -35,9 +35,21 @@ const WanderingBlacksmithIntroBackdrop = ({ player }) => {
     const classes = useStyles();
     return (
         <div>
-            <img src={HenesysHuntingGroundImage} alt="Henesys Hunting Ground" className={classes.backdrop} />
-            <img src={wanderingBlacksmith.image} alt="Blacksmith" className={classNames(classes.character, classes.smith)} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={HenesysHuntingGroundImage}
+                alt="Henesys Hunting Ground"
+                className={classes.backdrop}
+            />
+            <img
+                src={wanderingBlacksmith.image}
+                alt="Blacksmith"
+                className={classNames(classes.character, classes.smith)}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };
@@ -88,7 +100,9 @@ const fedPath: ScriptNode[] = [
                     },
                     {
                         speaker: wanderingBlacksmith,
-                        dialog: ["It is unusual to be turned down, but I shall not press, of course."],
+                        dialog: [
+                            "It is unusual to be turned down, but I shall not press, of course.",
+                        ],
                     },
                     {
                         speaker: wanderingBlacksmith,
@@ -113,7 +127,9 @@ const noFedPath: ScriptNode[] = [
     },
     {
         speaker: wanderingBlacksmith,
-        dialog: ["I am the Wandering Blacksmith. I travel across the island, exalting the maple gods by offering my skills to the people."],
+        dialog: [
+            "I am the Wandering Blacksmith. I travel across the island, exalting the maple gods by offering my skills to the people.",
+        ],
     },
     {
         speaker: wanderingBlacksmith,
@@ -153,11 +169,15 @@ export const wanderingSmithScene: EventScene = {
         {
             scene: WanderingBlacksmithIntroBackdrop,
             speaker: wanderingBlacksmith,
-            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
+            dialog: [
+                "Goodness, I am famished. You wouldn't happen to have anything to eat, would you?",
+            ],
         },
         {
             speaker: wanderingBlacksmith,
-            dialog: ["Goodness, I am famished. You wouldn't happen to have anything to eat, would you?"],
+            dialog: [
+                "Goodness, I am famished. You wouldn't happen to have anything to eat, would you?",
+            ],
             responses: [
                 {
                     conditions: [{ items: [tofu.name] }],

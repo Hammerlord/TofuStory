@@ -20,7 +20,12 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
             newDepleted.push(ability);
         } else if (!minion && !removeAfterTurn) {
             const player = playerSide.find((c) => c?.isPlayer) as Player;
-            const discarded = prepareForDiscard({ cards: [ability], isPlayed: true, battle, player }).map((card) => {
+            const discarded = prepareForDiscard({
+                cards: [ability],
+                isPlayed: true,
+                battle,
+                player,
+            }).map((card) => {
                 return applyAbilityEventEffects({
                     event: card.onUse,
                     ability: card,
@@ -38,7 +43,7 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
                     playbackTime: CARD_DEPLETED_PLAYBACK_SPEED,
                     newCards: [ability],
                     cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
-                })
+                }),
             );
         }
 
@@ -46,7 +51,7 @@ export const handleDiscardAfterUse = (ability: CombatAbility) => {
             updateBattle({
                 discard: newDiscard,
                 depleted: newDepleted,
-            })
+            }),
         );
     };
 };

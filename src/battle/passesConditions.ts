@@ -12,13 +12,19 @@ import {
     Effect,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { ActionContext, BattleState, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "./types";
+import {
+    ActionContext,
+    BattleState,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+} from "./types";
 import { getMaxHP, getMaxResources } from "./utils";
 import { Combatant } from "../character/types";
 import { findCombatantData } from "./actions/combatantData";
 
 type GetCombatantCalcTargetFn = (
-    targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES
+    targetType: CONDITION_TARGETS | TRIGGER_TARGET_TYPES,
 ) => CombatantInfo | CombatantInfo[] | NonCombatPlayerInfo | NonCombatPlayerInfo[] | undefined;
 
 export const passesValueComparison = ({
@@ -111,7 +117,9 @@ export const passesConditions = ({
                 return passesValueComparison({ val, otherVal: value, comparator });
             }
 
-            console.warn("The condition `property` must be configured for calculation target BATTLE to work. None was configured.");
+            console.warn(
+                "The condition `property` must be configured for calculation target BATTLE to work. None was configured.",
+            );
             return false;
         }
 
@@ -133,19 +141,38 @@ export const passesConditions = ({
             return false;
         }
 
-        const effectOwnerData = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as CombatantInfo | undefined;
+        const effectOwnerData = getCalculationTarget(TRIGGER_TARGET_TYPES.EFFECT_OWNER) as
+            CombatantInfo | undefined;
         const checkPass = (calcTarget: CombatantInfo | NonCombatPlayerInfo) => {
-            return passesCombatantCondition({ condition, calcTarget, getCalculationTarget, context, proc, effectOwner: effectOwnerData });
+            return passesCombatantCondition({
+                condition,
+                calcTarget,
+                getCalculationTarget,
+                context,
+                proc,
+                effectOwner: effectOwnerData,
+            });
         };
 
         return Array.isArray(calcTargets) ? calcTargets.some(checkPass) : checkPass(calcTargets);
     };
     // @ts-ignore -- conditionOperator is 'or' by default and we have a fallback here
     const { conditions = [], conditionOperator = "or" } = proc || {};
-    return !conditions.length || (conditionOperator === "or" ? conditions.some(passesCondition) : conditions.every(passesCondition));
+    return (
+        !conditions.length ||
+        (conditionOperator === "or"
+            ? conditions.some(passesCondition)
+            : conditions.every(passesCondition))
+    );
 };
 
-const passesTriggerSourceCondition = ({ condition, context }: { condition: Condition; context?: ActionContext }): boolean => {
+const passesTriggerSourceCondition = ({
+    condition,
+    context,
+}: {
+    condition: Condition;
+    context?: ActionContext;
+}): boolean => {
     const {
         hasEffectType,
         hasEffectClass,
@@ -171,19 +198,37 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
     }
 
     if (sourceType === TRIGGER_SOURCE_TYPES.ABILITY) {
-        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
+        const abilitySource = sourceChain.find(
+            (source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY,
+        );
         const sourcePayload = abilitySource?.source || {};
-        const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as Ability | CombatAbility;
+        const { name: sourceName, resourceCost: sourceResourceCost } = sourcePayload as
+            Ability | CombatAbility;
 
         if (name) {
             const names = Array.isArray(name) ? name : [name];
-            if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: sourceName, comparator }))) {
+            if (
+                names.every(
+                    (n: string) =>
+                        !passesValueComparison({
+                            val: n,
+                            otherVal: sourceName,
+                            comparator,
+                        }),
+                )
+            ) {
                 return false;
             }
         }
 
         if (resourceCost !== undefined) {
-            if (!passesValueComparison({ val: sourceResourceCost, otherVal: resourceCost, comparator })) {
+            if (
+                !passesValueComparison({
+                    val: sourceResourceCost,
+                    otherVal: resourceCost,
+                    comparator,
+                })
+            ) {
                 return false;
             }
         }
@@ -192,20 +237,38 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
             return isOffense === isOffensiveAbility(sourcePayload as CombatAbility);
         }
 
-        if (!passesPropertyCheck({ property, object: sourcePayload, value, comparator })) {
+        if (
+            !passesPropertyCheck({
+                property,
+                object: sourcePayload,
+                value,
+                comparator,
+            })
+        ) {
             return false;
         }
 
         if (hasAbilityEffectName !== undefined) {
-            return ((sourcePayload as CombatAbility)?.effects || []).some((e) => e.name === hasAbilityEffectName);
+            return ((sourcePayload as CombatAbility)?.effects || []).some(
+                (e) => e.name === hasAbilityEffectName,
+            );
         }
 
         return true;
     }
 
     if (sourceType === TRIGGER_SOURCE_TYPES.ACTION) {
-        const actionSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ACTION);
-        if (!passesPropertyCheck({ property, object: actionSource?.source, value, comparator })) {
+        const actionSource = sourceChain.find(
+            (source) => source.type === TRIGGER_SOURCE_TYPES.ACTION,
+        );
+        if (
+            !passesPropertyCheck({
+                property,
+                object: actionSource?.source,
+                value,
+                comparator,
+            })
+        ) {
             return false;
         }
 
@@ -213,9 +276,15 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
     }
 
     if (sourceType === TRIGGER_SOURCE_TYPES.EFFECT) {
-        const effectSource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.EFFECT);
+        const effectSource = sourceChain.find(
+            (source) => source.type === TRIGGER_SOURCE_TYPES.EFFECT,
+        );
         const sourcePayload = effectSource?.source || {};
-        const { type: effectType, class: effectClass, name: effectName }: Effect = sourcePayload as Effect;
+        const {
+            type: effectType,
+            class: effectClass,
+            name: effectName,
+        }: Effect = sourcePayload as Effect;
 
         if (hasEffectType !== undefined) {
             if (comparator === "not") {
@@ -237,13 +306,29 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
             }
         }
 
-        if (!passesPropertyCheck({ property, object: sourcePayload, value, comparator })) {
+        if (
+            !passesPropertyCheck({
+                property,
+                object: sourcePayload,
+                value,
+                comparator,
+            })
+        ) {
             return false;
         }
 
         if (name) {
             const names = Array.isArray(name) ? name : [name];
-            if (names.every((n: string) => !passesValueComparison({ val: n, otherVal: effectName, comparator }))) {
+            if (
+                names.every(
+                    (n: string) =>
+                        !passesValueComparison({
+                            val: n,
+                            otherVal: effectName,
+                            comparator,
+                        }),
+                )
+            ) {
                 return false;
             }
         }
@@ -254,7 +339,7 @@ const passesTriggerSourceCondition = ({ condition, context }: { condition: Condi
     if (!sourceType) {
         console.warn(
             // @ts-ignore
-            `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`
+            `TRIGGER_SOURCE_TYPE must be configured for condition TRIGGER_SOURCE to work properly. None was configured for ${context?.source?.name}.`,
         );
         return false;
     }
@@ -307,7 +392,8 @@ const passesCombatantCondition = ({
     } = condition;
 
     if (otherCalculationTarget) {
-        let otherCalcTargets = getCalculationTarget(otherCalculationTarget.targetType) as CombatantInfo | CombatantInfo[];
+        let otherCalcTargets = getCalculationTarget(otherCalculationTarget.targetType) as
+            CombatantInfo | CombatantInfo[];
         if (!otherCalcTargets) {
             return false;
         }
@@ -331,17 +417,30 @@ const passesCombatantCondition = ({
 
     if (
         healthPercentage !== undefined &&
-        !passesValueComparison({ val: combatant.HP / getMaxHP(combatant), otherVal: healthPercentage, comparator })
+        !passesValueComparison({
+            val: combatant.HP / getMaxHP(combatant),
+            otherVal: healthPercentage,
+            comparator,
+        })
     ) {
         return false;
     }
 
-    if (armor !== undefined && !passesValueComparison({ val: combatant.armor, otherVal: armor, comparator })) {
+    if (
+        armor !== undefined &&
+        !passesValueComparison({
+            val: combatant.armor,
+            otherVal: armor,
+            comparator,
+        })
+    ) {
         return false;
     }
 
     const procId = (proc as CombatEffect)?.id; // It is OK that actions don't have an id because we only mind effect IDs; checking the conditions of an effect should not include itself in the calculation
-    const otherEffects = procId ? combatant.effects.filter((e) => e.id !== procId) : combatant.effects;
+    const otherEffects = procId
+        ? combatant.effects.filter((e) => e.id !== procId)
+        : combatant.effects;
 
     if (hasEffectType !== undefined) {
         if (comparator === "not") {
@@ -374,24 +473,49 @@ const passesCombatantCondition = ({
     }
 
     if (typeof numDebuffs === "number") {
-        const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.DEBUFF).length;
+        const numQualifyingEffects = otherEffects.filter(
+            ({ class: effectClass }) => effectClass === EFFECT_CLASSES.DEBUFF,
+        ).length;
 
-        if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numDebuffs, comparator })) {
+        if (
+            !passesValueComparison({
+                val: numQualifyingEffects,
+                otherVal: numDebuffs,
+                comparator,
+            })
+        ) {
             return false;
         }
     }
 
     if (typeof numBuffs === "number") {
-        const numQualifyingEffects = otherEffects.filter(({ class: effectClass }) => effectClass === EFFECT_CLASSES.BUFF).length;
+        const numQualifyingEffects = otherEffects.filter(
+            ({ class: effectClass }) => effectClass === EFFECT_CLASSES.BUFF,
+        ).length;
 
-        if (!passesValueComparison({ val: numQualifyingEffects, otherVal: numBuffs, comparator })) {
+        if (
+            !passesValueComparison({
+                val: numQualifyingEffects,
+                otherVal: numBuffs,
+                comparator,
+            })
+        ) {
             return false;
         }
     }
 
     if (name) {
         const names = Array.isArray(name) ? name : [name];
-        if (names.every((n: string) => !passesValueComparison({ val: combatant.name, otherVal: n, comparator }))) {
+        if (
+            names.every(
+                (n: string) =>
+                    !passesValueComparison({
+                        val: combatant.name,
+                        otherVal: n,
+                        comparator,
+                    }),
+            )
+        ) {
             return false;
         }
     }
@@ -402,7 +526,13 @@ const passesCombatantCondition = ({
             return false;
         }
 
-        if (!passesValueComparison({ val: Math.abs(effectOwnerIndex - index), otherVal: proximity, comparator })) {
+        if (
+            !passesValueComparison({
+                val: Math.abs(effectOwnerIndex - index),
+                otherVal: proximity,
+                comparator,
+            })
+        ) {
             return false;
         }
     }
@@ -432,16 +562,23 @@ const passesCombatantCondition = ({
     }
 
     if (numAbilitiesUsed !== undefined) {
-        const { amount: required = numAbilitiesUsed, type = [] } = (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
+        const { amount: required = numAbilitiesUsed, type = [] } =
+            (typeof numAbilitiesUsed === "object" && numAbilitiesUsed) || {};
         const abilityMatchesType = (ability: Ability) => {
-            return !type || ability?.actions?.some((action: Action) => type.some((t) => t === action.type));
+            return (
+                !type ||
+                ability?.actions?.some((action: Action) => type.some((t) => t === action.type))
+            );
         };
 
         // Reverse to get the order of most recent to least
         const sourceChain = [...(context?.sourceChain || [])].reverse();
-        const abilitySource = sourceChain.find((source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY);
+        const abilitySource = sourceChain.find(
+            (source) => source.type === TRIGGER_SOURCE_TYPES.ABILITY,
+        );
         const used = combatant.abilityHistory.filter(abilityMatchesType).length;
-        const sourceMatchesType = !abilitySource?.source || abilityMatchesType(abilitySource?.source as Ability);
+        const sourceMatchesType =
+            !abilitySource?.source || abilityMatchesType(abilitySource?.source as Ability);
 
         if (
             !passesValueComparison({
@@ -526,7 +663,11 @@ const passesPropertyCheck = ({
     }
 
     const propertyVal = _.get(object, property);
-    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+    return passesValueComparison({
+        val: propertyVal,
+        otherVal: value,
+        comparator,
+    });
 };
 
 const getCalculationCombatantTarget = ({

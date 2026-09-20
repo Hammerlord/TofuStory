@@ -8,7 +8,10 @@ export class RequestAnimationFrame {
     private tolerance = 0.1;
     private now: number;
 
-    constructor(private readonly options: Options, private readonly render: () => void) {}
+    constructor(
+        private readonly options: Options,
+        private readonly render: () => void,
+    ) {}
 
     mount(): void {
         this.now = performance.now();

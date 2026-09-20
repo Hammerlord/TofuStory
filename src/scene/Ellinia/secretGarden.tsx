@@ -79,18 +79,46 @@ const useStyles = createUseStyles({
     },
 });
 
-export const SecretGardenBackdrop = ({ player, showLen, awakenDragon }: { player: Player; showLen?: boolean; awakenDragon?: boolean }) => {
+export const SecretGardenBackdrop = ({
+    player,
+    showLen,
+    awakenDragon,
+}: {
+    player: Player;
+    showLen?: boolean;
+    awakenDragon?: boolean;
+}) => {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <img src={MarrsForestImage} alt="Secret Garden Backdrop" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
             {!awakenDragon && (
-                <img src={BlueManonDormantImage} alt="Dragon" className={classNames(classes.dragon, classes.float, classes.dormant)} />
+                <img
+                    src={BlueManonDormantImage}
+                    alt="Dragon"
+                    className={classNames(classes.dragon, classes.float, classes.dormant)}
+                />
             )}
-            {awakenDragon && <img src={BlueManonImage} alt="Dragon" className={classNames(classes.dragon, classes.float)} />}
-            {showLen && <img src={LenImage} alt="Fairy" className={classNames(classes.character, classes.len)} />}
+            {awakenDragon && (
+                <img
+                    src={BlueManonImage}
+                    alt="Dragon"
+                    className={classNames(classes.dragon, classes.float)}
+                />
+            )}
+            {showLen && (
+                <img
+                    src={LenImage}
+                    alt="Fairy"
+                    className={classNames(classes.character, classes.len)}
+                />
+            )}
         </div>
     );
 };
@@ -120,7 +148,11 @@ export const BackToElliniaScene = ({ player }) => {
     const classes = useBackToElliniaStyles();
     return (
         <div className={classes.root}>
-            <img src={ElliniaLibraryOutsideImage} alt="Ellinia Backdrop" className={classes.backdrop} />
+            <img
+                src={ElliniaLibraryOutsideImage}
+                alt="Ellinia Backdrop"
+                className={classes.backdrop}
+            />
             <img src={player.image} className={classNames(classes.player, classes.character)} />
         </div>
     );
@@ -169,17 +201,27 @@ export const secretGardenScene: EventScene = {
                     ],
                     next: [
                         {
-                            scene: (other) => <SecretGardenBackdrop showLen={true} awakenDragon={true} {...other} />,
+                            scene: (other) => (
+                                <SecretGardenBackdrop
+                                    showLen={true}
+                                    awakenDragon={true}
+                                    {...other}
+                                />
+                            ),
                             speaker: lenFairy,
                             dialog: ["[The fairy gasps.]"],
                         },
                         {
                             speaker: lostDragon,
-                            dialog: ["[The dragon shifts and growls in its slumber. It doesn't seem so asleep anymore.]"],
+                            dialog: [
+                                "[The dragon shifts and growls in its slumber. It doesn't seem so asleep anymore.]",
+                            ],
                         },
                         {
                             speaker: lenFairy,
-                            dialog: ["Mar? Oh, no! No! No! [The fairy addresses you.] What has one done? What does one hold?"],
+                            dialog: [
+                                "Mar? Oh, no! No! No! [The fairy addresses you.] What has one done? What does one hold?",
+                            ],
                         },
                         {
                             speaker: lenFairy,
@@ -196,7 +238,11 @@ export const secretGardenScene: EventScene = {
                         },
                         {
                             speaker: lenFairy,
-                            dialog: ["Mar thinks one has done something to Arwen!", "No, Mar!", "[The fairy tries to cast another spell.]"],
+                            dialog: [
+                                "Mar thinks one has done something to Arwen!",
+                                "No, Mar!",
+                                "[The fairy tries to cast another spell.]",
+                            ],
                         },
                         {
                             speaker: lostDragon,
@@ -205,9 +251,13 @@ export const secretGardenScene: EventScene = {
                             ],
                         },
                         {
-                            scene: (other) => <SecretGardenBackdrop awakenDragon={true} {...other} />,
+                            scene: (other) => (
+                                <SecretGardenBackdrop awakenDragon={true} {...other} />
+                            ),
                             speaker: lostDragon,
-                            dialog: ["[It's just you and the dragon now. The dragon glares at you with bright, maddened eyes.]"],
+                            dialog: [
+                                "[It's just you and the dragon now. The dragon glares at you with bright, maddened eyes.]",
+                            ],
                             responses: [
                                 {
                                     text: "Defend yourself.",
@@ -229,10 +279,14 @@ export const secretGardenScene: EventScene = {
                         },
                         {
                             scene: BackToElliniaScene,
-                            dialog: ["[You find yourself back outside once more. What just happened?]"],
+                            dialog: [
+                                "[You find yourself back outside once more. What just happened?]",
+                            ],
                         },
                         {
-                            dialog: ["[You can't think clearly... but an unsettling feeling lingers.]"],
+                            dialog: [
+                                "[You can't think clearly... but an unsettling feeling lingers.]",
+                            ],
                             responses: [
                                 {
                                     text: "Continue your journey.",

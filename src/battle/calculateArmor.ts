@@ -39,7 +39,7 @@ export const calculateArmor = ({
     const targetArmorReceived =
         getEnabledEffects({ combatantInfo: target, context, battle }).reduce(
             (acc: number, { armorReceived = 0, stacks = 1 }) => acc + armorReceived * stacks,
-            0
+            0,
         ) || 0;
 
     const totalArmor = targetArmorReceived + armor;

@@ -357,7 +357,8 @@ export const shout: Ability = {
     depletedOnUse: true,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+    description:
+        "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     actions: [
         {
             resources: 1,
@@ -551,7 +552,10 @@ export const bunchOBricks: Ability = {
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
-            addCards: [bash, bash, bash].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [bash, bash, bash].map((card) => ({
+                ...card,
+                removeAfterTurn: true,
+            })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
             animation: ANIMATION_TYPES.CONSUMABLE,
@@ -574,7 +578,8 @@ export const bunchOBricks: Ability = {
 export const hammerang: Ability = {
     name: "Hammerang",
     resourceCost: 1,
-    description: "<b>Echo.</b> Hits <b>{{ actions.0.numTargets }}</b> other targets within <b>{{ actions.0.targetArea }} spaces</b>.",
+    description:
+        "<b>Echo.</b> Hits <b>{{ actions.0.numTargets }}</b> other targets within <b>{{ actions.0.targetArea }} spaces</b>.",
     overrideBodyText: true,
     image: HammerImage,
     rarity: RARITIES.COMMON,
@@ -750,7 +755,8 @@ export const sharpen: Ability = {
     name: "Sharpen",
     resourceCost: 1,
     image: WeaponMasteryLGImage,
-    description: "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _attUp_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
+    description:
+        "Gain <b>+{{ actions.0.effects.0.attackPower }} {{{ _attUp_ }}} {{ actions.0.effects.0.duration }}{{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1159,7 +1165,10 @@ export const bladestorm: Ability = {
     rarity: RARITIES.RARE,
     actions: [
         {
-            addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [whirlwind, whirlwind, whirlwind].map((card) => ({
+                ...card,
+                removeAfterTurn: true,
+            })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -1293,7 +1302,8 @@ export const arsenal: Ability = {
     name: "Arsenal",
     resourceCost: 1,
     image: AdvancedWeaponMasteryImage,
-    description: "<b>Discover</b> a {{{ _offense_ }}} card for your class. It costs <b>-1 {{{ _resource_ }}}</b> and is Ephemeral.",
+    description:
+        "<b>Discover</b> a {{{ _offense_ }}} card for your class. It costs <b>-1 {{{ _resource_ }}}</b> and is Ephemeral.",
     rarity: RARITIES.RARE,
     depletedOnUse: true,
     actions: [
@@ -1318,7 +1328,8 @@ export const arsenal: Ability = {
     ],
     upgrades: [
         {
-            description: "Discover an Upgraded {{{ _offense_ }}} card for your class. It costs 1 less and is Ephemeral",
+            description:
+                "Discover an Upgraded {{{ _offense_ }}} card for your class. It costs 1 less and is Ephemeral",
             actions: [
                 {
                     selectCards: {
@@ -1338,7 +1349,8 @@ export const sledge: Ability = {
     name: "Sledge",
     resourceCost: 2,
     image: GiganticSledgeImage,
-    description: "<b>Deplete</b> a card. Deals <b>x2 {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
+    description:
+        "<b>Deplete</b> a card. Deals <b>x2 {{{ _damage_ }}}</b> to {{{ _armor_ }}} targets.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     selectCards: {
@@ -1580,7 +1592,8 @@ export const overpower: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: RageImage,
-    description: "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> to targets with less HP than you.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> to targets with less HP than you.",
     overrideBodyText: true,
     actions: [
         {
@@ -1734,7 +1747,8 @@ export const comboFury: Ability = {
     image: ComboFuryImage,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     actions: [
         {
             damage: 1,
@@ -1765,7 +1779,8 @@ export const parry: Ability = {
     name: "Parry",
     resourceCost: 0,
     image: EndureImage,
-    description: "<b>+{{ actions.0.bonus.armor }}</b> {{{ _armor_ }}} for each attack you made this turn.",
+    description:
+        "<b>+{{ actions.0.bonus.armor }}</b> {{{ _armor_ }}} for each attack you made this turn.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -1864,7 +1879,8 @@ export const risingRage: Ability = {
     name: "Rising Rage",
     resourceCost: "x",
     image: RisingRageImage,
-    description: "Expend all {{{ _resource_ }}} to deal <b>{{ actions.0.damage }} {{{ _damage_ }}} X</b> times.",
+    description:
+        "Expend all {{{ _resource_ }}} to deal <b>{{ actions.0.damage }} {{{ _damage_ }}} X</b> times.",
     rarity: RARITIES.UNCOMMON,
     actions: [
         {
@@ -1892,7 +1908,8 @@ export const soulBlade: Ability = {
     resourceCost: 1,
     image: BurningSoulBladeMinionImage,
     overrideBodyText: true,
-    description: "<b>Inert.</b> <b>Summon:</b> Attack. 50% chance to attack when you play a {{{ _offense_ }}} card.",
+    description:
+        "<b>Inert.</b> <b>Summon:</b> Attack. 50% chance to attack when you play a {{{ _offense_ }}} card.",
     rarity: RARITIES.UNCOMMON,
     actions: [],
     minion: {
@@ -1978,7 +1995,8 @@ export const divineCharge: Ability = {
     name: "Fierce Charge",
     resourceCost: 1,
     image: DivineChargeImage,
-    description: "Gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b> for each target hit.",
+    description:
+        "Gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b> for each target hit.",
     overrideBodyText: true,
     actions: [
         {
@@ -2039,7 +2057,8 @@ export const judgment: Ability = {
     resourceCost: 1,
     image: HighPaladinImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Deal {{{ _damage_ }}} equal to your {{{ _armor_ }}}. Your {{{ _armor_ }}} decays by half.",
+    description:
+        "Deal {{{ _damage_ }}} equal to your {{{ _armor_ }}}. Your {{{ _armor_ }}} decays by half.",
     actions: [
         {
             damage: 1,
@@ -2161,7 +2180,8 @@ export const battlelord: Ability = {
     image: LordOfDarknessImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
-    description: "Cards in your hand are Upgraded. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
+    description:
+        "Cards in your hand are Upgraded. <br/> <br/> <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -2577,7 +2597,8 @@ export const bide: Ability = {
     resourceCost: 1,
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Bide.</b>",
+    description:
+        "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck. <b>Bide.</b>",
     image: WarriorThroneImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -2775,9 +2796,18 @@ export const bladeworks: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
-                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
-                { minion: [cloneDeep(soulBlade.minion as Minion)], tributePossible: true },
+                {
+                    minion: [cloneDeep(soulBlade.minion as Minion)],
+                    tributePossible: true,
+                },
+                {
+                    minion: [cloneDeep(soulBlade.minion as Minion)],
+                    tributePossible: true,
+                },
+                {
+                    minion: [cloneDeep(soulBlade.minion as Minion)],
+                    tributePossible: true,
+                },
             ],
         },
     ],
@@ -2891,7 +2921,8 @@ export const pummel: Ability = {
     image: RedBoxingGloveImage,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Hit x3. Self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}} each time.",
+    description:
+        "Hit x3. Self-inflict <b>{{ actions.0.secondaryAction.flatDamage }}</b> {{{ _damage_ }}} each time.",
     actions: [{ ...pummelAction }, { ...pummelAction }, { ...pummelAction }],
     upgrades: [
         {
@@ -3114,7 +3145,8 @@ export const rupture: Ability = {
     rarity: RARITIES.RARE,
     resourceCost: 3,
     image: HekatonsFistRedImage,
-    description: "<b>+{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each {{{ _bleed_ }}} on the target.",
+    description:
+        "<b>+{{ actions.0.bonus.0.damage }}</b> {{{ _damage_ }}} for each {{{ _bleed_ }}} on the target.",
     overrideBodyText: true,
     actions: [
         {
@@ -3219,7 +3251,8 @@ export const frenzy: Ability = {
     name: "Frenzy",
     rarity: RARITIES.RARE,
     overrideBodyText: true,
-    description: "Gain <b>Furious Strike.</b> This turn, each card played will grant <b>Furious Strike</b>.",
+    description:
+        "Gain <b>Furious Strike.</b> This turn, each card played will grant <b>Furious Strike</b>.",
     image: BerserkImage,
     resourceCost: 1,
     depletedOnUse: true,
@@ -3330,7 +3363,8 @@ const anvilMinion: Minion = {
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
             icon: AnvilImage,
-            description: "Every turn, Upgrades a card in your hand until that card is discarded. Self-deals 1 {{{ _damage_ }}} each time.",
+            description:
+                "Every turn, Upgrades a card in your hand until that card is discarded. Self-deals 1 {{{ _damage_ }}} each time.",
             onTurnInProgress: {
                 ability: anvilForgeAbility,
             },

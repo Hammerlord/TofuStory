@@ -47,12 +47,28 @@ const useStyles = createUseStyles({
 });
 
 const gravesData = [
-    { name: "Naeri", description: "The greatest Ranger in the history of oneselves." }, // R
-    { name: "Erylen", description: "Long live the Immortal queen. <The grave itself is empty.>" }, // I
-    { name: "Merusa", description: "First one to rise against the curse, kind Merusa was only 17 when she Succumbed to its effects." }, // S
-    { name: "Bronwen", description: "Bravely held off a horde of infected ones Alone." }, // A
+    {
+        name: "Naeri",
+        description: "The greatest Ranger in the history of oneselves.",
+    }, // R
+    {
+        name: "Erylen",
+        description: "Long live the Immortal queen. <The grave itself is empty.>",
+    }, // I
+    {
+        name: "Merusa",
+        description:
+            "First one to rise against the curse, kind Merusa was only 17 when she Succumbed to its effects.",
+    }, // S
+    {
+        name: "Bronwen",
+        description: "Bravely held off a horde of infected ones Alone.",
+    }, // A
     { name: "Adelen", description: "May Valiant Adelen rest eternal." }, // V
-    { name: "Eldwen", description: "Though human, a steadfast friend to Oneselves." }, // O
+    {
+        name: "Eldwen",
+        description: "Though human, a steadfast friend to Oneselves.",
+    }, // O
 ];
 
 // S A V I O R

@@ -2,7 +2,14 @@ import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 import { CurseImage, DarkSightImage, JrBoogieImage } from "../images";
 import { FireIcon, SpeechBubbleIcon } from "../images/icons";
 import { burn, stealth } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, Ability, CONDITION_TARGETS, Minion, TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    Ability,
+    CONDITION_TARGETS,
+    Minion,
+    TARGET_TYPES,
+} from "./../ability/types";
 import { loaf } from "./abilities";
 import { curseCard, sealCard } from "./curseCards";
 

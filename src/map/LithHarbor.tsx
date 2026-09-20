@@ -24,7 +24,15 @@ import {
     SkipLithBackdropImage,
     SkullPatchImage,
 } from "../images";
-import { CrossedSwordsIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ShieldIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import {
+    CrossedSwordsIcon,
+    MedalIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+    ShieldIcon,
+    ThoughtBubbleIcon,
+    WorldMapIcon,
+} from "../images/icons";
 import { halfEatenHotdog } from "../item/consumables";
 import { bigMesoItem, leatherSandals, mesoItem, redHeadband } from "../item/items";
 import { RARITIES } from "../item/types";
@@ -118,8 +126,16 @@ const CaseyBackdrop = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={SkipLithBackdropImage} alt="Background" className={classes.backdrop} />
-            <img src={player.image} className={classNames(classes.player, classes.character)} alt="Player" />
-            <img src={casey.image} className={classNames(classes.casey, classes.character)} alt="Casey" />
+            <img
+                src={player.image}
+                className={classNames(classes.player, classes.character)}
+                alt="Player"
+            />
+            <img
+                src={casey.image}
+                className={classNames(classes.casey, classes.character)}
+                alt="Casey"
+            />
         </div>
     );
 };
@@ -213,10 +229,12 @@ const shopkeeperEncounter: SceneEncounter = {
             enemies: [null, null, shopkeeper, null, null],
             description: [
                 <>
-                    Certain actions, like mugging NPCs, will increase your <Icon icon={SkullPatchImage} /> Infamy.
+                    Certain actions, like mugging NPCs, will increase your{" "}
+                    <Icon icon={SkullPatchImage} /> Infamy.
                 </>,
                 <>
-                    <Icon icon={SkullPatchImage} /> Infamy increases the chance that vengeful entities will come after you.
+                    <Icon icon={SkullPatchImage} /> Infamy increases the chance that vengeful
+                    entities will come after you.
                 </>,
             ],
         },
@@ -268,14 +286,18 @@ const shopScript: EventScene = {
                         },
                         {
                             disableBackground: true,
-                            dialog: ["[In this case, it's just a tutorial, and you'll never see this shopkeeper again.]"],
+                            dialog: [
+                                "[In this case, it's just a tutorial, and you'll never see this shopkeeper again.]",
+                            ],
                             responses: [
                                 {
                                     text: "Hey, who's talking to me?",
                                     next: [
                                         {
                                             disableBackground: true,
-                                            dialog: ["[Uh, don't worry about it. Adventure awaits! Let's go!]"],
+                                            dialog: [
+                                                "[Uh, don't worry about it. Adventure awaits! Let's go!]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "",
@@ -322,7 +344,9 @@ const shopScript: EventScene = {
                         },
                         {
                             disableBackground: true,
-                            dialog: ["[You can't spend them here, but you'll find other shops later on.]"],
+                            dialog: [
+                                "[You can't spend them here, but you'll find other shops later on.]",
+                            ],
                             responses: [
                                 {
                                     text: "Hey, who's talking to me?",
@@ -330,7 +354,9 @@ const shopScript: EventScene = {
                                         {
                                             disableBackground: true,
 
-                                            dialog: ["[Uh, don't worry about it. Adventure awaits!]"],
+                                            dialog: [
+                                                "[Uh, don't worry about it. Adventure awaits!]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "",
@@ -362,7 +388,12 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isShopScriptOpen, setIsShopScriptOpen] = useState(false);
 
-    const exitRequirements = [LITH_PLACES.SHARK, LITH_PLACES.TUTORIAL_BASIC, LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, LITH_PLACES.SHOP];
+    const exitRequirements = [
+        LITH_PLACES.SHARK,
+        LITH_PLACES.TUTORIAL_BASIC,
+        LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER,
+        LITH_PLACES.SHOP,
+    ];
     const isFulfilledExitRequirement = Object.values(visited).length >= exitRequirements.length;
     const dispatch = useAppDispatch();
 
@@ -406,9 +437,10 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
             onExit();
             return;
         }
-        const combatsNotVisited = [visited[LITH_PLACES.TUTORIAL_BASIC], visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER]].filter(
-            (v) => !v
-        ).length;
+        const combatsNotVisited = [
+            visited[LITH_PLACES.TUTORIAL_BASIC],
+            visited[LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER],
+        ].filter((v) => !v).length;
 
         let script;
         if (combatsNotVisited === 0) {
@@ -485,8 +517,16 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                     nodeEl={
                                         <div>
                                             <img src={LithTutorialImage} alt="Balcony" />
-                                            <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
-                                            <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
+                                            <img
+                                                src={basicDummy.image}
+                                                alt="Dummy"
+                                                className={classes.dummyCharContainer}
+                                            />
+                                            <img
+                                                src={basicDummy.image}
+                                                alt="Dummy"
+                                                className={classes.dummyCharContainer2}
+                                            />
                                         </div>
                                     }
                                     onClick={() => {
@@ -496,7 +536,7 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                                     ...tutorial,
                                                     backgroundImage: LithHarborCityBGImage,
                                                 },
-                                                () => {}
+                                                () => {},
                                             );
                                         }
                                     }}
@@ -514,7 +554,9 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                     icon={QuestionMarkIcon}
                                     isVisited={visited[LITH_PLACES.SHARK]}
                                     label={"By the Dock"}
-                                    onClick={() => handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)}
+                                    onClick={() =>
+                                        handleClickEvent(LITH_PLACES.SHARK, lithEventsTeoJohn)
+                                    }
                                     nodeImage={LithHarborSharkImage}
                                 />
 
@@ -533,7 +575,11 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                 <TownNode
                                     icon={WorldMapIcon}
                                     isVisited={false}
-                                    label={isFulfilledExitRequirement ? "Exit to World Map" : "[Exit] Skip Intro"}
+                                    label={
+                                        isFulfilledExitRequirement
+                                            ? "Exit to World Map"
+                                            : "[Exit] Skip Intro"
+                                    }
                                     nodeImage={LithHarborExitImage}
                                     onClick={handleExitClick}
                                 />
@@ -547,10 +593,19 @@ const LithHarbor = ({ player, deck, updateDeck, onExit, onClickScene, onBattle, 
                                     nodeEl={
                                         <div>
                                             <img src={LithTutorial2Image} alt="Balcony" />
-                                            <img src={olaf.image} alt="Olaf" className={classes.olafCharContainer} />
+                                            <img
+                                                src={olaf.image}
+                                                alt="Olaf"
+                                                className={classes.olafCharContainer}
+                                            />
                                         </div>
                                     }
-                                    onClick={() => handleClickEvent(LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER, lithEventsOlaf)}
+                                    onClick={() =>
+                                        handleClickEvent(
+                                            LITH_PLACES.TUTORIAL_ELITE_ENCOUNTER,
+                                            lithEventsOlaf,
+                                        )
+                                    }
                                 />
                             </div>
                         </Pan>

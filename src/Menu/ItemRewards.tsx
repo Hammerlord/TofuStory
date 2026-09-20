@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { Player } from "../character/types";
-import { BOSS_RARE_RATE, BOSS_UNCOMMON_RATE, ELITE_RARE_RATE, ELITE_UNCOMMON_RATE } from "../constants";
+import {
+    BOSS_RARE_RATE,
+    BOSS_UNCOMMON_RATE,
+    ELITE_RARE_RATE,
+    ELITE_UNCOMMON_RATE,
+} from "../constants";
 import ItemView from "../item/ItemView";
 import { goldenHammer, incense, mesoItem, tofu } from "../item/items";
 import { Item, RARITIES } from "../item/types";
@@ -104,7 +109,10 @@ const ItemRewards = ({
     const [selectedItemIndices, setSelectedItemIndices] = useState<number[]>([]);
 
     useEffect(() => {
-        const items = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: overrideItemChoices || [] });
+        const items = filterUnobtainableItems({
+            playerItems: player.items,
+            itemsToFilter: overrideItemChoices || [],
+        });
         if (!overrideItemChoices && items.length < numChoicesOffered) {
             let rareBonus = rareItemBonusChance;
             let uncommonBonus = 0;
@@ -197,7 +205,10 @@ const ItemRewards = ({
                             <div className={classes.rewardsList}>
                                 <div>You obtain</div>
                                 {rewards.map((item: Item, i) => (
-                                    <div className={classes.listItem} key={[item.name, i].join("-")}>
+                                    <div
+                                        className={classes.listItem}
+                                        key={[item.name, i].join("-")}
+                                    >
                                         <img src={item.image} /> <span>{item.name}</span>
                                     </div>
                                 ))}
@@ -217,7 +228,11 @@ const ItemRewards = ({
                                 />
                             ))}
                         </div>
-                        <Button color="primary" onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
+                        <Button
+                            color="primary"
+                            onClick={handleClickSelect}
+                            disabled={!selectedItemIndices.length}
+                        >
                             Confirm
                         </Button>
                     </div>

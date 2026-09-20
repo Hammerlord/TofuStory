@@ -26,11 +26,17 @@ export const checkUpdateEffectLifecycle =
         owner: Combatant;
     }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
-        const { removeEffect, decrementStacks = 0, incrementStacks = 0, resetDuration } = effectEvent;
+        const {
+            removeEffect,
+            decrementStacks = 0,
+            incrementStacks = 0,
+            resetDuration,
+        } = effectEvent;
 
         const ownerId = owner.id;
         const maxStacks = effect.maxStacks || Infinity;
-        const updatedStacks = (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0);
+        const updatedStacks =
+            (effect.stacks || 1) - (decrementStacks || 0) + (incrementStacks || 0);
         const updatedEffect: CombatEffect = {
             ...effect,
             stacks: Math.min(maxStacks, updatedStacks),
@@ -40,11 +46,31 @@ export const checkUpdateEffectLifecycle =
         if (removeEffect || updatedEffect.stacks === 0) {
             const removedEffects: CombatEffect[] = [];
             const newEffects: CombatEffect[] = [];
-            owner.effects.forEach((e) => (e.id === effect.id ? removedEffects.push(e) : newEffects.push(e)));
+            owner.effects.forEach((e) =>
+                e.id === effect.id ? removedEffects.push(e) : newEffects.push(e),
+            );
 
-            dispatch(triggerStatChangeEvents([{ statUpdate: { combatantId: ownerId, removedEffects }, context: context }]));
-            dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
-            dispatch(enqueueEvent({ actorId: ownerId, context, statUpdates: { [ownerId]: { removedEffects, combatantId: ownerId } } }));
+            dispatch(
+                triggerStatChangeEvents([
+                    {
+                        statUpdate: { combatantId: ownerId, removedEffects },
+                        context: context,
+                    },
+                ]),
+            );
+            dispatch(
+                updateCombatant({
+                    combatantId: ownerId,
+                    newProperties: { effects: newEffects },
+                }),
+            );
+            dispatch(
+                enqueueEvent({
+                    actorId: ownerId,
+                    context,
+                    statUpdates: { [ownerId]: { removedEffects, combatantId: ownerId } },
+                }),
+            );
             return;
         }
 
@@ -52,7 +78,12 @@ export const checkUpdateEffectLifecycle =
             const newEffects = owner.effects.map((e: CombatEffect) => {
                 return e.id === effect.id ? updatedEffect : e;
             });
-            dispatch(updateCombatant({ combatantId: ownerId, newProperties: { effects: newEffects } }));
+            dispatch(
+                updateCombatant({
+                    combatantId: ownerId,
+                    newProperties: { effects: newEffects },
+                }),
+            );
         }
     };
 
@@ -74,14 +105,17 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
             };
         });
 
-        const [activeEffects, effectsEnded] = partition(({ duration = Infinity }) => duration > 0, tickedDown);
+        const [activeEffects, effectsEnded] = partition(
+            ({ duration = Infinity }) => duration > 0,
+            tickedDown,
+        );
         dispatch(
             updateCombatant({
                 combatantId: combatant.id,
                 newProperties: {
                     effects: activeEffects,
                 },
-            })
+            }),
         );
 
         if (!effectsEnded.length) {
@@ -92,9 +126,11 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
             enqueueEvent({
                 actorId: combatantId,
                 context,
-                statUpdates: { [combatantId]: { removedEffects: effectsEnded, combatantId } },
+                statUpdates: {
+                    [combatantId]: { removedEffects: effectsEnded, combatantId },
+                },
                 options: { alwaysGroup: true },
-            })
+            }),
         );
 
         effectsEnded.forEach((effect: CombatEffect) => {
@@ -115,7 +151,7 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
                             effect,
                             effectEventKey: EFFECT_EVENT_KEYS.onEnd,
                             context: { ...context, sourceChain },
-                        })
+                        }),
                     );
                 });
             }
@@ -125,7 +161,9 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
                     return;
                 }
 
-                const effectEvents = Array.isArray(stillActive.onEffectEnded) ? stillActive.onEffectEnded : [stillActive.onEffectEnded];
+                const effectEvents = Array.isArray(stillActive.onEffectEnded)
+                    ? stillActive.onEffectEnded
+                    : [stillActive.onEffectEnded];
                 effectEvents.forEach((event) => {
                     const sourceChain: TriggerSource[] = [
                         ...(context?.sourceChain || []),
@@ -142,7 +180,7 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
                             effect,
                             effectEventKey: EFFECT_EVENT_KEYS.onEffectEnded,
                             context: { ...context, sourceChain },
-                        })
+                        }),
                     );
                 });
             });
@@ -150,7 +188,13 @@ export const tickDownStatusEffects = (combatantId: string, context: ActionContex
     };
 };
 
-export const isTurnToTrigger = ({ turnsTriggerFrequency, uptime }: { turnsTriggerFrequency?: number; uptime: number }): boolean => {
+export const isTurnToTrigger = ({
+    turnsTriggerFrequency,
+    uptime,
+}: {
+    turnsTriggerFrequency?: number;
+    uptime: number;
+}): boolean => {
     if (!turnsTriggerFrequency) {
         return true;
     }

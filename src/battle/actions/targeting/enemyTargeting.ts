@@ -25,7 +25,10 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
             targetSwitch = findCombatantData(battle, validTargetSwitchId);
         }
 
-        const enemyOrderIds = getCombatantMoveOrder({ combatants: battle.enemySide, round: battle.round });
+        const enemyOrderIds = getCombatantMoveOrder({
+            combatants: battle.enemySide,
+            round: battle.round,
+        });
         enemyOrderIds.forEach((enemyId: string) => {
             const enemyInfo = findCombatantData(battle, enemyId);
             const combatant = enemyInfo?.combatant;
@@ -43,20 +46,39 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
             ability.actions.forEach((action, i) => {
                 let target;
                 const { side, index: currentTarIndex } = currentTargeting?.actionTargets?.[i] || {};
-                const validIndices = getValidTargetIndicesForAction({ action, actorData: enemyInfo! });
-                if (validIndices.some((item) => item.side === side && item.index === currentTarIndex)) {
+                const validIndices = getValidTargetIndicesForAction({
+                    action,
+                    actorData: enemyInfo!,
+                });
+                if (
+                    validIndices.some(
+                        (item) => item.side === side && item.index === currentTarIndex,
+                    )
+                ) {
                     target = currentTargeting?.actionTargets?.[i];
 
                     if (targetSwitch) {
-                        const randomTarget = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
-                        if (randomTarget && randomTarget.index === targetSwitch.index && randomTarget.side === targetSwitch.friendlySide) {
+                        const randomTarget = autoSelectActionTarget({
+                            action,
+                            actorId: enemyId,
+                            battle: battle,
+                        });
+                        if (
+                            randomTarget &&
+                            randomTarget.index === targetSwitch.index &&
+                            randomTarget.side === targetSwitch.friendlySide
+                        ) {
                             target = randomTarget;
                         }
                     }
                 }
 
                 if (!target) {
-                    target = autoSelectActionTarget({ action, actorId: enemyId, battle: battle });
+                    target = autoSelectActionTarget({
+                        action,
+                        actorId: enemyId,
+                        battle: battle,
+                    });
                 }
 
                 if (!target) {
@@ -77,7 +99,9 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
                             actorId: enemyId,
                             parentContext: {
                                 name: "Enemy Valid Target Check",
-                                sourceChain: [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+                                sourceChain: [
+                                    { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                                ],
                             },
                         }),
                         battle: battle,
@@ -100,7 +124,7 @@ export const checkValidEnemyTargeting = (options?: { validTargetSwitchId?: strin
                             ability,
                         },
                     },
-                })
+                }),
             );
         });
     };
@@ -125,19 +149,29 @@ export const checkValidEnemyNextAbility = () => {
 
             // ignoreDisabled: abilities disabled due to eg. stun do not count here since the target
             // would continue to use that ability after the stun fades.
-            const ability = getNextTelegraphedAbility(actorInfo, { ignoreDisabled: true });
+            const ability = getNextTelegraphedAbility(actorInfo, {
+                ignoreDisabled: true,
+            });
             const currentlyChosenAbility = enemy.targeting?.ability;
             if (!ability || !currentlyChosenAbility) {
                 return;
             }
 
             if (!ability.actions) {
-                console.error("Something bad happened to the actions of the ability:", ability.name, ability);
+                console.error(
+                    "Something bad happened to the actions of the ability:",
+                    ability.name,
+                    ability,
+                );
                 return;
             }
 
             if (currentlyChosenAbility.name !== ability.name) {
-                const { battle: updatedBattle, targets } = getUpdatedBattleActionTargets({ ability, battle, actorInfo });
+                const { battle: updatedBattle, targets } = getUpdatedBattleActionTargets({
+                    ability,
+                    battle,
+                    actorInfo,
+                });
                 battle = updatedBattle;
 
                 dispatch(
@@ -149,7 +183,7 @@ export const checkValidEnemyNextAbility = () => {
                                 ability,
                             },
                         },
-                    })
+                    }),
                 );
             }
         });

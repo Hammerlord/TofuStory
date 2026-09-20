@@ -23,7 +23,10 @@ export const rollRarity = ({
                 bonusRareChance: acc.bonusRareChance + rareRateIncrease,
             };
         },
-        { bonusUncommonChance: bonuses.uncommon || 0, bonusRareChance: bonuses.rare || 0 }
+        {
+            bonusUncommonChance: bonuses.uncommon || 0,
+            bonusRareChance: bonuses.rare || 0,
+        },
     );
 
     let uncommonChance = UNCOMMON_ITEM_CHANCE + bonusUncommonChance;
@@ -67,7 +70,9 @@ export const rollItemPool = ({
 }): Item[] => {
     const selectedRarity = rollRarity({ player, bonuses, disableRarities });
     const itemPool = getAllPossibleItems({ player, excludeItems });
-    let filteredByRarity = itemPool.filter((item) => (item.rarity || RARITIES.COMMON) === selectedRarity);
+    let filteredByRarity = itemPool.filter(
+        (item) => (item.rarity || RARITIES.COMMON) === selectedRarity,
+    );
     if (!filteredByRarity.length) {
         const changeRarity = {
             [RARITIES.COMMON]: RARITIES.UNCOMMON,

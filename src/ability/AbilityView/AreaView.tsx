@@ -1,7 +1,12 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { calculateActionArea } from "../../battle/actions/targeting/targeting";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import {
+    ActionContext,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+} from "../../battle/types";
 import { Ability, CombatAbility } from "../types";
 import { getDamageStatistics } from "./DamageIcon";
 import { BattleState } from "../../battle/types";
@@ -100,7 +105,14 @@ const Area = ({
         discard,
     });
 
-    return <AreaIndicator area={area} hasBonus={hasBonus} baseDamage={baseDamage} secondaryDamage={secondaryDamage} />;
+    return (
+        <AreaIndicator
+            area={area}
+            hasBonus={hasBonus}
+            baseDamage={baseDamage}
+            secondaryDamage={secondaryDamage}
+        />
+    );
 };
 
 export const AreaIndicator = ({

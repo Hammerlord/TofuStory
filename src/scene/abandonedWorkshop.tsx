@@ -3,7 +3,15 @@ import { SCENE_STYLES } from "./constants";
 import { KerningWorkshopBGImage } from "../images";
 import classNames from "classnames";
 import { EventScene } from "./types";
-import { adamantiumPlate, amethyst, aquamarine, diamond, diamondOre, garnet, topaz } from "../item/items";
+import {
+    adamantiumPlate,
+    amethyst,
+    aquamarine,
+    diamond,
+    diamondOre,
+    garnet,
+    topaz,
+} from "../item/items";
 
 const useStyles = createUseStyles({
     ...SCENE_STYLES,
@@ -19,7 +27,11 @@ const AbandonedWorkshopBackdrop = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={KerningWorkshopBGImage} alt="Workshop" />
-            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.player, classes.character)}
+            />
         </div>
     );
 };
@@ -46,7 +58,15 @@ export const workshopScene: EventScene = {
                         {
                             dialog: ["[You reach into one of the baskets, and...]"],
                             items: {
-                                itemPool: [adamantiumPlate, diamond, garnet, amethyst, topaz, aquamarine, diamondOre],
+                                itemPool: [
+                                    adamantiumPlate,
+                                    diamond,
+                                    garnet,
+                                    amethyst,
+                                    topaz,
+                                    aquamarine,
+                                    diamondOre,
+                                ],
                                 amount: 1,
                             },
                         },
@@ -69,7 +89,9 @@ export const workshopScene: EventScene = {
                             dialog: ["..."],
                         },
                         {
-                            dialog: ["[Hopefully the owner of this place doesn't mind you borrowing the forge.]"],
+                            dialog: [
+                                "[Hopefully the owner of this place doesn't mind you borrowing the forge.]",
+                            ],
                             responses: [
                                 {
                                     text: "Continue journey.",

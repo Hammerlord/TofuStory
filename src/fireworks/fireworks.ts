@@ -123,7 +123,10 @@ export class Fireworks {
         this.opts.update(options);
     }
 
-    updateSize({ width = this.container.clientWidth, height = this.container.clientHeight }: Partial<FireworksTypes.Sizes> = {}): void {
+    updateSize({
+        width = this.container.clientWidth,
+        height = this.container.clientHeight,
+    }: Partial<FireworksTypes.Sizes> = {}): void {
         this.width = width;
         this.height = height;
 
@@ -173,7 +176,16 @@ export class Fireworks {
     }
 
     private initExplosion(x: number, y: number, hue: number): void {
-        const { particles, flickering, lineWidth, explosion, brightness, friction, gravity, decay } = this.opts;
+        const {
+            particles,
+            flickering,
+            lineWidth,
+            explosion,
+            brightness,
+            friction,
+            gravity,
+            decay,
+        } = this.opts;
 
         let particlesLength = floor(particles);
         while (particlesLength--) {
@@ -190,7 +202,7 @@ export class Fireworks {
                     explosionLength: floor(explosion),
                     brightness,
                     decay,
-                })
+                }),
             );
         }
     }

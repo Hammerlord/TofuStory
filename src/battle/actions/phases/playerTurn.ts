@@ -20,7 +20,13 @@ import { onEndTurnTriggers, requeueRecentlyUsedAbility } from "./phases";
 
 const { updateBattle, pushEventQueue } = battleStateSlice.actions;
 
-export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: number; actorId: string }) => {
+export const onSummonAttack = ({
+    selectedIndex,
+    actorId,
+}: {
+    selectedIndex: number;
+    actorId: string;
+}) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const combatant = findCombatantData(getState().battle!, actorId)?.combatant;
         const ability = combatant?.abilities[0];
@@ -36,16 +42,22 @@ export const onSummonAttack = ({ selectedIndex, actorId }: { selectedIndex: numb
                 side: BATTLEFIELD_SIDES.ENEMY_SIDE,
                 ability,
                 actorId,
-                context: { name: "Minion Manual Attack", playbackCollector: playbackCollectorInstance },
-            })
+                context: {
+                    name: "Minion Manual Attack",
+                    playbackCollector: playbackCollectorInstance,
+                },
+            }),
         );
 
         dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id }));
 
         dispatch(
             updateBattle({
-                charactersAttackedThisTurn: [...getState().battle!.charactersAttackedThisTurn, actorId],
-            })
+                charactersAttackedThisTurn: [
+                    ...getState().battle!.charactersAttackedThisTurn,
+                    actorId,
+                ],
+            }),
         );
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -58,12 +70,21 @@ const minionAutoAttack = () => {
         const { playerSide, round } = getState().battle!;
 
         const playbackCollectorInstance = playbackCollector();
-        const moveOrderIds = getCombatantMoveOrder({ combatants: playerSide, round, ignoreSupport: true });
+        const moveOrderIds = getCombatantMoveOrder({
+            combatants: playerSide,
+            round,
+            ignoreSupport: true,
+        });
         moveOrderIds.forEach((id: string) => {
             const combatantInfo = findCombatantData(getState().battle!, id);
             const combatant = combatantInfo?.combatant;
 
-            if (!combatant?.HP || combatant.controllable || combatant.cantMove || combatant.isPlayer) {
+            if (
+                !combatant?.HP ||
+                combatant.controllable ||
+                combatant.cantMove ||
+                combatant.isPlayer
+            ) {
                 return;
             }
 
@@ -76,8 +97,11 @@ const minionAutoAttack = () => {
                 useAbility({
                     ability: abilityToUse,
                     actorId: combatant.id,
-                    context: { name: "Minion Attack", playbackCollector: playbackCollectorInstance },
-                })
+                    context: {
+                        name: "Minion Attack",
+                        playbackCollector: playbackCollectorInstance,
+                    },
+                }),
             );
 
             dispatch(requeueRecentlyUsedAbility({ combatantId: combatant.id }));
@@ -99,9 +123,12 @@ export const playerEndTurn = () => {
 
         dispatch(
             updateBattle({
-                discard: [...prepareForDiscard({ cards: cardsToDiscard, player, battle }), ...discard],
+                discard: [
+                    ...prepareForDiscard({ cards: cardsToDiscard, player, battle }),
+                    ...discard,
+                ],
                 hand: newHand,
-            })
+            }),
         );
 
         dispatch(minionAutoAttack());
@@ -117,21 +144,34 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 round: round + 1,
                 charactersAttackedThisTurn: [],
                 playerSide: updateCombatants(playerSide, clearTurnHistory),
-            })
+            }),
         );
 
         if (checkWinCondition({ battle: getState().battle! })) {
             return;
         }
 
-        const combatantIds = playerSide.map((combatant) => combatant?.id).filter((v): v is string => v !== undefined);
+        const combatantIds = playerSide
+            .map((combatant) => combatant?.id)
+            .filter((v): v is string => v !== undefined);
 
         const playbackCollectorInstance = playbackCollector();
-        const context = { name: "Player Start Turn", playbackCollector: playbackCollectorInstance };
-        dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.PLAYER_SIDE, context }));
+        const context = {
+            name: "Player Start Turn",
+            playbackCollector: playbackCollectorInstance,
+        };
+        dispatch(
+            handleDoTs({
+                combatantIds,
+                side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+                context,
+            }),
+        );
 
         const getPlayerSideInfo = () =>
-            getState().battle!.playerSide.map((combatant) => findCombatantData(getState().battle!, combatant?.id));
+            getState().battle!.playerSide.map((combatant) =>
+                findCombatantData(getState().battle!, combatant?.id),
+            );
 
         if (round > 0) {
             dispatch(checkHalveArmor(getPlayerSideInfo(), context));
@@ -141,17 +181,27 @@ export const startPlayerTurn = (isNewWave: boolean) => {
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, context }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onTurnStart,
+                        context,
+                    }),
+                );
             }
         });
 
         // Drawing cards last so that eg. drawing Zap (stun) can benefit from Star Earrings (draw a card on CC).
         // Maybe I'll regret this ordering for some other reason later.
         const battle = getState().battle!;
-        const player: Player = battle.playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
-        const drawCardsPerTurn = getEnabledEffects({ combatantInfo: findCombatantData(getState().battle!, player?.id) }).reduce(
+        const player: Player = battle.playerSide.find(
+            (c: Combatant | null) => c?.isPlayer,
+        ) as Player;
+        const drawCardsPerTurn = getEnabledEffects({
+            combatantInfo: findCombatantData(getState().battle!, player?.id),
+        }).reduce(
             (acc, { drawCardsPerTurn = 0 }) => acc + drawCardsPerTurn,
-            player.drawCardsPerTurn
+            player.drawCardsPerTurn,
         );
 
         // If it's a new wave, draw only to the drawCardsPerTurn maximum. We have kept the cards from the previous wave for this.
@@ -161,12 +211,18 @@ export const startPlayerTurn = (isNewWave: boolean) => {
                 amount: drawCardsAmount,
                 context: context,
                 isOnTurnDraw: true,
-            })
+            }),
         );
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw, context }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onTurnDraw,
+                        context,
+                    }),
+                );
             }
         });
 
@@ -180,7 +236,12 @@ export const initiatePlayerTurnInProgress = () => {
 
         playerSide.forEach((combatant: Combatant | null) => {
             if (combatant) {
-                dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnInProgress }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: combatant.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onTurnInProgress,
+                    }),
+                );
             }
         });
 

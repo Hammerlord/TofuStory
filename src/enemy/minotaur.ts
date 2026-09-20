@@ -11,7 +11,15 @@ import {
 } from "../images";
 import { JapaneseOgreIcon } from "../images/icons";
 import { attackPower, avenger, bleed, hardy, preventArmorDecay } from "./../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, CONDITION_TARGETS, Effect, MULTIPLIER_TYPES, Minion, TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    CONDITION_TARGETS,
+    Effect,
+    MULTIPLIER_TYPES,
+    Minion,
+    TARGET_TYPES,
+} from "./../ability/types";
 import { attack } from "./abilities";
 import { battleTrance } from "./effect";
 

@@ -54,7 +54,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant; isEnemy: boolean; index: number }) => {
+const CombatantTooltip = ({
+    combatant,
+    isEnemy,
+    index,
+}: {
+    combatant: Combatant;
+    isEnemy: boolean;
+    index: number;
+}) => {
     const { isBoss, isElite, isPlayer, name, effects = [] } = combatant || {};
     const classes = useStyles();
 
@@ -78,7 +86,8 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
         if (isElite) {
             return (
                 <span className={classes.elite}>
-                    <Icon icon={MilitaryMedalIcon} className={classes.tooltipIcon} size="sm" /> Elite
+                    <Icon icon={MilitaryMedalIcon} className={classes.tooltipIcon} size="sm" />{" "}
+                    Elite
                 </span>
             );
         }
@@ -92,7 +101,10 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
         return {
             title: effects[0]?.name,
             icon: effects[0]?.icon,
-            description: Handlebars.compile(effects[0]?.description || "")({ ...elementMapping, ...effects[0] }),
+            description: Handlebars.compile(effects[0]?.description || "")({
+                ...elementMapping,
+                ...effects[0],
+            }),
         };
     };
 
@@ -107,13 +119,20 @@ const CombatantTooltip = ({ combatant, isEnemy, index }: { combatant: Combatant;
         <>
             <TooltipSection title={header} description={getDifficultyLabel()} />
             {getEffectGroups(effects).map((effects, i) => (
-                <TooltipSection {...getEffectSectionProps(effects, i)} key={effects[0]?.name || i} />
+                <TooltipSection
+                    {...getEffectSectionProps(effects, i)}
+                    key={effects[0]?.name || i}
+                />
             ))}
         </>
     );
 
     return (
-        <Tooltip title={combatantTooltip} classes={{ tooltip: classes.tooltip }} disableInteractive={true}>
+        <Tooltip
+            title={combatantTooltip}
+            classes={{ tooltip: classes.tooltip }}
+            disableInteractive={true}
+        >
             <div className={classes.tooltipAnchor} />
         </Tooltip>
     );

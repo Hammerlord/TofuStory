@@ -15,7 +15,17 @@ import {
 import { EncroachingDarknessImage, TheRemembererImage } from "../images";
 import { CloudyIcon } from "../images/icons";
 import { critical, displacementImmune } from "./effect";
-import { axeStump, copperDrake, darkStoneGolem, elliniaHornyMushroom, redSnail, slime, wildBoar, zombieLupin, wildKargo } from "./enemy";
+import {
+    axeStump,
+    copperDrake,
+    darkStoneGolem,
+    elliniaHornyMushroom,
+    redSnail,
+    slime,
+    wildBoar,
+    zombieLupin,
+    wildKargo,
+} from "./enemy";
 import { tauromacis, taurospear } from "./minotaur";
 
 const getManifestAbility = (minion) => {
@@ -176,10 +186,34 @@ const summonCoalescingMists2: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [coalescingMistsWildBoar, coalescingMistsAxeStump, coalescingMistsHornyMushroom] },
-                { minion: [coalescingMistsWildBoar, coalescingMistsAxeStump, coalescingMistsHornyMushroom] },
-                { minion: [coalescingMistsWildBoar, coalescingMistsAxeStump, coalescingMistsHornyMushroom] },
-                { minion: [coalescingMistsWildBoar, coalescingMistsAxeStump, coalescingMistsHornyMushroom] },
+                {
+                    minion: [
+                        coalescingMistsWildBoar,
+                        coalescingMistsAxeStump,
+                        coalescingMistsHornyMushroom,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsWildBoar,
+                        coalescingMistsAxeStump,
+                        coalescingMistsHornyMushroom,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsWildBoar,
+                        coalescingMistsAxeStump,
+                        coalescingMistsHornyMushroom,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsWildBoar,
+                        coalescingMistsAxeStump,
+                        coalescingMistsHornyMushroom,
+                    ],
+                },
             ],
         },
     ],
@@ -196,10 +230,34 @@ const summonCoalescingMists3: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             summon: [
-                { minion: [coalescingMistsDrake, coalescingMistsGolem, coalescingMistsZombieLupin] },
-                { minion: [coalescingMistsDrake, coalescingMistsGolem, coalescingMistsZombieLupin] },
-                { minion: [coalescingMistsDrake, coalescingMistsGolem, coalescingMistsZombieLupin] },
-                { minion: [coalescingMistsDrake, coalescingMistsGolem, coalescingMistsZombieLupin] },
+                {
+                    minion: [
+                        coalescingMistsDrake,
+                        coalescingMistsGolem,
+                        coalescingMistsZombieLupin,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsDrake,
+                        coalescingMistsGolem,
+                        coalescingMistsZombieLupin,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsDrake,
+                        coalescingMistsGolem,
+                        coalescingMistsZombieLupin,
+                    ],
+                },
+                {
+                    minion: [
+                        coalescingMistsDrake,
+                        coalescingMistsGolem,
+                        coalescingMistsZombieLupin,
+                    ],
+                },
             ],
         },
     ],
@@ -261,7 +319,12 @@ export const theRememberer: Minion = {
     isBoss: true,
     mesos: 100,
     maxHP: 500,
-    abilities: [summonCoalescingMists2, summonCoalescingMists3, summonCoalescingMists4, pulsingNightmare],
+    abilities: [
+        summonCoalescingMists2,
+        summonCoalescingMists3,
+        summonCoalescingMists4,
+        pulsingNightmare,
+    ],
     effects: [
         displacementImmune,
         {

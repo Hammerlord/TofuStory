@@ -91,15 +91,26 @@ export namespace FireworksTypes {
 
 export type FireworksOptions = RecursivePartial<FireworksTypes.Options>;
 
-export interface FireworksHandlers
-    extends Pick<
-        Fireworks,
-        "isRunning" | "start" | "launch" | "pause" | "clear" | "updateOptions" | "updateBoundaries" | "updateSize" | "currentOptions"
-    > {
+export interface FireworksHandlers extends Pick<
+    Fireworks,
+    | "isRunning"
+    | "start"
+    | "launch"
+    | "pause"
+    | "clear"
+    | "updateOptions"
+    | "updateBoundaries"
+    | "updateSize"
+    | "currentOptions"
+> {
     waitStop(): Promise<void>;
     stop(): void;
 }
 
 export type RecursivePartial<T> = {
-    [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
+    [P in keyof T]?: T[P] extends (infer U)[]
+        ? RecursivePartial<U>[]
+        : T[P] extends object
+          ? RecursivePartial<T[P]>
+          : T[P];
 };

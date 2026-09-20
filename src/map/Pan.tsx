@@ -71,7 +71,12 @@ const Pan = ({
     };
 
     const panToUserPosition = (panTime = RE_PAN_TIME) => {
-        if (!userPosition || [xRef.current, yRef.current, userPosition.x, userPosition.y].some((v) => v == null || isNaN(v))) {
+        if (
+            !userPosition ||
+            [xRef.current, yRef.current, userPosition.x, userPosition.y].some(
+                (v) => v == null || isNaN(v),
+            )
+        ) {
             return;
         }
 
@@ -88,7 +93,7 @@ const Pan = ({
             {
                 duration: panTime,
                 easing: "ease-in-out",
-            }
+            },
         );
 
         animation?.finished.then(() => {
@@ -180,7 +185,11 @@ const Pan = ({
             </div>
 
             <div className={classes.userPositionContainer}>
-                <ButtonBase onClick={() => panToUserPosition(500)} className={classes.userPosition} title="Pan to your current location">
+                <ButtonBase
+                    onClick={() => panToUserPosition(500)}
+                    className={classes.userPosition}
+                    title="Pan to your current location"
+                >
                     <img src={AnonymushroomImage} />
                 </ButtonBase>
             </div>

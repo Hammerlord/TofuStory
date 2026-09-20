@@ -4,13 +4,17 @@ import { CombatEffect } from "../../../ability/types";
 import { createCombatEffect } from "../../../character/effects/createCombatEffect";
 import { calculateEffectChanges } from "../calculateEffectChanges";
 
-const applyChillTimes = (count: number): CombatEffect[] => Array.from({ length: count }, () => createCombatEffect(chill));
+const applyChillTimes = (count: number): CombatEffect[] =>
+    Array.from({ length: count }, () => createCombatEffect(chill));
 
-const getChills = (effects: CombatEffect[]): CombatEffect[] => effects.filter((effect) => effect.name === chill.name);
+const getChills = (effects: CombatEffect[]): CombatEffect[] =>
+    effects.filter((effect) => effect.name === chill.name);
 
-const getTotalStacks = (effects: CombatEffect[]): number => getChills(effects).reduce((acc, effect) => acc + (effect.stacks || 1), 0);
+const getTotalStacks = (effects: CombatEffect[]): number =>
+    getChills(effects).reduce((acc, effect) => acc + (effect.stacks || 1), 0);
 
-const getTotalDuration = (effects: CombatEffect[]): number => getChills(effects).reduce((acc, effect) => acc + (effect.duration || 0), 0);
+const getTotalDuration = (effects: CombatEffect[]): number =>
+    getChills(effects).reduce((acc, effect) => acc + (effect.duration || 0), 0);
 
 describe("calculateEffectChanges", () => {
     it("caps Blizzard's Chill applications at 3 (maxApplications) for a fresh target", () => {

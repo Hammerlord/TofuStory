@@ -99,11 +99,12 @@ const CardRewards = ({
 }) => {
     const rolledAbilities: CombatAbility[] = useMemo(() => {
         const potentialAbilities = getCardPool(player, deck);
-        const { numChoices: numChoicesFromItems, choices: choicesFromItems } = getCardChoicesFromItems({
-            player,
-            deck,
-            battleType: rewardType,
-        });
+        const { numChoices: numChoicesFromItems, choices: choicesFromItems } =
+            getCardChoicesFromItems({
+                player,
+                deck,
+                battleType: rewardType,
+            });
 
         const choices = [...cardRewardOptions, ...choicesFromItems];
 
@@ -111,10 +112,16 @@ const CardRewards = ({
         disableRarities = (disableRarities || []).slice();
         let bonuses = { rare: rareCardBonusChance, uncommon: 0 };
         if (rewardType === BATTLE_TYPES.BOSS) {
-            bonuses = { rare: rareCardBonusChance + BOSS_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = {
+                rare: rareCardBonusChance + BOSS_RARE_RATE,
+                uncommon: ELITE_UNCOMMON_RATE,
+            };
             disableRarities.push(RARITIES.COMMON);
         } else if (rewardType === BATTLE_TYPES.ELITE_ENCOUNTER) {
-            bonuses = { rare: rareCardBonusChance + ELITE_RARE_RATE, uncommon: ELITE_UNCOMMON_RATE };
+            bonuses = {
+                rare: rareCardBonusChance + ELITE_RARE_RATE,
+                uncommon: ELITE_UNCOMMON_RATE,
+            };
         }
 
         const overallRarity = rollRarity({ player, bonuses, disableRarities });
@@ -132,17 +139,27 @@ const CardRewards = ({
         };
 
         Array.from({ length: numChoices - choices.length }).forEach(() => {
-            const selectedRarity = rarityRollMode === "individual" ? rollRarity({ player, bonuses, disableRarities }) : overallRarity;
+            const selectedRarity =
+                rarityRollMode === "individual"
+                    ? rollRarity({ player, bonuses, disableRarities })
+                    : overallRarity;
             const upgradeRate = getUpgradeRateForRarity(selectedRarity);
 
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
-                const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);
-                return (ability.rarity || RARITIES.COMMON) === selectedRarity && noDuplicate && noExclusive;
+                const noExclusive = choices.every(
+                    (choice) => !choice.exclusive || choice.exclusive !== ability.exclusive,
+                );
+                return (
+                    (ability.rarity || RARITIES.COMMON) === selectedRarity &&
+                    noDuplicate &&
+                    noExclusive
+                );
             });
 
             if (filteredByRarity) {
-                const upgradeCard = Math.random() <= upgradeRate && getUpgradeCard(filteredByRarity);
+                const upgradeCard =
+                    Math.random() <= upgradeRate && getUpgradeCard(filteredByRarity);
                 choices.push(upgradeCard || filteredByRarity);
             }
         });
@@ -184,7 +201,8 @@ const CardRewards = ({
                             "an ability"
                         ) : (
                             <>
-                                up to <span className={classes.moreThanOne}>{maxAmount} abilities</span>
+                                up to{" "}
+                                <span className={classes.moreThanOne}>{maxAmount} abilities</span>
                             </>
                         )}
                     </h2>
@@ -199,7 +217,11 @@ const CardRewards = ({
                                 })}
                                 onClick={() => handleCardClick(i)}
                             >
-                                <AbilityView ability={ability} disableGlow={true} disableBattleBonuses={true} />
+                                <AbilityView
+                                    ability={ability}
+                                    disableGlow={true}
+                                    disableBattleBonuses={true}
+                                />
                             </div>
                         </div>
                     ))}
@@ -217,7 +239,11 @@ const CardRewards = ({
                     </div>
                 )}
                 <div className={classes.selectContainer}>
-                    <Button color="primary" disabled={!selectedAbilityIndices.length} onClick={handleSelectClick}>
+                    <Button
+                        color="primary"
+                        disabled={!selectedAbilityIndices.length}
+                        onClick={handleSelectClick}
+                    >
                         Confirm
                     </Button>
                 </div>

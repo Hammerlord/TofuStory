@@ -91,7 +91,8 @@ const SelectCardOverlay = ({
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
     const { type, maxAmount: configuredMax, effects } = selectCards;
-    const maxAmount = configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
+    const maxAmount =
+        configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
     const [abilityChoices] = useState(
         getCardSelection({
             hand,
@@ -100,22 +101,35 @@ const SelectCardOverlay = ({
             selectCards,
             selectedAbilityId: abilityQueued?.selectedAbilityId,
             player,
-        })
+        }),
     );
 
-    const selectedAbilities = abilityChoices.filter(({ instanceId }) => selectedAbilityIds.includes(instanceId));
+    const selectedAbilities = abilityChoices.filter(({ instanceId }) =>
+        selectedAbilityIds.includes(instanceId),
+    );
     const dispatch = useAppDispatch();
     const [hide, setHide] = useState(false);
 
     const handleSelectClick = () => {
-        dispatch(selectCardsAction({ type, effects, selectedAbilities, player, abilityQueued: abilityQueued?.selectedAbility }));
+        dispatch(
+            selectCardsAction({
+                type,
+                effects,
+                selectedAbilities,
+                player,
+                abilityQueued: abilityQueued?.selectedAbility,
+            }),
+        );
         onSelect();
     };
 
     const isSelectedForRemoval = (instanceId: string): boolean => {
         return (
-            [SELECT_CARD_TYPES.DEPLETE_FROM_HAND, SELECT_CARD_TYPES.DISCARD_TO_DRAW, SELECT_CARD_TYPES.HAND_TO_TOP_DECK].includes(type) &&
-            selectedAbilityIds.includes(instanceId)
+            [
+                SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+                SELECT_CARD_TYPES.DISCARD_TO_DRAW,
+                SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+            ].includes(type) && selectedAbilityIds.includes(instanceId)
         );
     };
 
@@ -126,14 +140,19 @@ const SelectCardOverlay = ({
                     <div className={classes.inner}>
                         <div className={classes.titleContainer}>
                             <h2>
-                                {type === SELECT_CARD_TYPES.COPY_FROM_HAND && "Pick an ability from your hand to copy"}
-                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS && "Discover an ability for your class"}
-                                {type === SELECT_CARD_TYPES.SEARCH_DECK && "Pick an ability from your deck"}
+                                {type === SELECT_CARD_TYPES.COPY_FROM_HAND &&
+                                    "Pick an ability from your hand to copy"}
+                                {type === SELECT_CARD_TYPES.DISCOVER_FROM_CLASS &&
+                                    "Discover an ability for your class"}
+                                {type === SELECT_CARD_TYPES.SEARCH_DECK &&
+                                    "Pick an ability from your deck"}
                                 {type === SELECT_CARD_TYPES.PRESET_CARDS && "Create an ability"}
-                                {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && "Pick an ability from your hand to deplete"}
+                                {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND &&
+                                    "Pick an ability from your hand to deplete"}
                                 {type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK &&
                                     `Pick up to ${maxAmount} ${maxAmount === 1 ? "card" : "cards"} to remove from your hand`}
-                                {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && "Keep or replace cards in your hand"}
+                                {type === SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
+                                    "Keep or replace cards in your hand"}
                             </h2>
                         </div>
                         <div className={classes.abilityContainer}>
@@ -141,7 +160,9 @@ const SelectCardOverlay = ({
                                 <div
                                     className={classNames(classes.ability, {
                                         selected: selectedAbilityIds.includes(ability.instanceId),
-                                        selectedForRemoval: isSelectedForRemoval(ability.instanceId),
+                                        selectedForRemoval: isSelectedForRemoval(
+                                            ability.instanceId,
+                                        ),
                                     })}
                                     onClick={() => {
                                         if (maxAmount === 1) {
@@ -150,11 +171,16 @@ const SelectCardOverlay = ({
                                         }
                                         if (selectedAbilityIds.includes(ability.instanceId)) {
                                             // Deselect if selected
-                                            setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
+                                            setSelectedAbilityIds((prev) =>
+                                                prev.filter((id) => id !== ability.instanceId),
+                                            );
                                             return;
                                         }
                                         if (selectedAbilityIds.length < maxAmount) {
-                                            setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
+                                            setSelectedAbilityIds((prev) => [
+                                                ...prev,
+                                                ability.instanceId,
+                                            ]);
                                         }
                                     }}
                                     key={ability.instanceId}
@@ -169,14 +195,21 @@ const SelectCardOverlay = ({
                             ))}
                             {!abilityChoices.length && (
                                 <Box>
-                                    <img src={AshesImage} /> <Box sx={{ marginTop: "2rem", color: "white" }}>There were no cards...</Box>
+                                    <img src={AshesImage} />{" "}
+                                    <Box sx={{ marginTop: "2rem", color: "white" }}>
+                                        There were no cards...
+                                    </Box>
                                 </Box>
                             )}
                         </div>
                         <Button
                             variant={"contained"}
                             color="primary"
-                            disabled={type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW && !selectedAbilityIds.length && abilityChoices.length > 0}
+                            disabled={
+                                type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
+                                !selectedAbilityIds.length &&
+                                abilityChoices.length > 0
+                            }
                             onClick={handleSelectClick}
                         >
                             Confirm

@@ -34,13 +34,26 @@ const CardToAddCount = ({ count, card }) => {
     );
 };
 
-const CardsToAdd = ({ ability, isInline, player }: { ability: { actions: Action[] }; isInline?: boolean; player?: Player }) => {
+const CardsToAdd = ({
+    ability,
+    isInline,
+    player,
+}: {
+    ability: { actions: Action[] };
+    isInline?: boolean;
+    player?: Player;
+}) => {
     const {
         addCards = {},
         addCardsToDeck = {},
         addCardsToDiscard = {},
     } = ability.actions.reduce((acc, current: Action) => {
-        const { addCards = [], addCardsToDeck = [], addCardsToDiscard = [], addLastPlayedCards } = current;
+        const {
+            addCards = [],
+            addCardsToDeck = [],
+            addCardsToDiscard = [],
+            addLastPlayedCards,
+        } = current;
         if (!acc.addCards) {
             acc.addCards = {};
         }

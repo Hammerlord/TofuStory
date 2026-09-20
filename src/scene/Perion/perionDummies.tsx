@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_MINION_MODIFIERS, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MORPH_MINION_MODIFIERS,
+    MORPH_TYPES,
+    Minion,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { BATTLE_TYPES, Wave } from "../../battle/types";
 import { Player } from "../../character/types";
 import { basicDummy } from "../../enemy/dummy";
@@ -95,7 +103,12 @@ export const mapleDummy: Minion = {
     ],
 };
 
-const dummiesFight: { disableCardRewards: boolean; waves: Wave[]; type: BATTLE_TYPES; backgroundMusic: string } = {
+const dummiesFight: {
+    disableCardRewards: boolean;
+    waves: Wave[];
+    type: BATTLE_TYPES;
+    backgroundMusic: string;
+} = {
     waves: [
         {
             description: [<>Destroy as many dummies as you can in 5 turns!</>],
@@ -144,8 +157,12 @@ const DummiesBackdrop = ({ player, dummiesBroken }: { player: Player; dummiesBro
     const classes = useStyles();
     const totalDummies = 6;
     const brokenDummyIndices = useMemo(
-        () => shuffle(Array.from({ length: totalDummies }).map((_, i) => i)).slice(0, dummiesBroken || 0),
-        [dummiesBroken]
+        () =>
+            shuffle(Array.from({ length: totalDummies }).map((_, i) => i)).slice(
+                0,
+                dummiesBroken || 0,
+            ),
+        [dummiesBroken],
     );
 
     const isBroken = (i) => {
@@ -154,7 +171,11 @@ const DummiesBackdrop = ({ player, dummiesBroken }: { player: Player; dummiesBro
     return (
         <div className={classes.root}>
             <img src={PerionGroundsImage} alt="Training Grounds" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
             {Array.from({ length: totalDummies }).map((_, i) => (
                 <img
                     src={i % 2 === 0 ? PuppetreeImage : Puppetree2Image}
@@ -258,10 +279,14 @@ export const dummiesScene: EventScene = {
                     next: [
                         {
                             scene: (other) => <DummiesBackdrop dummiesBroken={4} {...other} />,
-                            dialog: ["[You destroyed {{ totalKills }} dummies. Not bad! You find something in the wreckage...]"],
+                            dialog: [
+                                "[You destroyed {{ totalKills }} dummies. Not bad! You find something in the wreckage...]",
+                            ],
                         },
                         {
-                            dialog: ["[You destroyed {{ totalKills }} dummies. Not bad! You find something in the wreckage...]"],
+                            dialog: [
+                                "[You destroyed {{ totalKills }} dummies. Not bad! You find something in the wreckage...]",
+                            ],
                             itemChoices: {
                                 numChoices: 3,
                                 bonuses: {
@@ -293,10 +318,14 @@ export const dummiesScene: EventScene = {
                     next: [
                         {
                             scene: (other) => <DummiesBackdrop dummiesBroken={2} {...other} />,
-                            dialog: ["[You destroyed {{ totalKills }} dummies. There's something left behind in the wreckage...]"],
+                            dialog: [
+                                "[You destroyed {{ totalKills }} dummies. There's something left behind in the wreckage...]",
+                            ],
                         },
                         {
-                            dialog: ["[You destroyed {{ totalKills }} dummies. There's something left behind in the wreckage...]"],
+                            dialog: [
+                                "[You destroyed {{ totalKills }} dummies. There's something left behind in the wreckage...]",
+                            ],
                             itemChoices: {
                                 numChoices: 3,
                             },

@@ -10,7 +10,13 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, OmokPigImage, PigsHeadImage, PillagingWildBoarImage, RockImage } from "../images";
+import {
+    IronHogHoofImage,
+    OmokPigImage,
+    PigsHeadImage,
+    PillagingWildBoarImage,
+    RockImage,
+} from "../images";
 import { JapaneseOgreIcon, MountainIcon, ShieldIcon } from "../images/icons";
 import { defDown, hardy, stun } from "./../ability/Effects";
 import { attack } from "./abilities";
@@ -44,7 +50,8 @@ const boulder: Minion = {
         {
             ...resist,
             name: "Heavy",
-            description: "Immune to debuffs. Targets struck by Boulder will receive +1 damage from attacks.",
+            description:
+                "Immune to debuffs. Targets struck by Boulder will receive +1 damage from attacks.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

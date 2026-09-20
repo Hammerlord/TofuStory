@@ -42,7 +42,9 @@ const useStyles = createUseStyles({
 const ComboPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const classes = useStyles();
     const column = [SnailImage, BlueSnailImage, ShroomImage, SlimeImage, RedSnailImage];
-    const [currentCombo, setCurrentCombo] = useState(Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)));
+    const [currentCombo, setCurrentCombo] = useState(
+        Array.from({ length: 5 }).map(() => getRandomInt(0, column.length - 1)),
+    );
     const [correctAnswer] = useState(shuffle(currentCombo.map((_, i) => i)));
     const [currentAnswer, setCurrentAnswer] = useState([]);
 
@@ -85,7 +87,9 @@ const ComboPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
         if (correctAnswer[currentAnswer.length] === i) {
             const newAnswer = [...currentAnswer, i];
             setCurrentAnswer(newAnswer);
-            const isCorrectAnswer = newAnswer.length === correctAnswer.length && newAnswer.every((value, i) => correctAnswer[i] === value);
+            const isCorrectAnswer =
+                newAnswer.length === correctAnswer.length &&
+                newAnswer.every((value, i) => correctAnswer[i] === value);
             if (isCorrectAnswer) {
                 onComplete();
             }

@@ -1,6 +1,12 @@
 import { useEffect, useMemo } from "react";
 
-import { entrenchedFire, guard, momentum, shatteringArrow, snipe } from "../ability/bowman/bowmanAbilities";
+import {
+    entrenchedFire,
+    guard,
+    momentum,
+    shatteringArrow,
+    snipe,
+} from "../ability/bowman/bowmanAbilities";
 import {
     bladedArmor,
     closeCombat,
@@ -19,7 +25,9 @@ import {
 } from "../ability/warrior/warriorAbilities";
 import { startBattle } from "../battle/actions/phases/phases";
 import BattlefieldContainer from "../battle/view/BattleView";
-import defaultCharacterProperties, { bowmanProperties } from "../character/defaultCharacterProperties";
+import defaultCharacterProperties, {
+    bowmanProperties,
+} from "../character/defaultCharacterProperties";
 import { playerStateSlice } from "../character/playerReducer";
 import { devDummy, spikedDummy } from "../enemy/dummy";
 import { useAppDispatch, useAppSelector } from "../hooks";

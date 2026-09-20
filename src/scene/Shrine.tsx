@@ -19,7 +19,11 @@ const ShrineBackdrop = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={ShrineSceneImage} alt="Shrine" />
-            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.player, classes.character)}
+            />
         </div>
     );
 };
@@ -29,7 +33,9 @@ export const shrineScene: EventScene = {
     script: [
         {
             scene: ShrineBackdrop,
-            dialog: ["Pink petals drift in the wind, temporarily giving you pause. Spring blossoms? Here?"],
+            dialog: [
+                "Pink petals drift in the wind, temporarily giving you pause. Spring blossoms? Here?",
+            ],
         },
         {
             dialog: [

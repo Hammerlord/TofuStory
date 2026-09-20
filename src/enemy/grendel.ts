@@ -145,7 +145,8 @@ export const grendelVolcano: Minion = {
             class: EFFECT_CLASSES.BUFF,
             name: "Erupting",
             icon: VolcanoIcon,
-            description: "Erupting for 5 damage when this effect expires. Stunning, freezing or silencing the Volcano will destroy it.",
+            description:
+                "Erupting for 5 damage when this effect expires. Stunning, freezing or silencing the Volcano will destroy it.",
             duration: 3,
             onEnd: {
                 usableWhileStunned: true,
@@ -175,7 +176,11 @@ export const grendelVolcano: Minion = {
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                        hasEffectType: [
+                            EFFECT_TYPES.STUN,
+                            EFFECT_TYPES.FREEZE,
+                            EFFECT_TYPES.SILENCE,
+                        ],
                         comparator: "eq",
                     },
                 ],
@@ -267,7 +272,8 @@ const stormPulse: Ability = {
 
 const stormBarrier: Ability = {
     name: "Storm Barrier",
-    description: "Dispels debuffs. Gain 100 Armor and pulsate increasing damage until Armor is broken.",
+    description:
+        "Dispels debuffs. Gain 100 Armor and pulsate increasing damage until Armor is broken.",
     resourceCost: 3,
     image: MagicArmorImage,
     actions: [

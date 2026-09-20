@@ -2,7 +2,15 @@ import classNames from "classnames";
 import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
-import { Ability, ACTION_TYPES, ActionAnimation, ANIMATION_TYPES, CARD_PILE_TYPES, CardPileType, CombatAbility } from "../../ability/types";
+import {
+    Ability,
+    ACTION_TYPES,
+    ActionAnimation,
+    ANIMATION_TYPES,
+    CARD_PILE_TYPES,
+    CardPileType,
+    CombatAbility,
+} from "../../ability/types";
 import {
     getCenterCoords,
     playExplodeAnimation,
@@ -170,8 +178,20 @@ const AnimationCanvas = ({
     discardRef: RefObject<HTMLElement>;
     depleteRef: RefObject<HTMLElement>;
 }) => {
-    const { id: eventId, playbackTime = 0, playerSide = [], enemySide = [], displacements } = eventGroup || {};
-    const { actorId, targetSide, selectedIndex, allTargetIndices = [], action } = eventGroup?.events[0] || {};
+    const {
+        id: eventId,
+        playbackTime = 0,
+        playerSide = [],
+        enemySide = [],
+        displacements,
+    } = eventGroup || {};
+    const {
+        actorId,
+        targetSide,
+        selectedIndex,
+        allTargetIndices = [],
+        action,
+    } = eventGroup?.events[0] || {};
 
     const deck = useAppSelector((state) => state.battle!.deck);
     const deckCycled = useAppSelector((state) => state.battle!.deckCycled);
@@ -232,7 +252,14 @@ const AnimationCanvas = ({
         return getCenterCoords(discardRef.current);
     }, [discardRef?.current]);
 
-    const { icon, animation, animationOptions, animations = [], type: actionType, damage: actionDamage = 0 } = action || {};
+    const {
+        icon,
+        animation,
+        animationOptions,
+        animations = [],
+        type: actionType,
+        damage: actionDamage = 0,
+    } = action || {};
 
     const classes = useStyles({})();
 
@@ -249,12 +276,20 @@ const AnimationCanvas = ({
             };
 
             if (animationType === ANIMATION_TYPES.SPIN) {
-                playTravelAnimation({ from: actorElement, to: targetElement, ...options, playbackTime });
+                playTravelAnimation({
+                    from: actorElement,
+                    to: targetElement,
+                    ...options,
+                    playbackTime,
+                });
                 return;
             }
 
             if (animationType === ANIMATION_TYPES.EXPLODE) {
-                playExplodeAnimation({ from: actorElement, playbackTime: playbackTime - 250 });
+                playExplodeAnimation({
+                    from: actorElement,
+                    playbackTime: playbackTime - 250,
+                });
                 return;
             }
 
@@ -262,17 +297,26 @@ const AnimationCanvas = ({
                 const shakeDuration = 175;
                 const stompPlayback = playbackTime - shakeDuration - 100; // -100: just make it a little shorter
                 if (battlefieldRef.current && !options?.disableScreenShake) {
-                    playShakeAnimation({ object: battlefieldRef.current, delay: stompPlayback, playbackTime: shakeDuration });
+                    playShakeAnimation({
+                        object: battlefieldRef.current,
+                        delay: stompPlayback,
+                        playbackTime: shakeDuration,
+                    });
                 }
 
-                playStompAnimation({ object: actorElement, playbackTime: stompPlayback });
+                playStompAnimation({
+                    object: actorElement,
+                    playbackTime: stompPlayback,
+                });
                 return;
             }
 
             if (actionType === ACTION_TYPES.ATTACK) {
                 const numSpacesAway = Math.abs(selectedIndex - getIndexFromCharacterId(actorId));
-                let adjustTimingByDistance = NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
-                const windup = actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * actionDamage) : 0;
+                let adjustTimingByDistance =
+                    NUM_SPACES_AWAY_DELAY * 4 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+                const windup =
+                    actionType === ACTION_TYPES.ATTACK ? Math.min(20, 5 * actionDamage) : 0;
 
                 playTravelAnimation({
                     from: actorElement,
@@ -285,7 +329,11 @@ const AnimationCanvas = ({
             }
         };
 
-        handleCharacterAnimation({ image: icon, type: animation, options: animationOptions });
+        handleCharacterAnimation({
+            image: icon,
+            type: animation,
+            options: animationOptions,
+        });
         if (Array.isArray(animations)) {
             animations.forEach(handleCharacterAnimation);
         }
@@ -296,7 +344,7 @@ const AnimationCanvas = ({
                     return;
                 }
 
-                 Object.values(event.statUpdates).forEach((statUpdate) => {
+                Object.values(event.statUpdates).forEach((statUpdate) => {
                     const damage = statUpdate.healthDamage || 0;
                     if (damage === 0 || statUpdate.missed) {
                         return;
@@ -304,11 +352,11 @@ const AnimationCanvas = ({
 
                     const isPlayerTarget = event.targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE;
                     const direction = isPlayerTarget ? 1 : -1;
-                    const amplitude = Math.min(0.5, damage * 0.01)
+                    const amplitude = Math.min(0.5, damage * 0.01);
                     const shakeDuration = 175;
                     playShakeAnimation({
                         object: battlefieldRef.current,
-                        delay: ((playbackTime - shakeDuration) / 2),
+                        delay: (playbackTime - shakeDuration) / 2,
                         playbackTime: shakeDuration,
                         direction,
                         amplitude,
@@ -378,12 +426,14 @@ const AnimationCanvas = ({
             }
         };
 
-        eventGroup?.addCards?.forEach((value: { cards: Ability[]; cardsAddedTo: CardPileType }, i) => {
-            value.cards.forEach((card, j) => {
-                const ref = addCardRefs[i + j];
-                animateCardRef(ref, value.cardsAddedTo);
-            });
-        });
+        eventGroup?.addCards?.forEach(
+            (value: { cards: Ability[]; cardsAddedTo: CardPileType }, i) => {
+                value.cards.forEach((card, j) => {
+                    const ref = addCardRefs[i + j];
+                    animateCardRef(ref, value.cardsAddedTo);
+                });
+            },
+        );
     }, [eventId]);
 
     useEffect(() => {
@@ -392,18 +442,31 @@ const AnimationCanvas = ({
         }
 
         const animations = deckCycleRefs.slice(0, deck.length).map((ref, i) => {
-            return refreshToPile({ object: ref.current, playbackTime: DECK_CYCLE_TIME, to: deckRef.current, delay: i * 25 });
+            return refreshToPile({
+                object: ref.current,
+                playbackTime: DECK_CYCLE_TIME,
+                to: deckRef.current,
+                delay: i * 25,
+            });
         });
 
         if (animations?.length) {
-            animations[animations.length - 1].onfinish = () => dispatch(updateBattle({ deckCycled: false }));
+            animations[animations.length - 1].onfinish = () =>
+                dispatch(updateBattle({ deckCycled: false }));
         } else {
             dispatch(updateBattle({ deckCycled: false }));
         }
     }, [deckCycled, deck]);
 
-    const projectileGroups = [{ image: icon, type: animation, options: animationOptions }, ...animations];
-    const actor: { element: HTMLElement | undefined; combatant: Combatant | null | undefined; index: number | undefined } = {
+    const projectileGroups = [
+        { image: icon, type: animation, options: animationOptions },
+        ...animations,
+    ];
+    const actor: {
+        element: HTMLElement | undefined;
+        combatant: Combatant | null | undefined;
+        index: number | undefined;
+    } = {
         element: actorElement,
         combatant: getCombatantFromId(actorId),
         index: getIndexFromCharacterId(actorId),
@@ -432,7 +495,7 @@ const AnimationCanvas = ({
                         >
                             <AbilityView ability={ability} disableGlow={true} />
                         </div>
-                    ))
+                    )),
                 )}
             </div>
             {deckCycled &&
@@ -473,7 +536,7 @@ const ProjectileGroup = ({
         animationType === ANIMATION_TYPES.BEAM
             ? MAX_BEAM_PROJECTILES
             : animationType === ANIMATION_TYPES.PROJECTILE_RAIN
-              ? options?.projectileCount ?? DEFAULT_PROJECTILE_RAIN_COUNT
+              ? (options?.projectileCount ?? DEFAULT_PROJECTILE_RAIN_COUNT)
               : 1;
 
     if (options?.ricochet) {
@@ -501,7 +564,7 @@ const ProjectileGroup = ({
                 actor={actor}
                 delay={i * 25}
             />
-        ))
+        )),
     );
 };
 
@@ -516,14 +579,24 @@ const Projectile = ({
     delay,
 }: {
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
-    target: { element: HTMLElement | null; index: number } | { element: HTMLElement | null; index: number }[];
+    target:
+        | { element: HTMLElement | null; index: number }
+        | { element: HTMLElement | null; index: number }[];
     actionAnimation: ActionAnimation;
     playbackTime: number;
     eventId: string;
     delay?: number;
 }) => {
     let { image, type: animationType, options } = actionAnimation || {};
-    const { flash, brightness, width = MIN_PROJECTILE_SIZE, height = MIN_PROJECTILE_SIZE, opacity, fadeOut, mirrorX } = options || {};
+    const {
+        flash,
+        brightness,
+        width = MIN_PROJECTILE_SIZE,
+        height = MIN_PROJECTILE_SIZE,
+        opacity,
+        fadeOut,
+        mirrorX,
+    } = options || {};
     const { element: actorElement, combatant: actorCombatant, index: actorIndex } = actor || {};
     const ref = useRef(null);
     const classes = useStyles({ playbackTime, flash, brightness } as any)();

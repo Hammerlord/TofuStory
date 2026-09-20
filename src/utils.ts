@@ -11,7 +11,10 @@ export const getRandomItem = (array: any[]): any => {
  * Returns an array of n items randomly chosen from the given array.
  */
 export const getRandomItems = (array: any[], numItems: number = 1): any[] => {
-    const indexes = shuffle(Array.from({ length: array.length }).map((_, i) => i)).slice(0, numItems);
+    const indexes = shuffle(Array.from({ length: array.length }).map((_, i) => i)).slice(
+        0,
+        numItems,
+    );
     return indexes.map((index) => array[index]).filter((item) => item);
 };
 

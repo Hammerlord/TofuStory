@@ -109,7 +109,13 @@ export const magicianTutorial: Tutorial = {
                     Unused <Icon icon={ShieldIcon} /> Armor will decay by half every turn.
                 </>,
             ],
-            enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
+            enemies: [
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+                basicDummy2,
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+            ],
             presetDeck: [magicArmor, magicArmor],
             winCondition: {
                 surviveRounds: 1,
@@ -128,19 +134,26 @@ export const magicianTutorial: Tutorial = {
         {
             description: [
                 <>
-                    Magicians gain <Icon icon={AlchemistStoneImage} /> Charged when they play a card.
+                    Magicians gain <Icon icon={AlchemistStoneImage} /> Charged when they play a
+                    card.
                 </>,
                 <>
-                    <Icon icon={OldEnergyBoltImage} /> Energy Bolt and <Icon icon={BlueRushImage} /> Magic Fang consume{" "}
-                    <Icon icon={AlchemistStoneImage} /> to do bonus damage.
+                    <Icon icon={OldEnergyBoltImage} /> Energy Bolt and <Icon icon={BlueRushImage} />{" "}
+                    Magic Fang consume <Icon icon={AlchemistStoneImage} /> to do bonus damage.
                 </>,
                 <>
-                    If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot <Icon icon={OldEnergyBoltImage} /> Lesser
-                    Bolt.
+                    If <Icon icon={AlchemistStoneImage} /> is unused by end of turn, it'll shoot{" "}
+                    <Icon icon={OldEnergyBoltImage} /> Lesser Bolt.
                 </>,
                 <>Try playing a combination of cards to see how this works.</>,
             ],
-            enemies: [null, { ...basicDummy, maxHP: 9 }, { ...basicDummy, maxHP: 23 }, { ...basicDummy, maxHP: 9 }, null],
+            enemies: [
+                null,
+                { ...basicDummy, maxHP: 9 },
+                { ...basicDummy, maxHP: 23 },
+                { ...basicDummy, maxHP: 9 },
+                null,
+            ],
             presetDeck: [energyBolt, magicFang, magicArmor],
         },
     ] as Wave[],
@@ -153,7 +166,8 @@ export const bowmanTutorial: Tutorial = {
         {
             description: [
                 <>
-                    Select <Icon icon={shootAbility.image} /> {shootAbility.name}, and attack the dummy.
+                    Select <Icon icon={shootAbility.image} /> {shootAbility.name}, and attack the
+                    dummy.
                 </>,
                 <>
                     Cards often cost <Stamina /> Stamina, limiting how many you can play per turn.
@@ -168,7 +182,13 @@ export const bowmanTutorial: Tutorial = {
                     Target multiple enemies with <Icon icon={volley.image} /> {volley.name}.
                 </>,
             ],
-            enemies: [{ ...basicDummy, maxHP: 12 }, null, { ...basicDummy, maxHP: 12 }, null, { ...basicDummy, maxHP: 12 }],
+            enemies: [
+                { ...basicDummy, maxHP: 12 },
+                null,
+                { ...basicDummy, maxHP: 12 },
+                null,
+                { ...basicDummy, maxHP: 12 },
+            ],
             presetDeck: [volley, volley, volley],
         },
         {
@@ -180,7 +200,13 @@ export const bowmanTutorial: Tutorial = {
                     Unused <Icon icon={ShieldIcon} /> Armor will decay by half every turn.
                 </>,
             ],
-            enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
+            enemies: [
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+                basicDummy2,
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+            ],
             presetDeck: [defend, defend],
             winCondition: {
                 surviveRounds: 1,
@@ -189,12 +215,18 @@ export const bowmanTutorial: Tutorial = {
         {
             description: [
                 <>
-                    The Bowman also has <Icon icon={puppetAbility.image} /> {puppetAbility.name}, a summoned minion that absorbs attacks for
-                    you.
+                    The Bowman also has <Icon icon={puppetAbility.image} /> {puppetAbility.name}, a
+                    summoned minion that absorbs attacks for you.
                 </>,
                 <>Select and place it in one of the 4 available minion slots.</>,
             ],
-            enemies: [basicAoeDummyMagician, basicAoeDummyMagician, basicDummy2, basicAoeDummyMagician, basicAoeDummyMagician],
+            enemies: [
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+                basicDummy2,
+                basicAoeDummyMagician,
+                basicAoeDummyMagician,
+            ],
             presetDeck: [puppetAbility],
             winCondition: {
                 surviveRounds: 1,

@@ -1,4 +1,9 @@
-import { AbilityEffect, CombatAbility, SELECT_CARD_TYPES, SelectCards } from "../../../ability/types";
+import {
+    AbilityEffect,
+    CombatAbility,
+    SELECT_CARD_TYPES,
+    SelectCards,
+} from "../../../ability/types";
 import { Combatant, Player } from "../../../character/types";
 import { battleStateSlice } from "../../reducer";
 import getCardSelection from "../../selectCardUtils";
@@ -11,22 +16,24 @@ import { drawCards, handleOnDrawEvents } from "./drawCards";
 import { applyAbilityEventEffects } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
 
-const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } =
+    battleStateSlice?.actions || {};
 
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const { hand, deck, discard } = getState().battle!;
+export const deleteCard =
+    (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+        const { hand, deck, discard } = getState().battle!;
 
-    dispatch(
-        updateBattle({
-            hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
-        })
-    );
-};
+        dispatch(
+            updateBattle({
+                hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
+            }),
+        );
+    };
 
 export const selectCardsAction =
     ({
@@ -46,10 +53,19 @@ export const selectCardsAction =
         const battle = getState().battle!;
         const { deck, hand, discard } = battle;
         const playbackCollectorInstance = playbackCollector();
-        const context: ActionContext = { name: "Select Cards", playbackCollector: playbackCollectorInstance };
+        const context: ActionContext = {
+            name: "Select Cards",
+            playbackCollector: playbackCollectorInstance,
+        };
 
         if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-            dispatch(depleteAbilities({ actorId: player?.id, abilities: selectedAbilities, context }));
+            dispatch(
+                depleteAbilities({
+                    actorId: player?.id,
+                    abilities: selectedAbilities,
+                    context,
+                }),
+            );
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
             return;
         }
@@ -61,7 +77,14 @@ export const selectCardsAction =
             const updatedDeck = [...deck];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDeck.unshift(applyAbilityEventEffects({ event: ability.onLeaveHand, ability, player, battle }));
+                    updatedDeck.unshift(
+                        applyAbilityEventEffects({
+                            event: ability.onLeaveHand,
+                            ability,
+                            player,
+                            battle,
+                        }),
+                    );
                 } else {
                     updatedHand.push(ability);
                 }
@@ -71,7 +94,7 @@ export const selectCardsAction =
                 updateBattle({
                     hand: updatedHand,
                     deck: updatedDeck,
-                })
+                }),
             );
 
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -83,7 +106,9 @@ export const selectCardsAction =
             const updatedDiscard = [...discard];
             hand.forEach((ability: CombatAbility) => {
                 if (selectedAbilityIds.includes(ability.instanceId)) {
-                    updatedDiscard.unshift(...prepareForDiscard({ cards: [ability], player, battle }));
+                    updatedDiscard.unshift(
+                        ...prepareForDiscard({ cards: [ability], player, battle }),
+                    );
                 } else {
                     updatedHand.push(ability);
                 }
@@ -92,7 +117,7 @@ export const selectCardsAction =
                 updateBattle({
                     hand: updatedHand,
                     discard: updatedDiscard,
-                })
+                }),
             );
             dispatch(drawCards({ amount: selectedAbilityIds.length, context }));
             dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -123,7 +148,10 @@ export const selectCardsAction =
                     const index = pile.findIndex((ability) => ability.instanceId === id);
                     if (index > -1) {
                         const [card] = pile.splice(index, 1);
-                        cardsToAdd.push({ ...card, effects: [...(card?.effects || []), ...effects] });
+                        cardsToAdd.push({
+                            ...card,
+                            effects: [...(card?.effects || []), ...effects],
+                        });
                         return true;
                     }
 
@@ -139,7 +167,7 @@ export const selectCardsAction =
                 updateBattle({
                     deck: updatedDeck,
                     discard: updatedDiscard,
-                })
+                }),
             );
 
             dispatch(addCardsToHand(cardsToAdd));
@@ -173,7 +201,7 @@ export const handleSelectCards = ({
                     selectCards,
                     isAutoCast,
                     source,
-                })
+                }),
             );
             return;
         }
@@ -201,10 +229,15 @@ export const handleSelectCards = ({
             // TODO no op for now. There are no actions which deplete from hand.
         } else if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
             const cardsToMove = cards.map((card: CombatAbility) =>
-                applyAbilityEventEffects({ event: card.onLeaveHand, ability: card, battle, player })
+                applyAbilityEventEffects({
+                    event: card.onLeaveHand,
+                    ability: card,
+                    battle,
+                    player,
+                }),
             );
             const updatedHand = hand.filter((ability: CombatAbility) =>
-                cardsToMove.every((card) => card.instanceId !== ability.instanceId)
+                cardsToMove.every((card) => card.instanceId !== ability.instanceId),
             );
             const updatedDeck = [...cards, ...deck];
             dispatch(updateBattle({ hand: updatedHand, deck: updatedDeck }));

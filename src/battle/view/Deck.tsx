@@ -138,7 +138,9 @@ const Deck = ({
         return imageNode;
     };
 
-    const getAbilityMapTooltip = (abilityMap: { [abilityName: string]: { count: number; ability: CombatAbility } }) => {
+    const getAbilityMapTooltip = (abilityMap: {
+        [abilityName: string]: { count: number; ability: CombatAbility };
+    }) => {
         return (
             <ul className={classes.abilityList}>
                 {Object.entries(abilityMap).map(([abilityName, { ability, count }]) => {
@@ -198,10 +200,23 @@ const Deck = ({
                         <svg viewBox="0 0 100 100" className={classes.svg}>
                             {Array.from({ length: deckSize }).map((_, i) => {
                                 return (
-                                    <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
-                                        <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
+                                    <svg
+                                        key={[getCardColor(i), i].join("-")}
+                                        y={i * -2 + 75}
+                                        viewBox="0 0 100 100"
+                                    >
+                                        <path
+                                            fill={getCardColor(i)}
+                                            d="M 50 0 100 25 50 50 0 25 Z"
+                                        />
                                         {i === deckSize - 1 && (
-                                            <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
+                                            <text
+                                                fill="rgba(255, 255, 255, 0.8)"
+                                                x="50"
+                                                fontSize="26px"
+                                                y="35"
+                                                textAnchor="middle"
+                                            >
                                                 {deckSize}
                                             </text>
                                         )}
@@ -210,8 +225,18 @@ const Deck = ({
                             })}
                             {deckSize === 0 && (
                                 <svg y={75} viewBox="0 0 100 100">
-                                    <path fill={DECK_SHADOW} d="M 50 0 100 25 50 50 0 25 Z" opacity={0.5} />
-                                    <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
+                                    <path
+                                        fill={DECK_SHADOW}
+                                        d="M 50 0 100 25 50 50 0 25 Z"
+                                        opacity={0.5}
+                                    />
+                                    <text
+                                        fill="rgba(255, 255, 255, 0.8)"
+                                        x="50"
+                                        fontSize="26px"
+                                        y="35"
+                                        textAnchor="middle"
+                                    >
                                         {deckSize}
                                     </text>
                                 </svg>

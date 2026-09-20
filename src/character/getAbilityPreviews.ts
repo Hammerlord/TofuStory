@@ -6,7 +6,13 @@ import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { checkSummonMinion } from "../battle/actions/summon/summon";
 import { passesConditions } from "../battle/passesConditions";
 import { BattleState } from "../battle/types";
-import { BATTLEFIELD_SIDES, CombatantInfo, Event, TRIGGER_SOURCE_TYPES, ActionContext } from "../battle/types";
+import {
+    BATTLEFIELD_SIDES,
+    CombatantInfo,
+    Event,
+    TRIGGER_SOURCE_TYPES,
+    ActionContext,
+} from "../battle/types";
 import { getPlayerAbilityResourceCost } from "../battle/actions/playerAbility";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { Ability, CombatAbility, TARGET_TYPES } from "./../ability/types";
@@ -15,7 +21,8 @@ import { Combatant } from "./types";
 import { validate as uuidValidate } from "uuid";
 import { AppDispatch, RootState } from "../store";
 
-export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES): string => [index, side].join("-");
+export const getEmptyTileKey = (index: number, side: BATTLEFIELD_SIDES): string =>
+    [index, side].join("-");
 
 type BattleStateEventPayload = BattleState & Event;
 
@@ -25,7 +32,10 @@ export const previewAction = ({
 }: {
     actionFn: (dispatch: AppDispatch, getState: () => RootState) => void;
     battle: BattleState;
-}): { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } } => {
+}): {
+    battle: BattleState;
+    statUpdates: { [key: string]: UpdatedCombatantStats[] };
+} => {
     const statUpdates: { [key: string]: UpdatedCombatantStats[] } = {};
 
     const dispatch = (reduxAction: any | { payload: BattleStateEventPayload }) => {
@@ -45,7 +55,13 @@ export const previewAction = ({
             return;
         }
 
-        const { statUpdates: currentStatUpdates, selectedIndex, allTargetIndices, targetSide, action } = payload;
+        const {
+            statUpdates: currentStatUpdates,
+            selectedIndex,
+            allTargetIndices,
+            targetSide,
+            action,
+        } = payload;
 
         if (currentStatUpdates) {
             Object.entries(currentStatUpdates).forEach(([combatantId, value]: [string, object]) => {
@@ -53,7 +69,11 @@ export const previewAction = ({
                     statUpdates[combatantId] = [];
                 }
 
-                statUpdates[combatantId].push({ ...value, action: payload.action, combatantId });
+                statUpdates[combatantId].push({
+                    ...value,
+                    action: payload.action,
+                    combatantId,
+                });
             });
         }
 
@@ -78,9 +98,11 @@ export const previewAction = ({
 
                 let finalDamage = index === selectedIndex ? damage : secondaryDamage || damage;
                 if (damageDividedByTargets) {
-                    const allTargets = battle[targetSide]?.filter((combatant: Combatant | null, i: number) => {
-                        return (combatant?.HP || resurrect) && allTargetIndices.includes(i);
-                    });
+                    const allTargets = battle[targetSide]?.filter(
+                        (combatant: Combatant | null, i: number) => {
+                            return (combatant?.HP || resurrect) && allTargetIndices.includes(i);
+                        },
+                    );
                     finalDamage = Math.ceil(finalDamage / allTargets.length);
                 }
 
@@ -173,10 +195,16 @@ const getAbilityPreviews = ({
     actor: Combatant;
     target?: { side: BATTLEFIELD_SIDES; index: number; id: string | null };
     battle: BattleState;
-    combatantStates?: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
+    combatantStates?: {
+        enemySide: (Combatant | null)[];
+        playerSide: (Combatant | null)[];
+    };
 }): {
     result: { [combatantId: string]: PreviewStatUpdate[] };
-    combatantStates: { enemySide: (Combatant | null)[]; playerSide: (Combatant | null)[] };
+    combatantStates: {
+        enemySide: (Combatant | null)[];
+        playerSide: (Combatant | null)[];
+    };
 } => {
     const result: { [combatantId: string]: PreviewStatUpdate[] } = {};
     const hasYetToCastAbility = !actor.casting && ability?.castTime;
@@ -206,7 +234,13 @@ const getAbilityPreviews = ({
 
     const context: ActionContext = {
         name: "Ability Previews",
-        sourceChain: [{ source: actionParent, actorId: actor.id, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+        sourceChain: [
+            {
+                source: actionParent,
+                actorId: actor.id,
+                type: TRIGGER_SOURCE_TYPES.ABILITY,
+            },
+        ],
         triggerHistory: [],
         isPreviewMode: true,
     };
@@ -221,12 +255,17 @@ const getAbilityPreviews = ({
         targetIndex,
     }: {
         targetsRandomly?: boolean;
-        previews: { battle: BattleState; statUpdates: { [key: string]: UpdatedCombatantStats[] } };
+        previews: {
+            battle: BattleState;
+            statUpdates: { [key: string]: UpdatedCombatantStats[] };
+        };
         targetIndex?: number;
     }) => {
         previousCombatantStates.playerSide = previews.battle.playerSide;
         previousCombatantStates.enemySide = previews.battle.enemySide;
-        const affectedTargetCount = Object.keys(previews.statUpdates).filter((id) => uuidValidate(id)).length;
+        const affectedTargetCount = Object.keys(previews.statUpdates).filter((id) =>
+            uuidValidate(id),
+        ).length;
 
         Object.values(previews.statUpdates).forEach((statUpdates: UpdatedCombatantStats[]) => {
             statUpdates.forEach((statUpdate) => {
@@ -257,10 +296,14 @@ const getAbilityPreviews = ({
                 const { index } = combatantInfo;
                 const numTargets = currentAction.numExtraTargets;
                 const totalTargets = numTargets ? numTargets + 1 : undefined;
-                const hasRandomSecondaryTargets = totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
+                const hasRandomSecondaryTargets =
+                    totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
                 const isProc = statUpdate.context?.sourceChain?.at(-1)?.isProc;
-                const isProcHostileAction = isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
-                const nondeterministic = Boolean(hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction);
+                const isProcHostileAction =
+                    isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
+                const nondeterministic = Boolean(
+                    hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction,
+                );
 
                 result[id].push({
                     statUpdate,
@@ -372,9 +415,14 @@ const getAbilityPreviews = ({
 
         const targetsRandomly =
             !actorCurrentTarget &&
-            (action.target === TARGET_TYPES.RANDOM_HOSTILE || actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
+            (action.target === TARGET_TYPES.RANDOM_HOSTILE ||
+                actorData?.combatant?.effects.some((e) => e.hitRandomTarget));
 
-        handleStatUpdatePreviews({ targetsRandomly, previews: previews, targetIndex: target.index });
+        handleStatUpdatePreviews({
+            targetsRandomly,
+            previews: previews,
+            targetIndex: target.index,
+        });
     });
 
     return {

@@ -72,7 +72,11 @@ export const gachaponMachine: Minion = {
     ],
 };
 
-const gachaponFight: { characters: string[]; disableCardRewards: boolean; waves: Wave[] } = {
+const gachaponFight: {
+    characters: string[];
+    disableCardRewards: boolean;
+    waves: Wave[];
+} = {
     characters: [gachaponMachine.name],
     disableCardRewards: true,
     waves: [
@@ -144,7 +148,9 @@ export const gachaponEvents: EventScene = {
                                         },
                                         {
                                             speaker: gachaponMachine,
-                                            dialog: ["The gachapon machine appears to be totally broken."],
+                                            dialog: [
+                                                "The gachapon machine appears to be totally broken.",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -185,7 +191,9 @@ export const gachaponEvents: EventScene = {
                                         },
                                         {
                                             speaker: gachaponMachine,
-                                            dialog: ["The gachapon machine appears to be malfunctioning..."],
+                                            dialog: [
+                                                "The gachapon machine appears to be malfunctioning...",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -222,7 +230,9 @@ export const gachaponEvents: EventScene = {
                                         },
                                         {
                                             speaker: gachaponMachine,
-                                            dialog: ["The gachapon machine appears to be malfunctioning..."],
+                                            dialog: [
+                                                "The gachapon machine appears to be malfunctioning...",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",

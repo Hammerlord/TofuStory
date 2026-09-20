@@ -69,7 +69,7 @@ const Chill = ({ amount = 0 }: { amount: number }) => {
                         animationDelay: `${getRandomArbitrary(0, 1.5)}s`,
                         width: getRandomArbitrary(24, 32),
                     };
-                })
+                }),
             );
         } else {
             setParticles([]);
@@ -79,7 +79,13 @@ const Chill = ({ amount = 0 }: { amount: number }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<SnowflakeIcon />} className={classes.icon} style={style} size="sm" />
+                <Icon
+                    key={i}
+                    icon={<SnowflakeIcon />}
+                    className={classes.icon}
+                    style={style}
+                    size="sm"
+                />
             ))}
         </div>
     );

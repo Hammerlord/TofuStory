@@ -1,4 +1,11 @@
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import { AyanImage, BattleStatueImage, BrandishImage, SpiritVikingFlagImage } from "../images";
 import { CrossedSwordsIcon } from "../images/icons";
 import { shuffle } from "../utils";
@@ -71,7 +78,8 @@ export const ayanEnemy: Minion = {
         ...shuffle([
             {
                 name: "Clash",
-                description: "Ayan clashes with a chosen target for two blows, dealing 7 damage per hit.",
+                description:
+                    "Ayan clashes with a chosen target for two blows, dealing 7 damage per hit.",
                 resourceCost: 3,
                 castTime: 1,
                 image: SpiritVikingFlagImage,

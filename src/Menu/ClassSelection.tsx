@@ -5,7 +5,12 @@ import { JOB_CARD_MAP } from "../ability";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { Ability } from "../ability/types";
 import Weapon from "../character/Weapon";
-import { playExplodeAnimation, playFadeInAnimation, playStompAnimation, playTossUpAnimation } from "../character/animations";
+import {
+    playExplodeAnimation,
+    playFadeInAnimation,
+    playStompAnimation,
+    playTossUpAnimation,
+} from "../character/animations";
 import { classMap, playerStateSlice } from "../character/playerReducer";
 import { COMMON_STYLES } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -195,9 +200,17 @@ const ClassSelection = ({
 
     useEffect(() => {
         if (selectedClass === PLAYER_CLASSES.WARRIOR) {
-            const animation = playStompAnimation({ object: characterRef.current, playbackTime: 500 });
+            const animation = playStompAnimation({
+                object: characterRef.current,
+                playbackTime: 500,
+            });
             animation.onfinish = () => {
-                playExplodeAnimation({ object: ghostRefs.map((ref) => ref.current), playbackTime: 250, maxScale: 3, translateX: -50 });
+                playExplodeAnimation({
+                    object: ghostRefs.map((ref) => ref.current),
+                    playbackTime: 250,
+                    maxScale: 3,
+                    translateX: -50,
+                });
             };
             return () => animation.cancel();
         }
@@ -241,13 +254,20 @@ const ClassSelection = ({
                         {[...(JOB_CARD_MAP[selectedClass]?.starters || [])]
                             .sort((a, b) => (a.resourceCost || 0) - (b.resourceCost || 0))
                             .map((ability, i) => (
-                                <div className={classes.abilityContainer} key={[ability.name, i].join("-")} ref={cardsRefs[i]}>
+                                <div
+                                    className={classes.abilityContainer}
+                                    key={[ability.name, i].join("-")}
+                                    ref={cardsRefs[i]}
+                                >
                                     <AbilityView ability={ability} disableBattleBonuses={true} />
                                 </div>
                             ))}
                     </div>
                     <span className={classes.highlightAnimation}>
-                        <Button color="secondary" onClick={() => onTransition(() => onClose(false))}>
+                        <Button
+                            color="secondary"
+                            onClick={() => onTransition(() => onClose(false))}
+                        >
                             Continue
                         </Button>
                     </span>
@@ -262,7 +282,13 @@ const ClassSelection = ({
             return null;
         }
         const selectedClassProperties = classMap[selectedClass];
-        return <Weapon image={selectedClassProperties.weapon} wielder={selectedClassProperties} wielderRef={characterRef} />;
+        return (
+            <Weapon
+                image={selectedClassProperties.weapon}
+                wielder={selectedClassProperties}
+                wielderRef={characterRef}
+            />
+        );
     };
 
     return (
@@ -284,12 +310,14 @@ const ClassSelection = ({
                             <img
                                 src={portraits[selectedClass] || AnonymushroomImage}
                                 className={classNames(classes.portrait, {
-                                    [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                                    [classes.applyingEffect]:
+                                        selectedClass === PLAYER_CLASSES.MAGICIAN,
                                 })}
                             />
                             <div
                                 className={classNames(classes.weaponContainer, {
-                                    [classes.applyingEffect]: selectedClass === PLAYER_CLASSES.MAGICIAN,
+                                    [classes.applyingEffect]:
+                                        selectedClass === PLAYER_CLASSES.MAGICIAN,
                                 })}
                             >
                                 {getWeapon()}
@@ -297,7 +325,10 @@ const ClassSelection = ({
                             <img src={StarImage} ref={projectileRef} className={classes.ghost} />
                         </div>
                     </div>
-                    <p>After some time spent fumbling around, you realize that you are, in fact, a mushroom.</p>
+                    <p>
+                        After some time spent fumbling around, you realize that you are, in fact, a
+                        mushroom.
+                    </p>
                     <p>You don't remember much, but you do remember you were a...</p>
                 </div>
                 <div className={classes.classContainer}>
@@ -347,7 +378,9 @@ const ClassSelection = ({
                         <>
                             <hr />
                             <div>
-                                <p className={classes.runSavedNotice}>A run was saved from your previous session. Continue?</p>
+                                <p className={classes.runSavedNotice}>
+                                    A run was saved from your previous session. Continue?
+                                </p>
                                 <Button
                                     color="secondary"
                                     onClick={() => {

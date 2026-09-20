@@ -20,7 +20,14 @@ import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { BattleState } from "../../types";
-import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import {
+    ActionContext,
+    ActionParent,
+    BATTLEFIELD_SIDES,
+    CombatantInfo,
+    TRIGGER_SOURCE_TYPES,
+    TriggerSource,
+} from "../../types";
 import { performAction } from "../performAction";
 import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../phases/phases";
@@ -67,7 +74,14 @@ export const checkHandleActionSummon = ({
 
         const minionsSummoned: Combatant[] = [];
         const tributeSummonedMinions: string[] = []; // IDs of killers
-        const { friendly, hostile, friendlySide, hostileSide, index: actorIndex, combatant: actor } = actorData;
+        const {
+            friendly,
+            hostile,
+            friendlySide,
+            hostileSide,
+            index: actorIndex,
+            combatant: actor,
+        } = actorData;
         const mutableFriendly = friendly!.slice(); // This gets used to update the battlefield side at the end
         const mutableHostile = hostile!.slice();
 
@@ -124,7 +138,7 @@ export const checkHandleActionSummon = ({
                                 side: friendlySide,
                                 index: pos,
                                 parentContext,
-                            })
+                            }),
                         );
                         isTributeKill = true;
                     }
@@ -145,7 +159,9 @@ export const checkHandleActionSummon = ({
 
                     const { id, isPlayer } = combatant;
                     // Do not replace any of the minions summoned in the current action
-                    const isNotNewlySummonedMinion = minionsSummoned.every((minion) => minion.id !== id);
+                    const isNotNewlySummonedMinion = minionsSummoned.every(
+                        (minion) => minion.id !== id,
+                    );
                     const isTributable = !combatant.disableTribute; // TODO minionToSummon bypassDisableTribute
                     if (!isPlayer && id !== actorId && isNotNewlySummonedMinion && isTributable) {
                         acc.push(i);
@@ -156,7 +172,16 @@ export const checkHandleActionSummon = ({
 
                 pos = getRandomItem(existingMinionIndices);
                 if (typeof pos === "number") {
-                    dispatch(tributeKill({ tributeSummon: true, resourceCost: 0, actor, side: friendlySide, index: pos, parentContext }));
+                    dispatch(
+                        tributeKill({
+                            tributeSummon: true,
+                            resourceCost: 0,
+                            actor,
+                            side: friendlySide,
+                            index: pos,
+                            parentContext,
+                        }),
+                    );
                     isTributeKill = true;
                 }
             }
@@ -164,14 +189,17 @@ export const checkHandleActionSummon = ({
             const availableMinions = minion.filter((minion: Minion | string) => {
                 if (noDuplicateMinions) {
                     const minionName = typeof minion === "string" ? minion : minion?.name;
-                    return mutableSide.every((m: Combatant | null) => !m?.HP || m?.name !== minionName);
+                    return mutableSide.every(
+                        (m: Combatant | null) => !m?.HP || m?.name !== minionName,
+                    );
                 }
 
                 return true;
             });
 
             const minionToSummon = getRandomItem(availableMinions);
-            const baseMinion = typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon;
+            const baseMinion =
+                typeof minionToSummon === "string" ? enemyNameMap[minionToSummon] : minionToSummon;
             const minionEffects = baseMinion?.effects?.slice() || [];
             if (isTributeKill) {
                 minionEffects.push(tributeSummonBuff);
@@ -188,7 +216,9 @@ export const checkHandleActionSummon = ({
             }
 
             if (typeof pos === "number") {
-                const summonedMinion = createCombatant(cloneDeep({ ...baseMinion, effects: minionEffects }));
+                const summonedMinion = createCombatant(
+                    cloneDeep({ ...baseMinion, effects: minionEffects }),
+                );
                 if (summonedMinion) {
                     minionsSummoned.push(summonedMinion);
                     mutableSide[pos] = summonedMinion;
@@ -205,7 +235,7 @@ export const checkHandleActionSummon = ({
                 updateBattle({
                     [friendlySide]: mutableFriendly,
                     [hostileSide]: mutableHostile,
-                })
+                }),
             );
 
             // Give minions time to appear before triggering any minion-related effect events (or the next action).
@@ -216,13 +246,19 @@ export const checkHandleActionSummon = ({
                     newCombatants: minionsSummoned,
                     context: parentContext,
                     actionParent,
-                })
+                }),
             );
         }
 
         // Tribute summons count as a kill for the new minion
         tributeSummonedMinions.forEach((id) =>
-            dispatch(checkEventTrigger({ combatantId: id, effectEventKey: EFFECT_EVENT_KEYS.onKill, context: parentContext }))
+            dispatch(
+                checkEventTrigger({
+                    combatantId: id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onKill,
+                    context: parentContext,
+                }),
+            ),
         );
 
         minionsSummoned.forEach((minion) => {
@@ -231,13 +267,18 @@ export const checkHandleActionSummon = ({
                     summonedId: minion.id,
                     summonerId: actorId,
                     parentContext,
-                })
+                }),
             );
         });
 
         minionsSummoned.forEach((minion) => {
             dispatch(requeueRecentlyUsedAbility({ combatantId: minion.id }));
-            dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: minion.id, effectsApplied: minion.effects }));
+            dispatch(
+                updateEnemyTargetingAfterEffectsApplied({
+                    combatantId: minion.id,
+                    effectsApplied: minion.effects,
+                }),
+            );
         });
     };
 };
@@ -270,7 +311,9 @@ export const checkSummonMinion = ({
         const battlefieldSide = battle[side];
         const pickRandomSummonIndex = () => {
             if (isAutoCast) {
-                const indices = battlefieldSide.map((_, i) => i).filter((_, i) => !battlefieldSide[i]?.isPlayer);
+                const indices = battlefieldSide
+                    .map((_, i) => i)
+                    .filter((_, i) => !battlefieldSide[i]?.isPlayer);
                 return getRandomItem(indices);
             }
             return getRandomItem(getPossibleSummonIndices(battlefieldSide));
@@ -300,7 +343,16 @@ export const checkSummonMinion = ({
 
         if (isKillPreviousMinion) {
             const { tributeSummon } = minionOptions || {};
-            dispatch(tributeKill({ tributeSummon, resourceCost, actor, side, index, parentContext }));
+            dispatch(
+                tributeKill({
+                    tributeSummon,
+                    resourceCost,
+                    actor,
+                    side,
+                    index,
+                    parentContext,
+                }),
+            );
         }
 
         const newBattleProps: {
@@ -322,18 +374,33 @@ export const checkSummonMinion = ({
                 newCombatants: [summonedMinion],
                 context: parentContext,
                 actionParent: ability,
-            })
+            }),
         );
 
         // Tribute summons count as a kill for the new minion
         if (isKillPreviousMinion) {
             dispatch(
-                checkEventTrigger({ combatantId: summonedMinion.id, effectEventKey: EFFECT_EVENT_KEYS.onKill, context: parentContext })
+                checkEventTrigger({
+                    combatantId: summonedMinion.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onKill,
+                    context: parentContext,
+                }),
             );
         }
-        dispatch(onSummonTriggers({ summonedId: summonedMinion.id, summonerId: actorId, parentContext }));
+        dispatch(
+            onSummonTriggers({
+                summonedId: summonedMinion.id,
+                summonerId: actorId,
+                parentContext,
+            }),
+        );
 
-        dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId: summonedMinion.id, effectsApplied: summonedMinion.effects }));
+        dispatch(
+            updateEnemyTargetingAfterEffectsApplied({
+                combatantId: summonedMinion.id,
+                effectsApplied: summonedMinion.effects,
+            }),
+        );
     };
 };
 
@@ -387,10 +454,13 @@ const tributeKill = ({
             performAction({
                 action,
                 side,
-                parentContext: { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] },
+                parentContext: {
+                    ...parentContext,
+                    sourceChain: [...(parentContext?.sourceChain || []), source],
+                },
                 selectedIndex: index,
                 actorId: actor.id, // The actor is considered to have killed it
-            })
+            }),
         );
     };
 };
@@ -399,19 +469,44 @@ const tributeKill = ({
  * Called when a combatant is summoned on the board, typically handling status effect events
  */
 export const onSummonTriggers =
-    ({ summonedId, summonerId, parentContext }: { summonedId: string; summonerId: string; parentContext: ActionContext }) =>
+    ({
+        summonedId,
+        summonerId,
+        parentContext,
+    }: {
+        summonedId: string;
+        summonerId: string;
+        parentContext: ActionContext;
+    }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
         const context: ActionContext = {
             ...parentContext,
-            sourceChain: [...(parentContext?.sourceChain || []), { actorId: summonerId, targetId: summonedId, allTargetIds: [summonedId] }],
+            sourceChain: [
+                ...(parentContext?.sourceChain || []),
+                {
+                    actorId: summonerId,
+                    targetId: summonedId,
+                    allTargetIds: [summonedId],
+                },
+            ],
         };
 
-        dispatch(checkEventTrigger({ combatantId: summonedId, effectEventKey: EFFECT_EVENT_KEYS.onSummoned, context: context }));
+        dispatch(
+            checkEventTrigger({
+                combatantId: summonedId,
+                effectEventKey: EFFECT_EVENT_KEYS.onSummoned,
+                context: context,
+            }),
+        );
         const { hostile, friendly } = findCombatantData(getState().battle!, summonerId) || {};
         hostile?.forEach((combatant) => {
             if (combatant?.id !== summonedId) {
                 dispatch(
-                    checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onHostileSummon, context: context })
+                    checkEventTrigger({
+                        combatantId: combatant?.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onHostileSummon,
+                        context: context,
+                    }),
                 );
             }
         });
@@ -419,7 +514,11 @@ export const onSummonTriggers =
         friendly?.forEach((combatant) => {
             if (combatant?.id !== summonedId) {
                 dispatch(
-                    checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onFriendlySummon, context: context })
+                    checkEventTrigger({
+                        combatantId: combatant?.id,
+                        effectEventKey: EFFECT_EVENT_KEYS.onFriendlySummon,
+                        context: context,
+                    }),
                 );
             }
         });

@@ -42,7 +42,8 @@ export const calculateDamage = ({
     hand: CombatAbility[];
     discard: CombatAbility[];
 }): number => {
-    const isAttack = action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
+    const isAttack =
+        action.type === ACTION_TYPES.ATTACK || action.type === ACTION_TYPES.RANGE_ATTACK;
     if (action.damage === undefined && !isAttack) {
         return 0;
     }
@@ -103,7 +104,11 @@ export const calculateDamage = ({
                 discard,
             });
 
-            totalSkillBonus += getSkillBonusDamage({ ability: actionParent as CombatAbility, skillBonus }) * stacks;
+            totalSkillBonus +=
+                getSkillBonusDamage({
+                    ability: actionParent as CombatAbility,
+                    skillBonus,
+                }) * stacks;
             totalAttackPower += attackPower * effectMultiplier * stacks;
             if (minimumAttackDamage > minimumDamage) {
                 minimumDamage = minimumAttackDamage;
@@ -112,7 +117,10 @@ export const calculateDamage = ({
     }
 
     let totalDefDown = 0;
-    const targetEnabledEffects = getEnabledEffects({ combatantInfo: target, context });
+    const targetEnabledEffects = getEnabledEffects({
+        combatantInfo: target,
+        context,
+    });
 
     targetEnabledEffects.forEach((effect: CombatEffect) => {
         const { maxDamageTaken, excludeEffectOwner, defenseDown: defDown = 0, stacks = 1 } = effect;
@@ -135,7 +143,10 @@ export const calculateDamage = ({
         debuffModifiers += bleedModifier + totalDefDown;
     }
 
-    const withDamageMods = calculateDamageModifierCoeff({ damage, totalDamageMod: totalAttackPower + debuffModifiers });
+    const withDamageMods = calculateDamageModifierCoeff({
+        damage,
+        totalDamageMod: totalAttackPower + debuffModifiers,
+    });
 
     let total = withDamageMods;
     // Between minimum and maximum damage, minimum damage wins (arbitrarily).
@@ -146,14 +157,23 @@ export const calculateDamage = ({
     return Math.max(minimumDamage, Math.ceil(total));
 };
 
-export const getSkillBonusDamage = ({ ability, skillBonus }: { ability?: Ability | Item; skillBonus?: SkillBonus[] }) => {
+export const getSkillBonusDamage = ({
+    ability,
+    skillBonus,
+}: {
+    ability?: Ability | Item;
+    skillBonus?: SkillBonus[];
+}) => {
     if (!skillBonus || !ability) {
         return 0;
     }
 
     let totalDamage = 0;
     for (const { skill, damage = 0, comparator } of skillBonus) {
-        if (comparator === "includes" && ability?.name?.toLowerCase().includes(skill.toLowerCase())) {
+        if (
+            comparator === "includes" &&
+            ability?.name?.toLowerCase().includes(skill.toLowerCase())
+        ) {
             totalDamage += damage || 0;
         } else if (skill === ability?.name) {
             totalDamage += damage || 0;
@@ -163,7 +183,13 @@ export const getSkillBonusDamage = ({ ability, skillBonus }: { ability?: Ability
     return totalDamage;
 };
 
-export const calculateDamageModifierCoeff = ({ damage, totalDamageMod }: { damage: number; totalDamageMod: number }): number => {
+export const calculateDamageModifierCoeff = ({
+    damage,
+    totalDamageMod,
+}: {
+    damage: number;
+    totalDamageMod: number;
+}): number => {
     if (!totalDamageMod) {
         return damage;
     }

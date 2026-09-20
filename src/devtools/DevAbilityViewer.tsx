@@ -61,10 +61,13 @@ const DevAbilityViewer = ({ onClose }) => {
         });
     };
 
-    const cardsByRarity: { [rarity: string]: Ability[] } = Object.values(RARITIES).reduce((acc, rarity: RARITIES) => {
-        acc[rarity] = [];
-        return acc;
-    }, {});
+    const cardsByRarity: { [rarity: string]: Ability[] } = Object.values(RARITIES).reduce(
+        (acc, rarity: RARITIES) => {
+            acc[rarity] = [];
+            return acc;
+        },
+        {},
+    );
 
     JOB_CARD_MAP[selectedClass]?.all?.forEach((card) => {
         if (JOB_CARD_MAP[selectedClass]?.starters.some((c) => c.name === card.name)) {
@@ -76,7 +79,11 @@ const DevAbilityViewer = ({ onClose }) => {
 
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={() => setIsViewingUpgrades((prev) => !prev)}>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setIsViewingUpgrades((prev) => !prev)}
+            >
                 Toggle upgrades {isViewingUpgrades ? "off" : "on"}
             </Button>
             <Button variant="contained" onClick={onClose}>
@@ -92,7 +99,11 @@ const DevAbilityViewer = ({ onClose }) => {
             {selectedClass && (
                 <div className={classes.viewer}>
                     <p>Neutral Cards</p>
-                    <Grid playerClass={selectedClass} cards={formatCards(NEUTRAL_ABILITIES)} disablePortal={true} />
+                    <Grid
+                        playerClass={selectedClass}
+                        cards={formatCards(NEUTRAL_ABILITIES)}
+                        disablePortal={true}
+                    />
                     <hr />
                     <p>
                         {selectedClass} ({JOB_CARD_MAP[selectedClass]?.all.length})
@@ -103,7 +114,11 @@ const DevAbilityViewer = ({ onClose }) => {
                                 <p>
                                     {rarity} - {cards.length}
                                 </p>
-                                <Grid playerClass={selectedClass} cards={cards} disablePortal={true} />
+                                <Grid
+                                    playerClass={selectedClass}
+                                    cards={cards}
+                                    disablePortal={true}
+                                />
                             </Box>
                         );
                     })}

@@ -153,7 +153,8 @@ export const aimedShot: Ability = {
             removeOnDiscard: false,
         },
     ],
-    description: "<b>Pierce.</b> Removes all <b>Aim</b> to deal +{{{ _damage_ }}} equal to that amount.",
+    description:
+        "<b>Pierce.</b> Removes all <b>Aim</b> to deal +{{{ _damage_ }}} equal to that amount.",
     actions: [
         {
             type: ACTION_TYPES.NONE,
@@ -228,7 +229,8 @@ export const sharpEyes: Ability = {
     name: "Sharp Eyes",
     resourceCost: 1,
     image: SharpEyesImage,
-    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
+    description:
+        "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _defDown_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -467,7 +469,8 @@ export const soulShot: Ability = {
     image: MagicArrowImage,
     removeAfterTurn: true,
     overrideBodyText: true,
-    description: "Draw a card. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.drawCards.amount }}</b> more card.",
+    description:
+        "Draw a card. <br/> <b>Critical:</b> <b>+{{ actions.0.bonus.drawCards.amount }}</b> more card.",
     onDraw: {
         chance: 0,
         abilityEffects: [
@@ -645,7 +648,8 @@ export const doubleShot: Ability = {
     name: "Double Shot",
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Hits x2 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
+    description:
+        "Hits x2 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     image: DoubleShotImage,
     onDraw: {
         chance: 0,
@@ -738,7 +742,8 @@ export const strafe: Ability = {
     name: "Strafe",
     resourceCost: 2,
     overrideBodyText: true,
-    description: "Hits x4 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
+    description:
+        "Hits x4 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     rarity: RARITIES.UNCOMMON,
     image: StrafeImage,
     onDraw: {
@@ -775,7 +780,8 @@ export const strafe: Ability = {
 export const mortalBlow: Ability = {
     name: "Mortal Blow",
     resourceCost: 1,
-    description: "Deals extra damage based on target's missing HP, up to <b>{{ actions.0.bonus.damage }}</b>.",
+    description:
+        "Deals extra damage based on target's missing HP, up to <b>{{ actions.0.bonus.damage }}</b>.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     image: MortalBlowImage,
@@ -1011,7 +1017,8 @@ export const barbedArrows: Ability = {
     ],
     upgrades: [
         {
-            description: "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}} <br/> <b>Critical: +1 {{{ _bleed_ }}}</b>",
+            description:
+                "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _bleed_ }}} <br/> <b>Critical: +1 {{{ _bleed_ }}}</b>",
             onDraw: {
                 chance: 0,
                 abilityEffects: [
@@ -1137,7 +1144,8 @@ export const chargedShot: Ability = {
 
 export const finalAttack: Ability = {
     name: "Final Attack",
-    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each attack you made this turn.",
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     image: FinalAttackImage,
@@ -1178,7 +1186,8 @@ export const coveringFire: Ability = {
     resourceCost: 1,
     rarity: RARITIES.COMMON,
     image: CoveringFireImage,
-    description: "You and your allies gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b>",
+    description:
+        "You and your allies gain <b>{{ actions.0.secondaryAction.armor }} {{{ _armor_ }}}</b>",
     overrideBodyText: true,
     actions: [
         {
@@ -1372,7 +1381,8 @@ export const lycanthropeMinion: Minion = {
 
 export const lycanthropeAbility: Ability = {
     name: "Lycanthrope",
-    description: "Gains <b>+{{{ minion.effects.0.onKill.effects.0.stacks }}} {{{ _attUp_ }}}</b> when it kills a threatening target.",
+    description:
+        "Gains <b>+{{{ minion.effects.0.onKill.effects.0.stacks }}} {{{ _attUp_ }}}</b> when it kills a threatening target.",
     minion: lycanthropeMinion,
     image: LycanthropeImage,
     resourceCost: 2,
@@ -1696,7 +1706,8 @@ export const wayfind: Ability = {
     image: IllusionStepImage,
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
-    description: "Select cards to discard from your hand. Then, draw that many + {{ actions.0.drawCards.amount }}.",
+    description:
+        "Select cards to discard from your hand. Then, draw that many + {{ actions.0.drawCards.amount }}.",
     overrideBodyText: true,
     depletedOnUse: true,
     selectCards: {
@@ -1730,7 +1741,8 @@ export const quickShot: Ability = {
     image: MarksmanBoostImage,
     rarity: RARITIES.UNCOMMON,
     overrideBodyText: true,
-    description: "Draw a card. <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
+    description:
+        "Draw a card. <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>",
     onDraw: {
         chance: 0,
         abilityEffects: [
@@ -1855,7 +1867,8 @@ export const arrowBlow: Ability = {
     name: "Arrow Blow",
     resourceCost: 1,
     overrideBodyText: true,
-    description: "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+    description:
+        "<b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b>  <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
     image: ArrowBlowImage,
     onDraw: {
         chance: 0.2,
@@ -1979,7 +1992,8 @@ export const treat: Ability = {
     depletedOnUse: true,
     resourceCost: 1,
     overrideBodyText: true,
-    description: "Gain <b>+1 {{{ _attUp_ }}} {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
+    description:
+        "Gain <b>+1 {{{ _attUp_ }}} {{{ _armorUp_ }}}</b>, <b>x2</b> if played on a Summon.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2185,7 +2199,8 @@ export const hurricaneAbility: Ability = {
     name: "Hurricane",
     resourceCost: 2,
     overrideBodyText: true,
-    description: "Hits x3 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
+    description:
+        "Hits x3 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     image: HurricaneImage,
     rarity: RARITIES.UNCOMMON,
     onDraw: {
@@ -2347,7 +2362,8 @@ export const maneuver: Ability = {
     rarity: RARITIES.COMMON,
     image: EvasionBoostImage,
     overrideBodyText: true,
-    description: "Draw {{ actions.0.drawCards.amount }} card. If it is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
+    description:
+        "Draw {{ actions.0.drawCards.amount }} card. If it is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -2371,7 +2387,8 @@ export const maneuver: Ability = {
     ],
     upgrades: [
         {
-            description: "Draw {{ actions.0.drawCards.amount }} cards. If any of them is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
+            description:
+                "Draw {{ actions.0.drawCards.amount }} cards. If any of them is a <b>Critical</b> card, gain {{{ _resource_ }}}.",
             actions: [
                 {
                     drawCards: {
@@ -2389,7 +2406,8 @@ export const peckingOrder: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: ChickenCouponImage,
     overrideBodyText: true,
-    description: "Deal <b>{{ actions.0.flatDamage }} {{{ _damage_ }}}</b> to a friendly unit. Draw {{ actions.0.drawCards.amount }} cards.",
+    description:
+        "Deal <b>{{ actions.0.flatDamage }} {{{ _damage_ }}}</b> to a friendly unit. Draw {{ actions.0.drawCards.amount }} cards.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -2458,11 +2476,13 @@ const phoenixMinion: Minion = {
     armor: 30,
     abilities: [fireBurst],
     image: PhoenixImage,
-    description: "<b>On summon</b> and <b>death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
+    description:
+        "<b>On summon</b> and <b>death:</b> Attack. <br/> Deals 1 damage to itself with each attack.",
     effects: [
         {
             name: "Blazing Bird",
-            description: "When this character is summoned and when it dies, it will attack. Deals 1 damage to itself with each attack.",
+            description:
+                "When this character is summoned and when it dies, it will attack. Deals 1 damage to itself with each attack.",
             icon: BlazingExtinctionImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,
@@ -2500,7 +2520,8 @@ export const phoenixEgg: Ability = {
     },
     upgrades: [
         {
-            description: "<b>Critical:</b> Playable. Summon a Phoenix. <b>+{{ onDraw.chance }}</b> chance to crit.",
+            description:
+                "<b>Critical:</b> Playable. Summon a Phoenix. <b>+{{ onDraw.chance }}</b> chance to crit.",
             onDraw: {
                 chance: 0.2,
             },
@@ -2627,7 +2648,8 @@ export const roastingShot: Ability = {
 export const takeAim: Ability = {
     name: "Take Aim",
     resourceCost: 1,
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ actions.0.bonus.effects.0.stacks }} Aim</b>",
+    description:
+        "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> <br/> <b>Critical: +{{ actions.0.bonus.effects.0.stacks }} Aim</b>",
     overrideBodyText: true,
     image: ArcheryMasteryImage,
     onDraw: {
@@ -2753,7 +2775,8 @@ export const steady: Ability = {
     image: SlowAndSteadyImage,
     rarity: RARITIES.COMMON,
     resourceCost: 0,
-    description: "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b> <br/> Draw a card.",
+    description:
+        "When you draw this card, gain <b>{{ onDraw.ability.actions.0.effects.0.stacks }} Aim.</b> <br/> Draw a card.",
     onDraw: {
         ability: {
             name: "Steady",
@@ -2836,7 +2859,8 @@ export const windupShot: Ability = {
 
 export const sweepingArrows: Ability = {
     name: "Sweeping Aim",
-    description: "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> Your next Aimed Shot gains <b>+1 Area</b>.",
+    description:
+        "Gain <b>{{ actions.0.effects.0.stacks }} Aim.</b> Your next Aimed Shot gains <b>+1 Area</b>.",
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     image: BronzeCrossbowArrowImage,
@@ -2976,7 +3000,8 @@ export const stimulant: Ability = {
 export const followThrough: Ability = {
     name: "Follow Through",
     image: ThrustImage,
-    description: "<b>+{{ actions.0.bonus.effects.0.stacks }} Aim</b> for each attack you made this turn.",
+    description:
+        "<b>+{{ actions.0.bonus.effects.0.stacks }} Aim</b> for each attack you made this turn.",
     resourceCost: 0,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -3062,7 +3087,8 @@ export const surge: Ability = {
     rarity: RARITIES.RARE,
     image: VengeanceImage,
     overrideBodyText: true,
-    description: "Gain <b>{{ actions.1.effects.0.stacks }} Aim.</b> Move <b>Aimed Shot</b> to your hand, wherever it is.",
+    description:
+        "Gain <b>{{ actions.1.effects.0.stacks }} Aim.</b> Move <b>Aimed Shot</b> to your hand, wherever it is.",
     actions: [
         {
             type: ACTION_TYPES.EFFECT,
@@ -3381,7 +3407,8 @@ export const scavenge: Ability = {
     ],
     upgrades: [
         {
-            description: "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+            description:
+                "<b>Deplete</b> a card. Gain {{{ _resource_ }}} and draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
             actions: [
                 {
                     drawCards: {
@@ -3398,7 +3425,8 @@ export const sidepack: Ability = {
     retain: true,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck.",
+    description:
+        "Place up to {{ selectCards.maxAmount }} cards from your hand on top of your deck.",
     image: DeansBagImage,
     selectCards: {
         type: SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
@@ -3423,7 +3451,8 @@ export const sidepack: Ability = {
 
 export const preciseDefense: Ability = {
     name: "Precise Defense",
-    description: "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b>. Apply <b>{{{ _armor_ }}}</b> equal to your <b>Aim.</b>",
+    description:
+        "Gain <b>{{ actions.0.secondaryAction.effects.0.stacks }} Aim</b>. Apply <b>{{{ _armor_ }}}</b> equal to your <b>Aim.</b>",
     image: BlueDirosImage,
     depletedOnUse: true,
     resourceCost: 2,
@@ -3628,13 +3657,15 @@ export const forage: Ability = {
                 {
                     addCardsToDeck: [
                         {
-                            description: "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+                            description:
+                                "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
                             onDraw: { chance: 0.2 },
                         },
                     ],
                     addCardsToDiscard: [
                         {
-                            description: "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
+                            description:
+                                "<b>Critical:</b> Draw a card. <br/> <b>+{{ onDraw.chance }}</b> chance to crit.",
                             onDraw: { chance: 0.2 },
                         },
                     ],
@@ -3667,7 +3698,8 @@ export const ultimateStrafe: Ability = {
     name: "Ultimate Strafe",
     resourceCost: 3,
     overrideBodyText: true,
-    description: "Hits x6 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
+    description:
+        "Hits x6 <br/> <b>Critical: +{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> per hit",
     rarity: RARITIES.RARE,
     image: UltimateStrafeImage,
     onDraw: {
@@ -3750,7 +3782,8 @@ export const doomHeraldAbility: Ability = {
     image: RavenImage,
     minion: doomHeraldMinion,
     resourceCost: 3,
-    description: "Inflicts <b>Doom</b> every turn. The Doom Herald is also afflicted by <b>Doom.</b>",
+    description:
+        "Inflicts <b>Doom</b> every turn. The Doom Herald is also afflicted by <b>Doom.</b>",
     actions: [],
     upgrades: [
         {
@@ -3810,10 +3843,16 @@ const meerkatMinion: Minion = {
             icon: BullseyeIcon,
             description: "Granting Aim and applying DEF Down.",
             onTurnStart: {
-                ability: { ...meerkatScout, actions: meerkatScout.actions.map((a) => ({ ...a })) },
+                ability: {
+                    ...meerkatScout,
+                    actions: meerkatScout.actions.map((a) => ({ ...a })),
+                },
             },
             onSummoned: {
-                ability: { ...meerkatScout, actions: meerkatScout.actions.map((a) => ({ ...a })) },
+                ability: {
+                    ...meerkatScout,
+                    actions: meerkatScout.actions.map((a) => ({ ...a })),
+                },
             },
         },
     ],
@@ -3894,7 +3933,8 @@ export const callCompanion: Ability = {
     image: GuidesWhistleImage,
     tooltip: {
         title: "Summon",
-        description: "A minion fights alongside you in combat. Most minions will automatically attack at the end of your turn.",
+        description:
+            "A minion fights alongside you in combat. Most minions will automatically attack at the end of your turn.",
     },
     overrideTooltip: true,
     description: "Summon a random minion. <b>{{ actions.0.chance }}</b> chance for a Rare.",
@@ -3921,7 +3961,14 @@ export const callCompanion: Ability = {
             icon: BreadImage,
             summon: [
                 {
-                    minion: [puppetMinion, wolfMinion, eagleMinion, crowMinion, catMinion, meerkatMinion],
+                    minion: [
+                        puppetMinion,
+                        wolfMinion,
+                        eagleMinion,
+                        crowMinion,
+                        catMinion,
+                        meerkatMinion,
+                    ],
                     tributePossible: true,
                 },
             ],
@@ -3940,7 +3987,8 @@ export const callCompanion: Ability = {
 
 export const headshot: Ability = {
     name: "Headshot",
-    description: "<b>Kill:</b> <b>+1 {{{ _resource_ }}} +{{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b>",
+    description:
+        "<b>Kill:</b> <b>+1 {{{ _resource_ }}} +{{ actions.0.secondaryAction.healing }} {{{ _healing_ }}}</b>",
     resourceCost: 2,
     image: PuppetImage,
     rarity: RARITIES.COMMON,
@@ -3992,7 +4040,8 @@ export const blitz: Ability = {
                 {
                     name: "Blitz",
                     icon: GoldenEagleImage,
-                    description: "When you play an active <b>Critical</b> card, one of your minions attacks.",
+                    description:
+                        "When you play an active <b>Critical</b> card, one of your minions attacks.",
                     type: EFFECT_TYPES.NONE,
                     class: EFFECT_CLASSES.BUFF,
                     duration: 3,
@@ -4044,7 +4093,8 @@ export const blitz: Ability = {
 
 export const springload: Ability = {
     name: "Springload",
-    description: "<b>Draw:</b> {{{ _defDown_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}{{{ _duration_ }}}</b> an enemy.",
+    description:
+        "<b>Draw:</b> {{{ _defDown_ }}} <b>{{ onDraw.ability.actions.0.effects.0.duration }}{{{ _duration_ }}}</b> an enemy.",
     rarity: RARITIES.UNCOMMON,
     image: TrustyAndFaithfulImage,
     resourceCost: 1,

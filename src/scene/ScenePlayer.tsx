@@ -26,7 +26,13 @@ import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
-import { EventScene, ScriptConditions, ScriptNode, ScriptNodeTreasure, ScriptResponse } from "./types";
+import {
+    EventScene,
+    ScriptConditions,
+    ScriptNode,
+    ScriptNodeTreasure,
+    ScriptResponse,
+} from "./types";
 import { PuzzleCompletionPayload } from "./TreasureBox/types";
 import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
 import { partition } from "ramda";
@@ -222,7 +228,14 @@ const classesPluralInterpolation = {
     [PLAYER_CLASSES.BOWMAN]: "bowmen",
 };
 
-const { logVisitedEvent, addInfamy, acquireItems, updateMesos, pushActivityHistory, loseItems: loseItemsAction } = playerStateSlice.actions;
+const {
+    logVisitedEvent,
+    addInfamy,
+    acquireItems,
+    updateMesos,
+    pushActivityHistory,
+    loseItems: loseItemsAction,
+} = playerStateSlice.actions;
 
 const ScenePlayer = ({
     scene,
@@ -251,7 +264,7 @@ const ScenePlayer = ({
             }[];
             backgroundImage?: string;
         },
-        callback: () => void
+        callback: () => void,
     ) => void;
     onExit: Function;
     onShop?: Function;
@@ -262,7 +275,8 @@ const ScenePlayer = ({
     onChangeRegion?: (region: REGIONS) => void;
     region: REGIONS;
 }) => {
-    const { battleHistory = [], activityHistory = [] } = useAppSelector((state) => state?.character) || {};
+    const { battleHistory = [], activityHistory = [] } =
+        useAppSelector((state) => state?.character) || {};
     const dispatch = useAppDispatch();
 
     const [dialogIndex, setDialogIndex] = useState(0);
@@ -273,7 +287,10 @@ const ScenePlayer = ({
     const [showCamp, setShowCamp] = useState(false);
     const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
-    const [upgradedCards, setUpgradedCards] = useState<{ original: CombatAbility[]; upgraded: CombatAbility[] } | null>(null);
+    const [upgradedCards, setUpgradedCards] = useState<{
+        original: CombatAbility[];
+        upgraded: CombatAbility[];
+    } | null>(null);
     const [hasEnteredInitialNode, setHasEnteredInitialNode] = useState(false);
 
     const classes = useStyles();
@@ -331,40 +348,71 @@ const ScenePlayer = ({
         const recentActivity = activityHistory[activityHistory.length - 1];
 
         const passesCondition = (condition: ScriptConditions): boolean => {
-            const { battle = {}, comparator, chance, activityScore, items = [], mesos } = condition || {};
+            const {
+                battle = {},
+                comparator,
+                chance,
+                activityScore,
+                items = [],
+                mesos,
+            } = condition || {};
             if (chance) {
                 return Math.random() <= chance;
             }
 
             if (typeof battle.totalDamage === "number") {
                 const totalDamageDealt = recentBattle?.statistics?.totalDamage || 0;
-                return passesValueComparison({ val: totalDamageDealt, otherVal: battle.totalDamage, comparator });
+                return passesValueComparison({
+                    val: totalDamageDealt,
+                    otherVal: battle.totalDamage,
+                    comparator,
+                });
             }
 
             if (typeof battle.totalKills === "number") {
                 const totalKills = recentBattle?.statistics?.totalKills || 0;
-                return passesValueComparison({ val: totalKills, otherVal: battle.totalKills, comparator });
+                return passesValueComparison({
+                    val: totalKills,
+                    otherVal: battle.totalKills,
+                    comparator,
+                });
             }
 
             if (battle.damageToEnemy) {
                 const { enemyName, amount = 0 } = battle.damageToEnemy;
                 const damageToEnemy = recentBattle?.statistics?.damageByEnemyName?.[enemyName] || 0;
-                return passesValueComparison({ val: damageToEnemy, otherVal: amount, comparator });
+                return passesValueComparison({
+                    val: damageToEnemy,
+                    otherVal: amount,
+                    comparator,
+                });
             }
 
             if (typeof activityScore === "number") {
-                return passesValueComparison({ val: recentActivity?.score, otherVal: activityScore, comparator });
+                return passesValueComparison({
+                    val: recentActivity?.score,
+                    otherVal: activityScore,
+                    comparator,
+                });
             }
 
             if (items.length) {
                 if (comparator === "not") {
-                    return items.every((itemName: string) => !player.items.some((i) => i.name === itemName));
+                    return items.every(
+                        (itemName: string) => !player.items.some((i) => i.name === itemName),
+                    );
                 }
-                return items.every((itemName: string) => player.items.some((i) => i.name === itemName));
+                return items.every((itemName: string) =>
+                    player.items.some((i) => i.name === itemName),
+                );
             }
 
             if (typeof mesos === "number") {
-                return passesValueComparison({ val: player.mesos, otherVal: mesos, comparator });
+                return passesValueComparison({
+                    val: player.mesos,
+                    otherVal: mesos,
+                    comparator,
+                });
             }
         };
 
@@ -429,7 +477,9 @@ const ScenePlayer = ({
             dispatch(logVisitedEvent(node.id));
         }
 
-        const passing = node.conditionalNext?.find(({ conditions }) => passesScriptConditions(conditions));
+        const passing = node.conditionalNext?.find(({ conditions }) =>
+            passesScriptConditions(conditions),
+        );
         if (passing) {
             setScript(passing.next);
             setDialogIndex(0);
@@ -482,7 +532,11 @@ const ScenePlayer = ({
         const upgraded = candidates.map((card) => getUpgradeCard(card));
 
         const updatedDeck = deck.map((card: CombatAbility) => {
-            return upgraded.find((upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId) || card;
+            return (
+                upgraded.find(
+                    (upgradedCard: CombatAbility) => upgradedCard.instanceId === card.instanceId,
+                ) || card
+            );
         });
 
         updateDeck(updatedDeck);
@@ -558,7 +612,7 @@ const ScenePlayer = ({
                     ...encounter,
                     backgroundImage: background,
                 },
-                callback
+                callback,
             );
         } else {
             callback();
@@ -589,7 +643,9 @@ const ScenePlayer = ({
         if (response.encounter) {
             return (
                 <>
-                    [<Icon icon={CrossedSwordsIcon} size="xs" className={classes.optionIcon} /> Fight]
+                    [
+                    <Icon icon={CrossedSwordsIcon} size="xs" className={classes.optionIcon} />{" "}
+                    Fight]
                 </>
             );
         }
@@ -605,7 +661,8 @@ const ScenePlayer = ({
         if (response.shop) {
             return (
                 <>
-                    [<Icon icon={<MoneyBagIcon />} size="xs" className={classes.optionIcon} /> Shop]
+                    [
+                    <Icon icon={<MoneyBagIcon />} size="xs" className={classes.optionIcon} /> Shop]
                 </>
             );
         }
@@ -613,7 +670,13 @@ const ScenePlayer = ({
         if (response.removeAbility) {
             return (
                 <>
-                    [<Icon icon={BronzeIncenseBurnerImage} size="sm" className={classes.optionIcon} /> Remove card from deck]
+                    [
+                    <Icon
+                        icon={BronzeIncenseBurnerImage}
+                        size="sm"
+                        className={classes.optionIcon}
+                    />{" "}
+                    Remove card from deck]
                 </>
             );
         }
@@ -621,8 +684,9 @@ const ScenePlayer = ({
         if (response.upgradeCards) {
             return (
                 <>
-                    [<Icon icon={GoldenHammerImage} size="sm" className={classes.optionIcon} /> Upgrade {response.upgradeCards} random
-                    cards]
+                    [
+                    <Icon icon={GoldenHammerImage} size="sm" className={classes.optionIcon} />{" "}
+                    Upgrade {response.upgradeCards} random cards]
                 </>
             );
         }
@@ -653,7 +717,7 @@ const ScenePlayer = ({
             response.upgradeCards ||
             response.transmutation ||
             response.infamy ||
-            response.id
+            response.id,
         );
     };
 
@@ -684,7 +748,11 @@ const ScenePlayer = ({
     };
 
     const interpolateDialog = (text: string) => {
-        const { totalKills = 0, totalDamage = 0, damageByEnemyName } = recentBattle?.statistics || {};
+        const {
+            totalKills = 0,
+            totalDamage = 0,
+            damageByEnemyName,
+        } = recentBattle?.statistics || {};
         const template = {
             class: classesInterpolation[player.class],
             classPlural: classesPluralInterpolation[player.class],
@@ -731,7 +799,10 @@ const ScenePlayer = ({
                         [classes.hide]: disableBackground,
                     })}
                 />
-                <div className={classes.backgroundContainer} style={background && { backgroundImage: `url(${background})` }} />
+                <div
+                    className={classes.backgroundContainer}
+                    style={background && { backgroundImage: `url(${background})` }}
+                />
                 <div
                     className={classNames(classes.backgroundOverlay, {
                         [classes.hide]: disableBackground,
@@ -749,7 +820,10 @@ const ScenePlayer = ({
 
                             <div className={classes.wrapper}>
                                 {dialog?.length > 0 && (
-                                    <div className={classes.dialogContainer} onClick={handleClickDialog}>
+                                    <div
+                                        className={classes.dialogContainer}
+                                        onClick={handleClickDialog}
+                                    >
                                         {canSkip && (
                                             <div className={classes.skipButton}>
                                                 <Button onClick={handleSkip}>Skip</Button>
@@ -759,9 +833,14 @@ const ScenePlayer = ({
                                             {speaker && (
                                                 <>
                                                     <div className={classes.portrait}>
-                                                        <img src={speaker.image} key={speaker.name} />
+                                                        <img
+                                                            src={speaker.image}
+                                                            key={speaker.name}
+                                                        />
                                                     </div>{" "}
-                                                    <div className={classes.speakerName}>{speaker?.name}</div>
+                                                    <div className={classes.speakerName}>
+                                                        {speaker?.name}
+                                                    </div>
                                                 </>
                                             )}
                                         </div>
@@ -783,24 +862,34 @@ const ScenePlayer = ({
                                     <div className={classes.feedbackContainer}>
                                         {responses.map((response, i: number) => (
                                             <div
-                                                className={classNames(classes.option, classes.response)}
+                                                className={classNames(
+                                                    classes.option,
+                                                    classes.response,
+                                                )}
                                                 key={i}
                                                 onClick={() => handleClickResponse(response)}
                                             >
                                                 <span>
                                                     {response.infamy && (
                                                         <span className={classes.infamyContainer}>
-                                                            <Icon icon={SkullPatchImage} size="sm" />
+                                                            <Icon
+                                                                icon={SkullPatchImage}
+                                                                size="sm"
+                                                            />
                                                         </span>
                                                     )}
-                                                    {interpolateDialog(response.text)} {getResponseAffix(response)}
+                                                    {interpolateDialog(response.text)}{" "}
+                                                    {getResponseAffix(response)}
                                                 </span>
                                             </div>
                                         ))}
                                     </div>
                                 )}
                                 {itemsObtainedFromScene && (
-                                    <div className={classes.feedbackContainer} onClick={handleClickItemsObtained}>
+                                    <div
+                                        className={classes.feedbackContainer}
+                                        onClick={handleClickItemsObtained}
+                                    >
                                         <div className={classes.option}>
                                             - You gain -
                                             {itemsObtainedFromScene.map((item) => (
@@ -814,7 +903,13 @@ const ScenePlayer = ({
                             </div>
                         </>
                     )}
-                    {typeof Puzzle === "function" && <Puzzle player={player} onComplete={onCompletePuzzle} onExit={handleClickDialog} />}
+                    {typeof Puzzle === "function" && (
+                        <Puzzle
+                            player={player}
+                            onComplete={onCompletePuzzle}
+                            onExit={handleClickDialog}
+                        />
+                    )}
                 </div>
                 {showCamp && (
                     <Camp
@@ -826,13 +921,23 @@ const ScenePlayer = ({
                     />
                 )}
                 {itemChoices && (
-                    <ItemSelection {...itemChoices} player={player} onClose={handleClickDialog} onSelectClick={handleSelectItemChoice} />
+                    <ItemSelection
+                        {...itemChoices}
+                        player={player}
+                        onClose={handleClickDialog}
+                        onSelectClick={handleSelectItemChoice}
+                    />
                 )}
-                {isRemovingAbility && <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />}
+                {isRemovingAbility && (
+                    <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} />
+                )}
                 {upgradedCards && (
                     <Overlay>
                         <div className={classes.inner}>
-                            <UpgradedCardsView {...upgradedCards} onExit={() => setUpgradedCards(null)} />
+                            <UpgradedCardsView
+                                {...upgradedCards}
+                                onExit={() => setUpgradedCards(null)}
+                            />
                         </div>
                     </Overlay>
                 )}

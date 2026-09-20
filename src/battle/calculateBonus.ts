@@ -52,7 +52,10 @@ export const calculateBonus = ({
             });
 
             const isValidTarget = !excludePrimaryTarget || !isTargetSelected;
-            if (passesConditions({ target, actor, proc: bonus, context, battle }) && isValidTarget) {
+            if (
+                passesConditions({ target, actor, proc: bonus, context, battle }) &&
+                isValidTarget
+            ) {
                 const bonusDamage = (bonus.damage || 0) * multiplier;
                 const {
                     damage = 0,
@@ -91,6 +94,6 @@ export const calculateBonus = ({
             }
             return acc;
         },
-        { ...action }
+        { ...action },
     );
 };

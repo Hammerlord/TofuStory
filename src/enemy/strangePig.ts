@@ -9,7 +9,14 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { IronHogHoofImage, MutantRibbonPigImage, MutateImage, OmokPigImage, PigsHeadImage, StrangePigImage } from "../images";
+import {
+    IronHogHoofImage,
+    MutantRibbonPigImage,
+    MutateImage,
+    OmokPigImage,
+    PigsHeadImage,
+    StrangePigImage,
+} from "../images";
 import { JapaneseOgreIcon, MountainIcon } from "../images/icons";
 import { Action, ANIMATION_TYPES } from "./../ability/types";
 import { attack } from "./abilities";
@@ -118,7 +125,8 @@ const stalagmite: Minion = {
         {
             ...resist,
             name: "Heavy",
-            description: "Immune to debuffs. Targets struck by Stalagmite will receive 1 Armor Down.",
+            description:
+                "Immune to debuffs. Targets struck by Stalagmite will receive 1 Armor Down.",
             icon: MountainIcon,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

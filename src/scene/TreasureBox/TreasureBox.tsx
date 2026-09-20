@@ -257,10 +257,16 @@ const TreasureBox = ({
                 setSelectedItemIndices([0]);
             }
         } else {
-            const bonuses = curse ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS } : undefined;
+            const bonuses = curse
+                ? { uncommon: CURSE_UNCOMMON_BONUS, rare: CURSE_RARE_BONUS }
+                : undefined;
             const treasure: Item[] = [];
-            Array.from({ length: curse ? CURSED_NUM_CHOICES : BASE_NUM_CHOICES }).forEach(() => {
-                const equipment = getRandomItem(rollItemPool({ player, bonuses, excludeItems: treasure }));
+            Array.from({
+                length: curse ? CURSED_NUM_CHOICES : BASE_NUM_CHOICES,
+            }).forEach(() => {
+                const equipment = getRandomItem(
+                    rollItemPool({ player, bonuses, excludeItems: treasure }),
+                );
                 if (equipment) {
                     treasure.push(equipment);
                 } else {
@@ -288,7 +294,7 @@ const TreasureBox = ({
                 dispatch(
                     updatePlayer({
                         HP: player.HP - 1,
-                    })
+                    }),
                 );
             }
         }
@@ -362,7 +368,11 @@ const TreasureBox = ({
                             </div>
                             {isChestOpened && (
                                 <div className={classes.buttonContainer}>
-                                    <Button color={"primary"} onClick={handleClickSelect} disabled={!selectedItemIndices.length}>
+                                    <Button
+                                        color={"primary"}
+                                        onClick={handleClickSelect}
+                                        disabled={!selectedItemIndices.length}
+                                    >
                                         Collect
                                     </Button>
                                 </div>

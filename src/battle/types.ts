@@ -1,6 +1,15 @@
 import { ReactElement } from "react";
 import { Item } from "../item/types";
-import { Ability, Action, CardPileType, CombatAbility, CombatEffect, Effect, Minion, SelectCards } from "./../ability/types";
+import {
+    Ability,
+    Action,
+    CardPileType,
+    CombatAbility,
+    CombatEffect,
+    Effect,
+    Minion,
+    SelectCards,
+} from "./../ability/types";
 import { Combatant, Player } from "./../character/types";
 import { UpdatedCombatantStats } from "./actions/getUpdatedStats";
 import { PlaybackCollector } from "./actions/playbackCollector";
@@ -154,7 +163,9 @@ export enum BATTLE_TYPES {
 
 // Logs combatants who moved or were displaced (eg. by vacuum) during an action. `from` and `to` are the index positions.
 // What do we need the side for if combatantIds never change sides? Just to have the info handy?
-export type Displacement = { [combatantId: string]: { from: number; to: number; side?: BATTLEFIELD_SIDES } };
+export type Displacement = {
+    [combatantId: string]: { from: number; to: number; side?: BATTLEFIELD_SIDES };
+};
 
 export interface BattleState {
     enemySide: (Combatant | null)[];

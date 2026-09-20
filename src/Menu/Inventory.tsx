@@ -112,7 +112,15 @@ const useStyles = createUseStyles({
 
 const ITEM_CLASS_NAME = "inventory-item";
 
-const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory: Item[]; onUseItem?: (item: Item) => void }) => {
+const Inventory = ({
+    player,
+    inventory,
+    onUseItem,
+}: {
+    player: Player;
+    inventory: Item[];
+    onUseItem?: (item: Item) => void;
+}) => {
     const playerSide = useAppSelector((state) => state.battle?.playerSide);
 
     const handleOnUseItem = (item: Item) => {
@@ -120,7 +128,13 @@ const Inventory = ({ player, inventory, onUseItem }: { player: Player; inventory
     };
 
     return inventory.map((item) => (
-        <InventoryItem playerSide={playerSide} item={item} key={item.name} onUseItem={handleOnUseItem} player={player} />
+        <InventoryItem
+            playerSide={playerSide}
+            item={item}
+            key={item.name}
+            onUseItem={handleOnUseItem}
+            player={player}
+        />
     ));
 };
 
@@ -152,7 +166,8 @@ const InventoryItem = ({
     const playerClass = player.class;
     const isItemUsable = item?.type === ITEM_TYPES.CONSUMABLE || item?.upgradeCard;
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
-    const interpolateDescription = (item: Item) => Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
+    const interpolateDescription = (item: Item) =>
+        Handlebars.compile(item.description || "")({ ...item, ...elementMapping });
 
     // For example, if an item like Steely is tracking the number of cards that has been drawn before proccing, show how many cards have been drawn.
     // Effects are copied over from the item onto the player during combat. So we need to do a lookup to find the effect instance.
@@ -163,20 +178,23 @@ const InventoryItem = ({
         }
 
         // Just take the first one for now; items don't often have more than 1 effect event
-        const effectEventKey = Object.values(EFFECT_EVENT_KEYS).find((key) => item.effects?.[0]?.[key]);
+        const effectEventKey = Object.values(EFFECT_EVENT_KEYS).find(
+            (key) => item.effects?.[0]?.[key],
+        );
         if (!effectEventKey) {
             return;
         }
 
-        const relatedEffect: CombatEffect | undefined = combatPlayer?.effects.find((e: CombatEffect) => e.itemSource === item.name);
+        const relatedEffect: CombatEffect | undefined = combatPlayer?.effects.find(
+            (e: CombatEffect) => e.itemSource === item.name,
+        );
         const relatedEffectEvent = relatedEffect?.[effectEventKey];
         if (!relatedEffectEvent) {
             return;
         }
 
-        const { triggerSum, triggerFrequencyFromSum, eventTriggeredTimes, eventTriggerFrequency } = Array.isArray(relatedEffectEvent)
-            ? relatedEffectEvent[0]
-            : relatedEffectEvent;
+        const { triggerSum, triggerFrequencyFromSum, eventTriggeredTimes, eventTriggerFrequency } =
+            Array.isArray(relatedEffectEvent) ? relatedEffectEvent[0] : relatedEffectEvent;
 
         if (triggerSum && triggerFrequencyFromSum) {
             return triggerSum % triggerFrequencyFromSum;
@@ -238,7 +256,10 @@ const InventoryItem = ({
                         <div className={classes.rarity}>
                             <span
                                 className={classNames(classes.diamond, {
-                                    [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
+                                    [classes.common]:
+                                        item.rarity === RARITIES.COMMON ||
+                                        item.rarity === RARITIES.STARTER ||
+                                        !item.rarity,
                                     [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
                                     [classes.rare]: item.rarity === RARITIES.RARE,
                                 })}

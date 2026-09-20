@@ -383,7 +383,11 @@ const Sound = ({
     };
 
     return (
-        <div className={classes.root} onMouseEnter={() => setShowVolumeSlider(true)} onMouseLeave={() => setShowVolumeSlider(false)}>
+        <div
+            className={classes.root}
+            onMouseEnter={() => setShowVolumeSlider(true)}
+            onMouseLeave={() => setShowVolumeSlider(false)}
+        >
             <IconButton
                 onClick={togglePlaying}
                 title="Toggle music on/off"

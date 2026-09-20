@@ -1,6 +1,14 @@
 import { ward } from "./../ability/Effects";
 import { attackPower, warding } from "../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import {
     BlueSnailShellImage,
     MapleAdminImage,
@@ -81,7 +89,10 @@ export const administrator: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [tauromacis, taurospear, wildKargo] }, { minion: [tauromacis, taurospear, wildKargo] }],
+                    summon: [
+                        { minion: [tauromacis, taurospear, wildKargo] },
+                        { minion: [tauromacis, taurospear, wildKargo] },
+                    ],
                 },
             ],
         },

@@ -37,7 +37,9 @@ interface IObject {
     length?: never;
 }
 
-type IUnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type IUnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+    ? I
+    : never;
 
 const isObject = (obj: any) => {
     if (typeof obj === "object" && obj !== null) {
@@ -62,7 +64,9 @@ export const deepMerge = <T extends IObject[]>(...objects: T): IUnionToIntersect
             }
 
             if (Array.isArray(result[key]) && Array.isArray(current[key])) {
-                result[key] = false ? Array.from(new Set((result[key] as unknown[]).concat(current[key]))) : current[key];
+                result[key] = false
+                    ? Array.from(new Set((result[key] as unknown[]).concat(current[key])))
+                    : current[key];
             } else if (isObject(result[key]) && isObject(current[key])) {
                 result[key] = deepMerge(result[key] as IObject, current[key] as IObject);
             } else {
@@ -75,7 +79,10 @@ export const deepMerge = <T extends IObject[]>(...objects: T): IUnionToIntersect
 };
 
 // https://github.com/zero-dependency/utils/blob/master/src/debounce.ts
-export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => void>(
+    fn: T,
+    ms: number,
+): (...args: Parameters<T>) => void {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     return (...args) => {

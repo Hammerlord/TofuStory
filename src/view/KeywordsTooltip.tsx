@@ -30,7 +30,12 @@ import Handlebars from "handlebars";
 import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { useAppSelector } from "../hooks";
 
-const keywords: { name: string; icon?: any; description?: string; keys?: string[] }[] = [
+const keywords: {
+    name: string;
+    icon?: any;
+    description?: string;
+    keys?: string[];
+}[] = [
     bideEffect,
     {
         ...ward,
@@ -49,7 +54,8 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Radiate",
-        description: "Character emits an effect from its position. Radiated damage is unaffected by attack modifiers.",
+        description:
+            "Character emits an effect from its position. Radiated damage is unaffected by attack modifiers.",
     },
     {
         name: "Deplete",
@@ -62,7 +68,8 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         name: "Tribute",
-        description: "Replacing an existing summon with another one grants the new summon +1 HP and ATT.",
+        description:
+            "Replacing an existing summon with another one grants the new summon +1 HP and ATT.",
         keys: ["Tribute"],
     },
     {
@@ -142,7 +149,8 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     {
         name: "Critical",
         icon: CriticalShotImage,
-        description: "When drawn, the card has a chance to activate a bonus, based on your Critical chance.",
+        description:
+            "When drawn, the card has a chance to activate a bonus, based on your Critical chance.",
         keys: ["Critical"],
     },
     {
@@ -158,12 +166,14 @@ const keywords: { name: string; icon?: any; description?: string; keys?: string[
     },
     {
         ...doomEffect,
-        description: "After 2 turns, activates at the start of the afflicted target's turn, dealing 40 {{{ _damage_ }}} damage.",
+        description:
+            "After 2 turns, activates at the start of the afflicted target's turn, dealing 40 {{{ _damage_ }}} damage.",
         keys: ['"Doom"'],
     },
     {
         name: "Search",
-        description: "Choose 1 of 3 options from your deck. (If not enough eligible cards are in your deck, uses your discard.)",
+        description:
+            "Choose 1 of 3 options from your deck. (If not enough eligible cards are in your deck, uses your discard.)",
         keys: ["search-deck"],
     },
     {
@@ -221,7 +231,10 @@ export const TooltipSection = ({
 
     let content;
     if (typeof description === "string") {
-        const interpolatedDescription = Handlebars.compile(description || "")({ ...elementMapping, ...other });
+        const interpolatedDescription = Handlebars.compile(description || "")({
+            ...elementMapping,
+            ...other,
+        });
         content = <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />;
     } else {
         content = description;

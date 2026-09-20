@@ -32,18 +32,21 @@ const useStyles = createUseStyles({
 });
 
 export const getEffectGroups = (effects: CombatEffect[]): CombatEffect[][] => {
-    const map = effects.reduce((acc, effect: CombatEffect) => {
-        const { name, type, disableDisplayIcon, icon } = effect;
-        if (disableDisplayIcon || !icon) {
-            return acc;
-        }
+    const map = effects.reduce(
+        (acc, effect: CombatEffect) => {
+            const { name, type, disableDisplayIcon, icon } = effect;
+            if (disableDisplayIcon || !icon) {
+                return acc;
+            }
 
-        const key = [name, type].join("-"); // If it has the same name and type, it's *probably* the same effect
-        return {
-            ...acc,
-            [key]: [...(acc[key] || []), effect],
-        };
-    }, {} as {[key: string]: CombatEffect[]});
+            const key = [name, type].join("-"); // If it has the same name and type, it's *probably* the same effect
+            return {
+                ...acc,
+                [key]: [...(acc[key] || []), effect],
+            };
+        },
+        {} as { [key: string]: CombatEffect[] },
+    );
 
     return Object.values(map);
 };
@@ -65,7 +68,10 @@ const EffectIconsContainer = ({
         return null;
     }
 
-    const [buffs, debuffs] = partition((e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF, combatant.effects);
+    const [buffs, debuffs] = partition(
+        (e: CombatEffect) => e.class === EFFECT_CLASSES.BUFF,
+        combatant.effects,
+    );
 
     const shouldGlow = (effects: CombatEffect[]) => {
         return effects.some((e) => e.id === (event?.source?.source as CombatEffect)?.id);

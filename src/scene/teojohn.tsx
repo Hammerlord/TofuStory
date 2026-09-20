@@ -88,7 +88,11 @@ export const lithEventsTeoJohn: EventScene = {
                     next: [
                         {
                             speaker: john,
-                            dialog: ["It looks like it's trying to say something.", "[John laughs.]", "I think it's hungry."],
+                            dialog: [
+                                "It looks like it's trying to say something.",
+                                "[John laughs.]",
+                                "I think it's hungry.",
+                            ],
                         },
                         {
                             speaker: teo,
@@ -102,7 +106,9 @@ export const lithEventsTeoJohn: EventScene = {
                             },
                         },
                         {
-                            dialog: ["(Something tells you that being misunderstood by people is going to be a pattern...)"],
+                            dialog: [
+                                "(Something tells you that being misunderstood by people is going to be a pattern...)",
+                            ],
                         },
                         {
                             speaker: john,

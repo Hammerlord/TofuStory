@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BlueSnailImage, OrangeMushroomImage, PigImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
+import {
+    BlueSnailImage,
+    OrangeMushroomImage,
+    PigImage,
+    RedSnailImage,
+    ShroomImage,
+    SlimeImage,
+    SnailImage,
+} from "../../images";
 import { getRandomInt, shuffle } from "../../utils";
 import { PuzzleProps } from "./types";
 
@@ -53,14 +61,16 @@ const useStyles = createUseStyles({
         flexDirection: "column",
     },
     shaderTop: {
-        background: "linear-gradient(rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
+        background:
+            "linear-gradient(rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
         position: "absolute",
         top: 0,
         height: 50,
         width: "100%",
     },
     shaderBottom: {
-        background: "linear-gradient(360deg, rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
+        background:
+            "linear-gradient(360deg, rgba(30,30,25,1) 50%, rgba(30,30,25,0.9) 70%, rgba(30,30,25,0) 100%)",
         position: "absolute",
         bottom: 0,
         height: 50,
@@ -71,16 +81,27 @@ const useStyles = createUseStyles({
 const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     const [columns] = useState(
         (() => {
-            const column = shuffle([SnailImage, BlueSnailImage, ShroomImage, RedSnailImage, SlimeImage, OrangeMushroomImage, PigImage]);
+            const column = shuffle([
+                SnailImage,
+                BlueSnailImage,
+                ShroomImage,
+                RedSnailImage,
+                SlimeImage,
+                OrangeMushroomImage,
+                PigImage,
+            ]);
             const answerIndex = getRandomInt(0, column.length - 1);
             const [validAnswer] = column.splice(answerIndex, 1);
             const cols = Array.from({ length: 4 }).map((_, i) => {
-                const wrappedIndex = (val: number) => (((val + i) % column.length) + column.length) % column.length;
-                const extras = Array.from({ length: Math.max(4, i + 1) }).map((_, j) => column[wrappedIndex(j)]);
+                const wrappedIndex = (val: number) =>
+                    (((val + i) % column.length) + column.length) % column.length;
+                const extras = Array.from({ length: Math.max(4, i + 1) }).map(
+                    (_, j) => column[wrappedIndex(j)],
+                );
                 return [validAnswer, ...extras];
             });
             return shuffle(cols);
-        })()
+        })(),
     );
 
     const [answer, setAnswer] = useState(columns.map((col) => getRandomInt(0, col.length - 1)));
@@ -104,7 +125,8 @@ const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =
         }
         const column = columns[colIndex];
         const newAnswer = answer.slice();
-        newAnswer[colIndex] = (((newAnswer[colIndex] + direction) % column.length) + column.length) % column.length;
+        newAnswer[colIndex] =
+            (((newAnswer[colIndex] + direction) % column.length) + column.length) % column.length;
         setAnswer(newAnswer);
         checkCorrectAnswer(newAnswer);
         onInteraction && onInteraction();
@@ -127,13 +149,25 @@ const ReelLockPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =
                     </button>
                     <div className={classes.reel}>
                         <div className={classes.iconContainer}>
-                            <img src={columns[j][modulo(i + 1, columns[j])]} className={classes.icon} key={[j, i + 1].join("")} />
+                            <img
+                                src={columns[j][modulo(i + 1, columns[j])]}
+                                className={classes.icon}
+                                key={[j, i + 1].join("")}
+                            />
                         </div>
                         <div className={classes.iconContainer}>
-                            <img src={columns[j][i]} className={classes.icon} key={[j, i].join("")} />
+                            <img
+                                src={columns[j][i]}
+                                className={classes.icon}
+                                key={[j, i].join("")}
+                            />
                         </div>
                         <div className={classes.iconContainer}>
-                            <img src={columns[j][modulo(i - 1, columns[j])]} className={classes.icon} key={[j, i - 1].join("")} />
+                            <img
+                                src={columns[j][modulo(i - 1, columns[j])]}
+                                className={classes.icon}
+                                key={[j, i - 1].join("")}
+                            />
                         </div>
                         <div className={classes.shaderBottom} />
                         <div className={classes.shaderTop} />

@@ -33,7 +33,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const AbilityTypeView = ({ targetType, type, minion }: { targetType?: TARGET_TYPES; type?: ACTION_TYPES; minion?: Minion }) => {
+const AbilityTypeView = ({
+    targetType,
+    type,
+    minion,
+}: {
+    targetType?: TARGET_TYPES;
+    type?: ACTION_TYPES;
+    minion?: Minion;
+}) => {
     let typeLabel;
     if (minion) {
         typeLabel = "Summon";
@@ -55,8 +63,11 @@ const AbilityTypeView = ({ targetType, type, minion }: { targetType?: TARGET_TYP
     const diamond = (
         <span
             className={classNames(classes.diamond, {
-                [classes.offensive]: targetType === TARGET_TYPES.HOSTILE || targetType === TARGET_TYPES.RANDOM_HOSTILE,
-                [classes.support]: targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
+                [classes.offensive]:
+                    targetType === TARGET_TYPES.HOSTILE ||
+                    targetType === TARGET_TYPES.RANDOM_HOSTILE,
+                [classes.support]:
+                    targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF,
                 [classes.minion]: Boolean(minion),
                 [classes.hindrance]: type === ACTION_TYPES.HINDER,
             })}

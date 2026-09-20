@@ -31,7 +31,11 @@ export const getAbilityUsePreviews = ({
     shouldShowReticle,
 }: {
     selectedAbility?: Ability;
-    hoveredCombatant: { side: BATTLEFIELD_SIDES; index: number; id: string | null } | null;
+    hoveredCombatant: {
+        side: BATTLEFIELD_SIDES;
+        index: number;
+        id: string | null;
+    } | null;
     selectedMinion?: Combatant | null;
     player: Player;
     playerSide: (Combatant | null)[];
@@ -39,7 +43,10 @@ export const getAbilityUsePreviews = ({
     battle: BattleState;
     shouldShowReticle: ReticleCheck;
 }): AbilityPreviewResult => {
-    const empty: AbilityPreviewResult = { result: {}, combatantStates: undefined };
+    const empty: AbilityPreviewResult = {
+        result: {},
+        combatantStates: undefined,
+    };
     if (!selectedAbility || selectedAbility.disablePreview) {
         return empty;
     }
@@ -54,7 +61,10 @@ export const getAbilityUsePreviews = ({
     }
 
     const result: { [combatantId: string]: PreviewStatUpdate[] } = {};
-    const calculatePotentialResults = (combatants: (Combatant | null)[], side: BATTLEFIELD_SIDES) => {
+    const calculatePotentialResults = (
+        combatants: (Combatant | null)[],
+        side: BATTLEFIELD_SIDES,
+    ) => {
         combatants.forEach((combatant, index) => {
             if (!combatant?.HP || !shouldShowReticle(side, index)) {
                 return;
@@ -116,7 +126,10 @@ export const getTargetedByEnemyAbilities = ({
         previousCombatantStates = combatantStates;
 
         Object.entries(result).forEach(([combatantId, previews]) => {
-            const traverseAndAggregate = (obj: unknown, otherObj: Record<string, unknown>): Record<string, unknown> => {
+            const traverseAndAggregate = (
+                obj: unknown,
+                otherObj: Record<string, unknown>,
+            ): Record<string, unknown> => {
                 if (!obj || typeof obj !== "object") {
                     return otherObj;
                 }
@@ -128,7 +141,8 @@ export const getTargetedByEnemyAbilities = ({
                     }
 
                     if (typeof val === "number") {
-                        otherObj[key] = (typeof otherObj[key] === "number" ? otherObj[key] : 0) + val;
+                        otherObj[key] =
+                            (typeof otherObj[key] === "number" ? otherObj[key] : 0) + val;
                         return;
                     }
 
@@ -140,7 +154,9 @@ export const getTargetedByEnemyAbilities = ({
 
                     if (typeof val === "object") {
                         const existingObject =
-                            otherObj[key] && typeof otherObj[key] === "object" && !Array.isArray(otherObj[key])
+                            otherObj[key] &&
+                            typeof otherObj[key] === "object" &&
+                            !Array.isArray(otherObj[key])
                                 ? (otherObj[key] as Record<string, unknown>)
                                 : {};
                         otherObj[key] = traverseAndAggregate(val, existingObject);
@@ -158,7 +174,10 @@ export const getTargetedByEnemyAbilities = ({
                     return cloneDeep(preview);
                 }
 
-                return traverseAndAggregate(cloneDeep(preview), acc as unknown as Record<string, unknown>) as unknown as PreviewStatUpdate;
+                return traverseAndAggregate(
+                    cloneDeep(preview),
+                    acc as unknown as Record<string, unknown>,
+                ) as unknown as PreviewStatUpdate;
             }, targetMap[combatantId]);
 
             targetMap[combatantId] = aggregated;

@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { attackPower, hardy, ward } from "../ability/Effects";
-import { ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import { BATTLE_TYPES } from "../battle/types";
 import { attack } from "../enemy/abilities";
 import { armorDown } from "../enemy/effect";
@@ -44,7 +52,8 @@ const antiHolyRelicA: Effect = {
                     effects: [
                         {
                             name: "Such Sacrilege!",
-                            description: "Weakened by the presence of the Holy Relic. Afflicted with 1 ATT Down and 1 DEF Down.",
+                            description:
+                                "Weakened by the presence of the Holy Relic. Afflicted with 1 ATT Down and 1 DEF Down.",
                             icon: FrownyMaskImage,
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.DEBUFF,
@@ -130,7 +139,8 @@ export const cultistA: Minion = {
                         {
                             name: "Broken Vitality",
                             image: BrokenHeartEmojiImage,
-                            description: "When drawn, you are afflicted by Armor Down and reduced healing for the turn.",
+                            description:
+                                "When drawn, you are afflicted by Armor Down and reduced healing for the turn.",
                             removeAfterTurn: true,
                             unplayable: true,
                             onDraw: {
@@ -280,10 +290,24 @@ const CultistBackdrop = ({ player, showZakum }) => {
     return (
         <div>
             <img src={TwilightPerionImage} alt="Rocky backdrop" className={classes.backdrop} />
-            <img src={cultistA.image} alt="Cultist A" className={classNames(classes.character, classes.cultistA)} />
-            <img src={cultistB.image} alt="Cultist B" className={classNames(classes.character, classes.cultistB)} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
-            {showZakum && <img src={ZakumImage} alt="Zakum" className={classNames(classes.zakum)} />}
+            <img
+                src={cultistA.image}
+                alt="Cultist A"
+                className={classNames(classes.character, classes.cultistA)}
+            />
+            <img
+                src={cultistB.image}
+                alt="Cultist B"
+                className={classNames(classes.character, classes.cultistB)}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
+            {showZakum && (
+                <img src={ZakumImage} alt="Zakum" className={classNames(classes.zakum)} />
+            )}
         </div>
     );
 };
@@ -305,14 +329,19 @@ const bloodTributeResponse: ScriptResponse = {
         {
             scene: (other) => <CultistBackdrop {...other} showZakum={true} />,
             speaker: cultistA,
-            dialog: ["Behold, the visage of the Great One!", "With this offering, you have received Zakum's favor."],
+            dialog: [
+                "Behold, the visage of the Great One!",
+                "With this offering, you have received Zakum's favor.",
+            ],
             items: {
                 itemPool: [zakumHelmet],
             },
         },
         {
             speaker: cultistB,
-            dialog: ["Go forth. The Four Arms will prove the sign. Let the power of the Exiled One flow through you."],
+            dialog: [
+                "Go forth. The Four Arms will prove the sign. Let the power of the Exiled One flow through you.",
+            ],
             responses: [
                 {
                     text: "Thanks, I guess...",
@@ -356,7 +385,10 @@ export const cultistScene: EventScene = {
         },
         {
             speaker: cultistB,
-            dialog: ["Step forward, be measured by the Great One's watchful eye.", "... By paying tribute in blood!"],
+            dialog: [
+                "Step forward, be measured by the Great One's watchful eye.",
+                "... By paying tribute in blood!",
+            ],
             responses: [
                 bloodTributeResponse,
                 {
@@ -364,7 +396,9 @@ export const cultistScene: EventScene = {
                     next: [
                         {
                             speaker: cultistA,
-                            dialog: ["The Sealed One, the Exiled One, the Great One... Zakum has many names."],
+                            dialog: [
+                                "The Sealed One, the Exiled One, the Great One... Zakum has many names.",
+                            ],
                         },
                         {
                             speaker: cultistA,

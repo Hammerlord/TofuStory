@@ -115,7 +115,10 @@ const forgeWarriors: Ability = {
             type: ACTION_TYPES.EFFECT,
             icon: SirBlacksmithHammerImage,
             animation: ANIMATION_TYPES.ACTION_EXPLODE,
-            summon: [{ minion: [terracottaCrossbowman, terracottaSwordsman] }, { minion: [terracottaCrossbowman, terracottaSwordsman] }],
+            summon: [
+                { minion: [terracottaCrossbowman, terracottaSwordsman] },
+                { minion: [terracottaCrossbowman, terracottaSwordsman] },
+            ],
         },
     ],
 };

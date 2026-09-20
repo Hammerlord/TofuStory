@@ -67,7 +67,7 @@ const Burn = ({ amount = 0 }: { amount: number }) => {
                         animationDelay: `${getRandomArbitrary(0, 1.5)}s`,
                         width: getRandomArbitrary(16, 24),
                     };
-                })
+                }),
             );
         } else {
             setParticles([]);
@@ -77,7 +77,13 @@ const Burn = ({ amount = 0 }: { amount: number }) => {
     return (
         <div className={classes.root}>
             {particles.map((style, i) => (
-                <Icon key={i} icon={<FireIcon />} className={classes.icon} style={style} size="sm" />
+                <Icon
+                    key={i}
+                    icon={<FireIcon />}
+                    className={classes.icon}
+                    style={style}
+                    size="sm"
+                />
             ))}
         </div>
     );

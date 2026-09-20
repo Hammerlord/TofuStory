@@ -3,7 +3,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, CardPileType, CombatAbility, CombatEffect } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    Ability,
+    CardPileType,
+    CombatAbility,
+    CombatEffect,
+} from "../../ability/types";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../../character/effects/constants";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -94,12 +100,18 @@ const useListStyles = createUseStyles({
 });
 
 // Damage that was applied as a direct result of the action, excluding damage procced off of it (eg. thorns, reflect)
-const getDirectDamageUpdates = (statUpdates: EventGroup["statUpdates"]): UpdatedCombatantStats[] => {
-    return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.rawDamage ?? 0) > 0);
+const getDirectDamageUpdates = (
+    statUpdates: EventGroup["statUpdates"],
+): UpdatedCombatantStats[] => {
+    return Object.values(statUpdates || {}).filter(
+        (update) => !update.context?.isProc && (update.rawDamage ?? 0) > 0,
+    );
 };
 
 const getArmorUpdates = (statUpdates: EventGroup["statUpdates"]): UpdatedCombatantStats[] => {
-    return Object.values(statUpdates || {}).filter((update) => !update.context?.isProc && (update.armor ?? 0) > 0);
+    return Object.values(statUpdates || {}).filter(
+        (update) => !update.context?.isProc && (update.armor ?? 0) > 0,
+    );
 };
 
 type EffectUpdate = { effect: CombatEffect; update: UpdatedCombatantStats };
@@ -113,7 +125,9 @@ const getGainedEffectUpdates = (statUpdates: EventGroup["statUpdates"]): EffectU
 const getResistedEffectUpdates = (statUpdates: EventGroup["statUpdates"]): EffectUpdate[] => {
     return Object.values(statUpdates || {})
         .filter((update) => !update.context?.isProc)
-        .flatMap((update) => (update.failedToApplyEffects || []).map((effect) => ({ effect, update })));
+        .flatMap((update) =>
+            (update.failedToApplyEffects || []).map((effect) => ({ effect, update })),
+        );
 };
 
 const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) => {
@@ -128,7 +142,8 @@ const DamageList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] })
         <div className={classes.root}>
             {damageUpdates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
-                    {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to <Icon icon={update.combatantImage} size="xs" />
+                    {update.rawDamage} <Icon icon={CrossedSwordsIcon} size="xs" /> to{" "}
+                    <Icon icon={update.combatantImage} size="xs" />
                     {update.combatantName}
                 </div>
             ))}
@@ -148,8 +163,8 @@ const ArmorList = ({ statUpdates }: { statUpdates: EventGroup["statUpdates"] }) 
         <div className={classes.root}>
             {updates.map((update) => (
                 <div className={classes.row} key={update.combatantId}>
-                    {update.armor} <Icon icon={ShieldIcon} size="xs" /> to <Icon icon={update.combatantImage} size="xs" />{" "}
-                    {update.combatantName}
+                    {update.armor} <Icon icon={ShieldIcon} size="xs" /> to{" "}
+                    <Icon icon={update.combatantImage} size="xs" /> {update.combatantName}
                 </div>
             ))}
         </div>
@@ -168,8 +183,8 @@ const EffectsGainedList = ({ statUpdates }: { statUpdates: EventGroup["statUpdat
         <div className={classes.root}>
             {effectUpdates.map(({ effect, update }, i) => (
                 <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
-                    <Icon icon={update.combatantImage} size="xs" /> {update.combatantName} gained <Icon icon={effect.icon} size="xs" />{" "}
-                    {effect.name}
+                    <Icon icon={update.combatantImage} size="xs" /> {update.combatantName} gained{" "}
+                    <Icon icon={effect.icon} size="xs" /> {effect.name}
                 </div>
             ))}
         </div>
@@ -189,7 +204,8 @@ const EffectsResistedList = ({ statUpdates }: { statUpdates: EventGroup["statUpd
             {effectUpdates.map(({ effect, update }, i) => (
                 <div className={classes.row} key={[update.combatantId, effect.id, i].join("-")}>
                     <Icon icon={update.combatantImage} size="xs" />
-                    {update.combatantName} resisted <Icon icon={effect.icon} size="xs" /> {effect.name}
+                    {update.combatantName} resisted <Icon icon={effect.icon} size="xs" />{" "}
+                    {effect.name}
                     <Icon icon={NoEntryIcon} size="xs" />
                 </div>
             ))}
@@ -219,7 +235,15 @@ const getCardsAddedTo = (addCards: EventGroup["addCards"], pile: CardPileType): 
     return addCards.filter((entry) => entry.cardsAddedTo === pile).flatMap((entry) => entry.cards);
 };
 
-const CardsAddedList = ({ addCards, pile, label }: { addCards: EventGroup["addCards"]; pile: CardPileType; label: string }) => {
+const CardsAddedList = ({
+    addCards,
+    pile,
+    label,
+}: {
+    addCards: EventGroup["addCards"];
+    pile: CardPileType;
+    label: string;
+}) => {
     const classes = useListStyles();
     const cards = getCardsAddedTo(addCards, pile);
 

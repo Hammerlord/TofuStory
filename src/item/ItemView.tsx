@@ -130,14 +130,20 @@ const ItemView = ({
                             <AbilityView ability={card} />
                         </div>
                     ))}
-                </div>
+                </div>,
             );
         }
         tooltips.push(<KeywordsTooltips object={item} />);
     }
 
     return (
-        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500} disableInteractive>
+        <Tooltip
+            title={tooltips}
+            placement={"right-end"}
+            classes={{ tooltip: classes.tooltip }}
+            enterDelay={500}
+            disableInteractive
+        >
             <div
                 key={item.name}
                 className={classNames(classes.item, className, {
@@ -157,7 +163,10 @@ const ItemView = ({
                     <div>
                         <span
                             className={classNames(classes.diamond, {
-                                [classes.common]: item.rarity === RARITIES.COMMON || item.rarity === RARITIES.STARTER || !item.rarity,
+                                [classes.common]:
+                                    item.rarity === RARITIES.COMMON ||
+                                    item.rarity === RARITIES.STARTER ||
+                                    !item.rarity,
                                 [classes.uncommon]: item.rarity === RARITIES.UNCOMMON,
                                 [classes.rare]: item.rarity === RARITIES.RARE,
                             })}

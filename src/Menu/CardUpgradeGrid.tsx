@@ -141,7 +141,9 @@ const CardUpgradeGrid = ({
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const upgrade = (card: CombatAbility) => {
-        const isStarter = JOB_CARD_MAP[playerClass]?.starters.some(({ name }) => name === card.name);
+        const isStarter = JOB_CARD_MAP[playerClass]?.starters.some(
+            ({ name }) => name === card.name,
+        );
         let maxUpgradeLevel;
         if (isStarter) {
             maxUpgradeLevel = STARTER_CARD_MAX_LEVEL;
@@ -150,7 +152,13 @@ const CardUpgradeGrid = ({
                 playerItems.reduce((acc, item: Item) => {
                     const { maxUpgradeLevel = 0, filters } = item.upgradeScreen || {};
 
-                    if (maxUpgradeLevel && (!filters || filters.some((filter) => Boolean(filter.isOffense) === isOffensiveAbility(card)))) {
+                    if (
+                        maxUpgradeLevel &&
+                        (!filters ||
+                            filters.some(
+                                (filter) => Boolean(filter.isOffense) === isOffensiveAbility(card),
+                            ))
+                    ) {
                         return acc + maxUpgradeLevel;
                     }
                     return acc;
@@ -165,7 +173,11 @@ const CardUpgradeGrid = ({
             <div className={disablePortal ? undefined : classes.inner}>
                 <h3>Upgrade an Ability</h3>
                 <label>
-                    <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide duplicates
+                    <Checkbox
+                        checked={isHideDuplicates}
+                        onChange={() => setIsHideDuplicates((prev) => !prev)}
+                    />{" "}
+                    Hide duplicates
                 </label>
                 <div className={disablePortal ? undefined : classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
@@ -182,13 +194,18 @@ const CardUpgradeGrid = ({
                                         variant={"contained"}
                                         color={"primary"}
                                         onClick={() => {
-                                            const cardToUpgrade = cards.find(({ instanceId }) => instanceId === selectedAbilityId);
+                                            const cardToUpgrade = cards.find(
+                                                ({ instanceId }) =>
+                                                    instanceId === selectedAbilityId,
+                                            );
                                             if (!cardToUpgrade) {
                                                 return;
                                             }
 
                                             const updatedCards = [
-                                                ...cards.filter((card) => card.instanceId !== selectedAbilityId),
+                                                ...cards.filter(
+                                                    (card) => card.instanceId !== selectedAbilityId,
+                                                ),
                                                 upgrade(cardToUpgrade),
                                             ];
                                             setSelectedAbilityId(null);

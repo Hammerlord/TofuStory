@@ -1,6 +1,16 @@
 import { createUseStyles } from "react-jss";
 import { CaseyImage, KerningCraneImage } from "../../images";
-import { alligatorTube, amethyst, blueJeanShorts, cactus, leatherSandals, mesoItem, redHeadband, sword, tShirt } from "../../item/items";
+import {
+    alligatorTube,
+    amethyst,
+    blueJeanShorts,
+    cactus,
+    leatherSandals,
+    mesoItem,
+    redHeadband,
+    sword,
+    tShirt,
+} from "../../item/items";
 import CardMatchingGame from "../CardMatchingGame";
 import { EventScene } from "../types";
 import classNames from "classnames";
@@ -41,8 +51,16 @@ const KerningCaseyBackdrop = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={KerningCraneImage} alt="Crane" />
-            <img src={player.image} className={classNames(classes.player, classes.character)} alt="Player" />
-            <img src={CaseyImage} className={classNames(classes.casey, classes.character)} alt="Casey" />
+            <img
+                src={player.image}
+                className={classNames(classes.player, classes.character)}
+                alt="Player"
+            />
+            <img
+                src={CaseyImage}
+                className={classNames(classes.casey, classes.character)}
+                alt="Casey"
+            />
         </div>
     );
 };
@@ -66,7 +84,9 @@ const kerningMatchingCards: EventScene = {
                     text: "Okay...?",
                     next: [
                         {
-                            dialog: ["[Kerning City must get all sorts of people, as barely anyone here seems to blink at your presence.]"],
+                            dialog: [
+                                "[Kerning City must get all sorts of people, as barely anyone here seems to blink at your presence.]",
+                            ],
                         },
                         {
                             speaker: caseyCharacter,
@@ -79,7 +99,10 @@ const kerningMatchingCards: EventScene = {
                                     next: [
                                         {
                                             puzzle: ({ player, onComplete }) => (
-                                                <CardMatchingGame onComplete={onComplete} difficulty={"easy"} />
+                                                <CardMatchingGame
+                                                    onComplete={onComplete}
+                                                    difficulty={"easy"}
+                                                />
                                             ),
                                             dialog: [],
                                         },
@@ -120,7 +143,9 @@ const kerningMatchingCards: EventScene = {
                                                         },
                                                         {
                                                             speaker: caseyCharacter,
-                                                            dialog: ["That was fun! See you next time."],
+                                                            dialog: [
+                                                                "That was fun! See you next time.",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Bye.",
@@ -157,7 +182,9 @@ const kerningMatchingCards: EventScene = {
                                                         },
                                                         {
                                                             speaker: caseyCharacter,
-                                                            dialog: ["That was fun! See you next time."],
+                                                            dialog: [
+                                                                "That was fun! See you next time.",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Bye.",
@@ -195,7 +222,9 @@ const kerningMatchingCards: EventScene = {
                                                         },
                                                         {
                                                             speaker: caseyCharacter,
-                                                            dialog: ["That was fun! See you next time."],
+                                                            dialog: [
+                                                                "That was fun! See you next time.",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Bye.",

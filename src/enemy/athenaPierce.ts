@@ -1,5 +1,11 @@
 import { avenger, bleed, hardy } from "../ability/Effects";
-import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "../ability/types";
 import {
     ArrowRainImage,
     AthenaAttackStanceImage,

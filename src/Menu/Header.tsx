@@ -142,12 +142,16 @@ const Header = ({
                                 enterNextDelay={1000}
                                 title={
                                     <div>
-                                        Deck <hr /> You enter battle with {deck.length} ability cards. Click to see them.
+                                        Deck <hr /> You enter battle with {deck.length} ability
+                                        cards. Click to see them.
                                     </div>
                                 }
                             >
                                 <button
-                                    className={classNames(classes.tallyDisplay, classes.abilitiesButton)}
+                                    className={classNames(
+                                        classes.tallyDisplay,
+                                        classes.abilitiesButton,
+                                    )}
                                     onClick={() => setIsAbilitiesOpen((prev) => !prev)}
                                     tabIndex={0}
                                 >
@@ -158,7 +162,8 @@ const Header = ({
                             <Tooltip
                                 title={
                                     <div>
-                                        Mesos <hr /> Cash earned from treasure boxes and beating up opponents. Spend it at Shops.
+                                        Mesos <hr /> Cash earned from treasure boxes and beating up
+                                        opponents. Spend it at Shops.
                                     </div>
                                 }
                             >
@@ -170,7 +175,8 @@ const Header = ({
                             <Tooltip
                                 title={
                                     <div>
-                                        Infamy <hr /> Certain actions will increase your infamy and attract the attention of adventurers.
+                                        Infamy <hr /> Certain actions will increase your infamy and
+                                        attract the attention of adventurers.
                                     </div>
                                 }
                             >
@@ -185,7 +191,9 @@ const Header = ({
                 </div>
                 <Inventory player={player} inventory={player.items} onUseItem={onUseItem} />
             </div>
-            {isAbilitiesOpen && <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />}
+            {isAbilitiesOpen && (
+                <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />
+            )}
         </>
     );
 };

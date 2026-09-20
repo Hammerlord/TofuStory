@@ -88,8 +88,12 @@ interface ArmorInterface {
 
 const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
     const [oldAmount, setOldAmount] = useState(0);
-    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
-    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
+    const selectedAlly: string | null = useAppSelector(
+        (state) => (state.battle as BattleState).selectedAllyId,
+    );
+    const selectedAbility: string | null = useAppSelector(
+        (state) => (state.battle as BattleState).selectedHandAbilityId,
+    );
     useEffect(() => {
         const timeout = setTimeout(() => {
             setOldAmount(amount);
@@ -140,7 +144,11 @@ const Armor = ({ amount, className, combatantInfo }: ArmorInterface) => {
                                 <hr />
                                 <div>Modifiers:</div>
                                 <span>
-                                    <Icon icon={pristineArmorEffect.icon || PristineShieldIcon} size="sm" /> - Prevents armor decay
+                                    <Icon
+                                        icon={pristineArmorEffect.icon || PristineShieldIcon}
+                                        size="sm"
+                                    />{" "}
+                                    - Prevents armor decay
                                 </span>
                             </div>
                         )}

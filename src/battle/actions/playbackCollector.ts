@@ -17,10 +17,19 @@ const isGroupableEvent = (event: Event, previousEvent: Event | undefined) => {
      * Do these rules satisfy the above?...
      */
     const sameAbility =
-        (actionParent as CombatAbility)?.name === (previousEvent.actionParent as CombatAbility)?.name &&
-        (source?.source as CombatAbility)?.name === (previousEvent.source?.source as CombatAbility)?.name;
+        (actionParent as CombatAbility)?.name ===
+            (previousEvent.actionParent as CombatAbility)?.name &&
+        (source?.source as CombatAbility)?.name ===
+            (previousEvent.source?.source as CombatAbility)?.name;
 
-    return (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) && sameAbility && !damage && !armor && !healing && !summon;
+    return (
+        (!type || type === ACTION_TYPES.EFFECT || type === ACTION_TYPES.NONE) &&
+        sameAbility &&
+        !damage &&
+        !armor &&
+        !healing &&
+        !summon
+    );
 };
 
 function typedEntries<T extends object>(obj: T) {
@@ -29,7 +38,7 @@ function typedEntries<T extends object>(obj: T) {
 
 export const aggregateStatUpdates = (
     base?: { [combatantId: string]: UpdatedCombatantStats },
-    other?: { [combatantId: string]: UpdatedCombatantStats }
+    other?: { [combatantId: string]: UpdatedCombatantStats },
 ) => {
     base = base || {};
     if (!other) {
@@ -74,7 +83,10 @@ export const playbackCollector = (): PlaybackCollector => {
     const addToGroup = (event: Event, group: EventGroup) => {
         group.events.push(event);
 
-        const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime;
+        const eventPlayback =
+            typeof event.playbackTime === "number"
+                ? event.playbackTime
+                : event.action?.playbackTime;
         group.playbackTime = group.playbackTime || eventPlayback || 0;
         group.addCards = [...group.addCards, ...(event.addCards || [])];
         group.newCombatants = [...group.newCombatants, ...(event.newCombatants || [])];
@@ -93,7 +105,10 @@ export const playbackCollector = (): PlaybackCollector => {
                 }
             }
 
-            const eventPlayback = typeof event.playbackTime === "number" ? event.playbackTime : event.action?.playbackTime || 0;
+            const eventPlayback =
+                typeof event.playbackTime === "number"
+                    ? event.playbackTime
+                    : event.action?.playbackTime || 0;
 
             queue.push({
                 ...event,

@@ -25,7 +25,11 @@ const ResourceBar = ({ resources = 0, maxResources = 0 }) => {
     return (
         <Tooltip title={tooltipContents}>
             <div className={classes.root}>
-                <LinearProgress color="secondary" value={(resources / maxResources) * 100} variant="determinate" />
+                <LinearProgress
+                    color="secondary"
+                    value={(resources / maxResources) * 100}
+                    variant="determinate"
+                />
             </div>
         </Tooltip>
     );

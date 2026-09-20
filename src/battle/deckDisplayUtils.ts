@@ -13,7 +13,9 @@ export const getAbilityLevel = (ability: CombatAbility) => {
         .join("");
 };
 
-export const getAbilityMap = (items: CombatAbility[]): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
+export const getAbilityMap = (
+    items: CombatAbility[],
+): { [abilityName: string]: { count: number; ability: CombatAbility } } => {
     return items
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))

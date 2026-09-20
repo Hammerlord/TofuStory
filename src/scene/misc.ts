@@ -59,7 +59,9 @@ export const mesoThiefScene: EventScene = {
                                     next: [
                                         {
                                             id: MESO_THIEF_KEYS.escaped,
-                                            dialog: ["[The thief escaped with some of your mesos.]"],
+                                            dialog: [
+                                                "[The thief escaped with some of your mesos.]",
+                                            ],
                                         },
                                     ],
                                 },
@@ -150,11 +152,16 @@ export const startJourneyScene: EventScene = {
     script: [
         {
             disableBackground: true,
-            dialog: ["[The townsfolk were wary of your presence. It'll be hard to approach people as a monster.]"],
+            dialog: [
+                "[The townsfolk were wary of your presence. It'll be hard to approach people as a monster.]",
+            ],
         },
         {
             disableBackground: true,
-            dialog: ["[Can this really be your fate?", "Somewhere on this island, there has to be answers. Journey to find them.]"],
+            dialog: [
+                "[Can this really be your fate?",
+                "Somewhere on this island, there has to be answers. Journey to find them.]",
+            ],
         },
     ],
 };

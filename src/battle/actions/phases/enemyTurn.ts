@@ -8,9 +8,20 @@ import { BASE_MAX_RESOURCES } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { BATTLE_STATES } from "../../states";
-import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
+import {
+    ActionContext,
+    BATTLEFIELD_SIDES,
+    BattleState,
+    CombatantInfo,
+    TRIGGER_SOURCE_TYPES,
+} from "../../types";
 import { isStunnedOrFrozen } from "../../utils";
-import { findCombatantData, isTurnActionPrevented, updateCombatant, updateCombatants } from "../combatantData";
+import {
+    findCombatantData,
+    isTurnActionPrevented,
+    updateCombatant,
+    updateCombatants,
+} from "../combatantData";
 import { performAction } from "../performAction";
 import { PlaybackCollector, playbackCollector } from "../playbackCollector";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
@@ -58,19 +69,27 @@ const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollecto
                     // Fix an issue where the cast time would reset if the enemy was CCed.
                     casting: updatedCasting.channelDuration || castTime > 0 ? updatedCasting : null,
                 },
-            })
+            }),
         );
 
         if (updatedCasting.castTime || isStunnedOrFrozen(combatant)) {
             return;
         }
 
-        dispatch(useAbility({ actorId: combatantId, ability, context: { name: "Enemy Cast", playbackCollector } }));
-        const { combatant: postAbilityActor } = findCombatantData(getState().battle!, combatantId) || {};
+        dispatch(
+            useAbility({
+                actorId: combatantId,
+                ability,
+                context: { name: "Enemy Cast", playbackCollector },
+            }),
+        );
+        const { combatant: postAbilityActor } =
+            findCombatantData(getState().battle!, combatantId) || {};
         if (!postAbilityActor) {
             return;
         }
-        const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
+        const resourceCost =
+            (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
 
         dispatch(
             updateCombatant({
@@ -78,9 +97,12 @@ const handleCastTick = (combatantId: string, playbackCollector: PlaybackCollecto
                 newProperties: {
                     resources: postAbilityActor.resources - resourceCost,
                     // Continued from the note about CC, if the casted spell finally went through, check its cast time again.
-                    casting: updatedCasting.channelDuration || (updatedCasting.castTime || 0) > 0 ? updatedCasting : null,
+                    casting:
+                        updatedCasting.channelDuration || (updatedCasting.castTime || 0) > 0
+                            ? updatedCasting
+                            : null,
                 },
-            })
+            }),
         );
     };
 };
@@ -101,10 +123,18 @@ const enemyAction = (combatantId: string, playbackCollector: PlaybackCollector) 
     };
 };
 
-export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreDisabled: boolean }): number => {
-    const { resources = 0, maxResources = BASE_MAX_RESOURCES, abilities = [] } = actorInfo?.combatant || {};
+export const getUseAbilityIndex = (
+    actorInfo: CombatantInfo,
+    options?: { ignoreDisabled: boolean },
+): number => {
+    const {
+        resources = 0,
+        maxResources = BASE_MAX_RESOURCES,
+        abilities = [],
+    } = actorInfo?.combatant || {};
 
-    const abilityPassesConditions = (ability: CombatAbility) => passesConditions({ actor: actorInfo, proc: ability });
+    const abilityPassesConditions = (ability: CombatAbility) =>
+        passesConditions({ actor: actorInfo, proc: ability });
 
     if (!abilities.length) {
         return -1;
@@ -116,10 +146,14 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
         }
         const disabledActionTypes: { [type: string]: true } = {};
         getEnabledEffects({ combatantInfo: actorInfo }).forEach((e) => {
-            e?.disableAbilities?.forEach((type: ACTION_TYPES) => (disabledActionTypes[type] = true));
+            e?.disableAbilities?.forEach(
+                (type: ACTION_TYPES) => (disabledActionTypes[type] = true),
+            );
         });
 
-        return (ability.actions || []).every((action) => !action.type || !disabledActionTypes[action.type]);
+        return (ability.actions || []).every(
+            (action) => !action.type || !disabledActionTypes[action.type],
+        );
     };
 
     if (resources >= maxResources) {
@@ -127,7 +161,7 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
             (ability) =>
                 abilityPassesConditions(ability) &&
                 (ability.resourceCost === "x" || (ability.resourceCost || 0) > 0) &&
-                notDisabled(ability)
+                notDisabled(ability),
         );
         if (specialAbilityIndex > -1) {
             return specialAbilityIndex;
@@ -135,7 +169,8 @@ export const getUseAbilityIndex = (actorInfo: CombatantInfo, options?: { ignoreD
     }
 
     const abilityIndex = abilities.findIndex(
-        (ability) => abilityPassesConditions(ability) && !ability.resourceCost && notDisabled(ability)
+        (ability) =>
+            abilityPassesConditions(ability) && !ability.resourceCost && notDisabled(ability),
     );
     const { resourceCost = 0 } = abilities[abilityIndex] || {};
     if (resourceCost === "x" || resourceCost <= resources) {
@@ -156,7 +191,11 @@ export const getUpdatedBattleActionTargets = ({
 }): { battle: BattleState; targets: ActionTarget[] } => {
     let targets: ActionTarget[] = [];
     ability.actions.forEach((action, i) => {
-        const target = autoSelectActionTarget({ action, actorId: actorInfo.combatant.id, battle });
+        const target = autoSelectActionTarget({
+            action,
+            actorId: actorInfo.combatant.id,
+            battle,
+        });
         if (!target) {
             return;
         }
@@ -206,7 +245,13 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
 
         const { castTime, channelDuration } = ability || {};
         if (!castTime && !channelDuration) {
-            dispatch(useAbility({ ability, actorId: combatantId, context: { name: "Enemy Ability", playbackCollector } }));
+            dispatch(
+                useAbility({
+                    ability,
+                    actorId: combatantId,
+                    context: { name: "Enemy Ability", playbackCollector },
+                }),
+            );
             return;
         }
 
@@ -222,18 +267,27 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
                 newProperties: {
                     casting,
                 },
-            })
+            }),
         );
 
         if (!castTime) {
-            dispatch(useAbility({ ability, actorId: combatantId, context: { name: "Enemy Ability", playbackCollector } }));
+            dispatch(
+                useAbility({
+                    ability,
+                    actorId: combatantId,
+                    context: { name: "Enemy Ability", playbackCollector },
+                }),
+            );
             const postAbilityCombatantData = findCombatantData(getState().battle!, combatantId);
             if (!postAbilityCombatantData) {
                 return;
             }
 
             const { combatant: postAbilityActor } = postAbilityCombatantData;
-            const resourceCost = (ability.resourceCost === "x" ? postAbilityActor.resources : ability.resourceCost) || 0;
+            const resourceCost =
+                (ability.resourceCost === "x"
+                    ? postAbilityActor.resources
+                    : ability.resourceCost) || 0;
 
             dispatch(
                 updateCombatant({
@@ -241,7 +295,7 @@ const enemyUseAbility = (combatantId: string, playbackCollector: PlaybackCollect
                     newProperties: {
                         resources: postAbilityActor.resources - resourceCost,
                     },
-                })
+                }),
             );
         }
     };
@@ -255,10 +309,15 @@ export const endEnemyTurn = () => {
 
         // Queue the next ability unless the combatant is channeling.
         // This should occur after resource gain so that the telegraph doesn't flicker to an ability it can newly use with the updated resources
-        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: getState().battle!.enemySide, round: round + 1 });
+        const nextMoveOrderIds = getCombatantMoveOrder({
+            combatants: getState().battle!.enemySide,
+            round: round + 1,
+        });
 
         nextMoveOrderIds.forEach((combatantId) => {
-            const combatant = getState().battle!.enemySide.find((enemy) => enemy?.id === combatantId);
+            const combatant = getState().battle!.enemySide.find(
+                (enemy) => enemy?.id === combatantId,
+            );
             if (!combatant?.HP) {
                 return;
             }
@@ -277,14 +336,20 @@ export const startEnemyTurn = () => {
         dispatch(
             updateBattle({
                 enemySide: updateCombatants(enemySide, clearTurnHistory),
-            })
+            }),
         );
 
         // The "source" acts as a context object just to pass in a playbackCollector.
         // The effect events at turn start technically don't have a `trigger source`.
         const playbackCollectorInstance = playbackCollector();
-        const context: ActionContext = { name: "Enemy Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
-        const combatantIds = enemySide.map((combatant) => combatant?.id).filter((v): v is string => Boolean(v));
+        const context: ActionContext = {
+            name: "Enemy Turn",
+            sourceChain: [],
+            playbackCollector: playbackCollectorInstance,
+        };
+        const combatantIds = enemySide
+            .map((combatant) => combatant?.id)
+            .filter((v): v is string => Boolean(v));
         dispatch(handleDoTs({ combatantIds, side: BATTLEFIELD_SIDES.ENEMY_SIDE, context }));
 
         const getEnemySideInfo = () => {
@@ -302,7 +367,13 @@ export const startEnemyTurn = () => {
                 return;
             }
 
-            dispatch(checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onTurnStart, context }));
+            dispatch(
+                checkEventTrigger({
+                    combatantId: combatant.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onTurnStart,
+                    context,
+                }),
+            );
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -353,7 +424,10 @@ export const enemyMoves = () => {
         };
 
         const { enemySide, round } = getState().battle!;
-        const moveOrderIds = getCombatantMoveOrder({ combatants: enemySide, round });
+        const moveOrderIds = getCombatantMoveOrder({
+            combatants: enemySide,
+            round,
+        });
         moveOrderIds.forEach(makeEnemyMove);
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
@@ -375,7 +449,9 @@ const checkUseItem = (combatant: Combatant): number | undefined => {
     const { items = [], maxHP, HP } = combatant || {};
 
     const missingHP = maxHP - HP;
-    const consumablesWorthUsing = items.filter((item: Item) => item.type === ITEM_TYPES.CONSUMABLE && (item.healing || 0) <= missingHP);
+    const consumablesWorthUsing = items.filter(
+        (item: Item) => item.type === ITEM_TYPES.CONSUMABLE && (item.healing || 0) <= missingHP,
+    );
     if (consumablesWorthUsing.length === 0) {
         return;
     }

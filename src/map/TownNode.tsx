@@ -101,10 +101,17 @@ const TownNode = ({
     };
     return (
         <div
-            className={classNames(classes.node, { [classes.visited]: isVisited, [classes.hoverHighlight]: !isVisited && !isLocked })}
+            className={classNames(classes.node, {
+                [classes.visited]: isVisited,
+                [classes.hoverHighlight]: !isVisited && !isLocked,
+            })}
             onClick={handleClick}
         >
-            <div className={classNames(classes.backgroundContainer, { [classes.locked]: isLocked })}>
+            <div
+                className={classNames(classes.backgroundContainer, {
+                    [classes.locked]: isLocked,
+                })}
+            >
                 {nodeImage && <img src={nodeImage} alt={label} />}
                 {nodeEl && nodeEl}
             </div>

@@ -24,7 +24,7 @@ const renderCamp = () => {
             deck={[createCombatAbility(warriorDefaultAttack)]}
             updateDeck={updateDeck}
             updatePlayer={updatePlayer}
-        />
+        />,
     );
 
     return { updateDeck, updatePlayer, onExit };
@@ -44,7 +44,9 @@ describe("Camp transmutation", () => {
 
         fireEvent.click(screen.getByText("TRANSMUTE"));
 
-        expect(screen.getByText(`Transmutations left: ${NUM_CAMP_TRANSMUTATIONS}`)).toBeInTheDocument();
+        expect(
+            screen.getByText(`Transmutations left: ${NUM_CAMP_TRANSMUTATIONS}`),
+        ).toBeInTheDocument();
         expect(NUM_CAMP_TRANSMUTATIONS).toBe(1);
     });
 });

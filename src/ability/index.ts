@@ -326,7 +326,18 @@ export const JOB_CARD_MAP = {
             chromatic,
             fullMoon,
         ],
-        starters: [empower, energyBolt, energyBolt, energyBolt, magicFang, magicFang, magicFang, magicArmor, magicArmor, magicArmor],
+        starters: [
+            empower,
+            energyBolt,
+            energyBolt,
+            energyBolt,
+            magicFang,
+            magicFang,
+            magicFang,
+            magicArmor,
+            magicArmor,
+            magicArmor,
+        ],
     },
     [PLAYER_CLASSES.WARRIOR]: {
         all: [
@@ -495,6 +506,17 @@ export const JOB_CARD_MAP = {
             arrowRain,
             meerkatAbility,
         ],
-        starters: [puppetAbility, shootAbility, shootAbility, shootAbility, volley, volley, volley, defend, defend, defend],
+        starters: [
+            puppetAbility,
+            shootAbility,
+            shootAbility,
+            shootAbility,
+            volley,
+            volley,
+            volley,
+            defend,
+            defend,
+            defend,
+        ],
     },
 };

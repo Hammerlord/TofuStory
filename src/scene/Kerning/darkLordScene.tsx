@@ -3,7 +3,12 @@ import { CLASS_LEADER_MUSIC } from "../../battle/constants";
 import { BATTLE_TYPES } from "../../battle/types";
 import { darkLord } from "../../enemy/darkLord";
 import { thiefAssassin } from "../../enemy/enemy";
-import { DarkLordImage, KerningBarFullImage, KerningBarUndergroundImage, LeetSinImage } from "../../images";
+import {
+    DarkLordImage,
+    KerningBarFullImage,
+    KerningBarUndergroundImage,
+    LeetSinImage,
+} from "../../images";
 import { EventScene, ScriptNode } from "../types";
 import classNames from "classnames";
 import { Player } from "../../character/types";
@@ -69,8 +74,18 @@ const BarBackdrop = ({ player, showThief }: { player: Player; showThief?: boolea
     return (
         <div className={classes.root}>
             <img src={KerningBarFullImage} alt="Bar" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
-            {showThief && <img src={LeetSinImage} alt="Assassin" className={classNames(classes.character, classes.assassin)} />}
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.player, classes.character)}
+            />
+            {showThief && (
+                <img
+                    src={LeetSinImage}
+                    alt="Assassin"
+                    className={classNames(classes.character, classes.assassin)}
+                />
+            )}
         </div>
     );
 };
@@ -104,9 +119,21 @@ const BasementBackdrop = ({ player }: { player: Player }) => {
     const classes = useBarUndergroundStyles();
     return (
         <div className={classes.root}>
-            <img src={KerningBarUndergroundImage} alt="Bar Underground" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
-            <img src={DarkLordImage} alt="Dark Lord" className={classNames(classes.assassin, classes.character)} />
+            <img
+                src={KerningBarUndergroundImage}
+                alt="Bar Underground"
+                className={classes.backdrop}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.player, classes.character)}
+            />
+            <img
+                src={DarkLordImage}
+                alt="Dark Lord"
+                className={classNames(classes.assassin, classes.character)}
+            />
         </div>
     );
 };
@@ -121,12 +148,17 @@ export const toilet: ScriptNode[] = [
         dialog: ["My EXP! I grinded almost a whole hour for that!"],
     },
     {
-        dialog: ["[With a final cry of outrage, the ghost of the defeated assassin promptly vanishes.]"],
+        dialog: [
+            "[With a final cry of outrage, the ghost of the defeated assassin promptly vanishes.]",
+        ],
     },
     {
         scene: BarBackdrop,
         speaker: aVoice,
-        dialog: ["So you've defeated one of my disciples.", "[The voice seems to be coming from the toilet in the back.]"],
+        dialog: [
+            "So you've defeated one of my disciples.",
+            "[The voice seems to be coming from the toilet in the back.]",
+        ],
         responses: [
             {
                 text: "That was one of your disciples?",
@@ -144,11 +176,15 @@ export const toilet: ScriptNode[] = [
                     },
                     {
                         speaker: aVoice,
-                        dialog: ["Come forward. I sense a peculiarity about you. You are a monster, yes, but no ordinary one."],
+                        dialog: [
+                            "Come forward. I sense a peculiarity about you. You are a monster, yes, but no ordinary one.",
+                        ],
                     },
                     {
                         speaker: aVoice,
-                        dialog: ["And do not think of running away. Cowards will not leave this place alive."],
+                        dialog: [
+                            "And do not think of running away. Cowards will not leave this place alive.",
+                        ],
                         responses: [
                             {
                                 text: "[Climb down the toilet...]",
@@ -164,7 +200,10 @@ export const toilet: ScriptNode[] = [
                                     },
                                     {
                                         speaker: darkLordCharacter,
-                                        dialog: ["...", "[The Dark Lord appears to be studying you.]"],
+                                        dialog: [
+                                            "...",
+                                            "[The Dark Lord appears to be studying you.]",
+                                        ],
                                         responses: [
                                             {
                                                 text: "[Attempt to explain that you don't think you're supposed to be a monster.]",
@@ -185,7 +224,10 @@ export const toilet: ScriptNode[] = [
                                     },
                                     {
                                         speaker: darkLordCharacter,
-                                        dialog: ["I have decided.", "One such as you cannot be allowed to live."],
+                                        dialog: [
+                                            "I have decided.",
+                                            "One such as you cannot be allowed to live.",
+                                        ],
                                     },
                                     {
                                         speaker: darkLordCharacter,
@@ -207,7 +249,9 @@ export const toilet: ScriptNode[] = [
                                                     },
                                                     {
                                                         speaker: darkLordCharacter,
-                                                        dialog: ["[The Dark Lord vanishes in a puff of smoke.]"],
+                                                        dialog: [
+                                                            "[The Dark Lord vanishes in a puff of smoke.]",
+                                                        ],
                                                     },
                                                 ],
                                             },
@@ -234,7 +278,10 @@ export const barScene: EventScene = {
             dialog: ["[You take a step (or a hop) farther in...]"],
         },
         {
-            dialog: ["[A ninja star comes flying out of nowhere. It bounces off the floor and goes clattering.", "A warning shot.]"],
+            dialog: [
+                "[A ninja star comes flying out of nowhere. It bounces off the floor and goes clattering.",
+                "A warning shot.]",
+            ],
         },
         {
             scene: (other) => <BarBackdrop showThief={true} {...other} />,

@@ -15,11 +15,14 @@ export const generateTradingPostInventory = (player: Player) => {
             playerItems: player.items,
             excludeItems: mesoItems,
             itemsToFilter: ITEMS.concat(CLASS_ITEMS[player.class] || []),
-        })
+        }),
     );
     const items = itemPool.slice(0, NUM_TRADING_POST_ITEMS).concat(mesoItems);
 
-    if (upgradedStarterItem && !player.items.some((item) => item.name === upgradedStarterItem.name)) {
+    if (
+        upgradedStarterItem &&
+        !player.items.some((item) => item.name === upgradedStarterItem.name)
+    ) {
         items.push(upgradedStarterItem);
     }
 

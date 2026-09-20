@@ -14,14 +14,21 @@ export const useItem = ({
     playbackCollector: PlaybackCollector;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        const { index, friendlySide, combatant } = findCombatantData(getState().battle!, actorId) || {};
+        const { index, friendlySide, combatant } =
+            findCombatantData(getState().battle!, actorId) || {};
         if (!friendlySide) {
             return;
         }
 
         const item = combatant.items[itemIndex];
 
-        const source = { type: TRIGGER_SOURCE_TYPES.ITEM, source: item, actorId, targetId: actorId, allTargetIds: [actorId] };
+        const source = {
+            type: TRIGGER_SOURCE_TYPES.ITEM,
+            source: item,
+            actorId,
+            targetId: actorId,
+            allTargetIds: [actorId],
+        };
 
         const context: ActionContext = {
             name: "Use Item",
@@ -45,16 +52,18 @@ export const useItem = ({
                 selectedIndex: index,
                 side: friendlySide,
                 parentContext: context,
-            })
+            }),
         );
 
         dispatch(
             updateCombatant({
                 combatantId: actorId,
                 newProperties: {
-                    items: findCombatantData(getState().battle!, actorId)?.combatant?.items.filter((item, i) => i !== itemIndex),
+                    items: findCombatantData(getState().battle!, actorId)?.combatant?.items.filter(
+                        (item, i) => i !== itemIndex,
+                    ),
                 },
-            })
+            }),
         );
     };
 };

@@ -6,7 +6,12 @@ import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import Icon from "../icon/Icon";
 import { CrossbonesIcon, CrossedSwordsIcon, NoEntryIcon, ShieldIcon } from "../images/icons";
 import { Combatant, Player } from "./types";
-import { IncomingDamageArrow2Image, IncomingDamageArrowImage, IncomingSupportArrow2Image, IncomingSupportArrowImage } from "../images";
+import {
+    IncomingDamageArrow2Image,
+    IncomingDamageArrowImage,
+    IncomingSupportArrow2Image,
+    IncomingSupportArrowImage,
+} from "../images";
 
 const ARROW_ANIMATION_TIME = 2000; // ms
 
@@ -188,8 +193,14 @@ const AbilityPreview = ({
 
     const getIndicator = () => {
         const { arrow, arrowBase } = isEnemy
-            ? { arrow: IncomingDamageArrow2Image, arrowBase: IncomingDamageArrowImage }
-            : { arrow: IncomingSupportArrow2Image, arrowBase: IncomingSupportArrowImage };
+            ? {
+                  arrow: IncomingDamageArrow2Image,
+                  arrowBase: IncomingDamageArrowImage,
+              }
+            : {
+                  arrow: IncomingSupportArrow2Image,
+                  arrowBase: IncomingSupportArrowImage,
+              };
 
         return (
             <span
@@ -242,7 +253,9 @@ const AbilityPreview = ({
                         return;
                     }
 
-                    const index = combinedEffects.findIndex((aggregated) => aggregated.name === e.name);
+                    const index = combinedEffects.findIndex(
+                        (aggregated) => aggregated.name === e.name,
+                    );
                     if (index > -1) {
                         combinedEffects[index] = {
                             ...combinedEffects[index],
@@ -259,7 +272,9 @@ const AbilityPreview = ({
                     healthDamage: (acc.healthDamage || 0) + healthDamage,
                     resources: (acc.resources || 0) + resources,
                     effects: combinedEffects,
-                    failedToApplyEffects: (acc.failedToApplyEffects || []).concat(failedToApplyEffects),
+                    failedToApplyEffects: (acc.failedToApplyEffects || []).concat(
+                        failedToApplyEffects,
+                    ),
                     armor: (acc.armor || 0) + armor,
                     isDeathBlow: acc.isDeathBlow || isDeathBlow,
                     actionDamage: (acc.actionDamage || 0) + (action.damage || 0),
@@ -279,22 +294,29 @@ const AbilityPreview = ({
                 actionDamage: number;
                 actionArmor: number;
                 isDefiniteKill: boolean;
-            }
+            },
         );
 
         const HP = combatant?.HP || 0;
-        const showDeathBlow = (isDeathBlow && !isDeathBlowShown) || (HP > 0 && healthDamage >= HP) || isDefiniteKill;
+        const showDeathBlow =
+            (isDeathBlow && !isDeathBlowShown) || (HP > 0 && healthDamage >= HP) || isDefiniteKill;
         if (showDeathBlow) {
             isDeathBlowShown = true;
         }
 
         const showDamage = rawDamage > 0;
         const showArmor = armor > 0;
-        const nothingToShow = !showDamage && !showArmor && !effects.length && !failedToApplyEffects.length && !resources;
+        const nothingToShow =
+            !showDamage &&
+            !showArmor &&
+            !effects.length &&
+            !failedToApplyEffects.length &&
+            !resources;
         if (nothingToShow) {
             return null;
         }
-        const showDivider = (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
+        const showDivider =
+            (effects.length > 0 || failedToApplyEffects.length > 0) && (showDamage || showArmor);
 
         return (
             <div
@@ -312,7 +334,10 @@ const AbilityPreview = ({
                     );
                 })}
                 {failedToApplyEffects.map((e, i) => (
-                    <span className={classNames(classes.previewIconContainer)} key={[e.name, i].join("-")}>
+                    <span
+                        className={classNames(classes.previewIconContainer)}
+                        key={[e.name, i].join("-")}
+                    >
                         <Icon icon={e.icon} className={classes.immuned} size="sm" />
                         <Icon icon={NoEntryIcon} size="min" className={classes.cancelIcon} />
                         {e.stacks && <span className={classes.stacks}>{e.stacks}</span>}

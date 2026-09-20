@@ -2,15 +2,26 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 import * as uuid from "uuid";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { endEnemyTurn, enemyMoves, startEnemyTurn } from "../actions/phases/enemyTurn";
-import { nextWave, onBattleEnd, onBattleStart, onWaveClear, onWaveStart } from "../actions/phases/phases";
-import { initiatePlayerTurnInProgress, playerEndTurn, startPlayerTurn } from "../actions/phases/playerTurn";
+import {
+    nextWave,
+    onBattleEnd,
+    onBattleStart,
+    onWaveClear,
+    onWaveStart,
+} from "../actions/phases/phases";
+import {
+    initiatePlayerTurnInProgress,
+    playerEndTurn,
+    startPlayerTurn,
+} from "../actions/phases/playerTurn";
 import { checkWinCondition } from "../checkWinCondition";
 import { TURN_ANNOUNCEMENT_TIME } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BattleState } from "../types";
 
-const { popEventQueue, updateBattleState, updateBattle, setNotification, pushActionHistory } = battleStateSlice.actions;
+const { popEventQueue, updateBattleState, updateBattle, setNotification, pushActionHistory } =
+    battleStateSlice.actions;
 
 /**
  * Drives the battle state machine and its accompanying notifications/animation timing.
@@ -18,7 +29,14 @@ const { popEventQueue, updateBattleState, updateBattle, setNotification, pushAct
 export const useBattlePhase = ({ onWin }: { onWin?: (battle: BattleState) => void }) => {
     const dispatch = useAppDispatch();
     const battle: BattleState = useAppSelector((state) => state.battle)!;
-    const { state: battleState, isPlayerTurn, eventQueue: eventGroups, currentWaveIndex, waves, round } = battle;
+    const {
+        state: battleState,
+        isPlayerTurn,
+        eventQueue: eventGroups,
+        currentWaveIndex,
+        waves,
+        round,
+    } = battle;
 
     const [showWaveClear, setShowWaveClear] = useState(false);
     const battleStateRef = useRef<BATTLE_STATES | null>(null);
@@ -43,7 +61,7 @@ export const useBattlePhase = ({ onWin }: { onWin?: (battle: BattleState) => voi
                     setNotification({
                         text: Array.isArray(description) ? description[i] : description,
                         id: uuid.v4(),
-                    })
+                    }),
                 );
                 if (Array.isArray(description) && description[i + 1]) {
                     showWaveDescription({ description, i: i + 1, delay: 7500 });
@@ -61,7 +79,7 @@ export const useBattlePhase = ({ onWin }: { onWin?: (battle: BattleState) => voi
                 setNotification({
                     text: notification.text,
                     id: uuid.v4(),
-                })
+                }),
             );
         }
     }, [currentWaveIndex, round]);

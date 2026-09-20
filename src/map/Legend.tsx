@@ -46,31 +46,40 @@ const Legend = () => {
         <ul className={classes.legend}>
             <div className={classes.legendHeader}>Legend</div>
             <li>
-                <Icon icon={<CrossedSwordsIcon />} /> <span className={classes.legendItemText}>Battle</span>
+                <Icon icon={<CrossedSwordsIcon />} />{" "}
+                <span className={classes.legendItemText}>Battle</span>
             </li>
             <li>
-                <Icon icon={<MedalIcon />} /> <span className={classes.legendItemText}>Elite Battle</span>
+                <Icon icon={<MedalIcon />} />{" "}
+                <span className={classes.legendItemText}>Elite Battle</span>
             </li>
             <li>
-                <Icon icon={<JapaneseOgreIcon />} /> <span className={classes.legendItemText}>Boss</span>
+                <Icon icon={<JapaneseOgreIcon />} />{" "}
+                <span className={classes.legendItemText}>Boss</span>
             </li>
             <li>
-                <Icon icon={<CampingIcon />} /> <span className={classes.legendItemText}>Campsite</span>
+                <Icon icon={<CampingIcon />} />{" "}
+                <span className={classes.legendItemText}>Campsite</span>
             </li>
             <li>
-                <Icon icon={<MoneyBagIcon />} /> <span className={classes.legendItemText}>Shop</span>
+                <Icon icon={<MoneyBagIcon />} />{" "}
+                <span className={classes.legendItemText}>Shop</span>
             </li>
             <li>
-                <Icon icon={FlagImage} /> <span className={classes.legendItemText}>Trading Post</span>
+                <Icon icon={FlagImage} />{" "}
+                <span className={classes.legendItemText}>Trading Post</span>
             </li>
             <li>
-                <Icon icon={PersonalAnvilImage} /> <span className={classes.legendItemText}>Transmute</span>
+                <Icon icon={PersonalAnvilImage} />{" "}
+                <span className={classes.legendItemText}>Transmute</span>
             </li>
             <li>
-                <Icon icon={TreasureChestImage} /> <span className={classes.legendItemText}>Treasure</span>
+                <Icon icon={TreasureChestImage} />{" "}
+                <span className={classes.legendItemText}>Treasure</span>
             </li>
             <li>
-                <Icon icon={<QuestionMarkIcon />} /> <span className={classes.legendItemText}>Event</span>
+                <Icon icon={<QuestionMarkIcon />} />{" "}
+                <span className={classes.legendItemText}>Event</span>
             </li>
             <li>
                 <Icon icon={<HouseIcon />} /> <span className={classes.legendItemText}>City</span>

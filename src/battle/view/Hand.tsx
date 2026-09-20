@@ -58,7 +58,10 @@ const Hand = ({
 
     hand = useMemo(() => {
         const auraEffects = getHandAuraEffects(hand);
-        return hand.map((ability, i) => ({ ...ability, effects: [...(ability.effects || []), ...(auraEffects[i] || [])] }));
+        return hand.map((ability, i) => ({
+            ...ability,
+            effects: [...(ability.effects || []), ...(auraEffects[i] || [])],
+        }));
     }, [hand]);
 
     return (

@@ -84,7 +84,9 @@ const CardRemovalGrid = ({
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const handleRemoveAbility = () => {
         if (selectedAbilityId) {
-            onRemoveAbility(cards.filter((card: CombatAbility) => card.instanceId !== selectedAbilityId));
+            onRemoveAbility(
+                cards.filter((card: CombatAbility) => card.instanceId !== selectedAbilityId),
+            );
         }
     };
 
@@ -92,10 +94,17 @@ const CardRemovalGrid = ({
         <div className={classes.root}>
             <div className={classes.inner}>
                 <h3>Remove An Ability</h3>
-                <div>Keep your skills focused by removing an ability from your deck. This action is permanent.</div>
+                <div>
+                    Keep your skills focused by removing an ability from your deck. This action is
+                    permanent.
+                </div>
                 <hr className={classes.divider} />
                 <label>
-                    <Checkbox checked={isHideDuplicates} onChange={() => setIsHideDuplicates((prev) => !prev)} /> Hide duplicates
+                    <Checkbox
+                        checked={isHideDuplicates}
+                        onChange={() => setIsHideDuplicates((prev) => !prev)}
+                    />{" "}
+                    Hide duplicates
                 </label>
                 <div className={classes.abilitySection}>
                     {cardsList.map((card: CombatAbility) => (
@@ -115,7 +124,11 @@ const CardRemovalGrid = ({
                             </div>
                             <div className={classes.confirmContainer}>
                                 {card.instanceId === selectedAbilityId && (
-                                    <Button variant={"contained"} color={"warning"} onClick={handleRemoveAbility}>
+                                    <Button
+                                        variant={"contained"}
+                                        color={"warning"}
+                                        onClick={handleRemoveAbility}
+                                    >
                                         Remove Selection
                                     </Button>
                                 )}

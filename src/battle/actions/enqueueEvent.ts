@@ -56,7 +56,10 @@ export const enqueueEvent = ({
         playbackTime = action?.playbackTime || playbackTime || 0;
         if (!playbackTime && action) {
             if (action.animationOptions?.ricochet) {
-                const playbackMultiple = allTargetIndices.length > 1 ? (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length : 0;
+                const playbackMultiple =
+                    allTargetIndices.length > 1
+                        ? (RICOCHET_ACTION_PLAYBACK_SPEED / 3) * allTargetIndices.length
+                        : 0;
                 playbackTime = RICOCHET_ACTION_PLAYBACK_SPEED + playbackMultiple;
             } else if ((actionParent as Ability)?.actions?.length > 1) {
                 playbackTime = MULTI_ACTION_PLAYBACK_SPEED;
@@ -129,7 +132,7 @@ export const enqueueEvent = ({
                 playbackTime: playbackTime,
                 events: [event],
                 addCards,
-            })
+            }),
         );
     };
 };

@@ -1,4 +1,12 @@
-import { ACTION_TYPES, ANIMATION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { rally } from "../../enemy/abilities";
 import {
     EnergyBoltProjectileImage,
@@ -162,6 +170,10 @@ export const adventurerIceWizard = {
             ],
         },
         { ...magicFang, resourceCost: 3 },
-        { ...magicClaw, resourceCost: 3, actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })) },
+        {
+            ...magicClaw,
+            resourceCost: 3,
+            actions: magicClaw.actions.map((action) => ({ ...action, damage: 3 })),
+        },
     ],
 };

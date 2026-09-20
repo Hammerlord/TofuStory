@@ -11,12 +11,17 @@ import { getConfiguredStore } from "../../store";
 
 const renderShopTransmutation = () => {
     const store = getConfiguredStore();
-    store.dispatch(playerStateSlice.actions.onSelectClass({ selectedClass: PLAYER_CLASSES.WARRIOR, deck: [warriorDefaultAttack] }));
+    store.dispatch(
+        playerStateSlice.actions.onSelectClass({
+            selectedClass: PLAYER_CLASSES.WARRIOR,
+            deck: [warriorDefaultAttack],
+        }),
+    );
 
     render(
         <Provider store={store}>
             <Transmutation onExit={() => {}} />
-        </Provider>
+        </Provider>,
     );
 
     return store;
@@ -32,7 +37,9 @@ describe("non-campsite transmutation", () => {
     it("grants the base number of free transmutations outside of the campsite", () => {
         renderShopTransmutation();
 
-        expect(screen.getByText(`Transmutations left: ${BASE_NUM_TRANSMUTATIONS}`)).toBeInTheDocument();
+        expect(
+            screen.getByText(`Transmutations left: ${BASE_NUM_TRANSMUTATIONS}`),
+        ).toBeInTheDocument();
         expect(BASE_NUM_TRANSMUTATIONS).toBe(3);
     });
 });

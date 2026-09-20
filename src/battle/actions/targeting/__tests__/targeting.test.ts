@@ -46,7 +46,13 @@ vi.mock("../../../../battle/actions/statusEffect/getEnabledEffects", () => ({
     getEnabledEffects: () => [],
 }));
 
-import { ACTION_TYPES, Action, CombatEffect, EFFECT_TYPES, TARGET_TYPES } from "../../../../ability/types";
+import {
+    ACTION_TYPES,
+    Action,
+    CombatEffect,
+    EFFECT_TYPES,
+    TARGET_TYPES,
+} from "../../../../ability/types";
 import { Combatant } from "../../../../character/types";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "../../../../battle/types";
 import { autoSelectActionTarget, getValidTargetIndicesForAction } from "../targeting";
@@ -87,11 +93,21 @@ const playerSide: (Combatant | null)[] = [
     makeCombatant({ id: "player", name: "Player", isPlayer: true, HP: 50 }),
     null,
     null,
-    makeCombatant({ id: "taunt-minion", name: "Taunting Minion", effects: [tauntEffect] }),
+    makeCombatant({
+        id: "taunt-minion",
+        name: "Taunting Minion",
+        effects: [tauntEffect],
+    }),
     null,
 ];
 
-const enemySide: (Combatant | null)[] = [makeCombatant({ id: "red-snail", name: "Red Snail" }), null, null, null, null];
+const enemySide: (Combatant | null)[] = [
+    makeCombatant({ id: "red-snail", name: "Red Snail" }),
+    null,
+    null,
+    null,
+    null,
+];
 
 const actorData: CombatantInfo = {
     combatant: enemySide[0]!,
@@ -104,7 +120,10 @@ const actorData: CombatantInfo = {
 
 describe("getValidTargetIndicesForAction", () => {
     it("finds a taunting minion beyond the target area radius when there is no initial selection (Rollout regression)", () => {
-        const validIndices = getValidTargetIndicesForAction({ action: rolloutAction, actorData });
+        const validIndices = getValidTargetIndicesForAction({
+            action: rolloutAction,
+            actorData,
+        });
 
         expect(validIndices).toEqual([{ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE }]);
     });
@@ -131,10 +150,18 @@ describe("getValidTargetIndicesForAction", () => {
 
     it("still restricts to targets near an existing selection", () => {
         const twoTauntsPlayerSide: (Combatant | null)[] = [
-            makeCombatant({ id: "taunt-0", name: "Taunting Minion", effects: [tauntEffect] }),
+            makeCombatant({
+                id: "taunt-0",
+                name: "Taunting Minion",
+                effects: [tauntEffect],
+            }),
             null,
             null,
-            makeCombatant({ id: "taunt-3", name: "Taunting Minion", effects: [tauntEffect] }),
+            makeCombatant({
+                id: "taunt-3",
+                name: "Taunting Minion",
+                effects: [tauntEffect],
+            }),
             null,
         ];
 
@@ -160,7 +187,11 @@ describe("autoSelectActionTarget", () => {
     it("rolls a fresh target for Rollout instead of finding nothing (no-target bug)", () => {
         const battle = { playerSide, enemySide } as any;
 
-        const target = autoSelectActionTarget({ action: rolloutAction, actorId: "red-snail", battle });
+        const target = autoSelectActionTarget({
+            action: rolloutAction,
+            actorId: "red-snail",
+            battle,
+        });
 
         expect(target).toEqual({ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
     });

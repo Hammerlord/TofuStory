@@ -6,7 +6,13 @@ import CardUpgradeGrid from "../Menu/CardUpgradeGrid";
 import { Ability, CombatAbility } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import { Player } from "../character/types";
-import { CampfireImage, HerbsImage, PerionCampImage, PersonalAnvilImage, WeaponMasteryImage } from "../images";
+import {
+    CampfireImage,
+    HerbsImage,
+    PerionCampImage,
+    PersonalAnvilImage,
+    WeaponMasteryImage,
+} from "../images";
 import { Item } from "../item/types";
 import { TransmutationView } from "../shops/Transmutation";
 import { NUM_CAMP_TRANSMUTATIONS } from "../shops/constants";
@@ -128,12 +134,19 @@ const Camp = ({
     const [numTransmutations, setNumTransmutations] = useState(NUM_CAMP_TRANSMUTATIONS);
     const [isTransmutingAbility, setIsTransmutingAbility] = useState(false);
     const [numActivitiesRemaining, setNumActivitiesRemaining] = useState(
-        1 + player.items.reduce((acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0), 0)
+        1 +
+            player.items.reduce(
+                (acc: number, item: Item) => acc + (item?.camp?.extraActivities || 0),
+                0,
+            ),
     );
 
     useEffect(() => {
         const maxHP = getMaxHP(player);
-        const additionalHealing = player.items.reduce((acc: number, item: Item) => acc + (item.camp?.healing || 0), 0);
+        const additionalHealing = player.items.reduce(
+            (acc: number, item: Item) => acc + (item.camp?.healing || 0),
+            0,
+        );
         const healthRegained = Math.floor(maxHP * HEALTH_REGAINED) + additionalHealing;
         updatePlayer({
             HP: Math.min(maxHP, player.HP + healthRegained),
@@ -181,7 +194,13 @@ const Camp = ({
     };
 
     if (isRemovingAbility) {
-        return <CardRemovalGrid cards={deck} onRemoveAbility={handleRemoveAbility} onCancel={() => setIsRemovingAbility(false)} />;
+        return (
+            <CardRemovalGrid
+                cards={deck}
+                onRemoveAbility={handleRemoveAbility}
+                onCancel={() => setIsRemovingAbility(false)}
+            />
+        );
     }
 
     const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
@@ -223,7 +242,10 @@ const Camp = ({
     }
 
     const hasMeditateItem = player.items.some((item) => item.camp?.allowAbilityRemoval);
-    const canRemoveAbility = !completedActivities[CAMP_ACTIVITIES.REMOVE_CARD] && numActivitiesRemaining > 0 && hasMeditateItem;
+    const canRemoveAbility =
+        !completedActivities[CAMP_ACTIVITIES.REMOVE_CARD] &&
+        numActivitiesRemaining > 0 &&
+        hasMeditateItem;
     const canUpgradeAbility = numActivitiesRemaining > 0;
 
     return (
@@ -292,7 +314,10 @@ const Camp = ({
                     </div>
                     <p>Activities remaining: {numActivitiesRemaining}</p>
                     <div className={classes.exitSection}>
-                        <Button color={numActivitiesRemaining === 0 ? "primary" : "warning"} onClick={onExit}>
+                        <Button
+                            color={numActivitiesRemaining === 0 ? "primary" : "warning"}
+                            onClick={onExit}
+                        >
                             Exit
                         </Button>
                     </div>

@@ -56,7 +56,9 @@ export const FortuneBox = ({ player, onComplete }: PuzzleProps) => {
 
     useEffect(() => {
         if (counter <= 0) {
-            const allItems = getAllPossibleItems({ player }).filter((item) => (item.rarity || RARITIES.COMMON) === rarity);
+            const allItems = getAllPossibleItems({ player }).filter(
+                (item) => (item.rarity || RARITIES.COMMON) === rarity,
+            );
             if (!allItems.length) {
                 // All items of this rarity have been acquired. Give mesos instead.
                 const mesosChart = {
@@ -161,7 +163,9 @@ const playRoute: ScriptResponse = {
                                         },
                                         {
                                             speaker: casey,
-                                            dialog: ["And that's it! Thanks for playing, Mushie! Have fun storming the castle."],
+                                            dialog: [
+                                                "And that's it! Thanks for playing, Mushie! Have fun storming the castle.",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Bye.",
@@ -176,7 +180,9 @@ const playRoute: ScriptResponse = {
                                     next: [
                                         {
                                             speaker: casey,
-                                            dialog: ["Alrighty, have fun storming the castle, Mushie."],
+                                            dialog: [
+                                                "Alrighty, have fun storming the castle, Mushie.",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Bye.",
@@ -195,7 +201,9 @@ const playRoute: ScriptResponse = {
                     next: [
                         {
                             speaker: casey,
-                            dialog: ["Like what you got? I hope you do! Thanks for playing, Mushie, and have fun storming the castle."],
+                            dialog: [
+                                "Like what you got? I hope you do! Thanks for playing, Mushie, and have fun storming the castle.",
+                            ],
                             responses: [
                                 {
                                     text: "Bye.",
@@ -268,11 +276,15 @@ export const fortuneBoxScene: EventScene = {
                     next: [
                         {
                             speaker: casey,
-                            dialog: ["Ohhh, don't look at me like that. I'm Casey, and I'm a friend, I swear!"],
+                            dialog: [
+                                "Ohhh, don't look at me like that. I'm Casey, and I'm a friend, I swear!",
+                            ],
                         },
                         {
                             speaker: casey,
-                            dialog: ["I think everyone could use a break from grinding sometimes, even if only for a minute or so."],
+                            dialog: [
+                                "I think everyone could use a break from grinding sometimes, even if only for a minute or so.",
+                            ],
                         },
                         {
                             speaker: casey,

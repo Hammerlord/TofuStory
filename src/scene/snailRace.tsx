@@ -26,7 +26,15 @@ const useStyles = createUseStyles({
     backdropContainer: { width: 1000, height: 675 }, // For horizontal consistency with "puzzle" display
 });
 
-const SnailRaceBackdrop = ({ player, winner, onComplete }: { player: Player; winner: "blue" | "red"; onComplete? }) => {
+const SnailRaceBackdrop = ({
+    player,
+    winner,
+    onComplete,
+}: {
+    player: Player;
+    winner: "blue" | "red";
+    onComplete?;
+}) => {
     const classes = useStyles();
     const redSnailRef = useRef(null);
     const blueSnailRef = useRef(null);
@@ -125,7 +133,10 @@ const waitRedSnailRace: ScriptNode[] = [
                         puzzle: (other) => <SnailRaceBackdrop {...other} winner="red" />,
                     },
                     {
-                        dialog: ["The Red Snail won! 125 mesos is yours for the taking.", "[You gained 125 mesos.]"],
+                        dialog: [
+                            "The Red Snail won! 125 mesos is yours for the taking.",
+                            "[You gained 125 mesos.]",
+                        ],
                         mesos: 125,
                         responses: [
                             {
@@ -167,7 +178,10 @@ const fedRedSnailRace: ScriptNode[] = [
         puzzle: (other) => <SnailRaceBackdrop {...other} winner="red" />,
     },
     {
-        dialog: ["Wow, Red's performing top-notch today! Is that a new record we just witnessed?", "[You gained 125 mesos.]"],
+        dialog: [
+            "Wow, Red's performing top-notch today! Is that a new record we just witnessed?",
+            "[You gained 125 mesos.]",
+        ],
         mesos: 125,
         responses: [
             {
@@ -307,7 +321,10 @@ export const snailRaceScene: EventScene = {
                     text: "Red. [Pay 50 mesos. 70% chance to win 125 mesos.]",
                     next: [
                         {
-                            dialog: ["Red it is!", "The race is starting soon! Calling all final bets! ..."],
+                            dialog: [
+                                "Red it is!",
+                                "The race is starting soon! Calling all final bets! ...",
+                            ],
                             loseMesos: 50,
                             responses: [
                                 {
@@ -316,7 +333,10 @@ export const snailRaceScene: EventScene = {
                                     infamy: 1,
                                     next: [
                                         {
-                                            dialog: ["[You hand over a piece of Tofu.", "The Red Snail looks sated.]"],
+                                            dialog: [
+                                                "[You hand over a piece of Tofu.",
+                                                "The Red Snail looks sated.]",
+                                            ],
                                             loseItems: [tofu.name],
                                         },
                                         ...fedRedSnailRace,
@@ -328,7 +348,10 @@ export const snailRaceScene: EventScene = {
                                     infamy: 1,
                                     next: [
                                         {
-                                            dialog: ["[You hand over the Half-Eaten Hotdog.", "The Red Snail looks sated.]"],
+                                            dialog: [
+                                                "[You hand over the Half-Eaten Hotdog.",
+                                                "The Red Snail looks sated.]",
+                                            ],
                                             loseItems: [halfEatenHotdog.name],
                                         },
                                         ...fedRedSnailRace,
@@ -346,7 +369,10 @@ export const snailRaceScene: EventScene = {
                     text: "Blue. [Pay 50 mesos. 30% chance to win 275 mesos.]",
                     next: [
                         {
-                            dialog: ["Blue it is!", "The race is starting soon! Calling all final bets! ..."],
+                            dialog: [
+                                "Blue it is!",
+                                "The race is starting soon! Calling all final bets! ...",
+                            ],
                             loseMesos: 50,
                             responses: [
                                 {
@@ -355,7 +381,10 @@ export const snailRaceScene: EventScene = {
                                     infamy: 1,
                                     next: [
                                         {
-                                            dialog: ["[You hand over a piece of Tofu.", "The Blue Snail looks sated.]"],
+                                            dialog: [
+                                                "[You hand over a piece of Tofu.",
+                                                "The Blue Snail looks sated.]",
+                                            ],
                                             loseItems: [tofu.name],
                                         },
                                         ...fedBlueSnailRace,
@@ -367,7 +396,10 @@ export const snailRaceScene: EventScene = {
                                     infamy: 1,
                                     next: [
                                         {
-                                            dialog: ["[You hand over the Half-Eaten Hotdog.", "The Blue Snail looks sated.]"],
+                                            dialog: [
+                                                "[You hand over the Half-Eaten Hotdog.",
+                                                "The Blue Snail looks sated.]",
+                                            ],
                                             loseItems: [halfEatenHotdog.name],
                                         },
                                         ...fedBlueSnailRace,

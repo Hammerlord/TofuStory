@@ -38,10 +38,15 @@ export interface AddCardsToHandResult {
     cardsDiscarded: CombatAbility[];
 }
 
-export function computeAddCardsToHand(state: BattleState, newCards: CombatAbility[]): AddCardsToHandResult {
+export function computeAddCardsToHand(
+    state: BattleState,
+    newCards: CombatAbility[],
+): AddCardsToHandResult {
     const processedCards = newCards.slice().map(createCombatAbility);
     const existingHandIds = new Set(state.hand.map((card) => card.instanceId).filter(Boolean));
-    const cardsDropped = processedCards.filter((card) => card.instanceId && existingHandIds.has(card.instanceId));
+    const cardsDropped = processedCards.filter(
+        (card) => card.instanceId && existingHandIds.has(card.instanceId),
+    );
 
     let newHand: CombatAbility[] = dedupeByInstanceId([...processedCards, ...state.hand]);
     const newDiscard = state.discard.slice();
@@ -52,14 +57,24 @@ export function computeAddCardsToHand(state: BattleState, newCards: CombatAbilit
         const toDiscard = newHand.slice(0, newHand.length - MAX_HAND_SIZE);
         newHand = newHand.slice(-MAX_HAND_SIZE);
         const player = state.playerSide.find((combatant) => combatant?.isPlayer) as Player;
-        cardsOverflowedToDiscard = prepareForDiscard({ cards: toDiscard, player, battle: state });
+        cardsOverflowedToDiscard = prepareForDiscard({
+            cards: toDiscard,
+            player,
+            battle: state,
+        });
         newDiscard.unshift(...cardsOverflowedToDiscard);
-        notification = { text: battleWarnings.handFull, severity: "warning", id: uuid.v4() };
+        notification = {
+            text: battleWarnings.handFull,
+            severity: "warning",
+            id: uuid.v4(),
+        };
     }
 
     const overflowedIds = new Set(cardsOverflowedToDiscard.map((card) => card.instanceId));
     const droppedIds = new Set(cardsDropped.map((card) => card.instanceId));
-    const cardsAddedToHand = processedCards.filter((card) => !overflowedIds.has(card.instanceId) && !droppedIds.has(card.instanceId));
+    const cardsAddedToHand = processedCards.filter(
+        (card) => !overflowedIds.has(card.instanceId) && !droppedIds.has(card.instanceId),
+    );
 
     return {
         hand: newHand,
@@ -94,7 +109,10 @@ export const battleStateSlice = createSlice({
                 ...action.payload,
             };
         },
-        pushEventQueue: (state: BattleState | null, action: PayloadAction<EventGroup | EventGroup[]>) => {
+        pushEventQueue: (
+            state: BattleState | null,
+            action: PayloadAction<EventGroup | EventGroup[]>,
+        ) => {
             let payload = action.payload;
             if (!Array.isArray(payload)) {
                 payload = [payload];
@@ -112,10 +130,17 @@ export const battleStateSlice = createSlice({
                 return;
             }
 
-            const { statUpdates = {}, newCombatants = [], addCards = [], events = [] } = action.payload;
-            const emptyAction = !Object.keys(statUpdates || {}).length && !newCombatants.length && !addCards.length;
+            const {
+                statUpdates = {},
+                newCombatants = [],
+                addCards = [],
+                events = [],
+            } = action.payload;
+            const emptyAction =
+                !Object.keys(statUpdates || {}).length && !newCombatants.length && !addCards.length;
             const { actionParent } = events[0] || {};
-            const noImage = !(actionParent as CombatAbility)?.image && !(actionParent as CombatEffect)?.icon;
+            const noImage =
+                !(actionParent as CombatAbility)?.image && !(actionParent as CombatEffect)?.icon;
 
             if (emptyAction || noImage) {
                 return;
@@ -137,7 +162,10 @@ export const battleStateSlice = createSlice({
             }
 
             // If the wave is over due to end of turn effects like DoTs or Charged Bolt, don't proceed to the enemy's turn
-            if (state!.state === BATTLE_STATES.WAVE_END && action.payload === BATTLE_STATES.TURN_ENDING) {
+            if (
+                state!.state === BATTLE_STATES.WAVE_END &&
+                action.payload === BATTLE_STATES.TURN_ENDING
+            ) {
                 return state;
             }
             return {

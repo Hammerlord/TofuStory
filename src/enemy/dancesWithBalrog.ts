@@ -128,7 +128,8 @@ const dancesWithBalrogWarLeap: Ability = {
 const boarStanceEffect: Effect = {
     name: "Boar Stance - Dauntless Aggression",
     icon: BoarIconImage,
-    description: "Immediately attacks summoned enemy minions. Once per turn, this character will counter when attacked.",
+    description:
+        "Immediately attacks summoned enemy minions. Once per turn, this character will counter when attacked.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     canBeSilenced: false,

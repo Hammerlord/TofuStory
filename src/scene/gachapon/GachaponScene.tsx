@@ -28,8 +28,16 @@ const GachaponScene = ({ player }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <img src={GachaponImage} alt="gachapon" className={classNames(classes.character, classes.gachapon)} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={GachaponImage}
+                alt="gachapon"
+                className={classNames(classes.character, classes.gachapon)}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };

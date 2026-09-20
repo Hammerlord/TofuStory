@@ -1,6 +1,12 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { BarrelsSceneImage, KingSlimeImage, ShoImage, StefaImage, WessImage } from "../../../images";
+import {
+    BarrelsSceneImage,
+    KingSlimeImage,
+    ShoImage,
+    StefaImage,
+    WessImage,
+} from "../../../images";
 import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
@@ -49,7 +55,10 @@ const Barrels2 = ({ player }: SceneProps) => {
             <img src={StefaImage} className={classNames(classes.stefa, classes.character)} />
             <img src={ShoImage} className={classNames(classes.sho, classes.character)} />
             <img src={WessImage} className={classNames(classes.wess, classes.character)} />
-            <img src={KingSlimeImage} className={classNames(classes.kingSlime, classes.character)} />
+            <img
+                src={KingSlimeImage}
+                className={classNames(classes.kingSlime, classes.character)}
+            />
         </div>
     );
 };

@@ -1,5 +1,12 @@
 import { AlchemistStoneImage } from "../images";
-import { Condition, CONDITION_TARGETS, Effect, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    Condition,
+    CONDITION_TARGETS,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 
 import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
@@ -35,7 +42,8 @@ export const chargedEffect: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: AlchemistStoneImage,
-    description: "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
+    description:
+        "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
     weaponAnimation: "glow",
     onAbility: {
         conditions: [abilityHasChargedCondition],

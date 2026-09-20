@@ -1,6 +1,12 @@
 import { AlchemistStoneImage, HonestyStoneImage, HumilityStoneImage } from "../images";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { CARD_PILE_TYPES, CONDITION_TARGETS, EFFECT_CLASSES, EFFECT_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    CARD_PILE_TYPES,
+    CONDITION_TARGETS,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 import { getUpgradeCard } from "./../Menu/utils";
 
 import { aimedShot, aimEffect } from "../ability/bowman/bowmanAbilities";

@@ -21,11 +21,23 @@ export const addCardsToHandWithEvents = (cards: CombatAbility[], context: Action
         dispatch(addCardsToHand(cards));
 
         if (cardsAddedToHand.length) {
-            dispatch(enqueueEvent({ newCards: cardsAddedToHand, cardsAddedTo: "hand", context }));
+            dispatch(
+                enqueueEvent({
+                    newCards: cardsAddedToHand,
+                    cardsAddedTo: "hand",
+                    context,
+                }),
+            );
         }
 
         if (cardsDiscarded.length) {
-            dispatch(enqueueEvent({ newCards: cardsDiscarded, cardsAddedTo: "discard", context }));
+            dispatch(
+                enqueueEvent({
+                    newCards: cardsDiscarded,
+                    cardsAddedTo: "discard",
+                    context,
+                }),
+            );
         }
     };
 };
@@ -33,18 +45,19 @@ export const addCardsToHandWithEvents = (cards: CombatAbility[], context: Action
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const battle: BattleState = getState().battle!;
-    const { hand, deck, discard } = battle;
+export const deleteCard =
+    (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+        const battle: BattleState = getState().battle!;
+        const { hand, deck, discard } = battle;
 
-    dispatch(
-        updateBattle({
-            hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
-        })
-    );
-};
+        dispatch(
+            updateBattle({
+                hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
+            }),
+        );
+    };
 
 export const checkAddCardsToDeck = ({
     action,
@@ -57,7 +70,9 @@ export const checkAddCardsToDeck = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         let { addCardsToDeck: initialCardsToDeck, addCardsToDeckOptions } = action;
-        const addCardsToDeck: Ability[] | undefined = dispatch(filterImmunedHindranceCards({ cardsToAdd: initialCardsToDeck, context }));
+        const addCardsToDeck: Ability[] | undefined = dispatch(
+            filterImmunedHindranceCards({ cardsToAdd: initialCardsToDeck, context }),
+        );
 
         if (!addCardsToDeck) {
             return;
@@ -65,7 +80,9 @@ export const checkAddCardsToDeck = ({
 
         const battle: BattleState = getState().battle!;
         const updatedDeck = [...battle.deck];
-        const cardsToAdd = addCardsToDeck.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        const cardsToAdd = addCardsToDeck.filter(
+            (card) => !card.isUnique || !ownedCards[card.name],
+        );
         const combatCards: CombatAbility[] = cardsToAdd.map(createCombatAbility);
 
         combatCards.forEach((card) => {
@@ -91,13 +108,13 @@ export const checkAddCardsToDeck = ({
                 newCards: combatCards,
                 cardsAddedTo: "deck",
                 context,
-            })
+            }),
         );
 
         dispatch(
             updateBattle({
                 deck: updatedDeck,
-            })
+            }),
         );
     };
 };
@@ -112,7 +129,9 @@ export const handleAddCardsToDiscard = ({
     context: ActionContext;
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
-        let cardsToAdd = addCardsToDiscard.filter((card) => !card.isUnique || !ownedCards[card.name]);
+        let cardsToAdd = addCardsToDiscard.filter(
+            (card) => !card.isUnique || !ownedCards[card.name],
+        );
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
         if (!cardsToAdd.length) {
             return;
@@ -126,14 +145,14 @@ export const handleAddCardsToDiscard = ({
                 newCards: combatCards,
                 cardsAddedTo: "discard",
                 context: context,
-            })
+            }),
         );
 
         const battle: BattleState = getState().battle!;
         dispatch(
             updateBattle({
                 discard: [...combatCards, ...battle.discard],
-            })
+            }),
         );
     };
 };
@@ -148,7 +167,9 @@ export const handleAddCardsToHand = ({
     context: ActionContext;
 }) => {
     return (dispatch: AppDispatch) => {
-        let cardsToAdd = addCards.filter((card) => !card.isUnique || !ownedCards || !ownedCards[card.name]);
+        let cardsToAdd = addCards.filter(
+            (card) => !card.isUnique || !ownedCards || !ownedCards[card.name],
+        );
 
         cardsToAdd = dispatch(filterImmunedHindranceCards({ cardsToAdd, context }));
         if (!cardsToAdd.length) {

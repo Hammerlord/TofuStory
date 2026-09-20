@@ -71,7 +71,7 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
                     },
                     { opacity: 0, display: "block" },
                 ],
-                1500
+                1500,
             );
 
             textAnimationRef.current = textAnim;
@@ -93,7 +93,7 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
                             display: "block",
                         },
                     ],
-                    1500
+                    1500,
                 );
             });
 
@@ -105,7 +105,13 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
         <div className={classes.root}>
             {particles.map((style, i) => (
                 // @ts-ignore
-                <Icon key={i} icon={<SparklesIcon />} className={classes.icon} style={style} ref={(el) => (particleRefs.current[i] = el)} />
+                <Icon
+                    key={i}
+                    icon={<SparklesIcon />}
+                    className={classes.icon}
+                    style={style}
+                    ref={(el) => (particleRefs.current[i] = el)}
+                />
             ))}
             {healing > 0 && (
                 <span className={classes.text} ref={textRef}>

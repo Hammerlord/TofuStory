@@ -1,6 +1,13 @@
 import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
-import { Action, CombatAbility, CombatEffect, Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../../ability/types";
+import {
+    Action,
+    CombatAbility,
+    CombatEffect,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+} from "../../ability/types";
 import { Player } from "../../character/types";
 import { getRandomItem } from "../../utils";
 import { calculateArmor } from "../calculateArmor";
@@ -72,13 +79,26 @@ export const getUpdatedStats = ({
     deck,
     hand,
     discard,
-}: UpdatedStatsProps): { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] => {
+}: UpdatedStatsProps): {
+    statUpdate: UpdatedCombatantStats;
+    action: Action;
+    actorId?: string;
+}[] => {
     const actor = actorId ? getCombatantById(actorId) : undefined;
-    const targets = targetIds.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
-    const recipients = recipientIds?.map(getCombatantById).filter((v): v is CombatantInfo => v !== undefined);
+    const targets = targetIds
+        .map(getCombatantById)
+        .filter((v): v is CombatantInfo => v !== undefined);
+    const recipients = recipientIds
+        ?.map(getCombatantById)
+        .filter((v): v is CombatantInfo => v !== undefined);
 
     return (recipients?.length ? recipients : targets).map((target: CombatantInfo) => {
-        const { combatant: targetCombatant, index: targetIndex, friendlySide: targetSide, friendly: targetSideCombatants = [] } = target;
+        const {
+            combatant: targetCombatant,
+            index: targetIndex,
+            friendlySide: targetSide,
+            friendly: targetSideCombatants = [],
+        } = target;
         const action = calculateBonus({
             action: initialAction,
             target,
@@ -144,7 +164,8 @@ export const getUpdatedStats = ({
             damage = Math.ceil(damage / (targets.length || 1));
         }
 
-        let totalArmor = targetCombatant.armor + calculateArmor({ target, action, multiplier, context });
+        let totalArmor =
+            targetCombatant.armor + calculateArmor({ target, action, multiplier, context });
         if (decayArmor) {
             const halveArmorAmount = getHalveArmorAmount(target);
             totalArmor += halveArmorAmount;
@@ -153,7 +174,10 @@ export const getUpdatedStats = ({
         const updatedTargetArmor = Math.max(0, bypassArmor ? totalArmor : totalArmor - damage);
         const armorGained = updatedTargetArmor - targetCombatant.armor;
         const targetApplicableHP = targetCombatant.HP - targetMinHP;
-        const healthDamage = Math.min(targetApplicableHP, Math.max(0, bypassArmor ? damage : damage - totalArmor));
+        const healthDamage = Math.min(
+            targetApplicableHP,
+            Math.max(0, bypassArmor ? damage : damage - totalArmor),
+        );
         const rawDamage = damage;
 
         let rawHealing = 0;
@@ -165,7 +189,8 @@ export const getUpdatedStats = ({
         const healing = Math.min(maxHP - targetCombatant.HP, rawHealing);
         const overhealing = rawHealing - healing;
         const resourcesGained = resources * multiplier;
-        const isDeathBlow = targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
+        const isDeathBlow =
+            targetCombatant.HP > 0 && targetCombatant.HP - healthDamage + healing <= 0;
 
         let moneyDiff = mesos - stealMesos;
         let targetMesos = targetCombatant?.mesos || 0;
@@ -203,7 +228,15 @@ export const getUpdatedStats = ({
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
             context: context,
             missed: isNegated,
-            ...getStatusEffectDiff({ target, actor, action, context, multiplier, actionParent, isNegated }),
+            ...getStatusEffectDiff({
+                target,
+                actor,
+                action,
+                context,
+                multiplier,
+                actionParent,
+                isNegated,
+            }),
         };
 
         return {
@@ -214,14 +247,20 @@ export const getUpdatedStats = ({
     });
 };
 
-const calculateHealing = ({ target, action }: { target?: CombatantInfo; action: { healing?: number } }): number => {
+const calculateHealing = ({
+    target,
+    action,
+}: {
+    target?: CombatantInfo;
+    action: { healing?: number };
+}): number => {
     if (!action.healing) {
         return 0;
     }
     const healingReceived =
         getEnabledEffects({ combatantInfo: target }).reduce(
             (acc: number, { healingReceived = 0, stacks = 1 }) => acc + healingReceived * stacks,
-            0
+            0,
         ) || 0;
     const healing = healingReceived + action.healing;
     return Math.max(0, healing);
@@ -257,7 +296,7 @@ const getStatusEffectDiff = ({
         }
 
         const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
-            (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
+            (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity),
         );
         if (effect.bypassImmunity || action.bypassImmunity || isPreviousActionTriggeredBypass) {
             return false;
@@ -277,13 +316,19 @@ const getStatusEffectDiff = ({
             }
 
             if (type === "effect-class") {
-                return (value as EFFECT_CLASSES[]).some((type: EFFECT_CLASSES) => type === effect.class);
+                return (value as EFFECT_CLASSES[]).some(
+                    (type: EFFECT_CLASSES) => type === effect.class,
+                );
             }
         });
     };
 
     const removedEffects = (target?.combatant?.effects || []).filter((effect: CombatEffect) => {
-        if (removeDebuffs && effect.class === EFFECT_CLASSES.DEBUFF && effect.dispellable !== false) {
+        if (
+            removeDebuffs &&
+            effect.class === EFFECT_CLASSES.DEBUFF &&
+            effect.dispellable !== false
+        ) {
             return true;
         }
 
@@ -310,7 +355,11 @@ const getStatusEffectDiff = ({
                 !filters ||
                 filters.every((filter) => {
                     const { value, property, comparator } = filter;
-                    return passesValueComparison({ val: incomingEffect[property as keyof Effect], otherVal: value, comparator });
+                    return passesValueComparison({
+                        val: incomingEffect[property as keyof Effect],
+                        otherVal: value,
+                        comparator,
+                    });
                 })
             ) {
                 return acc + amount;
@@ -359,8 +408,15 @@ const getStatusEffectDiff = ({
     });
 
     const isCapped = (e: Effect): boolean => {
-        const { totalStacks = 0, totalApplications, lowestDuration = 0 } = currentEffectCount[e.name] || {};
-        if (totalApplications < (e.maxApplications || Infinity) || totalStacks < (e.maxStacks || Infinity)) {
+        const {
+            totalStacks = 0,
+            totalApplications,
+            lowestDuration = 0,
+        } = currentEffectCount[e.name] || {};
+        if (
+            totalApplications < (e.maxApplications || Infinity) ||
+            totalStacks < (e.maxStacks || Infinity)
+        ) {
             return false;
         }
 
@@ -382,7 +438,7 @@ const getStatusEffectDiff = ({
                             ...effect,
                             applierId: actor?.combatant?.id,
                             uptime: 0,
-                        })
+                        }),
                     );
                     return false;
                 }

@@ -1,6 +1,13 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { GreenMushroomImage, HornyMushroomImage, KittenBarrelsImage, ShoImage, StefaImage, WessImage } from "../../../images";
+import {
+    GreenMushroomImage,
+    HornyMushroomImage,
+    KittenBarrelsImage,
+    ShoImage,
+    StefaImage,
+    WessImage,
+} from "../../../images";
 import { SceneProps } from "../../types";
 
 const useStyles = createUseStyles({
@@ -65,11 +72,26 @@ const KittenBarrels2 = ({ player }: SceneProps) => {
             <img src={StefaImage} className={classNames(classes.stefa, classes.character)} />
             <img src={ShoImage} className={classNames(classes.sho, classes.character)} />
             <img src={WessImage} className={classNames(classes.wess, classes.character)} />
-            <img src={GreenMushroomImage} className={classNames(classes.mushroom1, classes.character)} />
-            <img src={GreenMushroomImage} className={classNames(classes.mushroom2, classes.character)} />
-            <img src={HornyMushroomImage} className={classNames(classes.mushroom3, classes.character)} />
-            <img src={HornyMushroomImage} className={classNames(classes.mushroom4, classes.character)} />
-            <img src={GreenMushroomImage} className={classNames(classes.mushroom5, classes.character)} />
+            <img
+                src={GreenMushroomImage}
+                className={classNames(classes.mushroom1, classes.character)}
+            />
+            <img
+                src={GreenMushroomImage}
+                className={classNames(classes.mushroom2, classes.character)}
+            />
+            <img
+                src={HornyMushroomImage}
+                className={classNames(classes.mushroom3, classes.character)}
+            />
+            <img
+                src={HornyMushroomImage}
+                className={classNames(classes.mushroom4, classes.character)}
+            />
+            <img
+                src={GreenMushroomImage}
+                className={classNames(classes.mushroom5, classes.character)}
+            />
         </div>
     );
 };

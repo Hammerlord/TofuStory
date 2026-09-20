@@ -7,12 +7,17 @@ import { Combatant } from "../character/types";
 import { createCombatAbility } from "../ability/createCombatAbility";
 import { createCombatEffect } from "../character/effects/createCombatEffect";
 
-export const createCombatant = (combatant: Minion | Combatant | undefined | null): Combatant | null => {
+export const createCombatant = (
+    combatant: Minion | Combatant | undefined | null,
+): Combatant | null => {
     if (!combatant) {
         return null;
     }
 
-    const effects = [...aggregateItemEffects(combatant.items || []), ...(combatant.effects?.map(createCombatEffect) || [])];
+    const effects = [
+        ...aggregateItemEffects(combatant.items || []),
+        ...(combatant.effects?.map(createCombatEffect) || []),
+    ];
 
     const baseChar = {
         id: uuid.v4(),

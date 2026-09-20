@@ -68,7 +68,10 @@ const styleStrWithShadow = styleObjectToString({
 });
 
 const inlineSvg = (svg: string) =>
-    svg.replace("<svg ", `<svg width="15px" height="15px" style="vertical-align: middle; ${styleStrWithShadow}" `);
+    svg.replace(
+        "<svg ",
+        `<svg width="15px" height="15px" style="vertical-align: middle; ${styleStrWithShadow}" `,
+    );
 
 const ICON_INTERPOLATIONS = {
     _offense_: cardTypeString(RED),
@@ -96,7 +99,13 @@ const ICON_INTERPOLATIONS = {
     _pristine_: inlineSvg(pristine),
 };
 
-export const getIconInterpolationMap = ({ multiplier, playerClass }: { multiplier?: number; playerClass?: PLAYER_CLASSES }) => {
+export const getIconInterpolationMap = ({
+    multiplier,
+    playerClass,
+}: {
+    multiplier?: number;
+    playerClass?: PLAYER_CLASSES;
+}) => {
     const manaStyleStr = styleObjectToString({ ...iconStyles, width: "12px" });
 
     let resource = FuryImage;
@@ -166,10 +175,19 @@ export const interpolateAbilityDescription = ({
 
     const multiplierAction = ability.actions?.find((action) => action.multiplier);
     const multiplier = multiplierAction
-        ? getMultiplier({ actor: playerInfo, multiplier: multiplierAction.multiplier, deck, hand, discard })
+        ? getMultiplier({
+              actor: playerInfo,
+              multiplier: multiplierAction.multiplier,
+              deck,
+              hand,
+              discard,
+          })
         : 0;
 
-    const elementMapping = getIconInterpolationMap({ multiplier, playerClass: (playerInfo?.combatant as Player)?.class });
+    const elementMapping = getIconInterpolationMap({
+        multiplier,
+        playerClass: (playerInfo?.combatant as Player)?.class,
+    });
     const nestedAbility = cloneDeep(traverseForNestedAbility(ability));
 
     return Handlebars.compile(ability.description || "")({

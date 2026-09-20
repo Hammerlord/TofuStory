@@ -77,7 +77,9 @@ const lastStage = {
         },
         {
             speaker: thief,
-            dialog: ["Don't say it, Wess. I have a bad feeling about this. We should get out of here."],
+            dialog: [
+                "Don't say it, Wess. I have a bad feeling about this. We should get out of here.",
+            ],
         },
         {
             speaker: bowman,
@@ -85,7 +87,9 @@ const lastStage = {
         },
         {
             speaker: magician,
-            dialog: ["--Most likely had the same idea as Stefa and took off. For the record, I agree with Stefa."],
+            dialog: [
+                "--Most likely had the same idea as Stefa and took off. For the record, I agree with Stefa.",
+            ],
         },
         {
             speaker: bowman,
@@ -120,13 +124,19 @@ const lastStage = {
                             dialog: ["... To consume and acquire..."],
                         },
                         {
-                            dialog: ["... That is...", "... Why, time and again, I...", "... Wake up..."],
+                            dialog: [
+                                "... That is...",
+                                "... Why, time and again, I...",
+                                "... Wake up...",
+                            ],
                         },
                         {
                             dialog: ["... Without arms or legs..."],
                         },
                         {
-                            dialog: ["[You look at the others, but they don't seem to realize that there's someone else speaking.]"],
+                            dialog: [
+                                "[You look at the others, but they don't seem to realize that there's someone else speaking.]",
+                            ],
                         },
                         {
                             scene: Barrels2,
@@ -135,15 +145,23 @@ const lastStage = {
                         },
                         {
                             speaker: thief,
-                            dialog: ["Th-the King Slime?", "But I thought it wasn't due to resurrect for days at least!"],
+                            dialog: [
+                                "Th-the King Slime?",
+                                "But I thought it wasn't due to resurrect for days at least!",
+                            ],
                         },
                         {
                             speaker: bowman,
-                            dialog: ["No, you're right. What's going on?", "They said the King Slime was unpredictable..."],
+                            dialog: [
+                                "No, you're right. What's going on?",
+                                "They said the King Slime was unpredictable...",
+                            ],
                         },
                         {
                             speaker: bowman,
-                            dialog: ["Could its unpredictability have been... because it was evolving?"],
+                            dialog: [
+                                "Could its unpredictability have been... because it was evolving?",
+                            ],
                         },
                         {
                             speaker: magician,
@@ -155,7 +173,11 @@ const lastStage = {
                         },
                         {
                             speaker: kingSlime,
-                            dialog: ["[The King Slime's star-shaped eyes fixate on you.]", "A... fellow seeker.", "... And... prisoner."],
+                            dialog: [
+                                "[The King Slime's star-shaped eyes fixate on you.]",
+                                "A... fellow seeker.",
+                                "... And... prisoner.",
+                            ],
                             responses: [
                                 {
                                     text: "What?",
@@ -164,7 +186,11 @@ const lastStage = {
                         },
                         {
                             speaker: kingSlime,
-                            dialog: ["A seeker...", "That is...", "One who grows... becomes... something more..."],
+                            dialog: [
+                                "A seeker...",
+                                "That is...",
+                                "One who grows... becomes... something more...",
+                            ],
                         },
                         {
                             speaker: kingSlime,
@@ -192,11 +218,17 @@ const lastStage = {
                         },
                         {
                             speaker: kingSlime,
-                            dialog: ["I know only... to break... this cycle of slumber and wakefulness...", "That is... my existence..."],
+                            dialog: [
+                                "I know only... to break... this cycle of slumber and wakefulness...",
+                                "That is... my existence...",
+                            ],
                         },
                         {
                             speaker: kingSlime,
-                            dialog: ["... To consume and acquire... power...", "... The power of others."],
+                            dialog: [
+                                "... To consume and acquire... power...",
+                                "... The power of others.",
+                            ],
                         },
                         {
                             speaker: bowman,
@@ -211,14 +243,20 @@ const lastStage = {
                         },
                         {
                             speaker: magician,
-                            dialog: ["I think that thing just used us to get here so it can talk to its monster buddy."],
+                            dialog: [
+                                "I think that thing just used us to get here so it can talk to its monster buddy.",
+                            ],
                         },
                         {
-                            dialog: ["[The adventurers sound distrustful of you, but you have no way of saying anything to them.]"],
+                            dialog: [
+                                "[The adventurers sound distrustful of you, but you have no way of saying anything to them.]",
+                            ],
                         },
                         {
                             speaker: bowman,
-                            dialog: ["... No. It helped us. There's something we don't understand here."],
+                            dialog: [
+                                "... No. It helped us. There's something we don't understand here.",
+                            ],
                         },
                         {
                             speaker: kingSlime,
@@ -271,11 +309,15 @@ const lastStage = {
                             background: KerningCityBGImage,
                             scene: SewerEntrance,
                             speaker: thief,
-                            dialog: ["I'm not too happy about this, either. We got caught with our pants down and could've died."],
+                            dialog: [
+                                "I'm not too happy about this, either. We got caught with our pants down and could've died.",
+                            ],
                         },
                         {
                             speaker: magician,
-                            dialog: ["Yeah, so we just risked our lives for what? That Cloto lady wasn't in there."],
+                            dialog: [
+                                "Yeah, so we just risked our lives for what? That Cloto lady wasn't in there.",
+                            ],
                         },
                         {
                             speaker: bowman,
@@ -342,7 +384,9 @@ export const KPQ: EventScene = {
         {
             background: KerningCityBGImage,
             scene: SewerEntrance,
-            dialog: ["There's a crowd around the sewers. Maybe you should avoid catching any unwanted attention..."],
+            dialog: [
+                "There's a crowd around the sewers. Maybe you should avoid catching any unwanted attention...",
+            ],
         },
         {
             speaker: bowman,
@@ -350,7 +394,9 @@ export const KPQ: EventScene = {
         },
         {
             speaker: magician,
-            dialog: ["You can't just ask the first person walking by themselves on the street, Wess."],
+            dialog: [
+                "You can't just ask the first person walking by themselves on the street, Wess.",
+            ],
         },
         {
             speaker: bowman,
@@ -358,11 +404,15 @@ export const KPQ: EventScene = {
         },
         {
             speaker: magician,
-            dialog: ["[The magician sighs.] Not only that, did you have to choose a weirdo? What's he even wearing, a bodysuit?"],
+            dialog: [
+                "[The magician sighs.] Not only that, did you have to choose a weirdo? What's he even wearing, a bodysuit?",
+            ],
         },
         {
             speaker: thief,
-            dialog: ["It's just some Cash Shop costume, isn't it? If the guy's up to snuff, who cares?"],
+            dialog: [
+                "It's just some Cash Shop costume, isn't it? If the guy's up to snuff, who cares?",
+            ],
         },
         {
             speaker: magician,
@@ -372,7 +422,9 @@ export const KPQ: EventScene = {
             ],
         },
         {
-            dialog: ["[You have no idea what these people are talking about, but you think you've just been insulted...]"],
+            dialog: [
+                "[You have no idea what these people are talking about, but you think you've just been insulted...]",
+            ],
         },
         {
             speaker: thief,
@@ -415,7 +467,9 @@ export const KPQ: EventScene = {
         },
         {
             speaker: magician,
-            dialog: ["You and your conspiracies again. Whatever. Monsters can't have personalities. That's stupid."],
+            dialog: [
+                "You and your conspiracies again. Whatever. Monsters can't have personalities. That's stupid.",
+            ],
         },
         {
             speaker: bowman,
@@ -430,16 +484,22 @@ export const KPQ: EventScene = {
                     next: [
                         {
                             speaker: bowman,
-                            dialog: ["Great! We have ourselves a full party. Let's go talk to Lakelis."],
+                            dialog: [
+                                "Great! We have ourselves a full party. Let's go talk to Lakelis.",
+                            ],
                         },
                         {
                             scene: SewerEntrance2,
                             speaker: lakelis,
-                            dialog: ["Unfortunately, we're not able to guarantee that everyone can have a turn at the qualifiers today..."],
+                            dialog: [
+                                "Unfortunately, we're not able to guarantee that everyone can have a turn at the qualifiers today...",
+                            ],
                         },
                         {
                             speaker: bystander,
-                            dialog: ["WTF? We've been waiting here for hours! Tell those guys in the bonus stage to GTFO already!"],
+                            dialog: [
+                                "WTF? We've been waiting here for hours! Tell those guys in the bonus stage to GTFO already!",
+                            ],
                         },
                         {
                             speaker: lakelis,
@@ -450,7 +510,9 @@ export const KPQ: EventScene = {
                         },
                         {
                             speaker: lakelis,
-                            dialog: ["Thank you all for your patience. There will be another opening soon."],
+                            dialog: [
+                                "Thank you all for your patience. There will be another opening soon.",
+                            ],
                         },
                         {
                             speaker: { ...bystander, name: "Bystander Mage" },
@@ -470,7 +532,11 @@ export const KPQ: EventScene = {
                         },
                         {
                             speaker: { ...bystander, name: "Bystander Mage" },
-                            dialog: ["lol well you're just a warrior", "warriors suck lmao", "noob"],
+                            dialog: [
+                                "lol well you're just a warrior",
+                                "warriors suck lmao",
+                                "noob",
+                            ],
                         },
                         {
                             speaker: bowman,
@@ -506,7 +572,9 @@ export const KPQ: EventScene = {
                                         },
                                         {
                                             speaker: thief,
-                                            dialog: ["The name's Stefa, by the way. And that jerk is Sho."],
+                                            dialog: [
+                                                "The name's Stefa, by the way. And that jerk is Sho.",
+                                            ],
                                         },
                                         {
                                             dialog: [
@@ -522,7 +590,9 @@ export const KPQ: EventScene = {
                                         },
                                         {
                                             speaker: bowman,
-                                            dialog: ["Hey Sho, what level did you need to become a magician?"],
+                                            dialog: [
+                                                "Hey Sho, what level did you need to become a magician?",
+                                            ],
                                         },
                                         {
                                             speaker: magician,
@@ -537,7 +607,9 @@ export const KPQ: EventScene = {
                                         },
                                         {
                                             speaker: magician,
-                                            dialog: ["[Sigh.] Did we accidentally sign up for Trivia Night?"],
+                                            dialog: [
+                                                "[Sigh.] Did we accidentally sign up for Trivia Night?",
+                                            ],
                                         },
                                         {
                                             speaker: bowman,
@@ -549,7 +621,9 @@ export const KPQ: EventScene = {
                                         },
                                         {
                                             speaker: thief,
-                                            dialog: ["I heard something about killing monsters. Sounds simple enough."],
+                                            dialog: [
+                                                "I heard something about killing monsters. Sounds simple enough.",
+                                            ],
                                         },
                                         {
                                             speaker: magician,
@@ -572,11 +646,15 @@ export const KPQ: EventScene = {
                                                         },
                                                         {
                                                             speaker: thief,
-                                                            dialog: ["A little help here, guys! This one's tougher than usual."],
+                                                            dialog: [
+                                                                "A little help here, guys! This one's tougher than usual.",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: magician,
-                                                            dialog: ["So much for being a 'sin, Stefa."],
+                                                            dialog: [
+                                                                "So much for being a 'sin, Stefa.",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: thief,
@@ -604,11 +682,15 @@ export const KPQ: EventScene = {
                                                         },
                                                         {
                                                             speaker: bowman,
-                                                            dialog: ["Enough already. The job's not done yet. Let's focus."],
+                                                            dialog: [
+                                                                "Enough already. The job's not done yet. Let's focus.",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: thief,
-                                                            dialog: ["You're telling me. I'm waiting on you!"],
+                                                            dialog: [
+                                                                "You're telling me. I'm waiting on you!",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "",
@@ -624,141 +706,178 @@ export const KPQ: EventScene = {
                                                                         },
                                                                         {
                                                                             speaker: magician,
-                                                                            dialog: ["[The magician shrugs.]"],
+                                                                            dialog: [
+                                                                                "[The magician shrugs.]",
+                                                                            ],
                                                                         },
                                                                         {
                                                                             speaker: thief,
-                                                                            dialog: ["So, what's next, Wess?"],
+                                                                            dialog: [
+                                                                                "So, what's next, Wess?",
+                                                                            ],
                                                                         },
                                                                         {
                                                                             speaker: bowman,
-                                                                            dialog: ["First, let's take a breather."],
+                                                                            dialog: [
+                                                                                "First, let's take a breather.",
+                                                                            ],
                                                                             responses: [
                                                                                 {
                                                                                     text: "[Camp]",
                                                                                     camp: true,
                                                                                     next: [
                                                                                         {
-                                                                                            speaker: bowman,
+                                                                                            speaker:
+                                                                                                bowman,
                                                                                             dialog: [
                                                                                                 "The next stage is... how do I describe it. An exercise in hanging on vines? It's a puzzle.",
                                                                                             ],
                                                                                         },
                                                                                         {
-                                                                                            speaker: thief,
-                                                                                            dialog: ["... Huh."],
+                                                                                            speaker:
+                                                                                                thief,
+                                                                                            dialog: [
+                                                                                                "... Huh.",
+                                                                                            ],
                                                                                         },
                                                                                         {
-                                                                                            speaker: magician,
-                                                                                            dialog: ["Do I want to know?"],
-                                                                                            responses: [
-                                                                                                {
-                                                                                                    text: "[Proceed]",
-                                                                                                    next: [
-                                                                                                        {
-                                                                                                            puzzle: RopeQuest,
-                                                                                                            dialog: [],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: magician,
-                                                                                                            dialog: [
-                                                                                                                "... I'm not going to comment on what I saw back there.",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: bowman,
-                                                                                                            dialog: [
-                                                                                                                "Good job, team. That was easy, right? Well, consider that a primer to the next puzzle--because there's more.",
-                                                                                                                "Let's move on.",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: magician,
-                                                                                                            dialog: ["Uh huh..."],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            background:
-                                                                                                                SleepywoodRegionBGImage,
-                                                                                                            scene: KittenBarrels,
-                                                                                                            region: REGIONS.SLEEPYWOOD,
-                                                                                                            speaker: magician,
-                                                                                                            dialog: [
-                                                                                                                "You've gotta be kidding me.",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: thief,
-                                                                                                            dialog: ["You mean 'kitten.'"],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: magician,
-                                                                                                            dialog: ["Ugh. Don't."],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: thief,
-                                                                                                            dialog: [
-                                                                                                                "At least they're cute?",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: magician,
-                                                                                                            dialog: [
-                                                                                                                "Whatever. It looks like the same puzzle as before, just with an extra step. Let's get this over with.",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            puzzle: KittenBarrelsQuest,
-                                                                                                            dialog: [],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            dialog: [
-                                                                                                                "[The chamber rumbles.]",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: thief,
-                                                                                                            dialog: [
-                                                                                                                "W-what was that?",
-                                                                                                                "Whoa!",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            scene: KittenBarrels2,
-                                                                                                            speaker: bowman,
-                                                                                                            dialog: [
-                                                                                                                "Mushrooms? Where'd they--",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: thief,
-                                                                                                            dialog: [
-                                                                                                                "Aren't those from the bonus stage? How'd they get out?",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: bowman,
-                                                                                                            dialog: [
-                                                                                                                "You may be right. In that case...",
-                                                                                                                "... Where's Cloto? The test proctor?",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: magician,
-                                                                                                            dialog: [
-                                                                                                                "Hey, mush freak. It's your friends.",
-                                                                                                            ],
-                                                                                                        },
-                                                                                                        {
-                                                                                                            speaker: bowman,
-                                                                                                            dialog: [
-                                                                                                                "This isn't the time to make jokes, Sho. Something's happened, and we need to figure out where Cloto is.",
-                                                                                                                "First, we'll have to get past these mushrooms!",
-                                                                                                            ],
-                                                                                                            responses: [lastStage],
-                                                                                                        },
-                                                                                                    ],
-                                                                                                },
+                                                                                            speaker:
+                                                                                                magician,
+                                                                                            dialog: [
+                                                                                                "Do I want to know?",
                                                                                             ],
+                                                                                            responses:
+                                                                                                [
+                                                                                                    {
+                                                                                                        text: "[Proceed]",
+                                                                                                        next: [
+                                                                                                            {
+                                                                                                                puzzle: RopeQuest,
+                                                                                                                dialog: [],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "... I'm not going to comment on what I saw back there.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    bowman,
+                                                                                                                dialog: [
+                                                                                                                    "Good job, team. That was easy, right? Well, consider that a primer to the next puzzle--because there's more.",
+                                                                                                                    "Let's move on.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "Uh huh...",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                background:
+                                                                                                                    SleepywoodRegionBGImage,
+                                                                                                                scene: KittenBarrels,
+                                                                                                                region: REGIONS.SLEEPYWOOD,
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "You've gotta be kidding me.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    thief,
+                                                                                                                dialog: [
+                                                                                                                    "You mean 'kitten.'",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "Ugh. Don't.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    thief,
+                                                                                                                dialog: [
+                                                                                                                    "At least they're cute?",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "Whatever. It looks like the same puzzle as before, just with an extra step. Let's get this over with.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                puzzle: KittenBarrelsQuest,
+                                                                                                                dialog: [],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                dialog: [
+                                                                                                                    "[The chamber rumbles.]",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    thief,
+                                                                                                                dialog: [
+                                                                                                                    "W-what was that?",
+                                                                                                                    "Whoa!",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                scene: KittenBarrels2,
+                                                                                                                speaker:
+                                                                                                                    bowman,
+                                                                                                                dialog: [
+                                                                                                                    "Mushrooms? Where'd they--",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    thief,
+                                                                                                                dialog: [
+                                                                                                                    "Aren't those from the bonus stage? How'd they get out?",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    bowman,
+                                                                                                                dialog: [
+                                                                                                                    "You may be right. In that case...",
+                                                                                                                    "... Where's Cloto? The test proctor?",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    magician,
+                                                                                                                dialog: [
+                                                                                                                    "Hey, mush freak. It's your friends.",
+                                                                                                                ],
+                                                                                                            },
+                                                                                                            {
+                                                                                                                speaker:
+                                                                                                                    bowman,
+                                                                                                                dialog: [
+                                                                                                                    "This isn't the time to make jokes, Sho. Something's happened, and we need to figure out where Cloto is.",
+                                                                                                                    "First, we'll have to get past these mushrooms!",
+                                                                                                                ],
+                                                                                                                responses:
+                                                                                                                    [
+                                                                                                                        lastStage,
+                                                                                                                    ],
+                                                                                                            },
+                                                                                                        ],
+                                                                                                    },
+                                                                                                ],
                                                                                         },
                                                                                     ],
                                                                                 },

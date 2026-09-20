@@ -11,15 +11,20 @@ const { updateBattle } = battleStateSlice?.actions || {};
  * Gets a combatant and details about its position and allies on the battlefield.
  */
 export const findCombatantData = (
-    battle?: { playerSide: (Combatant | null)[]; enemySide: (Combatant | null)[] },
-    combatantId?: string
+    battle?: {
+        playerSide: (Combatant | null)[];
+        enemySide: (Combatant | null)[];
+    },
+    combatantId?: string,
 ): CombatantInfo | undefined => {
     if (!battle || !combatantId) {
         return;
     }
 
     const { playerSide, enemySide } = battle;
-    const enemyIndex = enemySide.findIndex((combatant: Combatant | null) => combatant?.id === combatantId);
+    const enemyIndex = enemySide.findIndex(
+        (combatant: Combatant | null) => combatant?.id === combatantId,
+    );
     if (enemySide[enemyIndex]) {
         return {
             combatant: enemySide[enemyIndex],
@@ -31,7 +36,9 @@ export const findCombatantData = (
         };
     }
 
-    const index = playerSide.findIndex((combatant: Combatant | null) => combatant?.id === combatantId);
+    const index = playerSide.findIndex(
+        (combatant: Combatant | null) => combatant?.id === combatantId,
+    );
     if (playerSide[index]) {
         return {
             combatant: playerSide[index],
@@ -65,13 +72,18 @@ export const updateCombatant = ({
 
         dispatch(
             updateBattle({
-                [friendlySide]: friendly.map((combatant: Combatant | null) => (combatant?.id !== combatantId ? combatant : newCombatant)),
-            })
+                [friendlySide]: friendly.map((combatant: Combatant | null) =>
+                    combatant?.id !== combatantId ? combatant : newCombatant,
+                ),
+            }),
         );
     };
 };
 
-export const updateCombatants = (characters: (Combatant | null)[], updateFn: (character: Combatant) => Combatant): (Combatant | null)[] => {
+export const updateCombatants = (
+    characters: (Combatant | null)[],
+    updateFn: (character: Combatant) => Combatant,
+): (Combatant | null)[] => {
     return characters.map((character) => {
         if (!character) {
             return character;
@@ -81,13 +93,16 @@ export const updateCombatants = (characters: (Combatant | null)[], updateFn: (ch
     });
 };
 
-export const hasEffectType = (target: CombatantInfo | undefined, effectType: EFFECT_TYPES | EFFECT_TYPES[]): boolean => {
+export const hasEffectType = (
+    target: CombatantInfo | undefined,
+    effectType: EFFECT_TYPES | EFFECT_TYPES[],
+): boolean => {
     if (!target) {
         return false;
     }
 
     return getEnabledEffects({ combatantInfo: target }).some(({ type }) =>
-        Array.isArray(effectType) ? effectType.includes(type) : type === effectType
+        Array.isArray(effectType) ? effectType.includes(type) : type === effectType,
     );
 };
 
@@ -96,7 +111,7 @@ export const hasEffectType = (target: CombatantInfo | undefined, effectType: EFF
  */
 export const isTurnActionPrevented = (
     combatantInfo: CombatantInfo,
-    options?: { bypassStun?: boolean; bypassPreventTurnAction: boolean }
+    options?: { bypassStun?: boolean; bypassPreventTurnAction: boolean },
 ): boolean => {
     if (!combatantInfo) {
         return true;
@@ -113,7 +128,13 @@ export const isTurnActionPrevented = (
     return turnPreventedFromEffects;
 };
 
-export const isActorPlayerSide = ({ playerSide, source }: { playerSide: (Combatant | Player | null)[]; source?: TriggerSource }) => {
+export const isActorPlayerSide = ({
+    playerSide,
+    source,
+}: {
+    playerSide: (Combatant | Player | null)[];
+    source?: TriggerSource;
+}) => {
     return playerSide.some((combatant) => {
         if (!combatant) {
             return false;

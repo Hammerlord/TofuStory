@@ -124,7 +124,8 @@ export const harpoonCard: Ability = {
     name: "Harpoon",
     resourceCost: 0,
     overrideBodyText: true,
-    description: "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> against {{{ _armor_ }}} targets.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }} {{{ _damage_ }}}</b> against {{{ _armor_ }}} targets.",
     isUnique: true,
     image: HarpoonGunImage,
     depletedOnUse: true,
@@ -257,7 +258,9 @@ const flotsamWaveAttackAction = {
 };
 
 const dyleDredgeSummons = [
-    { minion: [dyleEmptyGarbage2, dyleUsefulGarbage, dyleGarbage2, dyleUsefulGarbage2] },
+    {
+        minion: [dyleEmptyGarbage2, dyleUsefulGarbage, dyleGarbage2, dyleUsefulGarbage2],
+    },
     { minion: [dyleEmptyGarbage, dyleRealGarbage2] },
     { minion: [dyleEmptyGarbage, dyleRealGarbage, dyleGarbage2, dyleBubbleFish] },
     { minion: [dyleEmptyGarbage2, dyleEmptyGarbage, dyleBubbleFish] },

@@ -170,7 +170,10 @@ export const LupinForest3 = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={ZombieLupinDeathImage} className={classNames(classes.lupin, classes.character)} />
+            <img
+                src={ZombieLupinDeathImage}
+                className={classNames(classes.lupin, classes.character)}
+            />
         </div>
     );
 };
@@ -208,9 +211,18 @@ export const LupinForest4 = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={ZombieLupinJumpImage} className={classNames(classes.lupin, classes.character)} />
-            <img src={ZombieLupinJumpImage} className={classNames(classes.lupin2, classes.character)} />
-            <img src={ZombieLupinJumpImage} className={classNames(classes.lupin3, classes.character)} />
+            <img
+                src={ZombieLupinJumpImage}
+                className={classNames(classes.lupin, classes.character)}
+            />
+            <img
+                src={ZombieLupinJumpImage}
+                className={classNames(classes.lupin2, classes.character)}
+            />
+            <img
+                src={ZombieLupinJumpImage}
+                className={classNames(classes.lupin3, classes.character)}
+            />
         </div>
     );
 };
@@ -377,11 +389,26 @@ export const TwilitForest4 = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={lostEcho.image} className={classNames(classes.character, classes.lostEcho1, classes.echo)} />
-            <img src={lostGuardEcho.image} className={classNames(classes.character, classes.lostEcho2, classes.echo)} />
-            <img src={lostNobleEcho.image} className={classNames(classes.character, classes.lostEcho3, classes.echo)} />
-            <img src={lostGuardEcho.image} className={classNames(classes.character, classes.lostEcho4, classes.echo)} />
-            <img src={lostEcho.image} className={classNames(classes.character, classes.lostEcho5, classes.echo)} />
+            <img
+                src={lostEcho.image}
+                className={classNames(classes.character, classes.lostEcho1, classes.echo)}
+            />
+            <img
+                src={lostGuardEcho.image}
+                className={classNames(classes.character, classes.lostEcho2, classes.echo)}
+            />
+            <img
+                src={lostNobleEcho.image}
+                className={classNames(classes.character, classes.lostEcho3, classes.echo)}
+            />
+            <img
+                src={lostGuardEcho.image}
+                className={classNames(classes.character, classes.lostEcho4, classes.echo)}
+            />
+            <img
+                src={lostEcho.image}
+                className={classNames(classes.character, classes.lostEcho5, classes.echo)}
+            />
         </div>
     );
 };
@@ -442,7 +469,13 @@ export const TombstonesTwilitForest = ({ player }) => {
             <img src={player.image} className={classNames(classes.player, classes.character)} />
             {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i}>
-                    <TombstoneIcon className={classNames(classes.character, classes.tombstone, classes[`tombstone${i + 1}`])} />
+                    <TombstoneIcon
+                        className={classNames(
+                            classes.character,
+                            classes.tombstone,
+                            classes[`tombstone${i + 1}`],
+                        )}
+                    />
                 </div>
             ))}
         </div>
@@ -456,7 +489,13 @@ export const TombstonesTwilitForestFairies = ({ player }) => {
             <img src={player.image} className={classNames(classes.player, classes.character)} />
             {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i}>
-                    <TombstoneIcon className={classNames(classes.character, classes.tombstone, classes[`tombstone${i + 1}`])} />
+                    <TombstoneIcon
+                        className={classNames(
+                            classes.character,
+                            classes.tombstone,
+                            classes[`tombstone${i + 1}`],
+                        )}
+                    />
                 </div>
             ))}
             <img src={GreenFairiesImage} className={classNames(classes.lightup)} />

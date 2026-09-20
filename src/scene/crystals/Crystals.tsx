@@ -2,7 +2,12 @@ import { createUseStyles } from "react-jss";
 import { chill } from "../../ability/Effects";
 import { EFFECT_CLASSES, EFFECT_TYPES, Minion, TRIGGER_TARGET_TYPES } from "../../ability/types";
 import { Wave } from "../../battle/types";
-import { ElementalAdaptationImage, SanctuaryCrystalAImage, SanctuaryCrystalBImage, TrunkNestImage } from "../../images";
+import {
+    ElementalAdaptationImage,
+    SanctuaryCrystalAImage,
+    SanctuaryCrystalBImage,
+    TrunkNestImage,
+} from "../../images";
 import {
     adamantiumPlate,
     amethyst,
@@ -101,10 +106,26 @@ const CrystalsBackdrop = ({ player }) => {
     return (
         <div>
             <img src={TrunkNestImage} alt="Trunk Nest" className={classes.backdrop} />
-            <img src={crystalA.image} alt="Crystal B" className={classNames(classes.character, classes.crystalA)} />
-            <img src={crystalB.image} alt="Crystal A" className={classNames(classes.character, classes.crystalB)} />
-            <img src={crystalA.image} alt="Crystal B" className={classNames(classes.character, classes.crystalA2)} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={crystalA.image}
+                alt="Crystal B"
+                className={classNames(classes.character, classes.crystalA)}
+            />
+            <img
+                src={crystalB.image}
+                alt="Crystal A"
+                className={classNames(classes.character, classes.crystalB)}
+            />
+            <img
+                src={crystalA.image}
+                alt="Crystal B"
+                className={classNames(classes.character, classes.crystalA2)}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };
@@ -152,7 +173,13 @@ export const crystalScene: EventScene = {
                                             dialog: ["..."],
                                             itemChoices: {
                                                 numChoices: 3,
-                                                items: [opal, blackCrystal, emerald, pieceOfIce, adamantiumPlate],
+                                                items: [
+                                                    opal,
+                                                    blackCrystal,
+                                                    emerald,
+                                                    pieceOfIce,
+                                                    adamantiumPlate,
+                                                ],
                                                 bonuses: {
                                                     rare: 0.65,
                                                     uncommon: 0.25,
@@ -216,7 +243,9 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             speaker: crystalA,
-                                            dialog: ["[A chilling draft encourages your departure from the site.]"],
+                                            dialog: [
+                                                "[A chilling draft encourages your departure from the site.]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -270,7 +299,9 @@ export const crystalScene: EventScene = {
                                         },
                                         {
                                             speaker: crystalA,
-                                            dialog: ["[A chilling draft encourages your departure from the site.]"],
+                                            dialog: [
+                                                "[A chilling draft encourages your departure from the site.]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -299,13 +330,23 @@ export const crystalScene: EventScene = {
                                         {
                                             dialog: ["..."],
                                             items: {
-                                                itemPool: [diamond, garnet, amethyst, topaz, aquamarine, diamondOre, steelOre],
+                                                itemPool: [
+                                                    diamond,
+                                                    garnet,
+                                                    amethyst,
+                                                    topaz,
+                                                    aquamarine,
+                                                    diamondOre,
+                                                    steelOre,
+                                                ],
                                                 amount: 1,
                                             },
                                         },
                                         {
                                             speaker: crystalA,
-                                            dialog: ["[A chilling draft encourages your departure from the site.]"],
+                                            dialog: [
+                                                "[A chilling draft encourages your departure from the site.]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",

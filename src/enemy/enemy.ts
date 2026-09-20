@@ -1444,7 +1444,11 @@ const curseEyeDouble: Minion = {
                 conditions: [
                     {
                         calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                        hasEffectType: [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE, EFFECT_TYPES.SILENCE],
+                        hasEffectType: [
+                            EFFECT_TYPES.STUN,
+                            EFFECT_TYPES.FREEZE,
+                            EFFECT_TYPES.SILENCE,
+                        ],
                         comparator: "eq",
                     },
                 ],
@@ -2050,7 +2054,9 @@ export const eventBandit: Minion = {
                             effects: [
                                 {
                                     ...stealth,
-                                    description: stealth.description + " When this effect ends, the character will retreat.",
+                                    description:
+                                        stealth.description +
+                                        " When this effect ends, the character will retreat.",
                                     preventTurnAction: true,
                                     duration: 2,
                                     onEnd: {
@@ -2577,7 +2583,10 @@ export const egg: Minion = {
                                 resurrect: true,
                                 minions: [
                                     {
-                                        minion: { ...copperDrake, effects: [...copperDrake.effects, stun] },
+                                        minion: {
+                                            ...copperDrake,
+                                            effects: [...copperDrake.effects, stun],
+                                        },
                                     },
                                 ],
                             },

@@ -32,7 +32,13 @@ interface TooltipProps extends MuiTooltipProps {
 const Tooltip = ({ children, title, classes = {}, ...other }: TooltipProps) => {
     const selectors = useStyles();
     return (
-        <MuiTooltip arrow classes={{ popper: selectors.tooltip, ...classes }} title={title} {...other} disableInteractive={true}>
+        <MuiTooltip
+            arrow
+            classes={{ popper: selectors.tooltip, ...classes }}
+            title={title}
+            {...other}
+            disableInteractive={true}
+        >
             {children}
         </MuiTooltip>
     );

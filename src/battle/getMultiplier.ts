@@ -14,7 +14,14 @@ import { Combatant } from "../character/types";
 import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
 import { calculateDamage } from "./calculateDamage";
 import { passesValueComparison } from "./passesConditions";
-import { ActionContext, ActionParent, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "./types";
+import {
+    ActionContext,
+    ActionParent,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+    TriggerSource,
+} from "./types";
 import { getMaxHP } from "./utils";
 
 export const getMultiplier = ({
@@ -74,7 +81,9 @@ export const getMultiplier = ({
         return (source?.statUpdate?.rawDamage || 0) * numValue;
     }
 
-    const abilitySource = context?.sourceChain?.find((s) => s.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source;
+    const abilitySource = context?.sourceChain?.find(
+        (s) => s.type === TRIGGER_SOURCE_TYPES.ABILITY,
+    )?.source;
     if (type === MULTIPLIER_TYPES.ALL_CARDS || type === MULTIPLIER_TYPES.CARDS_IN_HAND) {
         const cardsToCheck: CombatAbility[] = hand.filter((card: CombatAbility) => {
             // Greater Bolt should not affect itself
@@ -169,7 +178,9 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.DEBUFFS) {
-        let debuffs = getEnabledEffects({ combatantInfo }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF);
+        let debuffs = getEnabledEffects({ combatantInfo }).filter(
+            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.DEBUFF,
+        );
 
         if (filters) {
             debuffs = debuffs.filter((effect) => {
@@ -184,7 +195,9 @@ export const getMultiplier = ({
     }
 
     if (type === MULTIPLIER_TYPES.BUFFS) {
-        let buffs = getEnabledEffects({ combatantInfo }).filter((effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF);
+        let buffs = getEnabledEffects({ combatantInfo }).filter(
+            (effect: CombatEffect) => effect.class === EFFECT_CLASSES.BUFF,
+        );
 
         if (filters) {
             buffs = buffs.filter((effect) => {
@@ -208,7 +221,11 @@ export const getMultiplier = ({
             if (filters) {
                 return filters.some(({ property, value, comparator }) => {
                     const propertyVal = _.get(ability, property) || 0;
-                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                    return passesValueComparison({
+                        val: propertyVal,
+                        otherVal: value,
+                        comparator,
+                    });
                 });
             }
 
@@ -224,12 +241,20 @@ export const getMultiplier = ({
 
     if (type === MULTIPLIER_TYPES.NUM_ALLIES) {
         // Excluding itself
-        const totalAllies = (friendly || []).filter((combatant: Combatant | null) => combatant && combatant.HP >= 0).length;
+        const totalAllies = (friendly || []).filter(
+            (combatant: Combatant | null) => combatant && combatant.HP >= 0,
+        ).length;
         return Math.max(totalAllies - 1, 0);
     }
 
     if (type === MULTIPLIER_TYPES.ATTACK_DAMAGE_IN_HAND) {
-        return calculateAttackDamageInHand({ hand, deck, discard, actor: combatantInfo, actionParent: source?.source });
+        return calculateAttackDamageInHand({
+            hand,
+            deck,
+            discard,
+            actor: combatantInfo,
+            actionParent: source?.source,
+        });
     }
 
     if (type === MULTIPLIER_TYPES.MISSING_HP) {
@@ -260,7 +285,8 @@ const calculateAttackDamageInHand = ({
 }): number => {
     let damage = 0;
     hand.forEach((card) => {
-        const isSameCard = actionParent && card.instanceId === (actionParent as CombatAbility)?.instanceId;
+        const isSameCard =
+            actionParent && card.instanceId === (actionParent as CombatAbility)?.instanceId;
         if (isSameCard || !isOffensiveAbility(card)) {
             return;
         }

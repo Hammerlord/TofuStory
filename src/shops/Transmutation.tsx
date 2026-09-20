@@ -12,7 +12,12 @@ import { Ability, CombatAbility } from "../ability/types";
 import { playExplodeAnimation, playFadeInAnimation } from "../character/animations";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
-import { CARD_CHOICE_UPGRADE_RATE, COMMON_STYLES, NUM_CARD_CHOICES, RARE_CARD_CHOICE_UPGRADE_RATE } from "../constants";
+import {
+    CARD_CHOICE_UPGRADE_RATE,
+    COMMON_STYLES,
+    NUM_CARD_CHOICES,
+    RARE_CARD_CHOICE_UPGRADE_RATE,
+} from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { ElliniaWeaponStoreImage, MesoCoinImage } from "../images";
@@ -233,7 +238,11 @@ export const TransmutationView = ({
             return;
         }
 
-        const animations = playExplodeAnimation({ from: selectedCardRef.current, maxScale: 1.5, playbackTime: 500 });
+        const animations = playExplodeAnimation({
+            from: selectedCardRef.current,
+            maxScale: 1.5,
+            playbackTime: 500,
+        });
         if (!animations.length) {
             return;
         }
@@ -256,18 +265,26 @@ export const TransmutationView = ({
             return;
         }
         transmutationOptions.forEach((_, i) => {
-            playFadeInAnimation({ object: optionsRefs[i].current, shiftUp: true, delay: i * 100, fill: "forwards" });
+            playFadeInAnimation({
+                object: optionsRefs[i].current,
+                shiftUp: true,
+                delay: i * 100,
+                fill: "forwards",
+            });
         });
     }, [transmutationOptions]);
 
     const transmute = () => {
         const { starters } = JOB_CARD_MAP[player.class];
-        const potentialAbilities = getCardPool(player, deck).filter((card) => starters.every(({ name }) => name !== card.name));
+        const potentialAbilities = getCardPool(player, deck).filter((card) =>
+            starters.every(({ name }) => name !== card.name),
+        );
 
-        const { numChoices: numChoicesFromItems, choices: choicesFromItems } = getCardChoicesFromItems({
-            player,
-            deck,
-        });
+        const { numChoices: numChoicesFromItems, choices: choicesFromItems } =
+            getCardChoicesFromItems({
+                player,
+                deck,
+            });
 
         const choices = [...choicesFromItems];
         const numChoices = NUM_CARD_CHOICES + numChoicesFromItems;
@@ -285,8 +302,15 @@ export const TransmutationView = ({
             const [filteredByRarity] = shuffle(potentialAbilities).filter((ability: Ability) => {
                 const noDuplicate = choices.every((choice) => choice.name !== ability.name);
                 const notSameAsSelection = ability.name !== selectedCard.name;
-                const noExclusive = choices.every((choice) => !choice.exclusive || choice.exclusive !== ability.exclusive);
-                return (ability.rarity || RARITIES.COMMON) === rarity && noDuplicate && notSameAsSelection && noExclusive;
+                const noExclusive = choices.every(
+                    (choice) => !choice.exclusive || choice.exclusive !== ability.exclusive,
+                );
+                return (
+                    (ability.rarity || RARITIES.COMMON) === rarity &&
+                    noDuplicate &&
+                    notSameAsSelection &&
+                    noExclusive
+                );
             });
 
             if (filteredByRarity) {
@@ -300,8 +324,12 @@ export const TransmutationView = ({
                     }
                 }
 
-                const upgradeRate = rarity === RARITIES.RARE ? RARE_CARD_CHOICE_UPGRADE_RATE : CARD_CHOICE_UPGRADE_RATE;
-                const isRandomlyUpgraded = cardToAdd.level < DEFAULT_CARD_MAX_LEVEL && Math.random() <= upgradeRate;
+                const upgradeRate =
+                    rarity === RARITIES.RARE
+                        ? RARE_CARD_CHOICE_UPGRADE_RATE
+                        : CARD_CHOICE_UPGRADE_RATE;
+                const isRandomlyUpgraded =
+                    cardToAdd.level < DEFAULT_CARD_MAX_LEVEL && Math.random() <= upgradeRate;
                 if (isRandomlyUpgraded) {
                     choices.push(getUpgradeCard(cardToAdd) || cardToAdd);
                 } else {
@@ -324,7 +352,10 @@ export const TransmutationView = ({
     };
 
     const handleConfirmClick = () => {
-        onTransmuted({ card: selectedCard.instanceId, for: transmutationOptions[selectedOptionIndex] });
+        onTransmuted({
+            card: selectedCard.instanceId,
+            for: transmutationOptions[selectedOptionIndex],
+        });
         setSelectedCard(null);
         setTransmutationOptions(null);
         setSelectedOptionIndex(null);
@@ -390,7 +421,10 @@ export const TransmutationView = ({
                                     <div className={classes.abilityContainer}>
                                         <RarityTag rarity={selectedCardRarity} />
                                         <div ref={selectedCardRef}>
-                                            <AbilityView ability={selectedCard} onClick={handleClickSelectCardButton} />
+                                            <AbilityView
+                                                ability={selectedCard}
+                                                onClick={handleClickSelectCardButton}
+                                            />
                                         </div>
                                     </div>
                                 )}
@@ -401,13 +435,18 @@ export const TransmutationView = ({
                                     {selectedCard && (
                                         <>
                                             {selectedCardRarity !== RARITIES.RARE && (
-                                                <RarityTag rarity={rarityStepChart[selectedCardRarity]} className={classes.topRarityTag} />
+                                                <RarityTag
+                                                    rarity={rarityStepChart[selectedCardRarity]}
+                                                    className={classes.topRarityTag}
+                                                />
                                             )}
                                             <RarityTag rarity={selectedCardRarity} />
                                         </>
                                     )}
 
-                                    <div className={classes.resultPlaceholder}>{<Icon icon={QuestionMarkIcon} />}</div>
+                                    <div className={classes.resultPlaceholder}>
+                                        {<Icon icon={QuestionMarkIcon} />}
+                                    </div>
                                     <div className={classes.resultPlaceholderExtra} />
                                     <div className={classes.resultPlaceholderExtra2} />
                                 </div>
@@ -417,31 +456,46 @@ export const TransmutationView = ({
                         {transmutationOptions && (
                             <>
                                 <p>
-                                    Results of transmuting [<Icon icon={selectedCard.image} size="sm" /> {selectedCard.name}] - pick one:
+                                    Results of transmuting [
+                                    <Icon icon={selectedCard.image} size="sm" /> {selectedCard.name}
+                                    ] - pick one:
                                 </p>
                                 <div className={classes.transmuteContainerInner}>
                                     <div className={classes.abilitySectionContainer}>
-                                        {transmutationOptions.map((ability: CombatAbility, i: number) => (
-                                            <div
-                                                className={classNames(classes.abilityContainer, classes.option)}
-                                                key={ability.instanceId}
-                                                ref={optionsRefs[i]}
-                                            >
-                                                <RarityTag rarity={ability.rarity} />
+                                        {transmutationOptions.map(
+                                            (ability: CombatAbility, i: number) => (
                                                 <div
-                                                    className={classNames(classes.ability, {
-                                                        selected: selectedOptionIndex === i,
-                                                    })}
-                                                    onClick={() => handleCardClick(i)}
+                                                    className={classNames(
+                                                        classes.abilityContainer,
+                                                        classes.option,
+                                                    )}
+                                                    key={ability.instanceId}
+                                                    ref={optionsRefs[i]}
                                                 >
-                                                    <AbilityView ability={ability} disableGlow={true} disableBattleBonuses={true} />
+                                                    <RarityTag rarity={ability.rarity} />
+                                                    <div
+                                                        className={classNames(classes.ability, {
+                                                            selected: selectedOptionIndex === i,
+                                                        })}
+                                                        onClick={() => handleCardClick(i)}
+                                                    >
+                                                        <AbilityView
+                                                            ability={ability}
+                                                            disableGlow={true}
+                                                            disableBattleBonuses={true}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ),
+                                        )}
                                     </div>
                                 </div>
                                 <div className={classes.selectContainer}>
-                                    <Button color="primary" disabled={selectedOptionIndex === null} onClick={handleConfirmClick}>
+                                    <Button
+                                        color="primary"
+                                        disabled={selectedOptionIndex === null}
+                                        onClick={handleConfirmClick}
+                                    >
                                         Confirm
                                     </Button>
                                 </div>
@@ -455,22 +509,30 @@ export const TransmutationView = ({
 
                     {!transmutationOptions && (
                         <>
-                            <div className={classes.transmutesRemainingLabel}>Transmutations left: {numTransmutations}</div>
+                            <div className={classes.transmutesRemainingLabel}>
+                                Transmutations left: {numTransmutations}
+                            </div>
 
                             {numTransmutations > 0 && (
                                 <span
                                     className={classNames({
-                                        [classes.highlightAnimation]: selectedCard && numTransmutations,
+                                        [classes.highlightAnimation]:
+                                            selectedCard && numTransmutations,
                                     })}
                                 >
                                     <Button
-                                        disabled={!selectedCard || !numTransmutations || player.mesos < cost}
+                                        disabled={
+                                            !selectedCard ||
+                                            !numTransmutations ||
+                                            player.mesos < cost
+                                        }
                                         onClick={handleClickTransmute}
                                         color="primary"
                                     >
                                         {Boolean(cost) && (
                                             <>
-                                                Transmute [pay {cost} <Icon icon={MesoCoinImage} size={"xs"} />]
+                                                Transmute [pay {cost}{" "}
+                                                <Icon icon={MesoCoinImage} size={"xs"} />]
                                             </>
                                         )}
                                         {!cost && "Transmute"}
@@ -495,7 +557,15 @@ export const TransmutationView = ({
     );
 };
 
-const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; backdrop?: string }) => {
+const Transmutation = ({
+    town,
+    onExit,
+    backdrop,
+}: {
+    town?: TOWNS;
+    onExit?;
+    backdrop?: string;
+}) => {
     const { deck, player, townShops } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const townWorkshop = townShops[town]?.workshop;
@@ -506,7 +576,13 @@ const Transmutation = ({ town, onExit, backdrop }: { town?: TOWNS; onExit?; back
 
     const decrementNumTransmutes = () => {
         if (townWorkshop) {
-            dispatch(updateTownShop({ town: town!, shopKey: "workshop", shopState: { numTransmutesRemaining: numTownTransmutes - 1 } }));
+            dispatch(
+                updateTownShop({
+                    town: town!,
+                    shopKey: "workshop",
+                    shopState: { numTransmutesRemaining: numTownTransmutes - 1 },
+                }),
+            );
         } else {
             setNumTransmutes((prev) => prev - 1);
         }

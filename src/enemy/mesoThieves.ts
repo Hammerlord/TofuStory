@@ -1,6 +1,13 @@
 import { DarkSightImage, DoubleStabImage, StealImage, ThiefImage } from "../images";
 import { stealth } from "./../ability/Effects";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES, TRIGGER_TARGET_TYPES } from "./../ability/types";
+import {
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+    TRIGGER_TARGET_TYPES,
+} from "./../ability/types";
 import { attack } from "./abilities";
 
 const thiefAttack = {
@@ -44,7 +51,8 @@ const thiefDarkSight = {
             effects: [
                 {
                     ...stealth,
-                    description: "Untargetable by single-target abilities. When this effect ends, the character will retreat.",
+                    description:
+                        "Untargetable by single-target abilities. When this effect ends, the character will retreat.",
                     preventTurnAction: true,
                     duration: 3,
                     onEnd: {
@@ -104,7 +112,11 @@ export const duoThiefA = {
     name: "ImaRouge",
     maxHP: 125,
     mesos: 30,
-    abilities: [thiefAttack, thiefDoubleStab, { ...thiefDarkSight, dialog: "Lol, try and hit this!" }],
+    abilities: [
+        thiefAttack,
+        thiefDoubleStab,
+        { ...thiefDarkSight, dialog: "Lol, try and hit this!" },
+    ],
 };
 
 export const duoThiefB = {

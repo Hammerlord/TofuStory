@@ -1,7 +1,15 @@
 import { Combatant, Player } from "../../character/types";
 
 import { getUpgradeCard } from "../../Menu/utils";
-import { ACTION_TYPES, Ability, AbilityEffect, Action, CombatAbility, Effect, TARGET_TYPES } from "./../types";
+import {
+    ACTION_TYPES,
+    Ability,
+    AbilityEffect,
+    Action,
+    CombatAbility,
+    Effect,
+    TARGET_TYPES,
+} from "./../types";
 import { BLUE, GREEN, GREY, RED } from "./constants";
 
 export const getAllEffects = (ability: Ability): (Effect | string)[] => {
@@ -12,7 +20,7 @@ export const getAllEffects = (ability: Ability): (Effect | string)[] => {
                 acc.push(...effects);
                 return acc;
             },
-            [] as (Effect | string)[]
+            [] as (Effect | string)[],
         )
         .concat(ability.minion?.effects || []);
 };
@@ -37,7 +45,11 @@ export const getAbilityColor = (ability?: Ability): string | undefined => {
         return RED;
     }
 
-    if (targetType === TARGET_TYPES.FRIENDLY || targetType === TARGET_TYPES.SELF || targetType === TARGET_TYPES.MOVE) {
+    if (
+        targetType === TARGET_TYPES.FRIENDLY ||
+        targetType === TARGET_TYPES.SELF ||
+        targetType === TARGET_TYPES.MOVE
+    ) {
         return BLUE;
     }
 };
@@ -49,7 +61,11 @@ export const isAttackAction = (action: Action): boolean => {
 export const isOffensiveAction = (action: Action): boolean => {
     return (
         action.target !== undefined &&
-        [TARGET_TYPES.HOSTILE, TARGET_TYPES.RANDOM_HOSTILE, TARGET_TYPES.HOSTILE_CHARACTER].includes(action.target)
+        [
+            TARGET_TYPES.HOSTILE,
+            TARGET_TYPES.RANDOM_HOSTILE,
+            TARGET_TYPES.HOSTILE_CHARACTER,
+        ].includes(action.target)
     );
 };
 
@@ -64,7 +80,12 @@ export const isAttackAbility = (ability: Ability): boolean => {
 export const isSupportAction = (action: Action): boolean => {
     return (
         action.target !== undefined &&
-        [TARGET_TYPES.SELF, TARGET_TYPES.FRIENDLY, TARGET_TYPES.RANDOM_FRIENDLY, TARGET_TYPES.FRIENDLY_CHARACTER].includes(action.target) &&
+        [
+            TARGET_TYPES.SELF,
+            TARGET_TYPES.FRIENDLY,
+            TARGET_TYPES.RANDOM_FRIENDLY,
+            TARGET_TYPES.FRIENDLY_CHARACTER,
+        ].includes(action.target) &&
         action.type !== ACTION_TYPES.NONE
     );
 };
@@ -73,12 +94,19 @@ export const isSupportAbility = (ability?: Ability): boolean => {
     return (ability?.actions || []).some(isSupportAction);
 };
 
-export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatant: Combatant; ability: CombatAbility }) => {
+export const getAbilityUpgradedFromEffects = ({
+    combatant,
+    ability,
+}: {
+    combatant: Combatant;
+    ability: CombatAbility;
+}) => {
     if (!ability) {
         return ability;
     }
 
-    const totalUpgradeByLevels = ability.effects?.reduce((acc, e: AbilityEffect) => acc + (e.upgradedByLevels || 0), 0) || 0;
+    const totalUpgradeByLevels =
+        ability.effects?.reduce((acc, e: AbilityEffect) => acc + (e.upgradedByLevels || 0), 0) || 0;
 
     let card = ability;
     Array.from({ length: totalUpgradeByLevels }).forEach(() => {
@@ -92,7 +120,13 @@ export const getAbilityUpgradedFromEffects = ({ combatant, ability }: { combatan
 };
 
 // For Astral Rewind copies: Procced abilities do not have instanceIds, only actual cards do. Do not copy procs or unique abilities.
-export const getLastPlayedCards = ({ player, amount = 0 }: { player?: Player | undefined; amount?: number }) => {
+export const getLastPlayedCards = ({
+    player,
+    amount = 0,
+}: {
+    player?: Player | undefined;
+    amount?: number;
+}) => {
     if (!amount || !player) {
         return [];
     }

@@ -152,7 +152,9 @@ const TRANSITION_OVERLAY_KEY = "transition-overlay";
 const Main = () => {
     const [sceneRegion, setSceneRegion] = useState<REGIONS | null>(null);
     const [scene, setScene] = useState<EventScene | null>(null);
-    const [encounterVictoryCallback, setEncounterVictoryCallback] = useState<(() => void) | null>(null);
+    const [encounterVictoryCallback, setEncounterVictoryCallback] = useState<(() => void) | null>(
+        null,
+    );
     const [cardRewardsOpen, setCardRewardsOpen] = useState<boolean>(false);
     const [itemRewardsOptions, setItemRewardsOptions] = useState<ItemRewardsOptions | null>(null);
     const [activity, setActivity] = useState<ACTIVITIES | null>(null);
@@ -236,16 +238,36 @@ const Main = () => {
 
                 switch (type) {
                     case SCENE_CONDITION_TYPES.PLAYER_CLASS:
-                        return passesValueComparison({ val: player.class, otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: player.class,
+                            otherVal: value,
+                            comparator,
+                        });
                     case SCENE_CONDITION_TYPES.INFAMY:
-                        return passesValueComparison({ val: infamy, otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: infamy,
+                            otherVal: value,
+                            comparator,
+                        });
                     case SCENE_CONDITION_TYPES.VISITED_SCENES:
                         // visitedEvents is stored as a map of IDs
-                        return passesValueComparison({ val: Object.keys(visitedEvents), otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: Object.keys(visitedEvents),
+                            otherVal: value,
+                            comparator,
+                        });
                     case SCENE_CONDITION_TYPES.MESOS:
-                        return passesValueComparison({ val: player.mesos, otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: player.mesos,
+                            otherVal: value,
+                            comparator,
+                        });
                     case SCENE_CONDITION_TYPES.ITEMS:
-                        return passesValueComparison({ val: player.items.map(({ name }) => name), otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: player.items.map(({ name }) => name),
+                            otherVal: value,
+                            comparator,
+                        });
                 }
             });
         };
@@ -254,7 +276,7 @@ const Main = () => {
             return getRandomItem(
                 events.filter((e: EventScene) => {
                     return !visitedEvents[e.id] && passesConditions(e);
-                })
+                }),
             );
         };
 
@@ -323,7 +345,7 @@ const Main = () => {
                 backgroundImage: BG_MAP[node.region],
                 type: node.type as unknown as BATTLE_TYPES, // NODE_TYPES.ENCOUNTER, ELITE_ENCOUNTER, BOSS are enums equivalent to BATTLE_TYPES
                 cardRewards: node.cardRewards,
-            })
+            }),
         );
     };
 
@@ -331,7 +353,10 @@ const Main = () => {
         dispatch(selectNode(node));
 
         if (node.type === NODE_TYPES.TREASURE) {
-            setTreasure({ ...node.treasure, puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]) });
+            setTreasure({
+                ...node.treasure,
+                puzzle: getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
+            });
         } else if (node.type === NODE_TYPES.RESTING_ZONE) {
             setActivity(ACTIVITIES.CAMP);
         } else if (node.type === NODE_TYPES.SHOP) {
@@ -342,7 +367,12 @@ const Main = () => {
             setActivity(ACTIVITIES.WORKSHOP);
         } else {
             const callback = () => {
-                if (node.type && [NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(node.type)) {
+                if (
+                    node.type &&
+                    [NODE_TYPES.ENCOUNTER, NODE_TYPES.ELITE_ENCOUNTER, NODE_TYPES.BOSS].includes(
+                        node.type,
+                    )
+                ) {
                     handleBattleNode(node);
                 } else if (node.type === NODE_TYPES.EVENT) {
                     handleEventNode(node);
@@ -364,7 +394,7 @@ const Main = () => {
         dispatch(
             updatePlayer({
                 effects: aggregateItemEffects(player.items),
-            })
+            }),
         );
 
         if (encounterVictoryCallback) {
@@ -413,7 +443,8 @@ const Main = () => {
         }
 
         if (numNormalEncountersSinceLoot > 0) {
-            const isCrossedPityThreshold = numNormalEncountersSinceLoot * REGULAR_BATTLE_LOOT_CHANCE >= 1;
+            const isCrossedPityThreshold =
+                numNormalEncountersSinceLoot * REGULAR_BATTLE_LOOT_CHANCE >= 1;
             if (Math.random() < REGULAR_BATTLE_LOOT_CHANCE || isCrossedPityThreshold) {
                 dispatch(setNumNormalEncountersSinceLoot(0));
                 setItemRewardsOptions({ numChoicesOffered: 1, ...itemRewardProps });
@@ -481,7 +512,7 @@ const Main = () => {
                 startBattle({
                     ...encounter,
                     backgroundImage: encounter.backgroundImage || BG_MAP[currentLocation?.region],
-                })
+                }),
             );
             setEncounterVictoryCallback(() => onVictory);
         };
@@ -506,7 +537,11 @@ const Main = () => {
     if (!player || openClassSelection) {
         return (
             <>
-                <ClassSelection onSelectClass={handleSelectClass} onClose={handleCloseClassSelection} onTransition={handleTransition} />
+                <ClassSelection
+                    onSelectClass={handleSelectClass}
+                    onClose={handleCloseClassSelection}
+                    onTransition={handleTransition}
+                />
                 <div
                     key={TRANSITION_OVERLAY_KEY}
                     className={classNames(classes.transitionOverlay, {
@@ -558,7 +593,9 @@ const Main = () => {
         }
 
         if (town === TOWNS.KERNING) {
-            const route = generateTravelRoute({ startingRoute: routeKerningToPerion });
+            const route = generateTravelRoute({
+                startingRoute: routeKerningToPerion,
+            });
             dispatch(setRoute(route));
             return;
         }
@@ -570,13 +607,17 @@ const Main = () => {
         }
 
         if (town === TOWNS.ELLINIA) {
-            const route = generateTravelRoute({ startingRoute: routeElliniaSleepywood });
+            const route = generateTravelRoute({
+                startingRoute: routeElliniaSleepywood,
+            });
             dispatch(setRoute(route));
             return;
         }
 
         if (town === TOWNS.PERION) {
-            const route = generateTravelRoute({ startingRoute: routePerionSleepywood });
+            const route = generateTravelRoute({
+                startingRoute: routePerionSleepywood,
+            });
             dispatch(setRoute(route));
         }
     };
@@ -622,14 +663,27 @@ const Main = () => {
                         weaponImageOptions,
                         projectileOverride,
                     },
-                })
+                }),
             );
         }
 
-        dispatch(updatePlayer({ weapon: weaponSkin, weaponImageOptions, projectileOverride }));
+        dispatch(
+            updatePlayer({
+                weapon: weaponSkin,
+                weaponImageOptions,
+                projectileOverride,
+            }),
+        );
     };
 
-    const isActivityOpen = activity || battle || scene || cardRewardsOpen || itemRewardsOptions || usingItem || treasure;
+    const isActivityOpen =
+        activity ||
+        battle ||
+        scene ||
+        cardRewardsOpen ||
+        itemRewardsOptions ||
+        usingItem ||
+        treasure;
 
     return (
         <>
@@ -803,7 +857,11 @@ const Main = () => {
                 />
             )}
             <div className={classes.soundContainer}>
-                <Sound playlist={sceneRegion || currentLocation?.region} playTrack={battle?.backgroundMusic} isGameOver={isGameOver} />
+                <Sound
+                    playlist={sceneRegion || currentLocation?.region}
+                    playTrack={battle?.backgroundMusic}
+                    isGameOver={isGameOver}
+                />
             </div>
             <div
                 key={TRANSITION_OVERLAY_KEY}

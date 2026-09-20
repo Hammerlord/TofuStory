@@ -1,7 +1,12 @@
 import { createUseStyles } from "react-jss";
 import { Wave } from "../../battle/types";
 import { SCENE_CONDITION_TYPES, EventScene } from "../types";
-import { adventurerFighter, adventurerIceWizard, goldRichie, goldRichie2 } from "./GoldRichieCharacters";
+import {
+    adventurerFighter,
+    adventurerIceWizard,
+    goldRichie,
+    goldRichie2,
+} from "./GoldRichieCharacters";
 import { LithCornerImage } from "../../images";
 import classNames from "classnames";
 
@@ -61,8 +66,16 @@ const GoldRichieBackdrop = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={LithCornerImage} alt="Lith Corner" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
-            <img src={goldRichie.image} alt="Gold Richie" className={classNames(classes.character, classes.goldRichie)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
+            <img
+                src={goldRichie.image}
+                alt="Gold Richie"
+                className={classNames(classes.character, classes.goldRichie)}
+            />
         </div>
     );
 };
@@ -84,7 +97,9 @@ export const goldRichieIntro: EventScene = {
         },
         {
             speaker: goldRichie,
-            dialog: ["... Wait, you want to trade? Please tell me you want to trade, um... Mushroom sir and-or ma'am."],
+            dialog: [
+                "... Wait, you want to trade? Please tell me you want to trade, um... Mushroom sir and-or ma'am.",
+            ],
             responses: [
                 {
                     text: "Trade with Gold Richie",
@@ -93,7 +108,13 @@ export const goldRichieIntro: EventScene = {
                     },
                     id: GOLD_RICHIE_EVENTS.TRADE,
                 },
-                { text: "Mug Gold Richie", encounter: goldRichieFight1, isExit: true, infamy: 5, id: GOLD_RICHIE_EVENTS.FOUGHT },
+                {
+                    text: "Mug Gold Richie",
+                    encounter: goldRichieFight1,
+                    isExit: true,
+                    infamy: 5,
+                    id: GOLD_RICHIE_EVENTS.FOUGHT,
+                },
             ],
         },
     ],
@@ -123,7 +144,13 @@ export const goldRichieMercenaries: EventScene = {
         {
             speaker: goldRichie,
             dialog: ["Guards!"],
-            responses: [{ text: "Fight Gold Richie and his guards", encounter: goldRichieFight2, infamy: 5 }],
+            responses: [
+                {
+                    text: "Fight Gold Richie and his guards",
+                    encounter: goldRichieFight2,
+                    infamy: 5,
+                },
+            ],
         },
     ],
 };

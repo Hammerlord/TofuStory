@@ -33,9 +33,21 @@ const WanderingFighterBackdrop = ({ player }) => {
     const classes = useStyles();
     return (
         <div>
-            <img src={HenesysHuntingGroundImage} alt="Henesys Hunting Ground" className={classes.backdrop} />
-            <img src={martialArtist.image} alt="Fighter" className={classNames(classes.character, classes.other)} />
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={HenesysHuntingGroundImage}
+                alt="Henesys Hunting Ground"
+                className={classes.backdrop}
+            />
+            <img
+                src={martialArtist.image}
+                alt="Fighter"
+                className={classNames(classes.character, classes.other)}
+            />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };
@@ -53,7 +65,9 @@ export const wanderingFighterScene: EventScene = {
         {
             scene: WanderingFighterBackdrop,
             speaker: martialArtist,
-            dialog: ["You there! I sense your aura... It speaks to me of great misdeeds. Yes, you look like a worthy opponent."],
+            dialog: [
+                "You there! I sense your aura... It speaks to me of great misdeeds. Yes, you look like a worthy opponent.",
+            ],
         },
         {
             scene: WanderingFighterBackdrop,

@@ -18,7 +18,13 @@ const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const triggerStatChangeEvents =
-    (statChanges: { statUpdate: UpdatedCombatantStats; context: ActionContext }[]) => (dispatch: AppDispatch) => {
+    (
+        statChanges: {
+            statUpdate: UpdatedCombatantStats;
+            context: ActionContext;
+        }[],
+    ) =>
+    (dispatch: AppDispatch) => {
         statChanges.forEach(({ statUpdate, context }) => {
             const {
                 combatantId,
@@ -50,32 +56,54 @@ export const triggerStatChangeEvents =
                     checkEventTrigger({
                         combatantId,
                         effectEventKey,
-                        context: { ...context, sourceChain: sourceChain || context?.sourceChain, trackSumAmount },
-                    })
+                        context: {
+                            ...context,
+                            sourceChain: sourceChain || context?.sourceChain,
+                            trackSumAmount,
+                        },
+                    }),
                 );
             };
 
             if (resources < 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onResourcesSpent, trackSumAmount: Math.abs(resources) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onResourcesSpent,
+                    trackSumAmount: Math.abs(resources),
+                });
             }
 
             if (rawResources > 0) {
                 // This event currently includes overcapping resources; use overcappedResources when nuance required
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onResourcesGained, trackSumAmount: Math.abs(rawResources) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onResourcesGained,
+                    trackSumAmount: Math.abs(rawResources),
+                });
             }
 
             if (healing > 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealing, trackSumAmount: Math.abs(healing) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealing,
+                    trackSumAmount: Math.abs(healing),
+                });
             }
 
             if (overhealing > 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveOverhealing, trackSumAmount: Math.abs(overhealing) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onReceiveOverhealing,
+                    trackSumAmount: Math.abs(overhealing),
+                });
             }
 
             if (armor > 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveArmor, trackSumAmount: Math.abs(armor) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onReceiveArmor,
+                    trackSumAmount: Math.abs(armor),
+                });
             } else if (armor < 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onArmorLoss, trackSumAmount: Math.abs(armor) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onArmorLoss,
+                    trackSumAmount: Math.abs(armor),
+                });
             }
 
             if (isArmorDecay) {
@@ -87,13 +115,19 @@ export const triggerStatChangeEvents =
             }
 
             if (rawDamage > 0) {
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveDamage, trackSumAmount: Math.abs(rawDamage) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onReceiveDamage,
+                    trackSumAmount: Math.abs(rawDamage),
+                });
             }
 
             if (healthDamage > 0) {
                 const source = context?.sourceChain?.at(-1);
                 dispatch(updateDamageStatistics(healthDamage, source));
-                dispatchEvent({ effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealthDamage, trackSumAmount: Math.abs(healthDamage) });
+                dispatchEvent({
+                    effectEventKey: EFFECT_EVENT_KEYS.onReceiveHealthDamage,
+                    trackSumAmount: Math.abs(healthDamage),
+                });
             }
 
             const prevSource = context?.sourceChain?.at(-1);
@@ -118,11 +152,16 @@ export const triggerStatChangeEvents =
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onApplyEffect,
                         context: { ...context, sourceChain: sourceChain },
-                    })
+                    }),
                 );
             });
 
-            dispatch(updateEnemyTargetingAfterEffectsApplied({ combatantId, effectsApplied: effects }));
+            dispatch(
+                updateEnemyTargetingAfterEffectsApplied({
+                    combatantId,
+                    effectsApplied: effects,
+                }),
+            );
 
             removedEffects.forEach((e: CombatEffect) => {
                 const source: TriggerSource = {
@@ -152,7 +191,7 @@ export const triggerStatChangeEvents =
                             effect: e,
                             effectEventKey: EFFECT_EVENT_KEYS.onRemoved,
                             context: { ...context, sourceChain: sourceChain },
-                        })
+                        }),
                     );
                 });
             });
@@ -177,7 +216,7 @@ export const triggerStatChangeEvents =
                         combatantId: e.applierId,
                         effectEventKey: EFFECT_EVENT_KEYS.onFailedToApplyEffect,
                         context: { ...context, sourceChain: sourceChain },
-                    })
+                    }),
                 );
             });
 
@@ -187,53 +226,68 @@ export const triggerStatChangeEvents =
         });
     };
 
-export const applyStatChanges = (statUpdates: UpdatedCombatantStats[]) => (dispatch: AppDispatch, getState: () => RootState) => {
-    // Apply the stat updates first before triggering any related events
-    statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
-        const combatantId = statUpdate.combatantId;
-        const battle = getState().battle!;
-        const data = findCombatantData(battle, combatantId);
+export const applyStatChanges =
+    (statUpdates: UpdatedCombatantStats[]) =>
+    (dispatch: AppDispatch, getState: () => RootState) => {
+        // Apply the stat updates first before triggering any related events
+        statUpdates.forEach((statUpdate: UpdatedCombatantStats) => {
+            const combatantId = statUpdate.combatantId;
+            const battle = getState().battle!;
+            const data = findCombatantData(battle, combatantId);
 
-        // Due to morph, the combatant may no longer exist
-        if (!data) {
-            return;
-        }
-
-        const { combatant: oldCombatant, friendlySide, friendly } = data;
-
-        dispatch(
-            updateBattle({
-                [friendlySide]: friendly.map((combatant: Combatant | null) => {
-                    if (combatant?.id !== combatantId) {
-                        return combatant;
-                    }
-
-                    return stageStatChanges(statUpdate, oldCombatant);
-                }),
-            })
-        );
-
-        // Updates player money and HP for the state outside of combat.
-        // TRICKY: all money operations on the player side affect the PLAYER, even if the minion got the kill, etc.
-        if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE && !battle.isTutorial) {
-            const player = friendly.find((p) => p?.isPlayer) as Player;
-            const stats = stageStatChanges(statUpdate, player);
-            const updatePlayerStats = { mesos: stats.mesos || 0 };
-
-            if (oldCombatant.isPlayer) {
-                // @ts-ignore
-                updatePlayerStats.HP = stats.HP;
+            // Due to morph, the combatant may no longer exist
+            if (!data) {
+                return;
             }
 
-            dispatch(updatePlayer(updatePlayerStats));
-        }
-    });
-};
+            const { combatant: oldCombatant, friendlySide, friendly } = data;
 
-export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: Combatant | Player) => {
-    const { healthDamage = 0, armor = 0, resources = 0, healing = 0, effects = [], mesos = 0, removedEffects = [] } = statUpdate;
+            dispatch(
+                updateBattle({
+                    [friendlySide]: friendly.map((combatant: Combatant | null) => {
+                        if (combatant?.id !== combatantId) {
+                            return combatant;
+                        }
 
-    const combatantEffects = combatant.effects.filter((effect: CombatEffect) => removedEffects.every(({ id }) => id !== effect.id));
+                        return stageStatChanges(statUpdate, oldCombatant);
+                    }),
+                }),
+            );
+
+            // Updates player money and HP for the state outside of combat.
+            // TRICKY: all money operations on the player side affect the PLAYER, even if the minion got the kill, etc.
+            if (friendlySide === BATTLEFIELD_SIDES.PLAYER_SIDE && !battle.isTutorial) {
+                const player = friendly.find((p) => p?.isPlayer) as Player;
+                const stats = stageStatChanges(statUpdate, player);
+                const updatePlayerStats = { mesos: stats.mesos || 0 };
+
+                if (oldCombatant.isPlayer) {
+                    // @ts-ignore
+                    updatePlayerStats.HP = stats.HP;
+                }
+
+                dispatch(updatePlayer(updatePlayerStats));
+            }
+        });
+    };
+
+export const stageStatChanges = (
+    statUpdate: UpdatedCombatantStats,
+    combatant: Combatant | Player,
+) => {
+    const {
+        healthDamage = 0,
+        armor = 0,
+        resources = 0,
+        healing = 0,
+        effects = [],
+        mesos = 0,
+        removedEffects = [],
+    } = statUpdate;
+
+    const combatantEffects = combatant.effects.filter((effect: CombatEffect) =>
+        removedEffects.every(({ id }) => id !== effect.id),
+    );
 
     return {
         ...combatant,
@@ -245,27 +299,30 @@ export const stageStatChanges = (statUpdate: UpdatedCombatantStats, combatant: C
     };
 };
 
-const updateDamageStatistics = (damage: number, source?: TriggerSource) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const battle: BattleState = getState().battle!;
-    if (isActorPlayerSide({ playerSide: battle.playerSide, source: source })) {
-        const statistics: BattleStatistics = {
-            ...battle.statistics,
-            totalDamage: (battle.statistics.totalDamage || 0) + (damage || 0),
-            damageByEnemyName: {
-                ...battle.statistics.damageByEnemyName,
-            },
-        };
+const updateDamageStatistics =
+    (damage: number, source?: TriggerSource) =>
+    (dispatch: AppDispatch, getState: () => RootState) => {
+        const battle: BattleState = getState().battle!;
+        if (isActorPlayerSide({ playerSide: battle.playerSide, source: source })) {
+            const statistics: BattleStatistics = {
+                ...battle.statistics,
+                totalDamage: (battle.statistics.totalDamage || 0) + (damage || 0),
+                damageByEnemyName: {
+                    ...battle.statistics.damageByEnemyName,
+                },
+            };
 
-        const target = findCombatantData(battle, source?.targetId);
-        const targetName = target?.combatant?.name;
-        if (targetName) {
-            statistics.damageByEnemyName[targetName] = (statistics.damageByEnemyName[targetName] || 0) + (damage || 0);
+            const target = findCombatantData(battle, source?.targetId);
+            const targetName = target?.combatant?.name;
+            if (targetName) {
+                statistics.damageByEnemyName[targetName] =
+                    (statistics.damageByEnemyName[targetName] || 0) + (damage || 0);
+            }
+
+            dispatch(
+                updateBattle({
+                    statistics,
+                }),
+            );
         }
-
-        dispatch(
-            updateBattle({
-                statistics,
-            })
-        );
-    }
-};
+    };

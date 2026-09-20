@@ -33,7 +33,10 @@ const miniBeanFight = {
 const postFightDialog = {
     scene: (other) => <PantryScene {...other} hideMiniBean={true} />,
     speaker: mayaCharacter,
-    dialog: ["[Maya is covered in food scraps and seems shaken, although unharmed.]", "Oh no! The festival is going to be ruined!"],
+    dialog: [
+        "[Maya is covered in food scraps and seems shaken, although unharmed.]",
+        "Oh no! The festival is going to be ruined!",
+    ],
     responses: [
         {
             text: "Check that Maya is okay.",
@@ -47,7 +50,9 @@ const postFightDialog = {
                 },
                 {
                     speaker: mayaCharacter,
-                    dialog: ["Um... it isn't much, but this piece of cake seems to be in okay shape. Please take it."],
+                    dialog: [
+                        "Um... it isn't much, but this piece of cake seems to be in okay shape. Please take it.",
+                    ],
                     items: {
                         itemPool: [cakeItem],
                     },
@@ -57,7 +62,9 @@ const postFightDialog = {
                     dialog: ["Oh, what am I going to do now...?"],
                 },
                 {
-                    dialog: ["[Maybe you should leave before Maya realizes that you aren't just a {{ class }}...]"],
+                    dialog: [
+                        "[Maybe you should leave before Maya realizes that you aren't just a {{ class }}...]",
+                    ],
                     responses: [
                         {
                             text: "Time to go.",
@@ -106,7 +113,10 @@ const miniBeanFightOption: ScriptResponse = {
     next: [
         {
             speaker: miniBeanCharacter,
-            dialog: ["Urgh, not again... Just needed more... food!", "Curse... this... bo... dy..."],
+            dialog: [
+                "Urgh, not again... Just needed more... food!",
+                "Curse... this... bo... dy...",
+            ],
         },
         {
             speaker: miniBeanCharacter,
@@ -122,7 +132,10 @@ const miniBeanFightOption2: ScriptResponse = {
     next: [
         {
             speaker: miniBeanCharacter,
-            dialog: ["Urgh, not again... Just needed more... food!", "Curse... this... bo... dy..."],
+            dialog: [
+                "Urgh, not again... Just needed more... food!",
+                "Curse... this... bo... dy...",
+            ],
         },
         {
             speaker: miniBeanCharacter,
@@ -161,11 +174,17 @@ const pantry: EventScene = {
                     next: [
                         {
                             speaker: miniBeanCharacter,
-                            dialog: ["[Mini Bean notices you.]", "Hey, you! Mind your own business."],
+                            dialog: [
+                                "[Mini Bean notices you.]",
+                                "Hey, you! Mind your own business.",
+                            ],
                         },
                         {
                             speaker: mayaCharacter,
-                            dialog: ["Wh-who are you? Can you help me?", "O-or are you a monster, too!?"],
+                            dialog: [
+                                "Wh-who are you? Can you help me?",
+                                "O-or are you a monster, too!?",
+                            ],
                             responses: [
                                 {
                                     text: "Tell the creature to stop.",
@@ -205,7 +224,9 @@ const pantry: EventScene = {
                                                         },
                                                         {
                                                             speaker: miniBeanCharacter,
-                                                            dialog: ["I spy with my beady eyes confusion!"],
+                                                            dialog: [
+                                                                "I spy with my beady eyes confusion!",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: miniBeanCharacter,
@@ -217,19 +238,23 @@ const pantry: EventScene = {
                                                                     text: "Reassert yourself.",
                                                                     next: [
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "Yeah, leave behind a trail of casualties, why not? But scare some poor maiden and now there's a problem!",
                                                                                 "'Stop', huh? You sure sound like some kinda human, and I mean that in the worst way. Ooohoohoohoo... well, it'd be funny if it wasn't so annoying.",
                                                                             ],
                                                                         },
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "I'm not much in the business of eating my fellows, either, but hey, if you wanna scrap, have at it!",
                                                                                 "[The creature boxes the air with its fists.]",
                                                                             ],
-                                                                            responses: [miniBeanFightOption],
+                                                                            responses: [
+                                                                                miniBeanFightOption,
+                                                                            ],
                                                                         },
                                                                     ],
                                                                 },
@@ -287,7 +312,9 @@ const pantry: EventScene = {
                                                         },
                                                         {
                                                             speaker: miniBeanCharacter,
-                                                            dialog: ["I spy with my beady eyes confusion!"],
+                                                            dialog: [
+                                                                "I spy with my beady eyes confusion!",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: miniBeanCharacter,
@@ -299,13 +326,16 @@ const pantry: EventScene = {
                                                                     text: "Gear up to fight the creature.",
                                                                     next: [
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "You've got some gall, yanno. I'd almost like it if it wasn't so annoying.",
                                                                                 "I'm not much in the business of eating my fellows, either, but hey, if you wanna scrap, have at it!",
                                                                                 "[The creature boxes the air with its fists.]",
                                                                             ],
-                                                                            responses: [miniBeanFightOption2],
+                                                                            responses: [
+                                                                                miniBeanFightOption2,
+                                                                            ],
                                                                         },
                                                                     ],
                                                                 },
@@ -348,19 +378,23 @@ const pantry: EventScene = {
                                                                     text: "Assist Maya and fight Mini Bean.",
                                                                     next: [
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "Hey hey hey! Why do you gotta help the NPC like some clueless adventurer?",
                                                                                 "Tryin' to act like you got morals or something? Or does it come with the {{ class }} fantasy? Stupid!",
                                                                             ],
                                                                         },
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "I'm not much in the business of eating my fellows, either, but hey, if you wanna scrap, have at it!",
                                                                                 "[The creature boxes the air with its fists.]",
                                                                             ],
-                                                                            responses: [miniBeanFightOption],
+                                                                            responses: [
+                                                                                miniBeanFightOption,
+                                                                            ],
                                                                         },
                                                                     ],
                                                                 },
@@ -379,7 +413,9 @@ const pantry: EventScene = {
                                                             ],
                                                         },
                                                         {
-                                                            dialog: ["[There is perhaps something the creature isn't telling you.]"],
+                                                            dialog: [
+                                                                "[There is perhaps something the creature isn't telling you.]",
+                                                            ],
                                                         },
                                                         {
                                                             speaker: miniBeanCharacter,
@@ -391,12 +427,15 @@ const pantry: EventScene = {
                                                                     text: "Turn against Mini Bean.",
                                                                     next: [
                                                                         {
-                                                                            speaker: miniBeanCharacter,
+                                                                            speaker:
+                                                                                miniBeanCharacter,
                                                                             dialog: [
                                                                                 "Hey hey hey! Why do you gotta help the NPC like some clueless adventurer?",
                                                                                 "Tryin' to act like you got morals or something? Or does it come with the {{ class }} fantasy? Stupid!",
                                                                             ],
-                                                                            responses: [miniBeanFightOption],
+                                                                            responses: [
+                                                                                miniBeanFightOption,
+                                                                            ],
                                                                         },
                                                                     ],
                                                                 },

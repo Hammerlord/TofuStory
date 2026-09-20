@@ -66,7 +66,8 @@ export const thorns: Effect = {
 
 export const eliteThorns: Effect = {
     ...thorns,
-    description: "Attackers take 1 damage per stack. Activates every {{ turnsTriggerFequency }} turns.",
+    description:
+        "Attackers take 1 damage per stack. Activates every {{ turnsTriggerFequency }} turns.",
     turnsTriggerFrequency: 2,
 };
 
@@ -118,7 +119,8 @@ export const stealth: Effect = {
     name: "Stealth",
     icon: CloudyIcon,
     canBeSilenced: true,
-    description: "Negates the next {{ stacks }} single-target attacks. Effect ends if this character attacks or is hit by an area effect.",
+    description:
+        "Negates the next {{ stacks }} single-target attacks. Effect ends if this character attacks or is hit by an area effect.",
     stacks: 2,
     onAttack: {
         removeEffect: true,
@@ -177,7 +179,8 @@ export const stun: Effect = {
     maxApplications: 1,
     maxDuration: 1,
     persistsWhenDead: true,
-    description: "Stunned targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
+    description:
+        "Stunned targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
     defenseDown: 3,
     icon: DizzyIcon,
 };
@@ -203,7 +206,8 @@ export const burn: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     duration: Infinity,
     icon: FireIcon,
-    description: "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1.",
+    description:
+        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1.",
     maxApplications: 1,
     stacks: 2,
     onTurnStart: {
@@ -222,7 +226,8 @@ export const chill: Effect = {
     maxStacks: 3,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Applies <b>1 {{{ _attDown_ }}} ATT Down</b> and <b>{{{ _defDown_ }}} DEF Down,</b> up to {{ maxApplications }}.",
+    description:
+        "Applies <b>1 {{{ _attDown_ }}} ATT Down</b> and <b>{{{ _defDown_ }}} DEF Down,</b> up to {{ maxApplications }}.",
 };
 
 export const freeze: Effect = {
@@ -232,7 +237,8 @@ export const freeze: Effect = {
     class: EFFECT_CLASSES.DEBUFF,
     maxApplications: 1,
     maxDuration: 1,
-    description: "Frozen targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
+    description:
+        "Frozen targets are unable to act and take <b>30%</b> more damage from attacks, rounded up.",
     defenseDown: 3,
     duration: 1,
     maxStacks: 1,
@@ -467,7 +473,8 @@ export const volcano: Minion = {
             class: EFFECT_CLASSES.BUFF,
             name: "Erupting",
             icon: VolcanoIcon,
-            description: "Erupting for damage equal to the character's max health when this effect expires",
+            description:
+                "Erupting for damage equal to the character's max health when this effect expires",
             duration: 3,
             onEnd: {
                 usableWhileStunned: true,
@@ -505,7 +512,8 @@ export const eruptive: Effect = {
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
     icon: VolcanoIcon,
-    description: "Every {{ turnsTriggerFrequency }} turns, summons volcanoes that erupt for area damage.",
+    description:
+        "Every {{ turnsTriggerFrequency }} turns, summons volcanoes that erupt for area damage.",
     turnsTriggerFrequency: 3,
     onTurnStart: {
         usableWhileStunned: true,
@@ -612,7 +620,8 @@ export const poison: Effect = {
     name: "Poison",
     type: EFFECT_TYPES.POISON,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1.",
+    description:
+        "On turn start, take 1 damage per stack (bypassing armor), and reduce stacks by 1.",
     icon: PoisonImage,
     duration: Infinity,
     maxApplications: 1,
@@ -674,7 +683,8 @@ export const defDown: Effect = {
 
 export const pristineDefense: Effect = {
     name: "Pristine DEF Up",
-    description: "Prevents Armor decay and reduces damage from attacks by 10% per stack, rounded up.",
+    description:
+        "Prevents Armor decay and reduces damage from attacks by 10% per stack, rounded up.",
     icon: PristineBlackShieldIcon,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -685,7 +695,8 @@ export const pristineDefense: Effect = {
 
 export const sentry: Effect = {
     name: "Sentry",
-    description: "Deals <b>{{ onHostileAbility.ability.actions.0.damage }} {{{ _damage_ }}}</b> to any enemy who uses an ability.",
+    description:
+        "Deals <b>{{ onHostileAbility.ability.actions.0.damage }} {{{ _damage_ }}}</b> to any enemy who uses an ability.",
     icon: EyeIcon,
     portraitImage: EyeIcon,
     type: EFFECT_TYPES.NONE,
@@ -768,7 +779,8 @@ export const attackDown: Effect = {
     duration: 3,
     maxApplications: 3,
     maxDuration: 10,
-    description: "Reduces damage dealt by 10% per stack, up to <b>{{ maxApplications }}</b> stacks. Can't bring enemy damage below 1.",
+    description:
+        "Reduces damage dealt by 10% per stack, up to <b>{{ maxApplications }}</b> stacks. Can't bring enemy damage below 1.",
 };
 
 export const directDamageTaken: Effect = {
@@ -808,7 +820,8 @@ export const tributeSummonBuff: Effect = {
 export const lupinCurse: Effect = {
     name: "Lupin Curse",
     icon: CursedDollImage,
-    description: "Receiving <b>{{ onFriendlyReceiveAttack.damage }} {{{ _damage_ }}}</b> whenever its allies are attacked.",
+    description:
+        "Receiving <b>{{ onFriendlyReceiveAttack.damage }} {{{ _damage_ }}}</b> whenever its allies are attacked.",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
     onFriendlyReceiveAttack: {

@@ -4,7 +4,14 @@ import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
 import { Ability, CombatAbility } from "../ability/types";
 import type { CharacterState } from "../character/playerReducer";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
-import { chargingStone, greaterChargingStone, integrityStone, honestyStone, rageStone, rampageStone } from "../item/starterItems";
+import {
+    chargingStone,
+    greaterChargingStone,
+    integrityStone,
+    honestyStone,
+    rageStone,
+    rampageStone,
+} from "../item/starterItems";
 import { Item } from "../item/types";
 import { CLASS_ITEMS } from "../map/routes/eventList";
 import { ShopAbility, ShopItem } from "../shops/constants";
@@ -20,8 +27,14 @@ export const saveGame = (characterObject: CharacterState) => {
     }
 
     // Due to card effects sometimes using SVGs (functions, which cannot be stringified), flatten the objects to just their name/level here and do a lookup on retrieval.
-    const flattenDeck = deck.map((card) => ({ name: card.name, level: card.level }));
-    const flattenPlayerItems = player.items.map((item) => ({ name: item.name, stacks: item.stacks }));
+    const flattenDeck = deck.map((card) => ({
+        name: card.name,
+        level: card.level,
+    }));
+    const flattenPlayerItems = player.items.map((item) => ({
+        name: item.name,
+        stacks: item.stacks,
+    }));
     const flattenTownShops = Object.entries(townShops).reduce((acc, [townName, shopsObj]) => {
         acc[townName] = {
             ...shopsObj,
@@ -33,7 +46,9 @@ export const saveGame = (characterObject: CharacterState) => {
          * Output: { price: number, item: [<item name>: string] }
          * Or null if the input is null.
          */
-        const flattenShopItem = (item: { price: number; item: Item } | null): { price: number; item: string } | null => {
+        const flattenShopItem = (
+            item: { price: number; item: Item } | null,
+        ): { price: number; item: string } | null => {
             if (!item) return item as null;
             return {
                 ...item,
@@ -47,7 +62,7 @@ export const saveGame = (characterObject: CharacterState) => {
          * Or null if the input is null.
          */
         const flattenShopAbility = (
-            item: { price: number; item: Ability } | null
+            item: { price: number; item: Ability } | null,
         ): { price: number; item: { name: string; level?: number } } | null => {
             if (!item) return item as null;
             return {
@@ -85,7 +100,7 @@ export const saveGame = (characterObject: CharacterState) => {
                 deck: flattenDeck,
                 player: { ...player, items: flattenPlayerItems },
                 townShops: flattenTownShops,
-            })
+            }),
         );
     } catch (e) {
         console.log("Failed to save file:", e);
@@ -109,7 +124,10 @@ export const getGameFile = () => {
         const { deck = [], player = {}, townShops = {} } = fileObj;
         const cards = [...JOB_CARD_MAP[player.class].all, ...NEUTRAL_ABILITIES];
 
-        const hydrateAbility = (flatCard: { name: string; level?: number }): CombatAbility | undefined => {
+        const hydrateAbility = (flatCard: {
+            name: string;
+            level?: number;
+        }): CombatAbility | undefined => {
             const { name, level = 1 } = flatCard;
             const hydrated = cards.find((card) => card.name === name);
             if (hydrated) {
@@ -128,10 +146,23 @@ export const getGameFile = () => {
 
         const hydratedDeck = deck.map(hydrateAbility).filter((v) => v);
 
-        const starters = [rageStone, rampageStone, chargingStone, greaterChargingStone, honestyStone, integrityStone];
+        const starters = [
+            rageStone,
+            rampageStone,
+            chargingStone,
+            greaterChargingStone,
+            honestyStone,
+            integrityStone,
+        ];
         const consumables = [halfEatenHotdog, unagiItem, cakeItem];
         const other = [tofu, tofuSoup];
-        const itemLookup = [...ITEM_MASTERLIST, ...CLASS_ITEMS[player.class], ...starters, ...consumables, ...other];
+        const itemLookup = [
+            ...ITEM_MASTERLIST,
+            ...CLASS_ITEMS[player.class],
+            ...starters,
+            ...consumables,
+            ...other,
+        ];
 
         const items = player.items.map((item: Item) => {
             const found = itemLookup.find((otherItem) => otherItem.name === item.name);
@@ -152,7 +183,9 @@ export const getGameFile = () => {
             /**
              * See output of flattenShopItem above for the input here.
              */
-            const hydrateShopItem = (shopItem: { price: number; item: string } | null): ShopItem | null => {
+            const hydrateShopItem = (
+                shopItem: { price: number; item: string } | null,
+            ): ShopItem | null => {
                 if (!shopItem) return shopItem;
                 const lookup = itemLookup.find(({ name }) => name === shopItem.item);
                 if (lookup) {
@@ -165,7 +198,12 @@ export const getGameFile = () => {
                 return shopItem;
             };
 
-            const hydrateShopAbility = (item: { price: number; item: { name: string; level?: number } } | null): ShopAbility | null => {
+            const hydrateShopAbility = (
+                item: {
+                    price: number;
+                    item: { name: string; level?: number };
+                } | null,
+            ): ShopAbility | null => {
                 if (!item) return item as null;
                 return { ...item, item: hydrateAbility(item.item) };
             };
@@ -194,7 +232,12 @@ export const getGameFile = () => {
             return acc;
         }, {});
 
-        return { ...fileObj, deck: hydratedDeck, player: { ...player, items }, townShops: hydrateTownShops };
+        return {
+            ...fileObj,
+            deck: hydratedDeck,
+            player: { ...player, items },
+            townShops: hydrateTownShops,
+        };
     } catch (e) {
         console.error(e);
         // Just return nothing if something failed. It will be treated as a new run.

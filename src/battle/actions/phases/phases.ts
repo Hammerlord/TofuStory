@@ -13,7 +13,13 @@ import { getRandomItem, shuffle } from "../../../utils";
 import { BASE_MAX_RESOURCES, BOSS_MUSIC } from "../../constants";
 import { battleStateSlice } from "../../reducer";
 import { BATTLE_STATES } from "../../states";
-import { BATTLE_TYPES, BATTLEFIELD_SIDES, BattleState, TRIGGER_SOURCE_TYPES, Wave } from "../../types";
+import {
+    BATTLE_TYPES,
+    BATTLEFIELD_SIDES,
+    BattleState,
+    TRIGGER_SOURCE_TYPES,
+    Wave,
+} from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
 import { checkCardActions } from "../cardActions/cardActions";
 import { findCombatantData, updateCombatant } from "../combatantData";
@@ -39,17 +45,22 @@ export const onBattleEnd = () => {
             pushBattleHistory({
                 statistics,
                 waves,
-            })
+            }),
         );
 
         if (isTutorial) {
             return;
         }
 
-        const lifeLinkedEnemies = enemySide.filter((c: Combatant | null) => c?.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK));
-        const lifeLinkMesos: number = lifeLinkedEnemies.reduce((acc: number, combatant: Combatant | null) => {
-            return acc + (combatant?.mesos || 0);
-        }, 0);
+        const lifeLinkedEnemies = enemySide.filter((c: Combatant | null) =>
+            c?.effects.some((e) => e.type === EFFECT_TYPES.LIFE_LINK),
+        );
+        const lifeLinkMesos: number = lifeLinkedEnemies.reduce(
+            (acc: number, combatant: Combatant | null) => {
+                return acc + (combatant?.mesos || 0);
+            },
+            0,
+        );
 
         const player: Player = playerSide.find((c: Combatant | null) => c?.isPlayer) as Player;
 
@@ -57,7 +68,7 @@ export const onBattleEnd = () => {
             updatePlayer({
                 HP: player.HP,
                 mesos: player.mesos + calculateMesoMultiplier({ player, mesos: lifeLinkMesos }),
-            })
+            }),
         );
     };
 };
@@ -70,10 +81,20 @@ export const onWaveClear = () => {
         }
 
         const playbackCollectorInstance = playbackCollector();
-        const context = { name: "Wave Clear", sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = {
+            name: "Wave Clear",
+            sourceChain: [],
+            playbackCollector: playbackCollectorInstance,
+        };
 
         playerSide.forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveClear, context }));
+            dispatch(
+                checkEventTrigger({
+                    combatantId: combatant?.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onWaveClear,
+                    context,
+                }),
+            );
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -94,7 +115,7 @@ export const nextWave = () => {
                 deck: presetDeck ? presetDeck.map(createCombatAbility) : deck,
                 hand: presetDeck ? [] : hand,
                 discard: presetDeck ? [] : discard,
-            })
+            }),
         );
     };
 };
@@ -139,7 +160,9 @@ export const startBattle = ({
 
         const player = {
             ...character.player,
-            effects: aggregateItemEffects(character.player!.items).concat(aggregateAbilityEffects(deck)),
+            effects: aggregateItemEffects(character.player!.items).concat(
+                aggregateAbilityEffects(deck),
+            ),
         } as Player;
 
         const battleObj: BattleState = {
@@ -172,7 +195,8 @@ export const startBattle = ({
             isTutorial,
             state: BATTLE_STATES.BATTLE_START,
             backgroundImage,
-            backgroundMusic: backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
+            backgroundMusic:
+                backgroundMusic || (type === BATTLE_TYPES.BOSS ? BOSS_MUSIC : undefined),
             type,
             itemRewards,
             overrideItemChoices,
@@ -216,14 +240,24 @@ export const onBattleStart = () => {
                             },
                         ],
                     },
-                })
+                }),
             );
         }
 
-        const context = { name: "Battle Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = {
+            name: "Battle Start",
+            sourceChain: [],
+            playbackCollector: playbackCollectorInstance,
+        };
         // Enemies go first so that eg. enemy mutates don't negate player's on battle status effects
         enemySide.concat(playerSide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onBattleStart, context }));
+            dispatch(
+                checkEventTrigger({
+                    combatantId: combatant?.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onBattleStart,
+                    context,
+                }),
+            );
         });
 
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
@@ -233,20 +267,35 @@ export const onBattleStart = () => {
 export const onWaveStart = () => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const playbackCollectorInstance = playbackCollector();
-        const context = { name: "Wave Start", sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = {
+            name: "Wave Start",
+            sourceChain: [],
+            playbackCollector: playbackCollectorInstance,
+        };
         const { playerSide, enemySide } = getState().battle!;
 
         // Enemies go first so that eg. enemy mutates don't negate player's on wave status effects
         enemySide.concat(playerSide).forEach((combatant: Combatant | null) => {
-            dispatch(checkEventTrigger({ combatantId: combatant?.id, effectEventKey: EFFECT_EVENT_KEYS.onWaveStart, context }));
+            dispatch(
+                checkEventTrigger({
+                    combatantId: combatant?.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onWaveStart,
+                    context,
+                }),
+            );
         });
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
 
         const battle = getState().battle!;
-        const nextMoveOrderIds = getCombatantMoveOrder({ combatants: battle.enemySide, round: battle.round });
+        const nextMoveOrderIds = getCombatantMoveOrder({
+            combatants: battle.enemySide,
+            round: battle.round,
+        });
 
         nextMoveOrderIds.forEach((combatantId) => {
-            const combatant = getState().battle!.enemySide.find((enemy) => enemy?.id === combatantId);
+            const combatant = getState().battle!.enemySide.find(
+                (enemy) => enemy?.id === combatantId,
+            );
             if (!combatant?.HP || !combatant.abilities?.length) {
                 return;
             }
@@ -267,7 +316,7 @@ export const onWaveStart = () => {
                             ability: combatant.abilities[useAbilityIndex],
                         },
                     },
-                })
+                }),
             );
         });
 
@@ -278,7 +327,11 @@ export const onWaveStart = () => {
 export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const playbackCollectorInstance = playbackCollector();
-        const context = { name: "End Turn", sourceChain: [], playbackCollector: playbackCollectorInstance };
+        const context = {
+            name: "End Turn",
+            sourceChain: [],
+            playbackCollector: playbackCollectorInstance,
+        };
 
         getState().battle![side].forEach((combatant: Combatant | null) => {
             if (combatant) {
@@ -287,7 +340,7 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onTurnEnd,
                         context,
-                    })
+                    }),
                 );
             }
         });
@@ -305,9 +358,12 @@ export const onEndTurnTriggers = (side: BATTLEFIELD_SIDES) => {
                     updateCombatant({
                         combatantId: combatant.id,
                         newProperties: {
-                            resources: Math.min(combatant.maxResources || BASE_MAX_RESOURCES, combatant.resources || 0),
+                            resources: Math.min(
+                                combatant.maxResources || BASE_MAX_RESOURCES,
+                                combatant.resources || 0,
+                            ),
                         },
-                    })
+                    }),
                 );
             }
         });
@@ -333,12 +389,16 @@ export const requeueRecentlyUsedAbility =
         if (!actorInfo.combatant.casting?.channelDuration) {
             const validAbilityIds = actor.abilities.map((a) => a.instanceId);
             // Exclude procs from being considered for requeuing
-            const history = actor.abilityHistory.filter((a) => "instanceId" in a && validAbilityIds.includes(a.instanceId));
+            const history = actor.abilityHistory.filter(
+                (a) => "instanceId" in a && validAbilityIds.includes(a.instanceId),
+            );
             const abilityUsed = history[history.length - 1];
             let abilityIndex = -1;
             if (abilityUsed) {
                 abilityIndex = actor.abilities.findIndex(
-                    (ability) => "instanceId" in abilityUsed && ability.instanceId === abilityUsed.instanceId
+                    (ability) =>
+                        "instanceId" in abilityUsed &&
+                        ability.instanceId === abilityUsed.instanceId,
                 );
             } else {
                 abilityIndex = getUseAbilityIndex(actorInfo);
@@ -355,7 +415,7 @@ export const requeueRecentlyUsedAbility =
                         newProperties: {
                             abilities: updatedAbilities,
                         },
-                    })
+                    }),
                 );
 
                 postUpdateActorInfo.combatant = {
@@ -373,7 +433,7 @@ export const requeueRecentlyUsedAbility =
                     newProperties: {
                         targeting: null,
                     },
-                })
+                }),
             );
         }
 
@@ -386,6 +446,6 @@ export const requeueRecentlyUsedAbility =
                         ability: ability!,
                     },
                 },
-            })
+            }),
         );
     };

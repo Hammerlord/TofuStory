@@ -22,8 +22,12 @@ const useStyles = createUseStyles({
 
 const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
     const { combatant } = combatantInfo || {};
-    const selectedAlly: string | null = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
-    const selectedAbility: string | null = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
+    const selectedAlly: string | null = useAppSelector(
+        (state) => (state.battle as BattleState).selectedAllyId,
+    );
+    const selectedAbility: string | null = useAppSelector(
+        (state) => (state.battle as BattleState).selectedHandAbilityId,
+    );
     if (!combatant) {
         return null;
     }
@@ -62,7 +66,7 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
 
             return acc;
         },
-        {} as { [effectName: string]: { count: number; effect: Effect } }
+        {} as { [effectName: string]: { count: number; effect: Effect } },
     );
 
     const inner = (
@@ -93,13 +97,18 @@ const Health = ({ combatantInfo }: { combatantInfo: CombatantInfo }) => {
                         <Icon
                             icon={CrossedSwordsIcon}
                             size="sm"
-                            text={damageModifierTotal < 0 ? `-${damageModifierTotal}` : `+${damageModifierTotal}`}
+                            text={
+                                damageModifierTotal < 0
+                                    ? `-${damageModifierTotal}`
+                                    : `+${damageModifierTotal}`
+                            }
                         />{" "}
                         from attacks. <br /> Modifiers:
                         {/** @ts-ignore */}
                         {Object.values(modifierMap).map(({ count, effect }) => (
                             <div key={[effect.name].join("-")}>
-                                <Icon icon={effect.icon} size="sm" /> {effect.name} {count < 0 ? "-" : "+"}
+                                <Icon icon={effect.icon} size="sm" /> {effect.name}{" "}
+                                {count < 0 ? "-" : "+"}
                                 {Math.ceil(count)}
                             </div>
                         ))}

@@ -35,7 +35,15 @@ export const Fury = forwardRef(({ text, className, size }: ResourceInterface, re
 });
 
 export const Mana = forwardRef(({ text, className, size }: ResourceInterface, ref) => {
-    return <Icon className={classNames(className)} icon={ManaImage} text={text} size={size} ref={ref} />;
+    return (
+        <Icon
+            className={classNames(className)}
+            icon={ManaImage}
+            text={text}
+            size={size}
+            ref={ref}
+        />
+    );
 });
 
 const useStaminaStyles = createUseStyles({
@@ -49,5 +57,13 @@ const useStaminaStyles = createUseStyles({
 export const Stamina = forwardRef(({ text, className, size }: ResourceInterface, ref) => {
     const classes = useStaminaStyles();
 
-    return <Icon className={classNames(classes.root, className)} icon={LeafImage} text={text} size={size} ref={ref} />;
+    return (
+        <Icon
+            className={classNames(classes.root, className)}
+            icon={LeafImage}
+            text={text}
+            size={size}
+            ref={ref}
+        />
+    );
 });

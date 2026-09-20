@@ -2,8 +2,20 @@ import classNames from "classnames";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
 import { olaf } from "../enemy/enemy";
-import { LithHarborBalconyFullImage, LithHarborCityBGImage, OlafImage, PuppetreeImage } from "../images";
-import { bigMesoItem, blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt } from "../item/items";
+import {
+    LithHarborBalconyFullImage,
+    LithHarborCityBGImage,
+    OlafImage,
+    PuppetreeImage,
+} from "../images";
+import {
+    bigMesoItem,
+    blueJeanShorts,
+    leatherSandals,
+    mesoItem,
+    redHeadband,
+    tShirt,
+} from "../item/items";
 import { EventScene, SceneEncounter } from "./types";
 
 const olafNPC = {
@@ -53,10 +65,19 @@ const Olaf = ({ player }) => {
     return (
         <div className={classes.root}>
             <img src={player.image} className={classNames(classes.player, classes.character)} />
-            <img src={PuppetreeImage} className={classNames(classes.puppetree1, classes.character)} />
+            <img
+                src={PuppetreeImage}
+                className={classNames(classes.puppetree1, classes.character)}
+            />
             <img src={OlafImage} className={classNames(classes.olaf, classes.character)} />
-            <img src={PuppetreeImage} className={classNames(classes.puppetree2, classes.character)} />
-            <img src={PuppetreeImage} className={classNames(classes.puppetree3, classes.character)} />
+            <img
+                src={PuppetreeImage}
+                className={classNames(classes.puppetree2, classes.character)}
+            />
+            <img
+                src={PuppetreeImage}
+                className={classNames(classes.puppetree3, classes.character)}
+            />
         </div>
     );
 };
@@ -66,7 +87,10 @@ const olafFight: SceneEncounter = {
     waves: [
         {
             enemies: [null, null, olaf, null, null],
-            description: ["You've encountered an elite opponent.", "Elites often have higher HP, damage, and extra abilities."],
+            description: [
+                "You've encountered an elite opponent.",
+                "Elites often have higher HP, damage, and extra abilities.",
+            ],
         },
     ],
     overrideItemChoices: Math.random() < 0.5 ? [redHeadband] : [leatherSandals],
@@ -80,7 +104,10 @@ const postFight = [
     },
     {
         speaker: olafNPC,
-        dialog: ["[Olaf looks dizzy.]", "(You feel like you should leave before you cause a scene...)"],
+        dialog: [
+            "[Olaf looks dizzy.]",
+            "(You feel like you should leave before you cause a scene...)",
+        ],
         responses: [{ text: "", isExit: true }],
     },
 ];
@@ -92,7 +119,10 @@ export const lithEventsOlaf: EventScene = {
             background: LithHarborCityBGImage,
             scene: Olaf,
             speaker: olafNPC,
-            dialog: ["Wha? Who destroyed all the training dummies!?", "They were supposed to last for the next batch of islanders!"],
+            dialog: [
+                "Wha? Who destroyed all the training dummies!?",
+                "They were supposed to last for the next batch of islanders!",
+            ],
         },
         {
             speaker: olafNPC,
@@ -135,7 +165,13 @@ export const lithEventsOlaf: EventScene = {
                                 "Well, I hate to pick on naive creatures who've taken the wrong turn, but I should take care of this before the next batch of greenhorns come around...",
                                 "[Olaf makes a menacing gesture with his arms.]",
                             ],
-                            responses: [{ text: "Prepare for Olaf's attack.", encounter: olafFight, next: postFight }],
+                            responses: [
+                                {
+                                    text: "Prepare for Olaf's attack.",
+                                    encounter: olafFight,
+                                    next: postFight,
+                                },
+                            ],
                         },
                     ],
                 },

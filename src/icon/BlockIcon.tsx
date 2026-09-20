@@ -64,7 +64,7 @@ const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
                 {
                     duration: HIT_PLAYBACK,
                     fill: "forwards",
-                }
+                },
             );
 
             return () => {
@@ -81,7 +81,13 @@ const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
     );
 };
 
-const BlockIcons = ({ statChanges, delay }: { statChanges?: UpdatedCombatantStats; delay: number }) => {
+const BlockIcons = ({
+    statChanges,
+    delay,
+}: {
+    statChanges?: UpdatedCombatantStats;
+    delay: number;
+}) => {
     const [hits, setHits] = useState<{ id: number; statChanges: UpdatedCombatantStats }[]>([]);
 
     const nextId = useRef(0);

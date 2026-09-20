@@ -5,7 +5,8 @@ import Icon from "../../icon/Icon";
 
 const useStyles = createUseStyles({
     root: {
-        background: "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.6) 70%, rgba(0,212,255,0) 100%)",
+        background:
+            "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.6) 70%, rgba(0,212,255,0) 100%)",
         width: "250px",
         padding: "8px 16px",
         paddingRight: "32px",
@@ -26,7 +27,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const WaveInfo = ({ waves, currentWaveIndex, round }: { waves: Wave[]; currentWaveIndex: number; round: number }) => {
+const WaveInfo = ({
+    waves,
+    currentWaveIndex,
+    round,
+}: {
+    waves: Wave[];
+    currentWaveIndex: number;
+    round: number;
+}) => {
     const wave = waves[currentWaveIndex];
 
     if (!wave) {
@@ -40,7 +49,8 @@ const WaveInfo = ({ waves, currentWaveIndex, round }: { waves: Wave[]; currentWa
     if (defeatBoss) {
         messageNode = (
             <div>
-                Defeat the <Icon icon={JapaneseOgreIcon} size="sm" /> <span className={classes.boss}>boss</span>
+                Defeat the <Icon icon={JapaneseOgreIcon} size="sm" />{" "}
+                <span className={classes.boss}>boss</span>
             </div>
         );
     } else if (surviveRounds) {

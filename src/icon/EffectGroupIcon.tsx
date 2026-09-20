@@ -180,7 +180,14 @@ const EffectGroupTooltipContent = ({
     disabled: boolean;
 }) => {
     const effect = useMemo(() => traverseForNestedPercentages(cloneDeep(effects[0])), [effects[0]]);
-    const { name, icon, description, duration = Infinity, canBeSilenced, class: effectClass } = effect;
+    const {
+        name,
+        icon,
+        description,
+        duration = Infinity,
+        canBeSilenced,
+        class: effectClass,
+    } = effect;
 
     const playerClass = (owner as Player)?.class;
     const elementMapping = useMemo(() => getIconInterpolationMap({ playerClass }), [playerClass]);
@@ -214,13 +221,20 @@ const EffectGroupTooltipContent = ({
                 {canBeSilenced && <div>◆ Can be silenced</div>}
                 {allSameDuration && duration !== Infinity && (
                     <span>
-                        <Icon icon={<HourglassIcon />} text={duration} /> turn{duration !== 1 ? "s" : ""} remaining
+                        <Icon icon={<HourglassIcon />} text={duration} /> turn
+                        {duration !== 1 ? "s" : ""} remaining
                     </span>
                 )}
                 {!allSameDuration && (
                     <span>
                         {effects.map((e, i) => (
-                            <Icon key={i} icon={<HourglassIcon />} text={isNaN(e.duration) || e.duration === Infinity ? "∞" : e.duration} />
+                            <Icon
+                                key={i}
+                                icon={<HourglassIcon />}
+                                text={
+                                    isNaN(e.duration) || e.duration === Infinity ? "∞" : e.duration
+                                }
+                            />
                         ))}{" "}
                         turn{duration !== 1 ? "s" : ""} remaining
                     </span>
@@ -266,7 +280,9 @@ const EffectGroupIcon = ({
     // A trigger source is an ability or effect that triggers this effect.
     // Since this effect group display is static and the ability/effect only happens on play,
     // don't display the effect icon as 'inactive' in that case.
-    const hasTriggerSourceConditions = conditions?.some((c) => c.calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE);
+    const hasTriggerSourceConditions = conditions?.some(
+        (c) => c.calculationTarget === CONDITION_TARGETS.TRIGGER_SOURCE,
+    );
     const isConditionsPassed =
         hasTriggerSourceConditions ||
         passesConditions({
@@ -308,7 +324,8 @@ const EffectGroupIcon = ({
     }
 
     const silenced = isSilenced && canBeSilenced && effectClass === EFFECT_CLASSES.BUFF; // Only buffs can be silenced
-    const disabled = silenced || !isConditionsPassed || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
+    const disabled =
+        silenced || !isConditionsPassed || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
 
     const { stackCount, displayStacks } = effects.reduce(
         (acc, effect: CombatEffect) => {
@@ -317,7 +334,7 @@ const EffectGroupIcon = ({
                 displayStacks: acc.displayStacks || effect.alwaysDisplayStacks,
             };
         },
-        { stackCount: 0, displayStacks: false }
+        { stackCount: 0, displayStacks: false },
     );
 
     if (!icon) {
@@ -350,10 +367,14 @@ const EffectGroupIcon = ({
                         </span>
                     )}
                     {(displayStacks || stackCount > 1) && (
-                        <span className={classNames(classes.iconText, classes.stacks)}>{stackCount}</span>
+                        <span className={classNames(classes.iconText, classes.stacks)}>
+                            {stackCount}
+                        </span>
                     )}
                     {effectClass === EFFECT_CLASSES.BUFF && <span className={classes.upCorner} />}
-                    {effectClass === EFFECT_CLASSES.DEBUFF && <span className={classes.downCorner} />}
+                    {effectClass === EFFECT_CLASSES.DEBUFF && (
+                        <span className={classes.downCorner} />
+                    )}
                 </>
             </span>
         </span>

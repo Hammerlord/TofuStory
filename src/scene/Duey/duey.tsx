@@ -1,7 +1,14 @@
 import { createUseStyles } from "react-jss";
 import { BlueMushroomForestImage, DueyImage, FrownyMaskImage } from "../../images";
 import classNames from "classnames";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, Effect, Minion, TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Effect,
+    Minion,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { BATTLE_TYPES } from "../../battle/types";
 import { blueSnail, redSnail, shroom } from "../../enemy/enemy";
 import { EventScene } from "../types";
@@ -148,7 +155,10 @@ const DueyIntroScene = ({ player }) => {
             <img src={shroom.image} className={classNames(classes.shroom1, classes.character)} />
             <img src={shroom.image} className={classNames(classes.shroom2, classes.character)} />
             <img src={shroom.image} className={classNames(classes.shroom3, classes.character)} />
-            <img src={blueSnail.image} className={classNames(classes.blueSnail, classes.character)} />
+            <img
+                src={blueSnail.image}
+                className={classNames(classes.blueSnail, classes.character)}
+            />
             <img src={redSnail.image} className={classNames(classes.redSnail, classes.character)} />
         </div>
     );
@@ -258,7 +268,10 @@ export const dueyIntroScene: EventScene = {
         },
         {
             speaker: shroom,
-            dialog: ["Come on already, guys! Easy pickings, get'em!", "I call dibs on the box BTW."],
+            dialog: [
+                "Come on already, guys! Easy pickings, get'em!",
+                "I call dibs on the box BTW.",
+            ],
         },
         {
             dialog: ["[The monsters approach Duey.]"],
@@ -276,7 +289,9 @@ export const dueyIntroScene: EventScene = {
                         },
                         {
                             speaker: shroom,
-                            dialog: ["We might look like noob monsters, but there's five of us and we'll beat you up!"],
+                            dialog: [
+                                "We might look like noob monsters, but there's five of us and we'll beat you up!",
+                            ],
                             responses: [{ text: "Prepare for an attack.", encounter: mobFight }],
                         },
                         {
@@ -315,7 +330,9 @@ export const dueyIntroScene: EventScene = {
                                             dialog: [
                                                 "Hmm, this is... a trading card? Doesn't look like a monster card. Is it a new game they came out with?",
                                             ],
-                                            responses: [{ text: "Uh, yeah... something like that." }],
+                                            responses: [
+                                                { text: "Uh, yeah... something like that." },
+                                            ],
                                         },
                                         {
                                             speaker: duey,
@@ -415,7 +432,9 @@ export const dueyIntroScene: EventScene = {
                         },
                         {
                             speaker: shroom,
-                            dialog: ["We might look like noob monsters, but there's five of us and we'll beat you up!"],
+                            dialog: [
+                                "We might look like noob monsters, but there's five of us and we'll beat you up!",
+                            ],
                             responses: [
                                 {
                                     text: "Prepare for an attack.",
@@ -423,7 +442,10 @@ export const dueyIntroScene: EventScene = {
                                     next: [
                                         {
                                             scene: DueyMuggedScene,
-                                            dialog: ["Inside Duey's box is...", "Just a letter. It reads:"],
+                                            dialog: [
+                                                "Inside Duey's box is...",
+                                                "Just a letter. It reads:",
+                                            ],
                                         },
                                         {
                                             dialog: [
@@ -451,7 +473,10 @@ export const dueyIntroScene: EventScene = {
                                             ],
                                         },
                                         {
-                                            dialog: ["May these words find you well.", "[The letter is unsigned.]"],
+                                            dialog: [
+                                                "May these words find you well.",
+                                                "[The letter is unsigned.]",
+                                            ],
                                             items: {
                                                 itemPool: [unsignedLetter],
                                             },

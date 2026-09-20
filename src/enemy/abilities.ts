@@ -7,8 +7,21 @@ import {
     IronHogHoofImage,
     MushroomOmokImage,
 } from "../images";
-import { CrossedSwordsIcon, DizzyIcon, JapaneseOgreIcon, ShieldIcon, ZzzIcon } from "../images/icons";
-import { Ability, ACTION_TYPES, ANIMATION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, TARGET_TYPES } from "./../ability/types";
+import {
+    CrossedSwordsIcon,
+    DizzyIcon,
+    JapaneseOgreIcon,
+    ShieldIcon,
+    ZzzIcon,
+} from "../images/icons";
+import {
+    Ability,
+    ACTION_TYPES,
+    ANIMATION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    TARGET_TYPES,
+} from "./../ability/types";
 import { dazedCurse } from "./curseCards";
 
 export const attack: Ability = {

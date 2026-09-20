@@ -162,7 +162,10 @@ const useStyles = createUseStyles({
     },
 });
 
-export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?: { ignoreDisabled: boolean }): Ability | null => {
+export const getNextTelegraphedAbility = (
+    combatantInfo: CombatantInfo,
+    options?: { ignoreDisabled: boolean },
+): Ability | null => {
     const { combatant } = combatantInfo || {};
     const { ability: castingAbility } = combatant?.casting || {};
     return castingAbility || combatant?.abilities?.[getUseAbilityIndex(combatantInfo, options)];
@@ -171,7 +174,13 @@ export const getNextTelegraphedAbility = (combatantInfo: CombatantInfo, options?
 /**
  * Tells the player what this combatant wants to do next.
  */
-const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; isEnemy: boolean }) => {
+const Telegraph = ({
+    combatantInfo,
+    isEnemy,
+}: {
+    combatantInfo: CombatantInfo;
+    isEnemy: boolean;
+}) => {
     const classes = useStyles();
     const playerSide = useAppSelector((state) => state.battle?.playerSide);
     const enemySide = useAppSelector((state) => state.battle?.enemySide);
@@ -211,7 +220,10 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
         imageNode = <ImageNode className={classes.abilityIcon} />;
     }
 
-    const interpolatedDescription = Handlebars.compile(description)({ caster: combatant.name || "", ...getIconInterpolationMap({}) });
+    const interpolatedDescription = Handlebars.compile(description)({
+        caster: combatant.name || "",
+        ...getIconInterpolationMap({}),
+    });
     const abilityHasYetToCast = typeof castingCastTime === "undefined" && castTime;
     const isTurnPrevented = isTurnActionPrevented(combatantInfo);
     const abilityType = (() => {
@@ -254,7 +266,9 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
                 {actionTargets.map((targeting, i) => {
                     const { index: targetIndex, side: targetSide } = targeting || {};
                     const targetCombatant = battle[targetSide]?.[targetIndex];
-                    const isSelfCast = ability.actions.some((action) => action.target === TARGET_TYPES.SELF);
+                    const isSelfCast = ability.actions.some(
+                        (action) => action.target === TARGET_TYPES.SELF,
+                    );
                     if (!targetCombatant || abilityHasYetToCast || isSelfCast) {
                         return null;
                     }
@@ -263,9 +277,14 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
                     const isIndexDisplayed = combatantCountMap[targetCombatant.name]?.length > 1;
                     const displayIndex = targetIndex + 1; // 1-based indices when displaying to player
                     return (
-                        <span className={classes.targetPortrait} key={[targetCombatant.image, i].join("-")}>
+                        <span
+                            className={classes.targetPortrait}
+                            key={[targetCombatant.image, i].join("-")}
+                        >
                             <Icon icon={targetCombatant.image} />
-                            {isIndexDisplayed && <span className={classes.targetCombatantIndex}>{displayIndex}</span>}
+                            {isIndexDisplayed && (
+                                <span className={classes.targetCombatantIndex}>{displayIndex}</span>
+                            )}
                         </span>
                     );
                 })}
@@ -283,24 +302,35 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
                         <div className={classes.container}>
                             <div className={classes.tooltipTitle}>
                                 <Icon icon={image} size="sm" /> {name}{" "}
-                                {isTurnPrevented && <span className={classes.disabled}>(Disabled)</span>}
+                                {isTurnPrevented && (
+                                    <span className={classes.disabled}>(Disabled)</span>
+                                )}
                             </div>
                             <div className={classes.subContainer}>
                                 {abilityType === "offense" && (
                                     <span>
-                                        <span className={classNames(classes.diamond, classes.offensive)} />
+                                        <span
+                                            className={classNames(
+                                                classes.diamond,
+                                                classes.offensive,
+                                            )}
+                                        />
                                         Offense
                                     </span>
                                 )}
                                 {abilityType === "summon" && (
                                     <span>
-                                        <span className={classNames(classes.diamond, classes.minion)} />
+                                        <span
+                                            className={classNames(classes.diamond, classes.minion)}
+                                        />
                                         Summon
                                     </span>
                                 )}
                                 {abilityType === "support" && (
                                     <span>
-                                        <span className={classNames(classes.diamond, classes.support)} />
+                                        <span
+                                            className={classNames(classes.diamond, classes.support)}
+                                        />
                                         Support
                                     </span>
                                 )}
@@ -325,7 +355,8 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
 
                             {abilityHasYetToCast && castTime > 0 && (
                                 <div className={classes.container}>
-                                    Activates after {castTime === 1 ? "next turn." : `${castTime} turns.`}
+                                    Activates after{" "}
+                                    {castTime === 1 ? "next turn." : `${castTime} turns.`}
                                 </div>
                             )}
                             {channelDuration > 1 && (
@@ -348,16 +379,24 @@ const Telegraph = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; i
                             {imageNode}
                         </span>
                         {!abilityHasYetToCast && resourceCost === combatant?.maxResources && (
-                            <Icon icon={<WarningIcon />} size={"sm"} className={classes.warningIcon} />
+                            <Icon
+                                icon={<WarningIcon />}
+                                size={"sm"}
+                                className={classes.warningIcon}
+                            />
                         )}
-                        {channelDuration > 0 && <span className={classes.channelDuration}>{channelDuration}</span>}
+                        {channelDuration > 0 && (
+                            <span className={classes.channelDuration}>{channelDuration}</span>
+                        )}
                         {abilityHasYetToCast && (
                             <span>
                                 <Icon icon={<HourglassIcon />} size="sm" />
                             </span>
                         )}
                         {getTargetElement()}
-                        {isTurnPrevented && <Icon icon={NoEntryIcon} size="sm" className={classes.cancelIcon} />}
+                        {isTurnPrevented && (
+                            <Icon icon={NoEntryIcon} size="sm" className={classes.cancelIcon} />
+                        )}
                     </span>
                 </div>
             </Tooltip>

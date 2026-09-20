@@ -11,7 +11,15 @@ const { updateBattle } = battleStateSlice?.actions || {};
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.
  */
 export const depleteAbilities =
-    ({ actorId, abilities = [], context }: { actorId: string; abilities: CombatAbility[]; context?: ActionContext }) =>
+    ({
+        actorId,
+        abilities = [],
+        context,
+    }: {
+        actorId: string;
+        abilities: CombatAbility[];
+        context?: ActionContext;
+    }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
         const { hand, depleted = [] } = getState().battle!;
         dispatch(
@@ -19,7 +27,7 @@ export const depleteAbilities =
                 newCards: abilities,
                 cardsAddedTo: CARD_PILE_TYPES.DEPLETED,
                 context,
-            })
+            }),
         );
 
         dispatch(
@@ -28,7 +36,7 @@ export const depleteAbilities =
                     return abilities.every((card) => card.instanceId !== ability.instanceId);
                 }),
                 depleted: [...depleted, ...abilities],
-            })
+            }),
         );
 
         abilities.forEach((card) => {
@@ -40,9 +48,12 @@ export const depleteAbilities =
                         triggerHistory: [],
                         ...context,
                         name: context?.name || "Deplete Ability",
-                        sourceChain: [...(context?.sourceChain || []), { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+                        sourceChain: [
+                            ...(context?.sourceChain || []),
+                            { source: card, type: TRIGGER_SOURCE_TYPES.ABILITY },
+                        ],
                     },
-                })
+                }),
             );
         });
     };

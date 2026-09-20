@@ -78,18 +78,41 @@ const useStyles = createUseStyles({
     },
 });
 
-const Pantry = ({ player, hideMaya, hideMiniBean }: { player: Player; hideMaya?: boolean; hideMiniBean?: boolean }) => {
+const Pantry = ({
+    player,
+    hideMaya,
+    hideMiniBean,
+}: {
+    player: Player;
+    hideMaya?: boolean;
+    hideMiniBean?: boolean;
+}) => {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <img src={player?.image} className={classNames(classes.player, classes.character)} />
-            {!hideMaya && <img src={MayaImage} className={classNames(classes.maya, classes.character)} />}
-            {!hideMiniBean && <img src={MiniBeanImage} className={classNames(classes.miniBean, classes.character)} />}
+            {!hideMaya && (
+                <img src={MayaImage} className={classNames(classes.maya, classes.character)} />
+            )}
+            {!hideMiniBean && (
+                <img
+                    src={MiniBeanImage}
+                    className={classNames(classes.miniBean, classes.character)}
+                />
+            )}
             <img src={BananaGrahamPieImage} className={classNames(classes.pie, classes.item)} />
-            <img src={CakeSliceImage} className={classNames(classes.cake, classes.item)} style={{ animationDelay: "0.1s" }} />
+            <img
+                src={CakeSliceImage}
+                className={classNames(classes.cake, classes.item)}
+                style={{ animationDelay: "0.1s" }}
+            />
             <img src={UnagiImage} className={classNames(classes.unagi, classes.item)} />
-            <img src={HotdogSupremeImage} className={classNames(classes.hotdog, classes.item)} style={{ animationDelay: "0.2s" }} />
+            <img
+                src={HotdogSupremeImage}
+                className={classNames(classes.hotdog, classes.item)}
+                style={{ animationDelay: "0.2s" }}
+            />
         </div>
     );
 };

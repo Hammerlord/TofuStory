@@ -72,7 +72,11 @@ export class Explosion {
         this.ctx.fillStyle = hsla(this.hue, this.brightness, this.alpha);
         this.ctx.moveTo(this.coordinates[lastIndex]![0], this.coordinates[lastIndex]![1]);
         this.ctx.lineTo(this.x, this.y);
-        this.ctx.strokeStyle = hsla(this.hue, this.flickering ? randomFloat(0, this.brightness) : this.brightness, this.alpha);
+        this.ctx.strokeStyle = hsla(
+            this.hue,
+            this.flickering ? randomFloat(0, this.brightness) : this.brightness,
+            this.alpha,
+        );
         this.ctx.stroke();
     }
 }

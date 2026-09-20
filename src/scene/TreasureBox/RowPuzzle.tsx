@@ -36,7 +36,8 @@ const RowPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
     // Eg. if you click on a index with value '3', it changes 3 tiles
     const [tilesChange] = useState(getRandomItem(tilesChangePossibilities));
     const [currentAnswer, setCurrentAnswer] = useState(() => {
-        const rollInit = () => Array.from({ length: 5 }).map(() => getRandomInt(0, tiles.length - 1));
+        const rollInit = () =>
+            Array.from({ length: 5 }).map(() => getRandomInt(0, tiles.length - 1));
         let initialState = rollInit();
         while (initialState.every((item) => item === initialState[0])) {
             initialState = rollInit();
@@ -53,7 +54,8 @@ const RowPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) => {
         const numChanged = tilesChange[i];
 
         const newAnswer = currentAnswer.slice();
-        const increment = (value: number) => (((value + 1) % tiles.length) + tiles.length) % tiles.length;
+        const increment = (value: number) =>
+            (((value + 1) % tiles.length) + tiles.length) % tiles.length;
         let count = 0;
         for (let j = 0; j < numChanged; ++j) {
             // Directionality only really matters for numChanged = 2; we want it to cover the numChanged = 1 tile or the puzzle is unsolveable

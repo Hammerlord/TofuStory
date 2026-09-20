@@ -66,7 +66,13 @@ const useStyles = createUseStyles({
 /**
  * Duration: how long this turn announcement will persist in milliseconds
  */
-const TurnAnnouncement = ({ isPlayerTurn, duration }: { isPlayerTurn: boolean; duration: number }) => {
+const TurnAnnouncement = ({
+    isPlayerTurn,
+    duration,
+}: {
+    isPlayerTurn: boolean;
+    duration: number;
+}) => {
     const classes = useStyles();
     const bannerRef: React.RefObject<HTMLDivElement> = useRef(null);
 
@@ -122,9 +128,16 @@ const TurnAnnouncement = ({ isPlayerTurn, duration }: { isPlayerTurn: boolean; d
                     })}
                 >
                     <hr />
-                    <span className={classNames(classes.diamond, { playerTurn: isPlayerTurn, enemyTurn: !isPlayerTurn })} />
+                    <span
+                        className={classNames(classes.diamond, {
+                            playerTurn: isPlayerTurn,
+                            enemyTurn: !isPlayerTurn,
+                        })}
+                    />
                 </div>
-                <span className={classes.playerTurnText}>{isPlayerTurn ? "Player Turn" : "Enemy Turn"}</span>
+                <span className={classes.playerTurnText}>
+                    {isPlayerTurn ? "Player Turn" : "Enemy Turn"}
+                </span>
                 <div
                     className={classNames(classes.divider, {
                         playerTurn: isPlayerTurn,
@@ -132,7 +145,12 @@ const TurnAnnouncement = ({ isPlayerTurn, duration }: { isPlayerTurn: boolean; d
                     })}
                 >
                     <hr />
-                    <span className={classNames(classes.diamond, { playerTurn: isPlayerTurn, enemyTurn: !isPlayerTurn })} />
+                    <span
+                        className={classNames(classes.diamond, {
+                            playerTurn: isPlayerTurn,
+                            enemyTurn: !isPlayerTurn,
+                        })}
+                    />
                 </div>
             </div>
         </div>

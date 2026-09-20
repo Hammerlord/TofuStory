@@ -42,13 +42,23 @@ const useStyles = createUseStyles({
     },
 });
 
-const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo; isEnemy: boolean }) => {
+const AttackPower = ({
+    combatantInfo,
+    isEnemy,
+}: {
+    combatantInfo: CombatantInfo;
+    isEnemy: boolean;
+}) => {
     const classes = useStyles();
     const { combatant } = combatantInfo || {};
 
     const { HP, effects = [], casting, targeting, cantMove } = combatant || {};
-    const selectedAlly: string | null | undefined = useAppSelector((state) => (state.battle as BattleState).selectedAllyId);
-    const selectedAbility: string | null | undefined = useAppSelector((state) => (state.battle as BattleState).selectedHandAbilityId);
+    const selectedAlly: string | null | undefined = useAppSelector(
+        (state) => (state.battle as BattleState).selectedAllyId,
+    );
+    const selectedAbility: string | null | undefined = useAppSelector(
+        (state) => (state.battle as BattleState).selectedHandAbilityId,
+    );
 
     if (!HP || cantMove) {
         return null;
@@ -66,7 +76,9 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
     const defaultActionStats = { damage: 0, timesToAttack: 0 };
     const { damage, timesToAttack } =
         abilityToUse?.actions.reduce((acc, action: Action) => {
-            const isAttack = action.type && [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
+            const isAttack =
+                action.type &&
+                [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type);
             let timesToAttack = acc.timesToAttack;
             if (isAttack) {
                 ++timesToAttack;
@@ -79,24 +91,34 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
             };
         }, defaultActionStats) || defaultActionStats;
 
-    const attackPowerEffects: Effect[] = getEnabledEffects({ combatantInfo }).filter(
-        ({ attackPower = 0, excludeEffectOwner, skillBonus }) => {
-            return !excludeEffectOwner && (attackPower !== 0 || skillBonus);
-        }
-    );
+    const attackPowerEffects: Effect[] = getEnabledEffects({
+        combatantInfo,
+    }).filter(({ attackPower = 0, excludeEffectOwner, skillBonus }) => {
+        return !excludeEffectOwner && (attackPower !== 0 || skillBonus);
+    });
     const totalAttackPower: number = attackPowerEffects.reduce(
         (acc: number, { attackPower = 0, skillBonus, multiplier: multiplierConfig, stacks }) => {
-            const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
+            const skillBonusDamage =
+                getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
             // Hand, deck and discard are NOT implemented in the actual damage calculation. Fix that before changing the display.
-            const multiplier = getMultiplier({ actor: combatantInfo, multiplier: multiplierConfig, hand: [], deck: [], discard: [] });
+            const multiplier = getMultiplier({
+                actor: combatantInfo,
+                multiplier: multiplierConfig,
+                hand: [],
+                deck: [],
+                discard: [],
+            });
             // TODO Is there a reason skillBonusDamage isn't affected by multiplier?
             return acc + (attackPower * multiplier + skillBonusDamage) * (stacks || 1);
         },
-        0
+        0,
     );
 
     const totalDamage = (() => {
-        const total = calculateDamageModifierCoeff({ totalDamageMod: totalAttackPower, damage: damage });
+        const total = calculateDamageModifierCoeff({
+            totalDamageMod: totalAttackPower,
+            damage: damage,
+        });
         if (total < 0) {
             return 0;
         }
@@ -105,7 +127,12 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
 
     const hasYetToCastAbility = !casting && abilityToUse?.castTime;
     const isMinionNotAttacking = !combatant.isPlayer && !timesToAttack;
-    if (!totalDamage || hasYetToCastAbility || isTurnActionPrevented(combatantInfo) || isMinionNotAttacking) {
+    if (
+        !totalDamage ||
+        hasYetToCastAbility ||
+        isTurnActionPrevented(combatantInfo) ||
+        isMinionNotAttacking
+    ) {
         return null;
     }
 
@@ -119,11 +146,13 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
                     [classes.bonus]: totalAttackPower > 0,
                     [classes.negative]: totalAttackPower < 0,
                     [classes.isCasting]: combatant.casting?.ability?.actions.some((action) =>
-                        [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type)
+                        [ACTION_TYPES.ATTACK, ACTION_TYPES.RANGE_ATTACK].includes(action.type),
                     ),
                 })}
             />
-            {timesToAttack > 1 && <span className={classes.timesToAttack}>{`x${timesToAttack}`}</span>}
+            {timesToAttack > 1 && (
+                <span className={classes.timesToAttack}>{`x${timesToAttack}`}</span>
+            )}
         </span>
     );
 
@@ -150,7 +179,8 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
                         };
                     }
 
-                    const skillBonusDamage = getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
+                    const skillBonusDamage =
+                        getSkillBonusDamage({ ability: abilityToUse, skillBonus }) || 0;
 
                     acc[name] = {
                         ...acc[name],
@@ -158,13 +188,14 @@ const AttackPower = ({ combatantInfo, isEnemy }: { combatantInfo: CombatantInfo;
                     };
 
                     return acc;
-                }, {})
+                }, {}),
             ).map(([name, value]) => {
                 const { icon, attackPower: damage } = value as any;
 
                 return (
                     <div key={name}>
-                        <Icon icon={icon} className={classes.icon} size="sm" /> {name} {damage < 0 ? "-" : "+"}
+                        <Icon icon={icon} className={classes.icon} size="sm" /> {name}{" "}
+                        {damage < 0 ? "-" : "+"}
                         {damage}
                     </div>
                 );

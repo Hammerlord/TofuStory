@@ -90,10 +90,12 @@ const PlayerResources = ({ player }: { player: Player }) => {
 
     const tooltipContents = (
         <div>
-            {player.resources} / {maxResources} {resourceElement} {resourceClassNameMap[player.class]} <br />
+            {player.resources} / {maxResources} {resourceElement}{" "}
+            {resourceClassNameMap[player.class]} <br />
             Restoring up to {player.resourcesPerTurn} {resourceElement} per turn.
             <hr />
-            {resourceElement} gained from effects can go over the cap, but the excess will be lost at turn end.
+            {resourceElement} gained from effects can go over the cap, but the excess will be lost
+            at turn end.
         </div>
     );
     return (
@@ -108,7 +110,11 @@ const PlayerResources = ({ player }: { player: Player }) => {
                         [classes.excess]: player.resources > maxResources,
                     })}
                 />
-                {player.resources > oldResources && <span className={classes.resourceGainText}>+{player.resources - oldResources}</span>}
+                {player.resources > oldResources && (
+                    <span className={classes.resourceGainText}>
+                        +{player.resources - oldResources}
+                    </span>
+                )}
                 <span className={classes.maxResources}>
                     /<span className={classes.bold}>{maxResources}</span>
                 </span>

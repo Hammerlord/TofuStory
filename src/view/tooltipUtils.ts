@@ -18,22 +18,41 @@ export const getCardsTooltipConfig = (obj: Ability | Action | any): { [name: str
         if (Array.isArray(obj)) {
             obj.forEach(findCardsToAdd);
         } else if (typeof obj === "object") {
-            const { addCards = [], addCardsToDiscard = [], addCardsToDeck = [], selectCards = {}, summon, ...other } = obj;
-            const cardsToDisplay = [...addCards, ...addCardsToDiscard, ...addCardsToDeck, ...(selectCards.cards || [])].filter(
-                (obj) => obj?.name // Sometimes the addCards object is being grabbed from upgrade properties and isn't a real card
+            const {
+                addCards = [],
+                addCardsToDiscard = [],
+                addCardsToDeck = [],
+                selectCards = {},
+                summon,
+                ...other
+            } = obj;
+            const cardsToDisplay = [
+                ...addCards,
+                ...addCardsToDiscard,
+                ...addCardsToDeck,
+                ...(selectCards.cards || []),
+            ].filter(
+                (obj) => obj?.name, // Sometimes the addCards object is being grabbed from upgrade properties and isn't a real card
             );
 
             if (summon) {
                 const summonCards = summon.reduce((acc, config: ActionSummon) => {
                     const { minion: baseMinions = [] } = config;
                     baseMinions.forEach((minion) => {
-                        const card = minionCardLookup[typeof minion === "string" ? minion : minion.name];
+                        const card =
+                            minionCardLookup[typeof minion === "string" ? minion : minion.name];
                         if (card) {
                             acc.push(card);
                         } else if (typeof minion === "object") {
                             // Display a "common card" version of the minion which is likely not as comprehensive as the card lookup
                             // But it's something.
-                            acc.push({ name: minion.name, description: minion.description, minion, actions: [], overrideBodyText: true });
+                            acc.push({
+                                name: minion.name,
+                                description: minion.description,
+                                minion,
+                                actions: [],
+                                overrideBodyText: true,
+                            });
                         }
                     });
 

@@ -2,7 +2,14 @@ import classNames from "classnames";
 import { BATTLE_TYPES } from "../battle/types";
 import { eventBandit, mimic, noobA } from "../enemy/enemy";
 import { GuardBanditImage, RockyRoad2Image, RockyRoadImage, TreasureChestImage } from "../images";
-import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, sword, tShirt } from "../item/items";
+import {
+    blueJeanShorts,
+    leatherSandals,
+    mesoItem,
+    redHeadband,
+    sword,
+    tShirt,
+} from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES, SceneEncounter } from "./types";
 import { createUseStyles } from "react-jss";
 import { SCENE_STYLES } from "./constants";
@@ -174,7 +181,9 @@ export const cursedChestScene: EventScene = {
                     text: "Try to open the cursed chest.",
                     next: [
                         {
-                            scene: (other) => <CursedTreasureBackdrop playerMoved={true} {...other} />,
+                            scene: (other) => (
+                                <CursedTreasureBackdrop playerMoved={true} {...other} />
+                            ),
                             dialog: ["..."],
                             treasureBox: {
                                 isOpen: false,
@@ -198,7 +207,9 @@ export const cursedChestScene: EventScene = {
                     text: "Wait and see what happens.",
                     next: [
                         {
-                            scene: (other) => <CursedTreasureBackdrop showBeginner={true} {...other} />,
+                            scene: (other) => (
+                                <CursedTreasureBackdrop showBeginner={true} {...other} />
+                            ),
                             speaker: noobA,
                             dialog: ["Cool, a treasure box!"],
                         },
@@ -207,9 +218,18 @@ export const cursedChestScene: EventScene = {
                             dialog: ["[The beginner eagerly runs toward the chest.]"],
                         },
                         {
-                            scene: (other) => <CursedTreasureBackdrop showBeginner={true} beginnerMoved={true} {...other} />,
+                            scene: (other) => (
+                                <CursedTreasureBackdrop
+                                    showBeginner={true}
+                                    beginnerMoved={true}
+                                    {...other}
+                                />
+                            ),
                             speaker: noobA,
-                            dialog: ["Come on, come on, give me Steelies!", "[The beginner fiddles with the lock...]"],
+                            dialog: [
+                                "Come on, come on, give me Steelies!",
+                                "[The beginner fiddles with the lock...]",
+                            ],
                         },
                         {
                             speaker: noobA,
@@ -225,7 +245,9 @@ export const cursedChestScene: EventScene = {
                                     next: [
                                         {
                                             speaker: treasureBox,
-                                            dialog: ["[In response to the beginner's meddling, the treasure box flashes purple.]"],
+                                            dialog: [
+                                                "[In response to the beginner's meddling, the treasure box flashes purple.]",
+                                            ],
                                         },
                                         {
                                             speaker: noobA,
@@ -248,12 +270,23 @@ export const cursedChestScene: EventScene = {
                                             dialog: ["[The treasure box sits there menacingly...]"],
                                         },
                                         {
-                                            scene: (other) => <CursedTreasureBackdrop showBandit={true} {...other} />,
+                                            scene: (other) => (
+                                                <CursedTreasureBackdrop
+                                                    showBandit={true}
+                                                    {...other}
+                                                />
+                                            ),
                                             speaker: eventBandit,
                                             dialog: ["Well, well, well, is it my turn now?"],
                                         },
                                         {
-                                            scene: (other) => <CursedTreasureBackdrop showBandit={true} banditMoved={true} {...other} />,
+                                            scene: (other) => (
+                                                <CursedTreasureBackdrop
+                                                    showBandit={true}
+                                                    banditMoved={true}
+                                                    {...other}
+                                                />
+                                            ),
                                             speaker: eventBandit,
                                             dialog: [
                                                 "Silly noobs should've been bandits. Nobody beats a bandit at treasure hunting. Let's see here...",
@@ -270,7 +303,9 @@ export const cursedChestScene: EventScene = {
                                                 />
                                             ),
                                             speaker: treasureBox,
-                                            dialog: ["[After a moment, the treasure box lock clicks and the sickly aura fades away.]"],
+                                            dialog: [
+                                                "[After a moment, the treasure box lock clicks and the sickly aura fades away.]",
+                                            ],
                                         },
                                         {
                                             speaker: eventBandit,
@@ -304,7 +339,9 @@ export const cursedChestScene: EventScene = {
                                                                 />
                                                             ),
                                                             speaker: eventBandit,
-                                                            dialog: ["[Without another word, the bandit's ghost vanishes.]"],
+                                                            dialog: [
+                                                                "[Without another word, the bandit's ghost vanishes.]",
+                                                            ],
                                                         },
                                                         {
                                                             dialog: ["[What's in the box?]"],
@@ -314,7 +351,9 @@ export const cursedChestScene: EventScene = {
                                                             },
                                                         },
                                                         {
-                                                            dialog: ["[That seems to be all there is.]"],
+                                                            dialog: [
+                                                                "[That seems to be all there is.]",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Time to go.",
@@ -336,13 +375,24 @@ export const cursedChestScene: EventScene = {
                                                             ],
                                                         },
                                                         {
-                                                            scene: (other) => <CursedTreasureBackdrop showChest={false} {...other} />,
+                                                            scene: (other) => (
+                                                                <CursedTreasureBackdrop
+                                                                    showChest={false}
+                                                                    {...other}
+                                                                />
+                                                            ),
                                                             speaker: eventBandit,
-                                                            dialog: ["[The bandit saunters away, whistling.]"],
+                                                            dialog: [
+                                                                "[The bandit saunters away, whistling.]",
+                                                            ],
                                                         },
                                                         {
                                                             scene: (other) => (
-                                                                <CursedTreasureBackdrop showChest={false} playerMoved={true} {...other} />
+                                                                <CursedTreasureBackdrop
+                                                                    showChest={false}
+                                                                    playerMoved={true}
+                                                                    {...other}
+                                                                />
                                                             ),
                                                             dialog: [
                                                                 "[With the bandit gone, you scope out the area. Something was left behind by one of the Mimic's victims...]",
@@ -360,7 +410,9 @@ export const cursedChestScene: EventScene = {
                                                             },
                                                         },
                                                         {
-                                                            dialog: ["[That seems to be all there is.]"],
+                                                            dialog: [
+                                                                "[That seems to be all there is.]",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Time to go.",
@@ -408,11 +460,20 @@ export const cursedChestScene: EventScene = {
                                                     encounter: mimicFight,
                                                     next: [
                                                         {
-                                                            scene: (other) => <CursedTreasureBackdrop playerMoved={true} {...other} />,
-                                                            dialog: ["[The Mimic defeated, you search the area for anything else useful.]"],
+                                                            scene: (other) => (
+                                                                <CursedTreasureBackdrop
+                                                                    playerMoved={true}
+                                                                    {...other}
+                                                                />
+                                                            ),
+                                                            dialog: [
+                                                                "[The Mimic defeated, you search the area for anything else useful.]",
+                                                            ],
                                                         },
                                                         {
-                                                            dialog: ["[Something was left behind by one of the Mimic's victims.]"],
+                                                            dialog: [
+                                                                "[Something was left behind by one of the Mimic's victims.]",
+                                                            ],
                                                             items: {
                                                                 itemPool: [
                                                                     leatherSandals,
@@ -440,7 +501,12 @@ export const cursedChestScene: EventScene = {
                                                     text: "[That looks dangerous. Maybe you can check for anything useful, and then get out of here.]",
                                                     next: [
                                                         {
-                                                            scene: (other) => <CursedTreasureBackdrop playerMoved={true} {...other} />,
+                                                            scene: (other) => (
+                                                                <CursedTreasureBackdrop
+                                                                    playerMoved={true}
+                                                                    {...other}
+                                                                />
+                                                            ),
                                                             dialog: [
                                                                 "[You search the area.",
                                                                 "Yes, something was left behind by one of the Mimic's victims.]",
@@ -461,7 +527,9 @@ export const cursedChestScene: EventScene = {
                                                             dialog: ["..."],
                                                         },
                                                         {
-                                                            dialog: ["[The treasure box continues to be motionless. Search again?]"],
+                                                            dialog: [
+                                                                "[The treasure box continues to be motionless. Search again?]",
+                                                            ],
                                                             responses: [
                                                                 {
                                                                     text: "Search the area.",
@@ -479,16 +547,19 @@ export const cursedChestScene: EventScene = {
                                                                                     ],
                                                                                     next: [
                                                                                         {
-                                                                                            speaker: treasureBox,
+                                                                                            speaker:
+                                                                                                treasureBox,
                                                                                             dialog: [
                                                                                                 "The Mimic comes alive and attacks you!",
                                                                                             ],
-                                                                                            responses: [
-                                                                                                {
-                                                                                                    text: "Defend yourself.",
-                                                                                                    encounter: mimicFight,
-                                                                                                },
-                                                                                            ],
+                                                                                            responses:
+                                                                                                [
+                                                                                                    {
+                                                                                                        text: "Defend yourself.",
+                                                                                                        encounter:
+                                                                                                            mimicFight,
+                                                                                                    },
+                                                                                                ],
                                                                                         },
                                                                                     ],
                                                                                 },
@@ -496,16 +567,19 @@ export const cursedChestScene: EventScene = {
                                                                                     conditions: [],
                                                                                     next: [
                                                                                         {
-                                                                                            dialog: ["[You find something.]"],
+                                                                                            dialog: [
+                                                                                                "[You find something.]",
+                                                                                            ],
                                                                                             items: {
-                                                                                                itemPool: [
-                                                                                                    leatherSandals,
-                                                                                                    tShirt,
-                                                                                                    sword,
-                                                                                                    redHeadband,
-                                                                                                    blueJeanShorts,
-                                                                                                    mesoItem,
-                                                                                                ],
+                                                                                                itemPool:
+                                                                                                    [
+                                                                                                        leatherSandals,
+                                                                                                        tShirt,
+                                                                                                        sword,
+                                                                                                        redHeadband,
+                                                                                                        blueJeanShorts,
+                                                                                                        mesoItem,
+                                                                                                    ],
                                                                                                 amount: 1,
                                                                                             },
                                                                                         },
@@ -513,12 +587,13 @@ export const cursedChestScene: EventScene = {
                                                                                             dialog: [
                                                                                                 "[That seems to be all there is. You escape the area safely.]",
                                                                                             ],
-                                                                                            responses: [
-                                                                                                {
-                                                                                                    text: "Leave.",
-                                                                                                    isExit: true,
-                                                                                                },
-                                                                                            ],
+                                                                                            responses:
+                                                                                                [
+                                                                                                    {
+                                                                                                        text: "Leave.",
+                                                                                                        isExit: true,
+                                                                                                    },
+                                                                                                ],
                                                                                         },
                                                                                     ],
                                                                                 },

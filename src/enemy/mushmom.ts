@@ -111,7 +111,13 @@ const callMushrooms: Ability = {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
             bypassPreventTurnAction: true,
-            summon: [{ minion: [mushroomMinion], placement: "adjacent", tributePossible: true }],
+            summon: [
+                {
+                    minion: [mushroomMinion],
+                    placement: "adjacent",
+                    tributePossible: true,
+                },
+            ],
         },
     ],
 };
@@ -121,7 +127,8 @@ const mushmomSpecials: Ability[] = [
         name: "Burrow",
         image: ShieldIcon,
         resourceCost: 3,
-        description: "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
+        description:
+            "Dispels debuffs. Gains {{ actions.0.armor }} Armor and heals while Armor holds.",
         actions: [
             {
                 type: ACTION_TYPES.EFFECT,

@@ -1,7 +1,13 @@
 import classNames from "classnames";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicatorImage, FlagImage, GrassPlatformImage, PersonalAnvilImage, TreasureChestImage } from "../images";
+import {
+    ClickIndicatorImage,
+    FlagImage,
+    GrassPlatformImage,
+    PersonalAnvilImage,
+    TreasureChestImage,
+} from "../images";
 import {
     CampingIcon,
     CrossedSwordsIcon,
@@ -84,7 +90,8 @@ const useStyles = createUseStyles({
 const NODE_ICON_SIZE = 24;
 const X_SIZE = 32;
 const NODE_MARGIN = 300; // Buffer for the "map size" so that elements/nodes don't get cut off
-const toPixel = (fraction: number = 0, size: number) => NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
+const toPixel = (fraction: number = 0, size: number) =>
+    NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
 
 const Map = ({
     onSelectNode,
@@ -143,7 +150,10 @@ const Map = ({
         if (!current) {
             return;
         }
-        const { width = 0, height = 0 } = container as { width: number; height: number };
+        const { width = 0, height = 0 } = container as {
+            width: number;
+            height: number;
+        };
         const x = toPixel(current.x, width);
         const y = toPixel(current.y, height);
 
@@ -160,7 +170,7 @@ const Map = ({
                     strokeDasharray="4 4"
                     strokeLinecap="round"
                     style={{ position: "absolute", zIndex: 1 }}
-                />
+                />,
             );
         }
 
@@ -170,7 +180,9 @@ const Map = ({
         visitedIds.add(current.id);
 
         const isPlayerPosition = playerLocationNode && current.id === playerLocationNode.id;
-        const isNext = playerLocationNode?.next?.some((node) => node.id === current.id) || (isPlayerPosition && !visited[current.id]);
+        const isNext =
+            playerLocationNode?.next?.some((node) => node.id === current.id) ||
+            (isPlayerPosition && !visited[current.id]);
         let handleClickNodeCallback;
         if (isNext) {
             handleClickNodeCallback = () => handleClickNode(current);
@@ -183,7 +195,13 @@ const Map = ({
             y: y - NODE_ICON_SIZE / 2,
         };
         const node = (
-            <g x={x - 8} y={y - 8} onClick={handleClickNodeCallback} className={classNames(classes.routeNode)} key={`${current.id}-node`}>
+            <g
+                x={x - 8}
+                y={y - 8}
+                onClick={handleClickNodeCallback}
+                className={classNames(classes.routeNode)}
+                key={`${current.id}-node`}
+            >
                 <circle cx={x} cy={y} r="24" fill={"rgba(50, 50, 50, 0.95)"} />
                 <g
                     className={classNames({
@@ -194,14 +212,22 @@ const Map = ({
                     {current.type === NODE_TYPES.ELITE_ENCOUNTER && <MedalIcon {...iconProps} />}
                     {current.type === NODE_TYPES.RESTING_ZONE && <CampingIcon {...iconProps} />}
                     {current.type === NODE_TYPES.SHOP && <MoneyBagIcon {...iconProps} />}
-                    {current.type === NODE_TYPES.TRADING_POST && <image {...iconProps} href={FlagImage} />}
-                    {current.type === NODE_TYPES.TRANSMUTE && <image {...iconProps} href={PersonalAnvilImage} />}
-                    {current.type === NODE_TYPES.TREASURE && <image {...iconProps} href={TreasureChestImage} />}
+                    {current.type === NODE_TYPES.TRADING_POST && (
+                        <image {...iconProps} href={FlagImage} />
+                    )}
+                    {current.type === NODE_TYPES.TRANSMUTE && (
+                        <image {...iconProps} href={PersonalAnvilImage} />
+                    )}
+                    {current.type === NODE_TYPES.TREASURE && (
+                        <image {...iconProps} href={TreasureChestImage} />
+                    )}
                     {current.type === NODE_TYPES.EVENT && <QuestionMarkIcon {...iconProps} />}
                     {current.type === NODE_TYPES.TOWN && <HouseIcon {...iconProps} />}
                     {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
                 </g>
-                {isPlayerPosition && <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />}
+                {isPlayerPosition && (
+                    <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />
+                )}
                 {visited[current.id] && !isPlayerPosition && (
                     <XIcon
                         {...{
@@ -212,7 +238,9 @@ const Map = ({
                         }}
                     />
                 )}
-                {isNext && !disableClick && <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />}
+                {isNext && !disableClick && (
+                    <image href={ClickIndicatorImage} {...iconProps} y={y - 75} />
+                )}
             </g>
         );
 
@@ -228,7 +256,7 @@ const Map = ({
                     width={size}
                     height={size}
                     style={{ position: "absolute", zIndex: 0 }}
-                />
+                />,
             );
         } else {
             const size = 54;
@@ -247,29 +275,53 @@ const Map = ({
                     width={size}
                     height={size}
                     style={{ position: "absolute", zIndex: 0 }}
-                />
+                />,
             );
         }
 
         routeNodes.push(node);
 
         if (current.next) {
-            current.next.forEach((node) => drawRouteNode({ prev: current, current: node, routeNodes, nodeBGs, lines, visitedIds }));
+            current.next.forEach((node) =>
+                drawRouteNode({
+                    prev: current,
+                    current: node,
+                    routeNodes,
+                    nodeBGs,
+                    lines,
+                    visitedIds,
+                }),
+            );
         }
     };
 
     const routeNodes: ReactElement[] = [];
     const lines: ReactElement[] = [];
     const nodeBGs: ReactElement[] = [];
-    drawRouteNode({ current: generatedRoute, routeNodes, nodeBGs: nodeBGs, lines, visitedIds: new Set() });
+    drawRouteNode({
+        current: generatedRoute,
+        routeNodes,
+        nodeBGs: nodeBGs,
+        lines,
+        visitedIds: new Set(),
+    });
 
-    const { width: mapWidth, height: mapHeight } = container as { width: number; height: number };
-    const screenCentre = { x: window.innerWidth / -2, y: window.innerHeight / -2 };
+    const { width: mapWidth, height: mapHeight } = container as {
+        width: number;
+        height: number;
+    };
+    const screenCentre = {
+        x: window.innerWidth / -2,
+        y: window.innerHeight / -2,
+    };
     const absoluteNodeLocation = {
         x: -toPixel(playerLocationNode?.x, mapWidth),
         y: -toPixel(playerLocationNode?.y, mapHeight),
     };
-    const panPosition = { x: absoluteNodeLocation.x - screenCentre.x, y: absoluteNodeLocation.y - screenCentre.y };
+    const panPosition = {
+        x: absoluteNodeLocation.x - screenCentre.x,
+        y: absoluteNodeLocation.y - screenCentre.y,
+    };
     const bgRegion: keyof typeof BG_MAP = playerLocationNode?.region || generatedRoute?.region;
     const isIntro = playerLocationNode?.routeId === toLith.id && !visited[playerLocationNode.id];
 
@@ -281,7 +333,10 @@ const Map = ({
                 <div className={classes.canvasLayer}>
                     <Pan userPosition={panPosition} isIntro={isIntro}>
                         <div className={classes.imageContainer} ref={containerRef}>
-                            <svg className={classes.routeContainer} onContextMenu={(e) => e.preventDefault()}>
+                            <svg
+                                className={classes.routeContainer}
+                                onContextMenu={(e) => e.preventDefault()}
+                            >
                                 {nodeBGs}
                                 {lines}
                                 {routeNodes}

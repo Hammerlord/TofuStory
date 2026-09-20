@@ -4,7 +4,11 @@ import type { Options } from "./options";
 export class Resize {
     private resizer: ResizeObserver | undefined;
 
-    constructor(private readonly options: Options, private readonly updateSize: () => void, private readonly container: Element) {}
+    constructor(
+        private readonly options: Options,
+        private readonly updateSize: () => void,
+        private readonly container: Element,
+    ) {}
 
     mount(): void {
         if (!this.resizer) {

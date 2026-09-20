@@ -15,10 +15,22 @@ import { AppDispatch, RootState } from "../../../store";
  * @param combatantId - Combatant UUID
  */
 export const handleDoTs =
-    ({ combatantIds, side, context }: { combatantIds: string[]; side: BATTLEFIELD_SIDES; context: ActionContext }) =>
+    ({
+        combatantIds,
+        side,
+        context,
+    }: {
+        combatantIds: string[];
+        side: BATTLEFIELD_SIDES;
+        context: ActionContext;
+    }) =>
     (dispatch: AppDispatch, getState: () => RootState) => {
         [EFFECT_TYPES.BLEED, EFFECT_TYPES.POISON, EFFECT_TYPES.BURN].map((dotType) => {
-            const updatedStats: { statUpdate: UpdatedCombatantStats; action: Action; actorId?: string }[] = [];
+            const updatedStats: {
+                statUpdate: UpdatedCombatantStats;
+                action: Action;
+                actorId?: string;
+            }[] = [];
 
             combatantIds.forEach((combatantId) => {
                 // Perform another lookup on combatant info as it may have changed between effect triggers
@@ -70,7 +82,7 @@ export const handleDoTs =
                     acc[statUpdate.combatantId] = statUpdate;
                     return acc;
                 },
-                {} as { [combatantId: string]: UpdatedCombatantStats }
+                {} as { [combatantId: string]: UpdatedCombatantStats },
             );
 
             dispatch(
@@ -82,7 +94,7 @@ export const handleDoTs =
                     actionParent: dotAbilityMap[dotType],
                     context: context,
                     playbackTime: NORMAL_ACTION_PLAYBACK_SPEED,
-                })
+                }),
             );
 
             dispatch(
@@ -102,8 +114,8 @@ export const handleDoTs =
                                 },
                             ],
                         },
-                    }))
-                )
+                    })),
+                ),
             );
         });
     };

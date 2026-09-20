@@ -7,7 +7,13 @@ import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
 import { getMultiplier } from "../../battle/getMultiplier";
 import { passesConditions } from "../../battle/passesConditions";
 import { BATTLE_STATES } from "../../battle/states";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../battle/types";
+import {
+    ActionContext,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+    TriggerSource,
+} from "../../battle/types";
 import { Combatant, Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
@@ -321,7 +327,7 @@ const AbilityView = forwardRef(
             highlightArmor,
             ...other
         }: AbilityViewProps,
-        ref
+        ref,
     ) => {
         const classes = useStyles();
         const character = useAppSelector((state) => state.character);
@@ -398,11 +404,18 @@ const AbilityView = forwardRef(
 
         const { baseDamage, hasConditionFulfilled: hasDamageConditionFulfilled } = damageStatistics;
 
-        const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId: player?.id };
+        const source: TriggerSource = {
+            type: TRIGGER_SOURCE_TYPES.ABILITY,
+            source: ability,
+            actorId: player?.id,
+        };
 
         const hasConditionFulfilled = useMemo(() => {
             return actions.some((action: Action) => {
-                const conditionProcs: { conditions?: Condition[]; conditionOperator?: "and" | "or" }[] = [];
+                const conditionProcs: {
+                    conditions?: Condition[];
+                    conditionOperator?: "and" | "or";
+                }[] = [];
                 const { conditions, bonus, secondaryAction } = action;
 
                 if (conditions) {
@@ -433,9 +446,15 @@ const AbilityView = forwardRef(
                     return;
                 }
 
-                const context: ActionContext = { name: "Ability View", sourceChain: [source] };
+                const context: ActionContext = {
+                    name: "Ability View",
+                    sourceChain: [source],
+                };
 
-                if (action.target === TARGET_TYPES.HOSTILE || action.target === TARGET_TYPES.RANDOM_HOSTILE) {
+                if (
+                    action.target === TARGET_TYPES.HOSTILE ||
+                    action.target === TARGET_TYPES.RANDOM_HOSTILE
+                ) {
                     return battle?.enemySide.some((combatant: Combatant | null) => {
                         return (
                             combatant &&
@@ -447,7 +466,7 @@ const AbilityView = forwardRef(
                                     proc,
                                     context,
                                     battle,
-                                })
+                                }),
                             )
                         );
                     });
@@ -455,16 +474,36 @@ const AbilityView = forwardRef(
 
                 return battle?.playerSide.some((combatant: Combatant | null) => {
                     return conditionProcs.some((proc) =>
-                        passesConditions({ actor: playerInfo, target: findCombatantData(battle, combatant?.id), proc, context, battle })
+                        passesConditions({
+                            actor: playerInfo,
+                            target: findCombatantData(battle, combatant?.id),
+                            proc,
+                            context,
+                            battle,
+                        }),
                     );
                 });
             });
         }, [ability, battle?.enemySide, battle?.playerSide]);
 
-        const armorStatistics = getArmorStatistics({ ability, playerInfo, deck, hand, discard });
-        const { base: armorTotal, hasConditionFulfilled: hasArmorConditionFulfilled } = armorStatistics;
-        const interpolatedDescription = interpolateAbilityDescription({ ability, playerInfo, deck, hand, discard });
-        const showDescription = getLastPlayedCards({ player, amount: addLastPlayedCards?.amount }).length === 0;
+        const armorStatistics = getArmorStatistics({
+            ability,
+            playerInfo,
+            deck,
+            hand,
+            discard,
+        });
+        const { base: armorTotal, hasConditionFulfilled: hasArmorConditionFulfilled } =
+            armorStatistics;
+        const interpolatedDescription = interpolateAbilityDescription({
+            ability,
+            playerInfo,
+            deck,
+            hand,
+            discard,
+        });
+        const showDescription =
+            getLastPlayedCards({ player, amount: addLastPlayedCards?.amount }).length === 0;
 
         let hasMultiplier = false;
         let armorCornerIcon = false;
@@ -475,7 +514,10 @@ const AbilityView = forwardRef(
             damage: selfDamage,
             resourceGain,
         } = actions
-            .filter((action: Action) => action.target === TARGET_TYPES.SELF || action.target === TARGET_TYPES.FRIENDLY)
+            .filter(
+                (action: Action) =>
+                    action.target === TARGET_TYPES.SELF || action.target === TARGET_TYPES.FRIENDLY,
+            )
             .reduce((acc: any, action: Action) => {
                 const { healing = 0, damage = 0, armor = 0, resources = 0 } = action;
                 const multiplier = getMultiplier({
@@ -501,12 +543,24 @@ const AbilityView = forwardRef(
         const cornerIcons = (() => {
             const icons = [];
             if (baseDamage !== undefined) {
-                icons.push(<DamageIcon damageStatistics={damageStatistics} key="damage" highlightText={highlightDamage} />);
+                icons.push(
+                    <DamageIcon
+                        damageStatistics={damageStatistics}
+                        key="damage"
+                        highlightText={highlightDamage}
+                    />,
+                );
             }
 
             if (armorTotal > 0) {
                 armorCornerIcon = true;
-                icons.push(<ArmorIcon armorStatistics={armorStatistics} key="armor" highlightText={highlightArmor} />);
+                icons.push(
+                    <ArmorIcon
+                        armorStatistics={armorStatistics}
+                        key="armor"
+                        highlightText={highlightArmor}
+                    />,
+                );
             }
 
             if (healing > 0) {
@@ -519,12 +573,14 @@ const AbilityView = forwardRef(
                             [classes.highlightText]: hasMultiplier,
                         })}
                         key="healing"
-                    />
+                    />,
                 );
             }
 
             if (showCritical) {
-                const CriticalIcon = <Icon icon={CriticalShotImage} highlightIcon size="sm" key="critical" />;
+                const CriticalIcon = (
+                    <Icon icon={CriticalShotImage} highlightIcon size="sm" key="critical" />
+                );
                 icons.push(CriticalIcon);
             } else {
                 icons.push(<div className={classes.iconPlaceholder} key="placeholder" />);
@@ -532,7 +588,8 @@ const AbilityView = forwardRef(
             return icons;
         })();
 
-        const hasBonus = hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
+        const hasBonus =
+            hasDamageConditionFulfilled || hasArmorConditionFulfilled || hasConditionFulfilled;
 
         let minionAttackDamage = 0;
         let minionHostileAction: Action | null = null;
@@ -540,7 +597,10 @@ const AbilityView = forwardRef(
 
         for (const ability of minionAbilities) {
             for (const action of ability.actions) {
-                if (action.target === TARGET_TYPES.RANDOM_HOSTILE || action.target === TARGET_TYPES.HOSTILE) {
+                if (
+                    action.target === TARGET_TYPES.RANDOM_HOSTILE ||
+                    action.target === TARGET_TYPES.HOSTILE
+                ) {
                     minionHostileAction = action;
                     minionAttackDamage = action.damage || 0;
                     break;
@@ -551,12 +611,18 @@ const AbilityView = forwardRef(
         const minionHostileEffect = (minionHostileAction?.effects || [])
             .map(lookupEffect)
             .find((e: Effect) => e.class === EFFECT_CLASSES.DEBUFF);
-        const minionDefensiveEffect = minionEffects.map(lookupEffect).find((e: Effect) => e.class === EFFECT_CLASSES.BUFF);
-        const taunt = minionEffects.map(lookupEffect).some((e: Effect) => e.type === EFFECT_TYPES.TAUNT);
+        const minionDefensiveEffect = minionEffects
+            .map(lookupEffect)
+            .find((e: Effect) => e.class === EFFECT_CLASSES.BUFF);
+        const taunt = minionEffects
+            .map(lookupEffect)
+            .some((e: Effect) => e.type === EFFECT_TYPES.TAUNT);
 
         const isAbilityUsable = canUsePlayerAbility(player, ability);
         const tributeSummon = minionOptions?.tributeSummon;
-        const isLocked = ((ability as CombatAbility).effects || []).some((effect) => effect.isLocked);
+        const isLocked = ((ability as CombatAbility).effects || []).some(
+            (effect) => effect.isLocked,
+        );
 
         const getTextHighlight = (total: number, expected: number) => {
             if (total < expected) {
@@ -570,14 +636,16 @@ const AbilityView = forwardRef(
 
         const inBattle = battle && battle.state !== BATTLE_STATES.VICTORY;
         const shouldGlow = isAbilityUsable && !disableGlow && !disableConditionGlow && inBattle;
-        const glowStacks: number = [hasBonus, ...effects.map((e: AbilityEffect) => e.highlightCard)].reduce(
-            (acc, cur: boolean | undefined) => {
-                const stacks = cur ? 1 : 0;
-                return acc + stacks;
-            },
-            0
-        );
-        const cannotBePlayed = inBattle && (isLocked || (unplayable && !effects.some((e: AbilityEffect) => e.bypassUnplayable)));
+        const glowStacks: number = [
+            hasBonus,
+            ...effects.map((e: AbilityEffect) => e.highlightCard),
+        ].reduce((acc, cur: boolean | undefined) => {
+            const stacks = cur ? 1 : 0;
+            return acc + stacks;
+        }, 0);
+        const cannotBePlayed =
+            inBattle &&
+            (isLocked || (unplayable && !effects.some((e: AbilityEffect) => e.bypassUnplayable)));
 
         return (
             <AbilityTooltip ability={ability}>
@@ -611,7 +679,10 @@ const AbilityView = forwardRef(
                             style={{ borderTop: `3px solid ${getAbilityColor(ability)}` }}
                         >
                             <span className={classes.header}>
-                                <Box sx={{ display: "flex", flexDirection: "column" }} component="span">
+                                <Box
+                                    sx={{ display: "flex", flexDirection: "column" }}
+                                    component="span"
+                                >
                                     {cornerIcons}
                                 </Box>
                                 <span
@@ -633,7 +704,9 @@ const AbilityView = forwardRef(
                             <div className={classes.body}>
                                 {(tributeSummon || taunt) && (
                                     <div>
-                                        {tributeSummon && <span className={classes.bold}>Tribute</span>}
+                                        {tributeSummon && (
+                                            <span className={classes.bold}>Tribute</span>
+                                        )}
                                         {taunt && <span className={classes.bold}> Taunt</span>}
                                     </div>
                                 )}
@@ -646,7 +719,8 @@ const AbilityView = forwardRef(
 
                                 {!healingCornerIcon && healing > 0 && (
                                     <div>
-                                        Heal for <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
+                                        Heal for{" "}
+                                        <Icon icon={<HeartIcon />} text={healing} size={"sm"} />
                                     </div>
                                 )}
                                 {!overrideBodyText && (
@@ -656,7 +730,12 @@ const AbilityView = forwardRef(
                                                 Hits up to +{numTargets} targets{" "}
                                                 {secondaryDamage && (
                                                     <>
-                                                        for <Icon icon={<CrossedSwordsIcon />} text={secondaryDamage} size="sm" />{" "}
+                                                        for{" "}
+                                                        <Icon
+                                                            icon={<CrossedSwordsIcon />}
+                                                            text={secondaryDamage}
+                                                            size="sm"
+                                                        />{" "}
                                                     </>
                                                 )}
                                             </div>
@@ -669,30 +748,49 @@ const AbilityView = forwardRef(
                                                     icon={<ShieldIcon />}
                                                     text={armorTotal}
                                                     size="sm"
-                                                    highlightText={getTextHighlight(armorTotal, armorStatistics.base)}
+                                                    highlightText={getTextHighlight(
+                                                        armorTotal,
+                                                        armorStatistics.base,
+                                                    )}
                                                 />
                                             </div>
                                         )}
 
                                         {resourceGain > 0 && (
                                             <div>
-                                                Gain <ResourceIcon text={resourceGain} size="sm" playerClass={player?.class} />
+                                                Gain{" "}
+                                                <ResourceIcon
+                                                    text={resourceGain}
+                                                    size="sm"
+                                                    playerClass={player?.class}
+                                                />
                                             </div>
                                         )}
 
                                         {selfDamage > 0 && (
                                             <div>
-                                                Self-inflict <Icon icon={<CrossedSwordsIcon />} text={selfDamage} size="sm" />
+                                                Self-inflict{" "}
+                                                <Icon
+                                                    icon={<CrossedSwordsIcon />}
+                                                    text={selfDamage}
+                                                    size="sm"
+                                                />
                                             </div>
                                         )}
 
                                         <CardsToAdd ability={ability} player={player} />
 
-                                        {destroyArmor > 0 && <div>Destroy {destroyArmor * 100}% armor</div>}
+                                        {destroyArmor > 0 && (
+                                            <div>Destroy {destroyArmor * 100}% armor</div>
+                                        )}
                                     </>
                                 )}
                                 {interpolatedDescription && showDescription && (
-                                    <div dangerouslySetInnerHTML={{ __html: interpolatedDescription }} />
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: interpolatedDescription,
+                                        }}
+                                    />
                                 )}
                             </div>
                             <div className={classes.footer}>
@@ -706,24 +804,49 @@ const AbilityView = forwardRef(
                                         battle={battle}
                                     />
                                 }
-                                <AbilityTypeView targetType={targetType} type={type} minion={minion} />
+                                <AbilityTypeView
+                                    targetType={targetType}
+                                    type={type}
+                                    minion={minion}
+                                />
                                 {minion && (
                                     <div className={classes.minionStats}>
                                         <span className={classes.minionHPContainer}>
                                             <Icon icon={<HeartIcon />} text={minion.maxHP} />
                                             <span className={classes.minionBuff}>
-                                                {(minion.armor || 0) > 0 && <Icon icon={ShieldIcon} size="sm" text={minion.armor} />}
-                                                {minionDefensiveEffect && <Icon icon={minionDefensiveEffect.icon} size="sm" />}
+                                                {(minion.armor || 0) > 0 && (
+                                                    <Icon
+                                                        icon={ShieldIcon}
+                                                        size="sm"
+                                                        text={minion.armor}
+                                                    />
+                                                )}
+                                                {minionDefensiveEffect && (
+                                                    <Icon
+                                                        icon={minionDefensiveEffect.icon}
+                                                        size="sm"
+                                                    />
+                                                )}
                                             </span>
                                         </span>
                                         <span className={classes.minionDamageContainer}>
-                                            <Icon icon={<CrossedSwordsIcon />} text={minionAttackDamage} />
+                                            <Icon
+                                                icon={<CrossedSwordsIcon />}
+                                                text={minionAttackDamage}
+                                            />
                                             {minionHostileEffect && (
-                                                <Icon icon={minionHostileEffect.icon} size="sm" className={classes.minionAbilityEffect} />
+                                                <Icon
+                                                    icon={minionHostileEffect.icon}
+                                                    size="sm"
+                                                    className={classes.minionAbilityEffect}
+                                                />
                                             )}
                                             {(minionHostileAction?.area || 0) > 0 && (
                                                 <span className={classes.minionAbilityArea}>
-                                                    <AreaIndicator {...minionHostileAction} size="sm" />
+                                                    <AreaIndicator
+                                                        {...minionHostileAction}
+                                                        size="sm"
+                                                    />
                                                 </span>
                                             )}
                                         </span>
@@ -741,7 +864,7 @@ const AbilityView = forwardRef(
                 </div>
             </AbilityTooltip>
         );
-    }
+    },
 );
 
 export default AbilityView;

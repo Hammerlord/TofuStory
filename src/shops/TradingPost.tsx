@@ -155,7 +155,7 @@ const TradingPostView = ({
         (item: Item) =>
             item.type === ITEM_TYPES.EQUIPMENT &&
             item.rarity !== RARITIES.STARTER &&
-            item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name
+            item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name,
     );
     // If the player acquired new equipment prior to a revisit, those equipments should not be in the inventory
     const alreadyObtained = player.items.reduce((acc, item: Item) => {
@@ -263,7 +263,11 @@ const TradingPostView = ({
 
     const offerElement = (item: Item, isPlayerItem: boolean) => {
         if (!item) {
-            return <div className={classes.itemPlaceholder}>{isPlayerItem ? "Your offer" : "Trading Post offer"}</div>;
+            return (
+                <div className={classes.itemPlaceholder}>
+                    {isPlayerItem ? "Your offer" : "Trading Post offer"}
+                </div>
+            );
         }
 
         const onClick = () => {
@@ -336,22 +340,33 @@ const TradingPostView = ({
                 <LeaveButton onClick={handleClickExit} />
             </div>
             <div className={classes.offerSection}>
-                <div className={classes.offerContainer}>{offerElement(selectedPlayerItem, true)}</div>
-                <div className={classes.offerContainer}>{offerElement(selectedVendorItem, false)}</div>
+                <div className={classes.offerContainer}>
+                    {offerElement(selectedPlayerItem, true)}
+                </div>
+                <div className={classes.offerContainer}>
+                    {offerElement(selectedVendorItem, false)}
+                </div>
                 {isSelectedUpgradedStarter && (
                     <div>
-                        {selectedVendorItem?.name} replaces {<Icon icon={starterItem.image} size="sm" />} {starterItem?.name}.
+                        {selectedVendorItem?.name} replaces{" "}
+                        {<Icon icon={starterItem.image} size="sm" />} {starterItem?.name}.
                     </div>
                 )}
             </div>
-            <span className={classes.tradesRemainingLabel}>Trades remaining: {tradesRemaining}</span>
+            <span className={classes.tradesRemainingLabel}>
+                Trades remaining: {tradesRemaining}
+            </span>
             {tradesRemaining > 0 && (
                 <span
                     className={classNames({
                         [classes.highlightAnimation]: selectedPlayerItem && selectedVendorItem,
                     })}
                 >
-                    <Button color="primary" disabled={!selectedPlayerItem || !selectedVendorItem} onClick={handleTrade}>
+                    <Button
+                        color="primary"
+                        disabled={!selectedPlayerItem || !selectedVendorItem}
+                        onClick={handleTrade}
+                    >
                         Trade
                     </Button>
                 </span>
@@ -371,7 +386,11 @@ const TradingPostView = ({
                                 })}
                                 key={item.name}
                             >
-                                <ItemView item={item} onClick={() => onClickPlayerItem(item)} playerClass={player.class} />
+                                <ItemView
+                                    item={item}
+                                    onClick={() => onClickPlayerItem(item)}
+                                    playerClass={player.class}
+                                />
                             </div>
                         ))}
                     </div>
@@ -393,7 +412,11 @@ const TradingPostView = ({
                                 })}
                                 key={item.name}
                             >
-                                <ItemView item={item} onClick={() => onClickVendorItem(item)} playerClass={player.class} />
+                                <ItemView
+                                    item={item}
+                                    onClick={() => onClickVendorItem(item)}
+                                    playerClass={player.class}
+                                />
                             </div>
                         ))}
                     </div>
@@ -422,9 +445,11 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
                     shopKey: "tradingPost",
                     shopState: {
                         numTradesRemaining: townTradingPost.numTradesRemaining - 1,
-                        items: townTradingPost.items.filter((p) => p.name !== selectedVendorItem.name),
+                        items: townTradingPost.items.filter(
+                            (p) => p.name !== selectedVendorItem.name,
+                        ),
                     },
-                })
+                }),
             );
         } else {
             setTradesRemaining((prev) => prev - 1);

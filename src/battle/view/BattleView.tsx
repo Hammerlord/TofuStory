@@ -22,7 +22,13 @@ import { Combatant, Player } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import Icon from "../../icon/Icon";
-import { ClearImage, ClickIndicatorImage, HasteImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
+import {
+    ClearImage,
+    ClickIndicatorImage,
+    HasteImage,
+    LithRegionBGImage,
+    MapleLeavesImage,
+} from "../../images";
 import Tooltip from "../../view/Tooltip";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { applyAbilityEventEffects } from "../actions/cardActions/utils";
@@ -35,7 +41,13 @@ import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
 import { useBattlePhase } from "../hooks/useBattlePhase";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
-import { BATTLEFIELD_SIDES, BattleState, CombatantInfo, EventGroup, PlayerSelectCardsPrompt } from "../types";
+import {
+    BATTLEFIELD_SIDES,
+    BattleState,
+    CombatantInfo,
+    EventGroup,
+    PlayerSelectCardsPrompt,
+} from "../types";
 import { canTargetIfStealthed, isUntargetable } from "../utils";
 import AnimationCanvas from "./AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
@@ -59,7 +71,8 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        backgroundImage: (props: { backgroundImage: string }) => `url(${props.backgroundImage || LithRegionBGImage})`,
+        backgroundImage: (props: { backgroundImage: string }) =>
+            `url(${props.backgroundImage || LithRegionBGImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         overflow: "hidden",
@@ -296,29 +309,51 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     } = battle;
     const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
 
-    const allyRefs: RefObject<HTMLDivElement | null>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
-    const enemyRefs: RefObject<HTMLDivElement | null>[] = Array.from({ length: BATTLEFIELD_SIZE }).map(() => useRef(null));
+    const allyRefs: RefObject<HTMLDivElement | null>[] = Array.from({
+        length: BATTLEFIELD_SIZE,
+    }).map(() => useRef(null));
+    const enemyRefs: RefObject<HTMLDivElement | null>[] = Array.from({
+        length: BATTLEFIELD_SIZE,
+    }).map(() => useRef(null));
     const handRef = useRef({});
     const battlefieldRef: RefObject<HTMLDivElement | null> = useRef(null);
     const deckRef: RefObject<HTMLDivElement | null> = useRef(null);
     const discardRef: RefObject<HTMLDivElement | null> = useRef(null);
     const depleteRef: RefObject<HTMLDivElement | null> = useRef(null);
 
-    const [hoveredCombatant, setHoveredCombatant] = useState<{ side: BATTLEFIELD_SIDES; index: number; id: string | null } | null>(null);
+    const [hoveredCombatant, setHoveredCombatant] = useState<{
+        side: BATTLEFIELD_SIDES;
+        index: number;
+        id: string | null;
+    } | null>(null);
     const classes = useStyles({ backgroundImage } as any);
 
-    const hand = useMemo(() => baseHand.map((ability) => getAbilityUpgradedFromEffects({ ability, combatant: player })), [baseHand]);
+    const hand = useMemo(
+        () =>
+            baseHand.map((ability) =>
+                getAbilityUpgradedFromEffects({ ability, combatant: player }),
+            ),
+        [baseHand],
+    );
 
-    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(() => getPlayerSpecialMovementEffects(player), [player]);
+    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(
+        () => getPlayerSpecialMovementEffects(player),
+        [player],
+    );
 
     const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
 
     const { isWinConditionTriggered, showWaveClear } = useBattlePhase({ onWin });
 
     const disableActions: boolean = Boolean(
-        !isPlayerTurn || battleState !== BATTLE_STATES.TURN_IN_PROGRESS || isWinConditionTriggered || selectCardsPrompt
+        !isPlayerTurn ||
+        battleState !== BATTLE_STATES.TURN_IN_PROGRESS ||
+        isWinConditionTriggered ||
+        selectCardsPrompt,
     );
-    const selectedMinion = playerSide.find((combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId);
+    const selectedMinion = playerSide.find(
+        (combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId,
+    );
 
     const selectedAbilityFromHand = getCardByInstanceId(hand, selectedHandAbilityId);
     const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
@@ -328,7 +363,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const currentEventGroup: EventGroup = eventGroups[0];
 
     const isEligibleToAttack = (ally: Combatant | null): boolean => {
-        if (!ally || ally.isPlayer || ally.HP === 0 || !ally.controllable || !ally.abilities?.length) {
+        if (
+            !ally ||
+            ally.isPlayer ||
+            ally.HP === 0 ||
+            !ally.controllable ||
+            !ally.abilities?.length
+        ) {
             return false;
         }
 
@@ -346,7 +387,10 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
         (!hand.length ||
-            hand.every((ability: CombatAbility) => !canUsePlayerAbility(player, getCardByInstanceId(hand, ability.instanceId))));
+            hand.every(
+                (ability: CombatAbility) =>
+                    !canUsePlayerAbility(player, getCardByInstanceId(hand, ability.instanceId)),
+            ));
 
     const warn = (text: string | ReactElement) => {
         dispatch(
@@ -354,15 +398,16 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 severity: "warning",
                 text,
                 id: uuid.v4(),
-            })
+            }),
         );
     };
 
     const warnNeedMoreResources = (card: CombatAbility) => {
         warn(
             <div>
-                Need more <ResourceIcon playerClass={player.class} /> {resourceClassNameMap[player.class]} to use {card.name}.
-            </div>
+                Need more <ResourceIcon playerClass={player.class} />{" "}
+                {resourceClassNameMap[player.class]} to use {card.name}.
+            </div>,
         );
     };
 
@@ -383,7 +428,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
 
         if (!allowMoveCardFromHandToDeck) {
-            const isUnplayable = ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
+            const isUnplayable =
+                ability.unplayable && !ability.effects?.some((e) => e.bypassUnplayable);
             if (isUnplayable || ability.effects?.some((e) => e.isLocked)) {
                 warn(battleWarnings.unplayable);
                 return;
@@ -405,7 +451,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
     };
 
-    const handleAbilityUse = async ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
+    const handleAbilityUse = async ({
+        selectedIndex,
+        side,
+    }: {
+        selectedIndex: number;
+        side: BATTLEFIELD_SIDES;
+    }) => {
         if (!selectedAbilityFromHand) {
             return;
         }
@@ -415,7 +467,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 selectedTargetIndex: selectedIndex,
                 selectedAbility: selectedAbilityFromHand,
                 selectedTargetSide: side,
-            })
+            }),
         );
     };
 
@@ -432,7 +484,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     action: selectCardsPrompt?.selectCards?.then,
                     context: { name: "Select Cards Prompt", sourceChain },
                     isAutoCast: selectCardsPrompt.isAutoCast,
-                })
+                }),
             );
         }
     };
@@ -446,7 +498,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         dispatch(selectAlly(null));
     };
 
-    const handleSelectCardsPrerequisite = ({ selectedIndex, side }: { selectedIndex: number; side: BATTLEFIELD_SIDES }) => {
+    const handleSelectCardsPrerequisite = ({
+        selectedIndex,
+        side,
+    }: {
+        selectedIndex: number;
+        side: BATTLEFIELD_SIDES;
+    }) => {
         const { type } = selectedAbilityFromHand?.selectCards || {};
 
         if (hand.length <= 1) {
@@ -460,7 +518,10 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         }
 
         // Wayfind does not require a discard to benefit from the +1 extra card draw, so don't show an empty overlay in that case
-        const skipOverlayTypes = [SELECT_CARD_TYPES.DISCARD_TO_DRAW, SELECT_CARD_TYPES.HAND_TO_TOP_DECK];
+        const skipOverlayTypes = [
+            SELECT_CARD_TYPES.DISCARD_TO_DRAW,
+            SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
+        ];
         if (type && skipOverlayTypes.includes(type) && hand.length === 1) {
             handleAbilityUse({ selectedIndex, side });
             return;
@@ -475,7 +536,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     selectedTargetSide: side,
                     selectedTargetIndex: selectedIndex,
                 },
-            } as PlayerSelectCardsPrompt)
+            } as PlayerSelectCardsPrompt),
         );
     };
 
@@ -497,20 +558,31 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         if (selectedAbilityFromHand) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, index)) {
                 if (selectedAbilityFromHand.selectCards) {
-                    handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
+                    handleSelectCardsPrerequisite({
+                        side: BATTLEFIELD_SIDES.ENEMY_SIDE,
+                        selectedIndex: index,
+                    });
                     return;
                 }
 
-                if (selectedAbilityFromHand.actions.some((action) => action.retrieveDepletedCards)) {
+                if (
+                    selectedAbilityFromHand.actions.some((action) => action.retrieveDepletedCards)
+                ) {
                     if (depleted.length === 0) {
                         warn(battleWarnings.minDepleted);
                         return;
                     }
                 }
 
-                handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
+                handleAbilityUse({
+                    selectedIndex: index,
+                    side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+                });
             } else {
-                if (selectedAbilityFromHand.unplayable || selectedAbilityFromHand.effects?.some((e) => e.isLocked)) {
+                if (
+                    selectedAbilityFromHand.unplayable ||
+                    selectedAbilityFromHand.effects?.some((e) => e.isLocked)
+                ) {
                     warn(battleWarnings.unplayable);
                 } else if (!canUsePlayerAbility(player, selectedAbilityFromHand)) {
                     warnNeedMoreResources(selectedAbilityFromHand);
@@ -531,7 +603,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         side: BATTLEFIELD_SIDES.PLAYER_SIDE,
                         actorId: selectedMinion?.id || player.id,
                         context: { name: "Minion movement", sourceChain: [] },
-                    })
+                    }),
                 );
             } else {
                 dispatch(selectAlly(null));
@@ -539,7 +611,10 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             return;
         }
 
-        if ((playerSide[index] && isEligibleToAttack(playerSide[index])) || (allowFriendlyMovement && playerSide[index])) {
+        if (
+            (playerSide[index] && isEligibleToAttack(playerSide[index])) ||
+            (allowFriendlyMovement && playerSide[index])
+        ) {
             dispatch(selectAlly(playerSide[index].id));
             e.stopPropagation(); // Prevent the click from going to the battlefield, which deselects abilities/allies
         }
@@ -560,8 +635,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             const tauntEnemies: CombatantInfo[] = enemySide
                 .filter((combatant): combatant is Combatant => Boolean(combatant?.HP))
                 .map((combatant) => findCombatantData(battle, combatant.id))
-                .filter((combatantInfo: CombatantInfo | undefined): combatantInfo is CombatantInfo =>
-                    hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT)
+                .filter(
+                    (combatantInfo: CombatantInfo | undefined): combatantInfo is CombatantInfo =>
+                        hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT),
                 );
 
             if (tauntEnemies.length === 0) {
@@ -587,11 +663,17 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         if (selectedAbilityFromHand) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 if (selectedAbilityFromHand.selectCards) {
-                    handleSelectCardsPrerequisite({ side: BATTLEFIELD_SIDES.ENEMY_SIDE, selectedIndex: index });
+                    handleSelectCardsPrerequisite({
+                        side: BATTLEFIELD_SIDES.ENEMY_SIDE,
+                        selectedIndex: index,
+                    });
                     return;
                 }
 
-                handleAbilityUse({ selectedIndex: index, side: BATTLEFIELD_SIDES.ENEMY_SIDE });
+                handleAbilityUse({
+                    selectedIndex: index,
+                    side: BATTLEFIELD_SIDES.ENEMY_SIDE,
+                });
             } else if (mustTargetTauntError(index)) {
                 warnTaunt();
                 e.stopPropagation(); // Don't deselect the ability if you get a taunt warning
@@ -647,7 +729,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             battle,
             actorId,
             player,
-        ]
+        ],
     );
 
     const origination = useMemo(() => {
@@ -655,15 +737,20 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             return null;
         }
 
-        const index = playerSide.findIndex((combatant: Combatant | null) => combatant && combatant.id === selectedAllyId);
+        const index = playerSide.findIndex(
+            (combatant: Combatant | null) => combatant && combatant.id === selectedAllyId,
+        );
         return allyRefs[index]?.current || handRef.current?.[selectedHandAbilityId];
     }, [disableActions, selectedAllyId, selectedHandAbilityId]);
 
     const showMovementAbility =
         allowFriendlyMovement &&
         selectedMinion &&
-        (hoveredCombatant?.side === BATTLEFIELD_SIDES.PLAYER_SIDE || !selectedMinion?.abilities?.length);
-    const targetLineColor = getAbilityColor(selectedAbilityFromHand || (showMovementAbility && movementAbility));
+        (hoveredCombatant?.side === BATTLEFIELD_SIDES.PLAYER_SIDE ||
+            !selectedMinion?.abilities?.length);
+    const targetLineColor = getAbilityColor(
+        selectedAbilityFromHand || (showMovementAbility && movementAbility),
+    );
 
     const handleClickDeck = () => {
         if (!selectedHandAbilityId || !allowMoveCardFromHandToDeck) {
@@ -674,17 +761,26 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
         const newHand = baseHand.slice();
         const newDeck = deck.slice();
-        const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === selectedHandAbilityId);
+        const cardIndex = newHand.findIndex(
+            ({ instanceId }) => instanceId === selectedHandAbilityId,
+        );
         const [card] = newHand.splice(cardIndex, 1);
         if (card) {
-            newDeck.unshift(applyAbilityEventEffects({ event: card.onLeaveHand, ability: card, battle, player }));
+            newDeck.unshift(
+                applyAbilityEventEffects({
+                    event: card.onLeaveHand,
+                    ability: card,
+                    battle,
+                    player,
+                }),
+            );
         }
 
         dispatch(
             updateBattle({
                 hand: newHand,
                 deck: newDeck,
-            })
+            }),
         );
 
         dispatch(
@@ -692,7 +788,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 combatantId: player.id,
                 effectEventKey: EFFECT_EVENT_KEYS.onMoveCardFromHandToDeck,
                 context: { name: "Move Card To Deck" },
-            })
+            }),
         );
     };
 
@@ -710,13 +806,20 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 battle,
                 shouldShowReticle,
             }),
-        [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player]
+        [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player],
     );
-    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } = abilityPreviewData;
+    const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } =
+        abilityPreviewData;
 
     const targetedByEnemyAbilities = useMemo(
-        () => getTargetedByEnemyAbilities({ battle, enemySide, round, previewAbilityCombatants }),
-        [enemySide, round, previewAbilityCombatants, JSON.stringify(abilityUsePreviews)]
+        () =>
+            getTargetedByEnemyAbilities({
+                battle,
+                enemySide,
+                round,
+                previewAbilityCombatants,
+            }),
+        [enemySide, round, previewAbilityCombatants, JSON.stringify(abilityUsePreviews)],
     );
 
     const animationCanvas = useMemo(
@@ -731,25 +834,30 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 depleteRef={depleteRef}
             />
         ),
-        [eventGroups[0]?.id]
+        [eventGroups[0]?.id],
     );
 
-    const handleCombatantMouseEnter = useCallback((side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
-        setHoveredCombatant({
-            side,
-            index: i,
-            id: combatant?.id || null,
-        });
-    }, []);
+    const handleCombatantMouseEnter = useCallback(
+        (side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
+            setHoveredCombatant({
+                side,
+                index: i,
+                id: combatant?.id || null,
+            });
+        },
+        [],
+    );
 
     const handleEnemyMouseEnter = useCallback(
-        (combatant: Combatant | null | undefined, i: number) => handleCombatantMouseEnter(BATTLEFIELD_SIDES.ENEMY_SIDE, combatant, i),
-        [handleCombatantMouseEnter]
+        (combatant: Combatant | null | undefined, i: number) =>
+            handleCombatantMouseEnter(BATTLEFIELD_SIDES.ENEMY_SIDE, combatant, i),
+        [handleCombatantMouseEnter],
     );
 
     const handleAllyMouseEnter = useCallback(
-        (combatant: Combatant | null | undefined, i: number) => handleCombatantMouseEnter(BATTLEFIELD_SIDES.PLAYER_SIDE, combatant, i),
-        [handleCombatantMouseEnter]
+        (combatant: Combatant | null | undefined, i: number) =>
+            handleCombatantMouseEnter(BATTLEFIELD_SIDES.PLAYER_SIDE, combatant, i),
+        [handleCombatantMouseEnter],
     );
 
     const handleCombatantMouseLeave = useCallback(() => {
@@ -761,14 +869,22 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             <div className={classes.root}>
                 {notification && (
                     <div className={classes.notificationContainer}>
-                        <Notification severity={notification.severity} onClick={() => dispatch(setNotification(null))} id={notification.id}>
+                        <Notification
+                            severity={notification.severity}
+                            onClick={() => dispatch(setNotification(null))}
+                            id={notification.id}
+                        >
                             {notification.text}
                         </Notification>
                     </div>
                 )}
                 {currentEventGroup?.name && (
                     <div className={classes.abilityNotificationContainer}>
-                        <AbilityNotification id={currentEventGroup.id} name={currentEventGroup.name} image={currentEventGroup.image} />
+                        <AbilityNotification
+                            id={currentEventGroup.id}
+                            name={currentEventGroup.name}
+                            image={currentEventGroup.image}
+                        />
                     </div>
                 )}
 
@@ -782,57 +898,83 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         dispatch(selectHandAbility(null));
                     }}
                 >
-                    <ParticleCanvas eventGroup={eventGroups[0]} allyRefs={allyRefs} enemyRefs={enemyRefs} />
+                    <ParticleCanvas
+                        eventGroup={eventGroups[0]}
+                        allyRefs={allyRefs}
+                        enemyRefs={enemyRefs}
+                    />
 
                     <div className={classes.battlefield} ref={battlefieldRef}>
                         <div className={classes.actionHistoryContainer}>
                             <ActionHistory />
                         </div>
                         <div className={classes.waves}>
-                            <WaveInfo waves={waves} currentWaveIndex={currentWaveIndex} round={round} />
+                            <WaveInfo
+                                waves={waves}
+                                currentWaveIndex={currentWaveIndex}
+                                round={round}
+                            />
                         </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
-                                {(eventGroups[0]?.enemySide || enemySide).map((enemy, i: number) => (
-                                    <CombatantView
-                                        combatant={enemy}
-                                        isEnemy={true}
-                                        onMouseDown={handleEnemyClick}
-                                        isSelected={false}
-                                        onMouseEnter={handleEnemyMouseEnter}
-                                        onMouseLeave={handleCombatantMouseLeave}
-                                        isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
-                                        key={`enemy-slot-${i}`}
-                                        currentEventGroup={currentEventGroup}
-                                        eventGroupQueue={eventGroups}
-                                        isHighlighted={false}
-                                        showReticle={shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
-                                        isHoveringCombatant={Boolean(hoveredCombatant)}
-                                        previewStatUpdate={enemy?.id ? abilityUsePreviews[enemy.id] : undefined}
-                                        previewTargetedBy={
-                                            (enemy?.id && targetedByEnemyAbilities[enemy.id]) ||
-                                            targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.ENEMY_SIDE)]
-                                        }
-                                        enemySideRefs={enemyRefs}
-                                        playerSideRefs={allyRefs}
-                                        selectedAbility={abilityToUse}
-                                        characterRef={enemyRefs[i]}
-                                        index={i}
-                                    />
-                                ))}
+                                {(eventGroups[0]?.enemySide || enemySide).map(
+                                    (enemy, i: number) => (
+                                        <CombatantView
+                                            combatant={enemy}
+                                            isEnemy={true}
+                                            onMouseDown={handleEnemyClick}
+                                            isSelected={false}
+                                            onMouseEnter={handleEnemyMouseEnter}
+                                            onMouseLeave={handleCombatantMouseLeave}
+                                            isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
+                                            key={`enemy-slot-${i}`}
+                                            currentEventGroup={currentEventGroup}
+                                            eventGroupQueue={eventGroups}
+                                            isHighlighted={false}
+                                            showReticle={shouldShowReticle(
+                                                BATTLEFIELD_SIDES.ENEMY_SIDE,
+                                                i,
+                                            )}
+                                            isHoveringCombatant={Boolean(hoveredCombatant)}
+                                            previewStatUpdate={
+                                                enemy?.id ? abilityUsePreviews[enemy.id] : undefined
+                                            }
+                                            previewTargetedBy={
+                                                (enemy?.id && targetedByEnemyAbilities[enemy.id]) ||
+                                                targetedByEnemyAbilities[
+                                                    getEmptyTileKey(i, BATTLEFIELD_SIDES.ENEMY_SIDE)
+                                                ]
+                                            }
+                                            enemySideRefs={enemyRefs}
+                                            playerSideRefs={allyRefs}
+                                            selectedAbility={abilityToUse}
+                                            characterRef={enemyRefs[i]}
+                                            index={i}
+                                        />
+                                    ),
+                                )}
                             </div>
                         </div>
                         <div className={classes.divider} />
                         <div className={classes.playerContainer}>
                             <div className={classes.leftContainer}>
                                 <div className={classes.cardsPlayedCounter}>
-                                    Cards played: {player.abilityHistory.filter((ability) => (ability as CombatAbility).instanceId).length}
+                                    Cards played:{" "}
+                                    {
+                                        player.abilityHistory.filter(
+                                            (ability) => (ability as CombatAbility).instanceId,
+                                        ).length
+                                    }
                                 </div>
                                 <div className={classes.deckContainer}>
                                     <Deck
-                                        viewDeckInOrder={player?.effects.some((effect: Effect) => effect.viewDeckInOrder)}
+                                        viewDeckInOrder={player?.effects.some(
+                                            (effect: Effect) => effect.viewDeckInOrder,
+                                        )}
                                         onMouseDown={handleClickDeck}
-                                        highlightDeck={Boolean(selectedHandAbilityId && allowMoveCardFromHandToDeck)}
+                                        highlightDeck={Boolean(
+                                            selectedHandAbilityId && allowMoveCardFromHandToDeck,
+                                        )}
                                         deckRef={deckRef}
                                     />
                                     {allowMoveCardFromHandToDeck && (
@@ -856,24 +998,46 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                 combatant={ally}
                                                 isEnemy={false}
                                                 onMouseDown={handleAllyClick}
-                                                isSelected={Boolean(selectedAllyId && selectedAllyId === ally?.id)}
+                                                isSelected={Boolean(
+                                                    selectedAllyId && selectedAllyId === ally?.id,
+                                                )}
                                                 onMouseEnter={handleAllyMouseEnter}
                                                 onMouseLeave={handleCombatantMouseLeave}
-                                                isTargeted={isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
+                                                isTargeted={isTargeted(
+                                                    BATTLEFIELD_SIDES.PLAYER_SIDE,
+                                                    i,
+                                                )}
                                                 isHoveringCombatant={Boolean(hoveredCombatant)}
                                                 key={`ally-slot-${i}`}
                                                 currentEventGroup={currentEventGroup}
                                                 eventGroupQueue={eventGroups}
-                                                isHighlighted={Boolean(isPlayerTurn && selectedAllyId === null && isEligibleToAttack(ally))}
-                                                showReticle={shouldShowReticle(BATTLEFIELD_SIDES.PLAYER_SIDE, i)}
+                                                isHighlighted={Boolean(
+                                                    isPlayerTurn &&
+                                                    selectedAllyId === null &&
+                                                    isEligibleToAttack(ally),
+                                                )}
+                                                showReticle={shouldShowReticle(
+                                                    BATTLEFIELD_SIDES.PLAYER_SIDE,
+                                                    i,
+                                                )}
                                                 selectedAbility={abilityToUse}
                                                 characterRef={allyRefs[i]}
-                                                previewStatUpdate={ally?.id ? abilityUsePreviews[ally.id] : undefined}
+                                                previewStatUpdate={
+                                                    ally?.id
+                                                        ? abilityUsePreviews[ally.id]
+                                                        : undefined
+                                                }
                                                 enemySideRefs={enemyRefs}
                                                 playerSideRefs={allyRefs}
                                                 previewTargetedBy={
-                                                    (ally?.id && targetedByEnemyAbilities[ally.id]) ||
-                                                    targetedByEnemyAbilities[getEmptyTileKey(i, BATTLEFIELD_SIDES.PLAYER_SIDE)]
+                                                    (ally?.id &&
+                                                        targetedByEnemyAbilities[ally.id]) ||
+                                                    targetedByEnemyAbilities[
+                                                        getEmptyTileKey(
+                                                            i,
+                                                            BATTLEFIELD_SIDES.PLAYER_SIDE,
+                                                        )
+                                                    ]
                                                 }
                                                 index={i}
                                             />
@@ -895,7 +1059,12 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                     }}
                                 />
                                 <div className={classes.discardContainer}>
-                                    <Discard discard={discard} depleted={depleted} discardRef={discardRef} depleteRef={depleteRef} />
+                                    <Discard
+                                        discard={discard}
+                                        depleted={depleted}
+                                        discardRef={discardRef}
+                                        depleteRef={depleteRef}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -918,9 +1087,20 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     />
                 </div>
                 {showWaveClear && (
-                    <ClearOverlay labelText={waves[currentWaveIndex + 1] ? `Next: Wave ${currentWaveIndex + 2}` : undefined} />
+                    <ClearOverlay
+                        labelText={
+                            waves[currentWaveIndex + 1]
+                                ? `Next: Wave ${currentWaveIndex + 2}`
+                                : undefined
+                        }
+                    />
                 )}
-                {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
+                {showTurnAnnouncement && (
+                    <TurnAnnouncement
+                        isPlayerTurn={isPlayerTurn}
+                        duration={TURN_ANNOUNCEMENT_TIME}
+                    />
+                )}
                 {selectCardsPrompt && !eventGroups.length && !isWinConditionTriggered && (
                     <SelectCardOverlay
                         player={player}

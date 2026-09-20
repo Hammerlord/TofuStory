@@ -32,7 +32,17 @@ import {
     ThunderBoltImage,
     UpMATTImage,
 } from "../images";
-import { defUp, ward, burn, poison, immunity, preventArmorDecay, hardy, attackPower, silence } from "./../ability/Effects";
+import {
+    defUp,
+    ward,
+    burn,
+    poison,
+    immunity,
+    preventArmorDecay,
+    hardy,
+    attackPower,
+    silence,
+} from "./../ability/Effects";
 import { attack } from "./abilities";
 import { lifeLink, temporaryResist } from "./effect";
 import { agonyCard } from "./undead";
@@ -103,7 +113,8 @@ export const lordBalrog: Minion = {
         {
             name: "Tombstone",
             image: ReturningRockImage,
-            description: "Blocks off a space on the player's side. If there is no space, destroys an existing summon.",
+            description:
+                "Blocks off a space on the player's side. If there is no space, destroys an existing summon.",
             actions: [
                 {
                     type: ACTION_TYPES.EFFECT,
@@ -195,7 +206,8 @@ export const lordBalrog: Minion = {
         {
             name: "Cloak of Darkness",
             image: ShieldIcon,
-            description: "Gain 200 Armor and dispel all debuffs. After 3 turns, will deal damage equal to Armor, up to 50.",
+            description:
+                "Gain 200 Armor and dispel all debuffs. After 3 turns, will deal damage equal to Armor, up to 50.",
             resourceCost: 3,
             actions: [
                 {
@@ -210,7 +222,8 @@ export const lordBalrog: Minion = {
                             type: EFFECT_TYPES.NONE,
                             class: EFFECT_CLASSES.BUFF,
                             icon: NightShadeExplosionImage,
-                            description: "When this effect ends, deals damage equal to Armor, up to 50.",
+                            description:
+                                "When this effect ends, deals damage equal to Armor, up to 50.",
                             preventTurnAction: true,
                             canBeSilenced: false,
                             resourcesPerTurn: -1,
@@ -265,7 +278,8 @@ export const lordBalrog: Minion = {
         {
             name: "Shatter",
             resourceCost: 3,
-            description: "Destroys all Tombstones. Each Tombstone explodes for 13 damage to characters on the same side.",
+            description:
+                "Destroys all Tombstones. Each Tombstone explodes for 13 damage to characters on the same side.",
             image: BoulderFragmentImage,
             actions: [
                 {
@@ -391,7 +405,8 @@ const lightInTheDark: Ability = {
 
 export const beaconCard: Ability = {
     name: "Beacon",
-    description: "Can be played on Tombstones. <br/> <b>Untargetable.</b> Dispels the effects of Wicked Power.",
+    description:
+        "Can be played on Tombstones. <br/> <b>Untargetable.</b> Dispels the effects of Wicked Power.",
     image: LampImage,
     resourceCost: 0,
     minion: {

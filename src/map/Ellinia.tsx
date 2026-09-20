@@ -16,7 +16,14 @@ import {
     ElliniaTreeHoleImage,
     MarrsForestPreviewImage,
 } from "../images";
-import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import {
+    CampingIcon,
+    JapaneseOgreIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+    ThoughtBubbleIcon,
+    WorldMapIcon,
+} from "../images/icons";
 import { arwenScene } from "../scene/Ellinia/arwenScene";
 import { grendelScene } from "../scene/Ellinia/grendelScene";
 import { secretGardenScene } from "../scene/Ellinia/secretGarden";
@@ -63,19 +70,26 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state.character);
+    const {
+        nodesVisited: visited = {},
+        townShops,
+        rolledBosses,
+    } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const { tradingPost } = townShops[TOWNS.ELLINIA] || {};
 
-    const numActivitiesComplete: number = Object.values(ELLINIA_PLACES).reduce((acc: number, val: string) => {
-        if (visited[val]) {
-            return acc + 1;
-        }
+    const numActivitiesComplete: number = Object.values(ELLINIA_PLACES).reduce(
+        (acc: number, val: string) => {
+            if (visited[val]) {
+                return acc + 1;
+            }
 
-        return acc;
-    }, 0) as number;
+            return acc;
+        },
+        0,
+    ) as number;
     const canLeaveTown = numActivitiesComplete >= 4;
 
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
@@ -139,7 +153,12 @@ const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             onClick={handleClickTradingPost}
                             isVisited={tradingPost.numTradesRemaining === 0}
                         />
-                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={ElliniaShopImage} onClick={handleClickShop} />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            label={"Shop"}
+                            nodeImage={ElliniaShopImage}
+                            onClick={handleClickShop}
+                        />
                         <br />
 
                         <TownNode
@@ -151,7 +170,11 @@ const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                         />
 
                         <div className={classNames(classes.townCenter)}>
-                            <img src={ElliniaCenterImage} alt="Ellinia Center" className={classes.townCenterImage} />
+                            <img
+                                src={ElliniaCenterImage}
+                                alt="Ellinia Center"
+                                className={classes.townCenterImage}
+                            />
                             <div className={classes.townHeader}>
                                 <h2>Ellinia</h2>
                             </div>
@@ -185,7 +208,12 @@ const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                                 isLocked={!visited[ELLINIA_PLACES.CAMPAIGN]}
                                 label={"Secret Garden"}
                                 nodeImage={MarrsForestPreviewImage}
-                                onClick={() => handleClickEvent(ELLINIA_PLACES.SECRET_GARDEN, secretGardenScene)}
+                                onClick={() =>
+                                    handleClickEvent(
+                                        ELLINIA_PLACES.SECRET_GARDEN,
+                                        secretGardenScene,
+                                    )
+                                }
                             />
                         ) : (
                             <TownNode
@@ -202,13 +230,17 @@ const Ellinia = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             isVisited={visited[ELLINIA_PLACES.CRYSTAL_CAVE]}
                             label={"Crystal Cave"}
                             nodeImage={ElliniaTreeHoleImage}
-                            onClick={() => handleClickEvent(ELLINIA_PLACES.CRYSTAL_CAVE, crystalScene)}
+                            onClick={() =>
+                                handleClickEvent(ELLINIA_PLACES.CRYSTAL_CAVE, crystalScene)
+                            }
                         />
                     </div>
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.ELLINIA} />}
-                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.ELLINIA} />}
+                {isTradingPostOpen && (
+                    <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.ELLINIA} />
+                )}
             </div>
         </div>
     );

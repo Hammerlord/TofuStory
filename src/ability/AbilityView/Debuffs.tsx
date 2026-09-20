@@ -1,7 +1,15 @@
 import { ReactElement } from "react";
 import Icon from "../../icon/Icon";
 import { NimbleJewelCImage } from "../../images";
-import { BloodIcon, CrossedSwordsIcon, DizzyIcon, FireIcon, HourglassIcon, SnowflakeIcon, SpeechBubbleIcon } from "../../images/icons";
+import {
+    BloodIcon,
+    CrossedSwordsIcon,
+    DizzyIcon,
+    FireIcon,
+    HourglassIcon,
+    SnowflakeIcon,
+    SpeechBubbleIcon,
+} from "../../images/icons";
 import { Effect, EFFECT_CLASSES, EFFECT_TYPES } from "../types";
 
 export const getDebuffIcon = (type: EFFECT_TYPES): ReactElement | undefined => {
@@ -38,7 +46,11 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
                         {/** Chill's attack power decrease is explained in a tooltip */}
                         {attackPower && type !== EFFECT_TYPES.CHILL && (
                             <>
-                                <Icon icon={<CrossedSwordsIcon />} size={"sm"} text={`${attackPower > 0 ? "+" : ""}${attackPower}`} />{" "}
+                                <Icon
+                                    icon={<CrossedSwordsIcon />}
+                                    size={"sm"}
+                                    text={`${attackPower > 0 ? "+" : ""}${attackPower}`}
+                                />{" "}
                                 ATT{" "}
                             </>
                         )}
@@ -53,7 +65,9 @@ const Debuffs = ({ effects }: { effects: Effect[] }) => {
                                 damage received from attacks
                             </>
                         )}
-                        {duration && duration !== Infinity && <Icon icon={<HourglassIcon />} size={"sm"} text={duration} />}
+                        {duration && duration !== Infinity && (
+                            <Icon icon={<HourglassIcon />} size={"sm"} text={duration} />
+                        )}
                     </span>
                 );
             })}

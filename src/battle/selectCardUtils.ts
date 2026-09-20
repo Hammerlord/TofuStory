@@ -31,7 +31,9 @@ const getCardSelection = ({
     numOptions?: number;
 }): CombatAbility[] => {
     const { effects = [], type, filters } = selectCards || {};
-    const removeParentCardAfterTurn = effects.some((e: AbilityEffect) => e.removeParentCardAfterTurn); // Can't this stay as a part of `effects` and get read there?
+    const removeParentCardAfterTurn = effects.some(
+        (e: AbilityEffect) => e.removeParentCardAfterTurn,
+    ); // Can't this stay as a part of `effects` and get read there?
 
     const createNewOption = (ability: Ability | CombatAbility): CombatAbility => {
         return createCombatAbility({
@@ -44,7 +46,9 @@ const getCardSelection = ({
     const applyFilters = (cards: CombatAbility[] | Ability[]) => {
         // If we are prompting card selection as a prerequisite to using an ability, don't include that ability as an option
         if (selectedAbilityId) {
-            cards = cards.filter((card) => (card as CombatAbility).instanceId !== selectedAbilityId);
+            cards = cards.filter(
+                (card) => (card as CombatAbility).instanceId !== selectedAbilityId,
+            );
         }
         if (filters?.length) {
             return cards.filter((card) => cardPassesFilterCondition(card, filters));
@@ -72,18 +76,27 @@ const getCardSelection = ({
     }
 
     if (type === SELECT_CARD_TYPES.HAND_TO_TOP_DECK) {
-        return applyFilters(hand).map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
+        return applyFilters(hand).map((card) => ({
+            ...card,
+            effects: [...(card.effects || []), ...effects],
+        }));
     }
 
     if (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW) {
-        return applyFilters(hand).map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }));
+        return applyFilters(hand).map((card) => ({
+            ...card,
+            effects: [...(card.effects || []), ...effects],
+        }));
     }
 
     if (type === SELECT_CARD_TYPES.SEARCH_DECK) {
         let deckResult = shuffle(
             applyFilters(deck)
                 .slice(0, numOptions)
-                .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }))
+                .map((card) => ({
+                    ...card,
+                    effects: [...(card.effects || []), ...effects],
+                })),
         );
 
         if (deckResult.length < numOptions) {
@@ -91,8 +104,11 @@ const getCardSelection = ({
                 shuffle(
                     applyFilters(discard)
                         .slice(0, numOptions - deckResult.length)
-                        .map((card) => ({ ...card, effects: [...(card.effects || []), ...effects] }))
-                )
+                        .map((card) => ({
+                            ...card,
+                            effects: [...(card.effects || []), ...effects],
+                        })),
+                ),
             );
         }
 
@@ -102,7 +118,10 @@ const getCardSelection = ({
     return [];
 };
 
-export const cardPassesFilterCondition = (card: Ability | CombatAbility, filters?: CardFilterCondition[]) => {
+export const cardPassesFilterCondition = (
+    card: Ability | CombatAbility,
+    filters?: CardFilterCondition[],
+) => {
     if (!filters?.length) {
         return true;
     }
@@ -141,7 +160,11 @@ export const cardPassesFilterCondition = (card: Ability | CombatAbility, filters
 
         if (property !== undefined) {
             const propertyVal = _.get(card, property);
-            return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+            return passesValueComparison({
+                val: propertyVal,
+                otherVal: value,
+                comparator,
+            });
         }
 
         return true;

@@ -37,7 +37,12 @@ const UpgradedCardsView = ({
         const elements: HTMLElement[] = Object.values(cardRefs.current);
         setTimeout(() => {
             const playbackTime = 1000;
-            playExplodeAnimation({ object: elements, maxScale: 1, playbackTime, delay: 0 });
+            playExplodeAnimation({
+                object: elements,
+                maxScale: 1,
+                playbackTime,
+                delay: 0,
+            });
             setTimeout(() => {
                 setIsAnimationFinished(true);
             }, playbackTime / 2);

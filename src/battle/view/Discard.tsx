@@ -159,10 +159,23 @@ const Discard = ({
                         <svg viewBox="0 0 100 100" className={classes.svg}>
                             {Array.from({ length: discardSize }).map((_, i) => {
                                 return (
-                                    <svg key={[getCardColor(i), i].join("-")} y={i * -2 + 75} viewBox="0 0 100 100">
-                                        <path fill={getCardColor(i)} d="M 50 0 100 25 50 50 0 25 Z" />
+                                    <svg
+                                        key={[getCardColor(i), i].join("-")}
+                                        y={i * -2 + 75}
+                                        viewBox="0 0 100 100"
+                                    >
+                                        <path
+                                            fill={getCardColor(i)}
+                                            d="M 50 0 100 25 50 50 0 25 Z"
+                                        />
                                         {i === discardSize - 1 && (
-                                            <text fill="rgba(255, 255, 255, 0.8)" x="50" fontSize="26px" y="35" textAnchor="middle">
+                                            <text
+                                                fill="rgba(255, 255, 255, 0.8)"
+                                                x="50"
+                                                fontSize="26px"
+                                                y="35"
+                                                textAnchor="middle"
+                                            >
                                                 {discardSize}
                                             </text>
                                         )}

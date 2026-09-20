@@ -98,26 +98,43 @@ const WeaponSkins = ({
 
     return (
         <div className={classes.root} ref={menuAnchor}>
-            <button onClick={() => setWeaponSkinInventoryOpen((prev) => !prev)} className={classes.menuToggle}>
+            <button
+                onClick={() => setWeaponSkinInventoryOpen((prev) => !prev)}
+                className={classes.menuToggle}
+            >
                 <img src={player.weapon} alt="Currently equipped" />
             </button>
             {weaponSkinInventoryOpen && (
-                <Popper anchorEl={menuAnchor.current} open={true} placement={"bottom-start"} className={classes.menu} disablePortal={true}>
+                <Popper
+                    anchorEl={menuAnchor.current}
+                    open={true}
+                    placement={"bottom-start"}
+                    className={classes.menu}
+                    disablePortal={true}
+                >
                     <ClickAwayListener onClickAway={handleClose}>
                         <div className={classes.menuInner}>
                             <div className={classes.header}>Weapon Skins</div>
                             <div className={classes.skinsContainer}>
-                                {(player.weaponSkins || []).map(({ name, image, weaponImageOptions, projectileOverride }) => (
-                                    <button
-                                        onClick={() => onSelectWeaponSkin({ weaponSkin: image, weaponImageOptions, projectileOverride })}
-                                        key={name}
-                                        className={classNames(classes.item, {
-                                            [classes.selectedItem]: image === player.weapon,
-                                        })}
-                                    >
-                                        <img src={image} alt={name} title={name} />
-                                    </button>
-                                ))}
+                                {(player.weaponSkins || []).map(
+                                    ({ name, image, weaponImageOptions, projectileOverride }) => (
+                                        <button
+                                            onClick={() =>
+                                                onSelectWeaponSkin({
+                                                    weaponSkin: image,
+                                                    weaponImageOptions,
+                                                    projectileOverride,
+                                                })
+                                            }
+                                            key={name}
+                                            className={classNames(classes.item, {
+                                                [classes.selectedItem]: image === player.weapon,
+                                            })}
+                                        >
+                                            <img src={image} alt={name} title={name} />
+                                        </button>
+                                    ),
+                                )}
                             </div>
                         </div>
                     </ClickAwayListener>

@@ -16,7 +16,8 @@ const useStyles = createUseStyles({
         transformOrigin: "150% 150%",
         pointerEvents: "none",
         "& img": {
-            transform: (options: WeaponImageOptions) => options?.transform || "scale(4, 4) rotate(90deg)",
+            transform: (options: WeaponImageOptions) =>
+                options?.transform || "scale(4, 4) rotate(90deg)",
             imageRendering: "pixelated",
         },
     },
@@ -181,7 +182,8 @@ const Weapon = ({
     const weaponAnimationOptions = action?.animationOptions?.weapon || {};
 
     const isSingleTargetMeleeAttack = type === ACTION_TYPES.ATTACK && !area;
-    const isRotateWeaponToFaceTarget = weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
+    const isRotateWeaponToFaceTarget =
+        weaponAnimationOptions.rotateToFaceTarget || isSingleTargetMeleeAttack;
 
     const rotation = useMemo(() => {
         if (!target || !wielderRef) {
@@ -189,11 +191,16 @@ const Weapon = ({
         }
 
         if (isRotateWeaponToFaceTarget) {
-            return getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) + WEAPON_DEFAULT_ROTATION;
+            return (
+                getRotationToFaceTarget(getTargetPoints({ to: target, from: wielderRef })) +
+                WEAPON_DEFAULT_ROTATION
+            );
         }
     }, [event?.id, target]);
 
-    const isGlowing = wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow") || weaponAnimationOptions.glow;
+    const isGlowing =
+        wielder?.effects?.some((e: Effect) => e.weaponAnimation === "glow") ||
+        weaponAnimationOptions.glow;
 
     useEffect(() => {
         if (!weaponRef.current || type !== ACTION_TYPES.ATTACK) {
@@ -204,7 +211,12 @@ const Weapon = ({
             animationRefs.current = [
                 swing({ object: weaponRef.current }),
                 ...afterImagesRefs.map((ref, i) => {
-                    return swing({ object: ref.current, opacity: 0.2, delay: i * 25, startingPoint: 110 });
+                    return swing({
+                        object: ref.current,
+                        opacity: 0.2,
+                        delay: i * 25,
+                        startingPoint: 110,
+                    });
                 }),
             ];
         } else if (area >= 2) {
@@ -231,7 +243,8 @@ const Weapon = ({
             ))}
             <div
                 className={classNames(classes.root, {
-                    [classes.idle]: type !== ACTION_TYPES.ATTACK && type !== ACTION_TYPES.RANGE_ATTACK,
+                    [classes.idle]:
+                        type !== ACTION_TYPES.ATTACK && type !== ACTION_TYPES.RANGE_ATTACK,
                     [classes.stab]: isRotateWeaponToFaceTarget,
                 })}
                 style={{

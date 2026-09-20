@@ -20,7 +20,7 @@ export const filterImmunedHindranceCards = ({
     return (dispatch: AppDispatch, getState: () => RootState): Ability[] => {
         const [hindranceCards, cardsToAdd]: [Ability[], Ability[]] = partition(
             (card: Ability) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),
-            initialCardsToAdd || []
+            initialCardsToAdd || [],
         );
 
         if (hindranceCards.length === 0) {
@@ -41,7 +41,9 @@ export const filterImmunedHindranceCards = ({
                 return;
             }
 
-            const hindranceImmunity = player.effects.find((e) => e.immunities?.type === "hindrance-card");
+            const hindranceImmunity = player.effects.find(
+                (e) => e.immunities?.type === "hindrance-card",
+            );
             if (!hindranceImmunity) {
                 return;
             }
@@ -59,10 +61,22 @@ export const filterImmunedHindranceCards = ({
                     actorId: source?.actorId,
                 };
 
-                const triggerSource: TriggerSource = { ...source, source: removed, statUpdate: changesToAnnounce, targetId: player.id };
+                const triggerSource: TriggerSource = {
+                    ...source,
+                    source: removed,
+                    statUpdate: changesToAnnounce,
+                    targetId: player.id,
+                };
                 const statUpdates = { [player.id]: changesToAnnounce };
 
-                dispatch(enqueueEvent({ context, targetSide: BATTLEFIELD_SIDES.PLAYER_SIDE, statUpdates, options: { alwaysGroup: true } }));
+                dispatch(
+                    enqueueEvent({
+                        context,
+                        targetSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+                        statUpdates,
+                        options: { alwaysGroup: true },
+                    }),
+                );
                 dispatch(
                     checkEventTrigger({
                         combatantId: player.id,
@@ -72,7 +86,7 @@ export const filterImmunedHindranceCards = ({
                             sourceChain: [...(context?.sourceChain || []), triggerSource],
                             trackSumAmount: 1,
                         },
-                    })
+                    }),
                 );
 
                 checkImmunity();

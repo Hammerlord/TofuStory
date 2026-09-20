@@ -11,17 +11,30 @@ import { STARTER_ITEM_UPGRADE_MAP } from "../item/starterItems";
 import { ITEM_TYPES, Item, RARITIES } from "../item/types";
 import generateTravelRoute from "../map/routes/generateTravelRoute";
 import { GeneratedRouteNode, NODE_TYPES, TOWNS } from "../map/types";
-import { NUM_TRADING_POST_TRADES, BASE_NUM_TRANSMUTATIONS, ShopAbility, ShopItem } from "../shops/constants";
+import {
+    NUM_TRADING_POST_TRADES,
+    BASE_NUM_TRANSMUTATIONS,
+    ShopAbility,
+    ShopItem,
+} from "../shops/constants";
 import { Ability, CombatAbility, Effect } from "./../ability/types";
 import { toLith } from "./../map/routes/routes";
-import defaultCharacterProperties, { bowmanProperties, wizardProperties } from "./defaultCharacterProperties";
+import defaultCharacterProperties, {
+    bowmanProperties,
+    wizardProperties,
+} from "./defaultCharacterProperties";
 import { Player } from "./types";
 import { generateShopInventory } from "../shops/shopUtils";
 import { generateTradingPostInventory } from "../shops/tradingPostUtils";
 import { RANDOM_BOSSES } from "../map/randomBosses";
 import { BattleStatistics } from "../battle/types";
 import { createCombatAbility } from "../ability/createCombatAbility";
-import { BASE_RARE_CARD_CHANCE, BASE_RARE_ITEM_CHANCE, RARE_CARD_CHANCE_INCREMENT, RARE_ITEM_CHANCE_INCREMENT } from "../constants";
+import {
+    BASE_RARE_CARD_CHANCE,
+    BASE_RARE_ITEM_CHANCE,
+    RARE_CARD_CHANCE_INCREMENT,
+    RARE_ITEM_CHANCE_INCREMENT,
+} from "../constants";
 
 export type ShopState = {
     abilities: (ShopAbility | null)[]; // null: item at that index has been purchased
@@ -128,7 +141,10 @@ export const playerStateSlice = createSlice({
                 },
             };
         },
-        updatePlayer: (state: CharacterState, action: PayloadAction<{ [key in keyof Player]?: Player[key] }>) => {
+        updatePlayer: (
+            state: CharacterState,
+            action: PayloadAction<{ [key in keyof Player]?: Player[key] }>,
+        ) => {
             return {
                 ...state,
                 player: {
@@ -137,7 +153,10 @@ export const playerStateSlice = createSlice({
                 } as Player,
             };
         },
-        onSelectClass: (state: CharacterState, action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>) => {
+        onSelectClass: (
+            state: CharacterState,
+            action: PayloadAction<{ selectedClass: PLAYER_CLASSES; deck: Ability[] }>,
+        ) => {
             return {
                 ...state,
                 player: {
@@ -197,7 +216,12 @@ export const playerStateSlice = createSlice({
             };
         },
         acquireItems: (state: CharacterState, action: PayloadAction<Item[]>) => {
-            const order = [ITEM_TYPES.CONSUMABLE, ITEM_TYPES.MATERIAL, ITEM_TYPES.OTHER, ITEM_TYPES.EQUIPMENT];
+            const order = [
+                ITEM_TYPES.CONSUMABLE,
+                ITEM_TYPES.MATERIAL,
+                ITEM_TYPES.OTHER,
+                ITEM_TYPES.EQUIPMENT,
+            ];
             const player = state.player;
             if (!player) {
                 return;
@@ -234,13 +258,20 @@ export const playerStateSlice = createSlice({
                 };
             });
 
-            if (regularItems.some((item) => item.name === STARTER_ITEM_UPGRADE_MAP[player.class]?.name)) {
+            if (
+                regularItems.some(
+                    (item) => item.name === STARTER_ITEM_UPGRADE_MAP[player.class]?.name,
+                )
+            ) {
                 // This is the upgraded starter item. The starter item will be replaced.
                 newItems = newItems.filter((item) => item.rarity !== RARITIES.STARTER);
             }
 
             newItems.sort((a: Item, b: Item) => {
-                return order.findIndex((type) => type === a.type) - order.findIndex((type) => type === b.type);
+                return (
+                    order.findIndex((type) => type === a.type) -
+                    order.findIndex((type) => type === b.type)
+                );
             });
 
             const incomingMesos = itemsWithPickUpEffects.reduce((acc, item: Item) => {
@@ -248,14 +279,18 @@ export const playerStateSlice = createSlice({
             }, 0);
             let updatedMesos = 0;
             if (incomingMesos > 0) {
-                updatedMesos = player.mesos + calculateMesoMultiplier({ player, mesos: incomingMesos });
+                updatedMesos =
+                    player.mesos + calculateMesoMultiplier({ player, mesos: incomingMesos });
             } else {
                 updatedMesos = Math.max(0, player.mesos + incomingMesos);
             }
 
-            const newItemsMaxHP = aggregateItemEffects(regularItems).reduce((acc, effect: Effect) => {
-                return acc + (effect.maxHP || 0);
-            }, 0);
+            const newItemsMaxHP = aggregateItemEffects(regularItems).reduce(
+                (acc, effect: Effect) => {
+                    return acc + (effect.maxHP || 0);
+                },
+                0,
+            );
 
             return {
                 ...state,
@@ -272,7 +307,12 @@ export const playerStateSlice = createSlice({
             const incomingMesos = action.payload || 0;
             let updated = 0;
             if (incomingMesos > 0) {
-                updated = state.player!.mesos + calculateMesoMultiplier({ player: state.player!, mesos: incomingMesos });
+                updated =
+                    state.player!.mesos +
+                    calculateMesoMultiplier({
+                        player: state.player!,
+                        mesos: incomingMesos,
+                    });
             } else {
                 updated = Math.max(0, state.player!.mesos + incomingMesos);
             }
@@ -355,7 +395,9 @@ export const playerStateSlice = createSlice({
             };
         },
         newGame: (state) => {
-            const route = generateTravelRoute({ startingRoute: { ...toLith, next: [] } });
+            const route = generateTravelRoute({
+                startingRoute: { ...toLith, next: [] },
+            });
 
             return {
                 ...state,
@@ -401,7 +443,10 @@ export const playerStateSlice = createSlice({
                     ...newState.townShops,
                     [townName]: {
                         shop: {
-                            ...generateShopInventory({ player: state.player!, deck: state.deck }),
+                            ...generateShopInventory({
+                                player: state.player!,
+                                deck: state.deck,
+                            }),
                             usedFreeFood: 0,
                             usedNumRefreshes: 0,
                         },
@@ -418,7 +463,14 @@ export const playerStateSlice = createSlice({
 
             return newState;
         },
-        updateTownShop: (state: CharacterState, action: PayloadAction<{ town: TOWNS; shopKey: keyof TownShops; shopState: any }>) => {
+        updateTownShop: (
+            state: CharacterState,
+            action: PayloadAction<{
+                town: TOWNS;
+                shopKey: keyof TownShops;
+                shopState: any;
+            }>,
+        ) => {
             const { town, shopKey, shopState } = action.payload;
             if (!shopKey) {
                 return state;
@@ -459,8 +511,12 @@ export const playerStateSlice = createSlice({
                         ...state.townShops[town],
                         shop: {
                             ...state.townShops?.[town]?.shop,
-                            ...generateShopInventory({ player: state.player!, deck: state.deck }),
-                            usedNumRefreshes: (state.townShops?.[town]?.shop?.usedNumRefreshes || 0) + 1,
+                            ...generateShopInventory({
+                                player: state.player!,
+                                deck: state.deck,
+                            }),
+                            usedNumRefreshes:
+                                (state.townShops?.[town]?.shop?.usedNumRefreshes || 0) + 1,
                         },
                     },
                 },

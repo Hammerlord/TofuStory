@@ -2,7 +2,13 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
-import { BystanderImage, ClickIndicatorImage, KerningCityBGImage, KerningSewerFullImage, LakelisImage } from "../../../images";
+import {
+    BystanderImage,
+    ClickIndicatorImage,
+    KerningCityBGImage,
+    KerningSewerFullImage,
+    LakelisImage,
+} from "../../../images";
 import { getRandomArbitrary, getRandomInt } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
@@ -97,7 +103,9 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
         };
     };
     const [bystanders, setBystanders] = useState(
-        Array.from({ length: 4 }).map((_, i) => makeBystander(650 + i * getRandomArbitrary(20, 40)))
+        Array.from({ length: 4 }).map((_, i) =>
+            makeBystander(650 + i * getRandomArbitrary(20, 40)),
+        ),
     );
 
     useEffect(() => {
@@ -137,7 +145,10 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
             const newTimer = timer + intervalTime;
             if (newTimer >= 700) {
                 if (bystanders.length < MAX_BYSTANDERS) {
-                    const numBystandersToGenerate = getRandomInt(1, Math.min(MAX_BYSTANDERS - bystanders.length, 3));
+                    const numBystandersToGenerate = getRandomInt(
+                        1,
+                        Math.min(MAX_BYSTANDERS - bystanders.length, 3),
+                    );
                     for (let i = 0; i < numBystandersToGenerate; ++i) {
                         newBystanders.push(makeBystander());
                     }
@@ -171,10 +182,11 @@ const LakelisClickQuest = ({ onComplete }: SceneProps) => {
                     clicked: Date.now(),
                     trajectory: [getVelocityDimension(), getVelocityDimension()],
                 };
-            })
+            }),
         );
 
-        const newBystanderClicked = !bystanders.find((bystander) => bystander.id === clickedId)?.clicked;
+        const newBystanderClicked = !bystanders.find((bystander) => bystander.id === clickedId)
+            ?.clicked;
         if (newBystanderClicked) {
             setBystandersClicked((prev) => prev + 1);
         }

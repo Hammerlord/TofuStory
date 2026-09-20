@@ -221,7 +221,8 @@ export const mutantSnailEnemy: Minion = {
             ...hardy,
             name: "Tyrant Shell",
             icon: SnailShellImage,
-            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
+            description:
+                "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
             canBeSilenced: false,
         },
     ],
@@ -243,7 +244,10 @@ export const mutantSnailEnemy: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                    summon: [
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                    ],
                 },
             ],
         },
@@ -265,7 +269,10 @@ export const mutantSnailEnemy: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                    summon: [
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                    ],
                 },
             ],
         },
@@ -336,7 +343,10 @@ export const manoEnemy: Minion = {
                 {
                     target: TARGET_TYPES.SELF,
                     type: ACTION_TYPES.EFFECT,
-                    summon: [{ minion: [minionSnail, blueMinionSnail] }, { minion: [minionSnail, blueMinionSnail] }],
+                    summon: [
+                        { minion: [minionSnail, blueMinionSnail] },
+                        { minion: [minionSnail, blueMinionSnail] },
+                    ],
                 },
             ],
         },
@@ -420,7 +430,8 @@ export const manoEnemy: Minion = {
             ...hardy,
             name: "Senior Shell",
             icon: SnailShellImage,
-            description: "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
+            description:
+                "After being stunned or frozen, gains temporary immunity to those effects. \n Periodically summoning Snails.",
             canBeSilenced: false,
         },
         preventArmorDecay,

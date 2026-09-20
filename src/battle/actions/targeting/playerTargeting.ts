@@ -79,7 +79,7 @@ export const isValidTargetForPlayerAbility = ({
                     battle,
                     proc: action,
                     context,
-                })
+                }),
             );
             if (!conditionsPassed) {
                 return false;
@@ -101,7 +101,10 @@ export const isValidTargetForPlayerAbility = ({
         if (target === TARGET_TYPES.MOVE) {
             return true;
         }
-    } else if (side === BATTLEFIELD_SIDES.ENEMY_SIDE && (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)) {
+    } else if (
+        side === BATTLEFIELD_SIDES.ENEMY_SIDE &&
+        (target === TARGET_TYPES.HOSTILE || target === TARGET_TYPES.RANDOM_HOSTILE)
+    ) {
         if (!enemySide) {
             return false;
         }
@@ -114,14 +117,25 @@ export const isValidTargetForPlayerAbility = ({
         const tauntEnemies = enemySide
             .filter((combatant) => combatant?.HP)
             .map((combatant) => findCombatantData(battle, combatant?.id))
-            .filter((combatantInfo?: CombatantInfo) => hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT));
+            .filter((combatantInfo?: CombatantInfo) =>
+                hasEffectType(combatantInfo, EFFECT_TYPES.TAUNT),
+            );
 
-        if (tauntEnemies.length && tauntEnemies.every((enemy) => enemy?.combatant?.id !== targetedEnemy?.id)) {
+        if (
+            tauntEnemies.length &&
+            tauntEnemies.every((enemy) => enemy?.combatant?.id !== targetedEnemy?.id)
+        ) {
             return false;
         }
 
         const conditionsPassed = actions.some((action) =>
-            passesConditions({ actor: actorData, target: findCombatantData(battle, targetedEnemy?.id), battle, proc: action, context })
+            passesConditions({
+                actor: actorData,
+                target: findCombatantData(battle, targetedEnemy?.id),
+                battle,
+                proc: action,
+                context,
+            }),
         );
         if (!conditionsPassed) {
             return false;

@@ -2,7 +2,14 @@ import { createUseStyles } from "react-jss";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { STRANGE_ENCOUNTER_MUSIC } from "../battle/constants";
 import { noobA, noobAWarrior, noobB, noobBWarrior } from "../enemy/enemy";
-import { blueJeanShorts, leatherSandals, mesoItem, redHeadband, tShirt, sword } from "../item/items";
+import {
+    blueJeanShorts,
+    leatherSandals,
+    mesoItem,
+    redHeadband,
+    tShirt,
+    sword,
+} from "../item/items";
 import { EventScene, SCENE_CONDITION_TYPES } from "./types";
 import { SCENE_STYLES } from "./constants";
 import { RightAroundLith2Image, RightAroundLithImage } from "../images";
@@ -10,7 +17,17 @@ import classNames from "classnames";
 
 const resourceRoll = Math.random() <= 0.5;
 const noobEncounter1 = {
-    waves: [{ enemies: [null, { ...noobA, resources: resourceRoll ? 1 : 0 }, null, { ...noobB, resources: resourceRoll ? 0 : 1 }, null] }],
+    waves: [
+        {
+            enemies: [
+                null,
+                { ...noobA, resources: resourceRoll ? 1 : 0 },
+                null,
+                { ...noobB, resources: resourceRoll ? 0 : 1 },
+                null,
+            ],
+        },
+    ],
     backgroundMusic: STRANGE_ENCOUNTER_MUSIC,
 };
 
@@ -55,10 +72,30 @@ const NoobIntroBackdrop = ({ player, hideBeginners }) => {
     const classes = useIntroStyles();
     return (
         <div>
-            <img src={RightAroundLithImage} alt="Right around Lith Harbor" className={classes.backdrop} />
-            {!hideBeginners && <img src={noobA.image} alt="Noob A" className={classNames(classes.character, classes.noobA)} />}
-            {!hideBeginners && <img src={noobB.image} alt="Noob B" className={classNames(classes.character, classes.noobB)} />}
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={RightAroundLithImage}
+                alt="Right around Lith Harbor"
+                className={classes.backdrop}
+            />
+            {!hideBeginners && (
+                <img
+                    src={noobA.image}
+                    alt="Noob A"
+                    className={classNames(classes.character, classes.noobA)}
+                />
+            )}
+            {!hideBeginners && (
+                <img
+                    src={noobB.image}
+                    alt="Noob B"
+                    className={classNames(classes.character, classes.noobB)}
+                />
+            )}
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };
@@ -84,10 +121,30 @@ const NoobChaseBackdrop = ({ player, hideBeginners }) => {
     const classes = useChaseStyles();
     return (
         <div>
-            <img src={RightAroundLith2Image} alt="Right around Lith Harbor" className={classes.backdrop} />
-            {!hideBeginners && <img src={noobA.image} alt="Noob A" className={classNames(classes.character, classes.noobA)} />}
-            {!hideBeginners && <img src={noobB.image} alt="Noob B" className={classNames(classes.character, classes.noobB)} />}
-            <img src={player.image} alt="Player" className={classNames(classes.character, classes.player)} />
+            <img
+                src={RightAroundLith2Image}
+                alt="Right around Lith Harbor"
+                className={classes.backdrop}
+            />
+            {!hideBeginners && (
+                <img
+                    src={noobA.image}
+                    alt="Noob A"
+                    className={classNames(classes.character, classes.noobA)}
+                />
+            )}
+            {!hideBeginners && (
+                <img
+                    src={noobB.image}
+                    alt="Noob B"
+                    className={classNames(classes.character, classes.noobB)}
+                />
+            )}
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.character, classes.player)}
+            />
         </div>
     );
 };
@@ -98,7 +155,9 @@ export const noobIntro: EventScene = {
         {
             scene: NoobIntroBackdrop,
             speaker: noobA,
-            dialog: ["Hey, hey, hey! Look at that mushroom with the weird cap. It's gotta be a rare mob, right?"],
+            dialog: [
+                "Hey, hey, hey! Look at that mushroom with the weird cap. It's gotta be a rare mob, right?",
+            ],
         },
         {
             speaker: noobB,
@@ -143,7 +202,9 @@ export const noobIntro: EventScene = {
                                         },
                                         {
                                             speaker: noobA,
-                                            dialog: ["WTF? Monsters aren't supposed to do that! Hey, do something!"],
+                                            dialog: [
+                                                "WTF? Monsters aren't supposed to do that! Hey, do something!",
+                                            ],
                                         },
                                         {
                                             speaker: noobB,
@@ -159,14 +220,28 @@ export const noobIntro: EventScene = {
                                                 "[The beginner looks at you.] Uh, um, think quick, what'll make it go away!?",
                                             ],
                                             itemChoices: {
-                                                items: [leatherSandals, tShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                items: [
+                                                    leatherSandals,
+                                                    tShirt,
+                                                    sword,
+                                                    redHeadband,
+                                                    blueJeanShorts,
+                                                    mesoItem,
+                                                ],
                                                 numChoices: 3,
                                                 disableItemReplacements: true,
                                             },
                                         },
                                         {
-                                            scene: (other) => <NoobIntroBackdrop hideBeginners={true} {...other} />,
-                                            dialog: ["[While you picked up the item, the beginners made their escape.]"],
+                                            scene: (other) => (
+                                                <NoobIntroBackdrop
+                                                    hideBeginners={true}
+                                                    {...other}
+                                                />
+                                            ),
+                                            dialog: [
+                                                "[While you picked up the item, the beginners made their escape.]",
+                                            ],
                                             responses: [
                                                 {
                                                     text: "Leave.",
@@ -180,9 +255,18 @@ export const noobIntro: EventScene = {
                                     text: "Leave them alone.",
                                     next: [
                                         {
-                                            dialog: ["[The beginners sprint off. One of them dropped something...]"],
+                                            dialog: [
+                                                "[The beginners sprint off. One of them dropped something...]",
+                                            ],
                                             items: {
-                                                itemPool: [leatherSandals, tShirt, sword, redHeadband, blueJeanShorts, mesoItem],
+                                                itemPool: [
+                                                    leatherSandals,
+                                                    tShirt,
+                                                    sword,
+                                                    redHeadband,
+                                                    blueJeanShorts,
+                                                    mesoItem,
+                                                ],
                                                 amount: 1,
                                             },
                                         },
@@ -231,7 +315,10 @@ export const noobRivalWarrior: EventScene = {
         },
         {
             speaker: noobBWarrior,
-            dialog: ["Yeah. It was pretty strong...", "So strong that you even said we should become {{ classPlural }}, too."],
+            dialog: [
+                "Yeah. It was pretty strong...",
+                "So strong that you even said we should become {{ classPlural }}, too.",
+            ],
         },
         {
             speaker: noobAWarrior,

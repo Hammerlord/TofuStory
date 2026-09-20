@@ -20,7 +20,13 @@ import { shuffle } from "../../../utils";
 import { SUMMON_DELAY } from "../../constants";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
-import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo, TriggerSource } from "../../types";
+import {
+    ActionContext,
+    ActionParent,
+    BATTLEFIELD_SIDES,
+    CombatantInfo,
+    TriggerSource,
+} from "../../types";
 import { findCombatantData } from "../combatantData";
 import { requeueRecentlyUsedAbility } from "../phases/phases";
 import { enqueueEvent } from "../enqueueEvent";
@@ -62,8 +68,14 @@ export const checkHandleMorph = ({
         }
 
         const type = action.morph.type;
-        const source: TriggerSource = { ...parentContext?.sourceChain?.at(-1), actorId };
-        const context: ActionContext = { ...parentContext, sourceChain: [...(parentContext?.sourceChain || []), source] };
+        const source: TriggerSource = {
+            ...parentContext?.sourceChain?.at(-1),
+            actorId,
+        };
+        const context: ActionContext = {
+            ...parentContext,
+            sourceChain: [...(parentContext?.sourceChain || []), source],
+        };
 
         const morphProps = {
             targets,
@@ -73,7 +85,11 @@ export const checkHandleMorph = ({
             summoner: findCombatantData(getState().battle!, actorId),
         };
 
-        let transformed: { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null = null;
+        let transformed: {
+            side: BATTLEFIELD_SIDES;
+            combatants: (Combatant | null)[];
+            summons: Combatant[];
+        } | null = null;
 
         if (type === MORPH_TYPES.MAP) {
             transformed = getMorphMap(morphProps);
@@ -95,13 +111,13 @@ export const checkHandleMorph = ({
                 newCombatants: summons,
                 context,
                 actionParent,
-            })
+            }),
         );
 
         dispatch(
             updateBattle({
                 [side]: combatants,
-            })
+            }),
         );
 
         summons.forEach((summon) => {
@@ -110,7 +126,7 @@ export const checkHandleMorph = ({
                     summonedId: summon.id,
                     summonerId: actorId,
                     parentContext,
-                })
+                }),
             );
 
             dispatch(requeueRecentlyUsedAbility({ combatantId: summon.id }));
@@ -129,7 +145,11 @@ export const getMorphMerge = ({
     targets: CombatantInfo[];
     morph: Morph;
     summoner?: CombatantInfo;
-}): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
+}): {
+    side: BATTLEFIELD_SIDES;
+    combatants: (Combatant | null)[];
+    summons: Combatant[];
+} | null => {
     const { minions, modifiers = {} } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide, index } = summoner || targets[0] || {};
@@ -176,14 +196,16 @@ export const getMorphMerge = ({
             acc[property] = value;
             return acc;
         },
-        {} as { [property: string]: number }
+        {} as { [property: string]: number },
     );
 
     for (const { minion, positionIndex, storeSummoner, turnLimit } of minions) {
         const pos = getSummonPos(positionIndex);
         const minionToSummon = typeof minion === "string" ? enemyNameMap[minion] : minion;
         if (!minionToSummon) {
-            console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
+            console.warn(
+                `Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`,
+            );
             return null;
         }
 
@@ -198,7 +220,12 @@ export const getMorphMerge = ({
             };
 
             if (storeSummoner && summoner) {
-                combatants[pos].effects.push(getStoredTargetEffect({ combatant: summoner.combatant, duration: turnLimit }));
+                combatants[pos].effects.push(
+                    getStoredTargetEffect({
+                        combatant: summoner.combatant,
+                        duration: turnLimit,
+                    }),
+                );
             }
 
             summons.push(combatants[pos]);
@@ -222,7 +249,11 @@ export const getMorphMap = ({
     getState: Function;
     context: ActionContext;
     summoner?: CombatantInfo;
-}): { side: BATTLEFIELD_SIDES; combatants: (Combatant | null)[]; summons: Combatant[] } | null => {
+}): {
+    side: BATTLEFIELD_SIDES;
+    combatants: (Combatant | null)[];
+    summons: Combatant[];
+} | null => {
     const { minions, setOriginalHealthPercentage } = morph;
     const targetIds = targets.map((t: CombatantInfo) => t?.combatant?.id);
     const { friendly, friendlySide } = summoner || targets[0] || {};
@@ -238,7 +269,11 @@ export const getMorphMap = ({
 
         const minionConfig = minions.find((minionConfig) => {
             // Current combatant will always be the target
-            return passesConditions({ target: findCombatantData(getState().battle!, combatant?.id), proc: minionConfig, context });
+            return passesConditions({
+                target: findCombatantData(getState().battle!, combatant?.id),
+                proc: minionConfig,
+                context,
+            });
         });
 
         const minion = minionConfig?.minion;
@@ -249,7 +284,10 @@ export const getMorphMap = ({
                 const { storeTarget, turnLimit } = minionConfig;
 
                 // Retain id: it is the "same" combatant, now transformed. Used for allowing the transformed character to make a move on the same turn as the mutation
-                const summon = { ...createCombatant(minionToSummon), id: combatant.id } as Combatant;
+                const summon = {
+                    ...createCombatant(minionToSummon),
+                    id: combatant.id,
+                } as Combatant;
                 if (storeTarget) {
                     summon.effects.push(getStoredTargetEffect({ combatant, duration: turnLimit }));
                 }
@@ -262,7 +300,9 @@ export const getMorphMap = ({
                 summons.push(summon);
                 return summon;
             } else {
-                console.warn(`Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`);
+                console.warn(
+                    `Didn't find a corresponding object for ${minion}. Is the lookup map up to date?`,
+                );
             }
         }
 
@@ -272,7 +312,13 @@ export const getMorphMap = ({
     return { side: friendlySide, combatants, summons };
 };
 
-const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; duration?: number }): CombatEffect => {
+const getStoredTargetEffect = ({
+    combatant,
+    duration,
+}: {
+    combatant: Combatant;
+    duration?: number;
+}): CombatEffect => {
     const reveal = {
         usableWhileStunned: true,
         ability: {
@@ -287,7 +333,9 @@ const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; 
                             minion: [
                                 {
                                     ...combatant,
-                                    effects: combatant.effects.filter((effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF),
+                                    effects: combatant.effects.filter(
+                                        (effect: Effect) => effect?.class !== EFFECT_CLASSES.DEBUFF,
+                                    ),
                                 },
                             ],
                             placement: "on-top",
@@ -300,7 +348,8 @@ const getStoredTargetEffect = ({ combatant, duration }: { combatant: Combatant; 
 
     return createCombatEffect({
         name: "Reveal Timer",
-        description: "When destroyed or when this effect ends, the hidden character will be revealed.",
+        description:
+            "When destroyed or when this effect ends, the hidden character will be revealed.",
         icon: HourglassIcon,
         type: EFFECT_TYPES.NONE,
         class: EFFECT_CLASSES.NONE,

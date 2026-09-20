@@ -75,10 +75,13 @@ export const handleOnKill = (context: ActionContext) => {
                             statUpdate,
                             context: {
                                 ...context,
-                                sourceChain: [...(context?.sourceChain || []), { ...lifeOnKillSource, action, statUpdate }],
+                                sourceChain: [
+                                    ...(context?.sourceChain || []),
+                                    { ...lifeOnKillSource, action, statUpdate },
+                                ],
                             },
-                        }))
-                    )
+                        })),
+                    ),
                 );
             }
         }
@@ -88,7 +91,7 @@ export const handleOnKill = (context: ActionContext) => {
                 combatantId: killedBy.id,
                 effectEventKey: EFFECT_EVENT_KEYS.onKill,
                 context: { ...context },
-            })
+            }),
         );
 
         friendly.forEach((combatant) => {
@@ -98,14 +101,20 @@ export const handleOnKill = (context: ActionContext) => {
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onFriendlyKill,
                         context: { ...context },
-                    })
+                    }),
                 );
             }
         });
     };
 };
 
-export const onCombatantDeath = ({ combatantId, context }: { combatantId: string; context: ActionContext }) => {
+export const onCombatantDeath = ({
+    combatantId,
+    context,
+}: {
+    combatantId: string;
+    context: ActionContext;
+}) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const deadCombatant = findCombatantData(getState().battle!, combatantId);
         if (!deadCombatant) {
@@ -122,7 +131,7 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
                         ...currentStatistics,
                         totalKills: currentStatistics.totalKills + 1,
                     },
-                })
+                }),
             );
         }
 
@@ -136,7 +145,8 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
                             return {
                                 ...combatant,
                                 effects: combatant.effects.filter((e) => {
-                                    const hasDuration = typeof e.duration === "number" && e.duration !== Infinity;
+                                    const hasDuration =
+                                        typeof e.duration === "number" && e.duration !== Infinity;
                                     return (
                                         (e.class !== EFFECT_CLASSES.DEBUFF && !hasDuration) ||
                                         e.persistsWhenDead ||
@@ -151,11 +161,17 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
 
                         return combatant;
                     }),
-                })
+                }),
             );
         }
 
-        dispatch(checkEventTrigger({ combatantId, effectEventKey: EFFECT_EVENT_KEYS.onDeath, context: context }));
+        dispatch(
+            checkEventTrigger({
+                combatantId,
+                effectEventKey: EFFECT_EVENT_KEYS.onDeath,
+                context: context,
+            }),
+        );
 
         if (!combatant || !friendly) {
             return;
@@ -164,12 +180,23 @@ export const onCombatantDeath = ({ combatantId, context }: { combatantId: string
         const dispatchEvent = (combatant: Combatant | null, effectEventKey: EFFECT_EVENT_KEYS) => {
             const { id } = combatant || {};
             if (id !== combatantId) {
-                dispatch(checkEventTrigger({ combatantId: id, effectEventKey, context: context }));
+                dispatch(
+                    checkEventTrigger({
+                        combatantId: id,
+                        effectEventKey,
+                        context: context,
+                    }),
+                );
             }
         };
 
         dispatch(handleOnKill(context));
-        dispatch(checkUpdatePlayerMoneyOnKill({ deadCombatantInfo: deadCombatant, context: context }));
+        dispatch(
+            checkUpdatePlayerMoneyOnKill({
+                deadCombatantInfo: deadCombatant,
+                context: context,
+            }),
+        );
 
         friendly.forEach((combatant: Combatant | null) => {
             dispatchEvent(combatant, EFFECT_EVENT_KEYS.onFriendlyDeath);

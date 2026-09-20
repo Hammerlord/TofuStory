@@ -1,7 +1,15 @@
 import { PLAYER_CLASSES } from "../../Menu/types";
 import { MULTIPLIER_TYPES } from "../types";
 
-const { ATTACKS_MADE_IN_TURN, ARMOR, ABILITIES_WITH_NAME, MAX_HP, DEBUFFS, NUM_AFFECTED_TARGETS, NUM_SOURCE_TARGETS } = MULTIPLIER_TYPES;
+const {
+    ATTACKS_MADE_IN_TURN,
+    ARMOR,
+    ABILITIES_WITH_NAME,
+    MAX_HP,
+    DEBUFFS,
+    NUM_AFFECTED_TARGETS,
+    NUM_SOURCE_TARGETS,
+} = MULTIPLIER_TYPES;
 
 export const multiplierTypeKeyLabelMap = {
     [ATTACKS_MADE_IN_TURN]: "times the number of attacks made this turn by {{ calculationTarget }}",

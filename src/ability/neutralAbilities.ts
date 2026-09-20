@@ -524,7 +524,8 @@ export const vault: Ability = {
     ],
     upgrades: [
         {
-            description: "Play the top card of your deck. It is <b>Upgraded x{{ actions.0.autoCastAbilities.upgradeLevels }}.</b>",
+            description:
+                "Play the top card of your deck. It is <b>Upgraded x{{ actions.0.autoCastAbilities.upgradeLevels }}.</b>",
             actions: [
                 {
                     autoCastAbilities: {
@@ -539,7 +540,8 @@ export const vault: Ability = {
 export const outrage: Ability = {
     name: "Outrage",
     resourceCost: 2,
-    description: "Cards in your hand cost <b>+1</b> or <b>-1 {{{ _resource_ }}}</b>, randomly chosen.",
+    description:
+        "Cards in your hand cost <b>+1</b> or <b>-1 {{{ _resource_ }}}</b>, randomly chosen.",
     image: MushmomAngryImage,
     rarity: RARITIES.UNCOMMON,
     actions: [

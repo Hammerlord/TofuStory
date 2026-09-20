@@ -1,5 +1,15 @@
-import { getAbilityUpgradedFromEffects, isOffensiveAbility, isSupportAbility } from "../../ability/AbilityView/utils";
-import { Ability, Action, CombatAbility, EFFECT_EVENT_KEYS, TARGET_TYPES } from "../../ability/types";
+import {
+    getAbilityUpgradedFromEffects,
+    isOffensiveAbility,
+    isSupportAbility,
+} from "../../ability/AbilityView/utils";
+import {
+    Ability,
+    Action,
+    CombatAbility,
+    EFFECT_EVENT_KEYS,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { getRandomInt, passesChance } from "../../utils";
 import { passesConditions } from "../passesConditions";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
@@ -38,37 +48,68 @@ export const useAbility = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         // @ts-ignore -- We're providing a fallback so it doesn't matter whether effects exists or not
-        const { resourceCost = 0, actions = [], effects = [], echo } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
+        const {
+            resourceCost = 0,
+            actions = [],
+            effects = [],
+            echo,
+        } = getAbilityUpgradedFromEffects({ ability }) as CombatAbility;
         const actor = findCombatantData(getState().battle!, actorId);
         if (!actor) {
             return;
         }
         const { combatant, friendlySide } = actor;
 
-        const totalResourceCost = getPlayerAbilityResourceCost({ combatant, resourceCost, effects });
+        const totalResourceCost = getPlayerAbilityResourceCost({
+            combatant,
+            resourceCost,
+            effects,
+        });
         ability = {
             ...ability,
             effects: ability.effects || [],
             resourceCost: totalResourceCost, // Primarily used for calculating resourceCost === 'x' multiplier
         };
 
-        const resourceSpend = { resources: -totalResourceCost, combatantId: combatant.id };
+        const resourceSpend = {
+            resources: -totalResourceCost,
+            combatantId: combatant.id,
+        };
 
         if (!isAutoCast) {
             dispatch(applyStatChanges([resourceSpend]));
         }
 
-        const source: TriggerSource = { type: TRIGGER_SOURCE_TYPES.ABILITY, source: ability, actorId, isProc };
-        const parentContext: ActionContext = { ...context, sourceChain: [...(context?.sourceChain || []), source], isProc };
+        const source: TriggerSource = {
+            type: TRIGGER_SOURCE_TYPES.ABILITY,
+            source: ability,
+            actorId,
+            isProc,
+        };
+        const parentContext: ActionContext = {
+            ...context,
+            sourceChain: [...(context?.sourceChain || []), source],
+            isProc,
+        };
 
-        dispatch(checkSummonMinion({ ability, selectedIndex, side: friendlySide, actorId, parentContext, isAutoCast }));
+        dispatch(
+            checkSummonMinion({
+                ability,
+                selectedIndex,
+                side: friendlySide,
+                actorId,
+                parentContext,
+                isAutoCast,
+            }),
+        );
 
         const { target: initialTarget } = actions[0] || {};
 
         // This could become stale between actions but not an issue at the time of implementation. Only Curse Eye applies this effect.
         const isEffectRandomTargeting = combatant.effects?.some((e) => e.hitRandomTarget);
 
-        let prevSelection: { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } | undefined;
+        let prevSelection:
+            { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } | undefined;
 
         const handleAction = (action: Action, i: number) => {
             const actorInfo = findCombatantData(getState().battle!, actorId);
@@ -79,7 +120,10 @@ export const useAbility = ({
             const actor = actorInfo.combatant;
             // Something could've happened between actions that killed the actor
             const canAct =
-                actor?.HP > 0 && !isTurnActionPrevented(actorInfo, { bypassPreventTurnAction: Boolean(action.bypassPreventTurnAction) });
+                actor?.HP > 0 &&
+                !isTurnActionPrevented(actorInfo, {
+                    bypassPreventTurnAction: Boolean(action.bypassPreventTurnAction),
+                });
             if (!canAct) {
                 return;
             }
@@ -88,7 +132,10 @@ export const useAbility = ({
 
             const targetingAbility = actor.targeting?.ability;
             const selectedActionTargets = actor.targeting?.actionTargets?.[i];
-            if (targetingAbility?.name === ability.name && typeof selectedActionTargets?.index === "number") {
+            if (
+                targetingAbility?.name === ability.name &&
+                typeof selectedActionTargets?.index === "number"
+            ) {
                 selection = selectedActionTargets;
             } else if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
                 selection = autoSelectActionTarget({
@@ -103,7 +150,11 @@ export const useAbility = ({
                 });
             }
             // If it is a multi-hit ability, the attacks should go to the same target
-            else if (action.target === TARGET_TYPES.HOSTILE && action.target === initialTarget && prevSelection) {
+            else if (
+                action.target === TARGET_TYPES.HOSTILE &&
+                action.target === initialTarget &&
+                prevSelection
+            ) {
                 selection = prevSelection;
             } else {
                 selection = autoSelectActionTarget({
@@ -136,7 +187,16 @@ export const useAbility = ({
                     context: parentContext,
                 })
             ) {
-                dispatch(performAction({ action, selectedIndex: index, side, actorId, parentContext, isAutoCast }));
+                dispatch(
+                    performAction({
+                        action,
+                        selectedIndex: index,
+                        side,
+                        actorId,
+                        parentContext,
+                        isAutoCast,
+                    }),
+                );
             }
         };
 
@@ -165,7 +225,9 @@ export const useAbility = ({
 
         // Resource spend events triggered down here due to Bounce otherwise causing Furious Strike to be discarded
         if (!isAutoCast) {
-            dispatch(triggerStatChangeEvents([{ statUpdate: resourceSpend, context: parentContext }]));
+            dispatch(
+                triggerStatChangeEvents([{ statUpdate: resourceSpend, context: parentContext }]),
+            );
         }
 
         const actorInfo = findCombatantData(getState().battle!, actorId);
@@ -175,9 +237,19 @@ export const useAbility = ({
             // but this is at the ability level, not the individual actions level. Just provide the first action in that case
             const actionContext = {
                 ...parentContext,
-                sourceChain: [...(parentContext.sourceChain || []), { actorId, source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION }],
+                sourceChain: [
+                    ...(parentContext.sourceChain || []),
+                    { actorId, source: actions[0], type: TRIGGER_SOURCE_TYPES.ACTION },
+                ],
             };
-            dispatch(onUseAbility({ actorInfo, context: actionContext, ability, isAutoCast }));
+            dispatch(
+                onUseAbility({
+                    actorInfo,
+                    context: actionContext,
+                    ability,
+                    isAutoCast,
+                }),
+            );
         }
 
         if (echo) {
@@ -223,7 +295,7 @@ export const onUseAbility =
                 newProperties: {
                     abilityHistory: [...actor.abilityHistory, ability],
                 },
-            })
+            }),
         );
 
         dispatch(
@@ -231,7 +303,7 @@ export const onUseAbility =
                 combatantId: actor.id,
                 effectEventKey: EFFECT_EVENT_KEYS.onAbility,
                 context: context,
-            })
+            }),
         );
 
         ability?.effects?.forEach((effect) => {
@@ -242,7 +314,7 @@ export const onUseAbility =
                         actorId: actor.id,
                         isProc: true,
                         context,
-                    })
+                    }),
                 );
             }
         });
@@ -253,7 +325,7 @@ export const onUseAbility =
                     combatantId: actor.id,
                     effectEventKey: EFFECT_EVENT_KEYS.onOffensiveAbility,
                     context: context,
-                })
+                }),
             );
         } else if (isSupportAbility(ability)) {
             dispatch(
@@ -261,7 +333,7 @@ export const onUseAbility =
                     combatantId: actor.id,
                     effectEventKey: EFFECT_EVENT_KEYS.onSupportAbility,
                     context: context,
-                })
+                }),
             );
         }
 
@@ -272,7 +344,7 @@ export const onUseAbility =
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onHostileAbility,
                         context: context,
-                    })
+                    }),
                 );
 
                 if (actor.isPlayer) {
@@ -281,7 +353,7 @@ export const onUseAbility =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onPlayerAbility,
                             context: context,
-                        })
+                        }),
                     );
                 }
 
@@ -291,7 +363,7 @@ export const onUseAbility =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onHostileSupportAbility,
                             context: context,
-                        })
+                        }),
                     );
                 }
             }
@@ -304,7 +376,7 @@ export const onUseAbility =
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onFriendlyAbility,
                         context: context,
-                    })
+                    }),
                 );
 
                 if (actor.isPlayer) {
@@ -313,7 +385,7 @@ export const onUseAbility =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onPlayerAbility,
                             context: context,
-                        })
+                        }),
                     );
                 }
 
@@ -323,7 +395,7 @@ export const onUseAbility =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onFriendlySupportAbility,
                             context: context,
-                        })
+                        }),
                     );
                 }
 
@@ -335,7 +407,7 @@ export const onUseAbility =
                             combatantId: combatant.id,
                             effectEventKey: EFFECT_EVENT_KEYS.onDepleteAbility,
                             context: context,
-                        })
+                        }),
                     );
                 }
             }

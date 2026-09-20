@@ -1,10 +1,22 @@
 import _ from "lodash";
 import { isOffensiveAction } from "../../../ability/AbilityView/utils";
-import { ACTION_TYPES, Action, CombatAbility, EFFECT_TYPES, TARGET_TYPES } from "../../../ability/types";
+import {
+    ACTION_TYPES,
+    Action,
+    CombatAbility,
+    EFFECT_TYPES,
+    TARGET_TYPES,
+} from "../../../ability/types";
 import { Combatant } from "../../../character/types";
 import { getRandomItem, shuffle } from "../../../utils";
 import { passesConditions } from "../../passesConditions";
-import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, NonCombatPlayerInfo } from "../../types";
+import {
+    ActionContext,
+    BATTLEFIELD_SIDES,
+    BattleState,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+} from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
 import { findCombatantData, hasEffectType } from "../combatantData";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
@@ -41,7 +53,12 @@ export const calculateTargetIndices = ({
         targetName,
     } = action;
 
-    const area = calculateActionArea({ action, actor: actorData, target: targetData, context });
+    const area = calculateActionArea({
+        action,
+        actor: actorData,
+        target: targetData,
+        context,
+    });
 
     let extraTargetIndices = getValidTargetIndices(battle[side], action.area || 0, {
         excludeIndex: selectedIndex,
@@ -53,7 +70,11 @@ export const calculateTargetIndices = ({
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         // When summoning a minion, it can auto attack an enemy target. Display that proc as an indeterminate ability.
-        const isProcPreview = isPreviewMode && context?.isProc && isOffensiveAction(action) && side === BATTLEFIELD_SIDES.ENEMY_SIDE;
+        const isProcPreview =
+            isPreviewMode &&
+            context?.isProc &&
+            isOffensiveAction(action) &&
+            side === BATTLEFIELD_SIDES.ENEMY_SIDE;
         if (isProcPreview) {
             return true;
         }
@@ -131,7 +152,10 @@ export const autoSelectActionTarget = ({
     if (indices.length > 1) {
         const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
         if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
-            const index = pickHostileIndex({ targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined), actorData });
+            const index = pickHostileIndex({
+                targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined),
+                actorData,
+            });
             if (typeof index === "number") {
                 return { index, side: indices[0].side };
             }
@@ -210,7 +234,10 @@ export const getValidTargetIndicesForAction = ({
 
     const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
 
-    if ((target === TARGET_TYPES.HOSTILE || isPlayerHostile) && (noValidSelection || initialSelectedSide === friendlySide)) {
+    if (
+        (target === TARGET_TYPES.HOSTILE || isPlayerHostile) &&
+        (noValidSelection || initialSelectedSide === friendlySide)
+    ) {
         return getValidTargetIndices(hostile, action.area, {
             onlyTaunt: true,
             onlyPriorityTarget: true,
@@ -220,7 +247,10 @@ export const getValidTargetIndicesForAction = ({
     }
 
     if (target === TARGET_TYPES.RANDOM_HOSTILE || isPlayerHostile) {
-        const targetIndices = getValidTargetIndices(hostile, action.area, { onlyTaunt: true, onlyPriorityTarget: true })
+        const targetIndices = getValidTargetIndices(hostile, action.area, {
+            onlyTaunt: true,
+            onlyPriorityTarget: true,
+        })
             .filter((i) => isNearInitialSelection(i))
             .map((index) => ({ index, side: hostileSide }));
 
@@ -239,9 +269,12 @@ export const getValidTargetIndicesForAction = ({
 
     if (
         target === TARGET_TYPES.RANDOM_FRIENDLY ||
-        (target === TARGET_TYPES.FRIENDLY && (noValidSelection || initialSelectedSide === hostileSide))
+        (target === TARGET_TYPES.FRIENDLY &&
+            (noValidSelection || initialSelectedSide === hostileSide))
     ) {
-        const targetIndices = getValidTargetIndices(friendly, action.area, { excludeUntargetable: false }).filter((i) => {
+        const targetIndices = getValidTargetIndices(friendly, action.area, {
+            excludeUntargetable: false,
+        }).filter((i) => {
             if (excludeActor && actorId && friendly[i]?.id === actorId) {
                 return false;
             }
@@ -297,7 +330,13 @@ export const getValidTargetIndicesForAction = ({
     return [];
 };
 
-const pickHostileIndex = ({ targetIndices, actorData }: { targetIndices: number[]; actorData: CombatantInfo }): number | undefined => {
+const pickHostileIndex = ({
+    targetIndices,
+    actorData,
+}: {
+    targetIndices: number[];
+    actorData: CombatantInfo;
+}): number | undefined => {
     const actorIndex = actorData.index;
 
     let baseProbability = 1 / targetIndices.length;
@@ -335,7 +374,7 @@ export const getValidTargetIndices = (
         onlyTaunt?: boolean;
         excludeUntargetable?: boolean;
         onlyPriorityTarget?: boolean;
-    } = {}
+    } = {},
 ): number[] => {
     const { excludeIndex, onlyTaunt, excludeUntargetable = true, onlyPriorityTarget } = options;
 
@@ -343,7 +382,11 @@ export const getValidTargetIndices = (
         const effectIndices: number[] = [];
         characters.forEach((character: Combatant | null, i: number) => {
             const notExcluded = excludeIndex !== i;
-            if (character?.effects?.some((effect) => effect.type === effectType) && character?.HP > 0 && notExcluded) {
+            if (
+                character?.effects?.some((effect) => effect.type === effectType) &&
+                character?.HP > 0 &&
+                notExcluded
+            ) {
                 effectIndices.push(i);
             }
         });
@@ -417,15 +460,27 @@ export const calculateActionArea = ({
     const isOffense = isOffensiveAction(action);
     let totalArea = area;
     if (isOffense) {
-        getEnabledEffects({ combatantInfo: actor, context, battle }).forEach(({ offenseAreaIncrease = 0 }) => {
-            totalArea += offenseAreaIncrease;
-        });
+        getEnabledEffects({ combatantInfo: actor, context, battle }).forEach(
+            ({ offenseAreaIncrease = 0 }) => {
+                totalArea += offenseAreaIncrease;
+            },
+        );
 
         if (action.bonus) {
             const bonuses = Array.isArray(action.bonus) ? action.bonus : [action.bonus];
             bonuses.forEach((bonus) => {
                 const allTargets = target ? [target] : [];
-                if (bonus.area && passesConditions({ actor, target, allTargets, proc: bonus, context, battle })) {
+                if (
+                    bonus.area &&
+                    passesConditions({
+                        actor,
+                        target,
+                        allTargets,
+                        proc: bonus,
+                        context,
+                        battle,
+                    })
+                ) {
                     totalArea += bonus.area;
                 }
             });
@@ -456,7 +511,7 @@ export const isNegatedByStealth = ({
     }
 
     const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
-        (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity)
+        (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity),
     );
 
     if (isPreviousActionTriggeredBypass || action.bypassStealth || action.bypassImmunity) {

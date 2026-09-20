@@ -1,5 +1,12 @@
 import { ACTION_TYPES, ANIMATION_TYPES, Minion, TARGET_TYPES } from "../ability/types";
-import { AvengersArrowImage, EncroachingDarknessImage, FairyImage, HuntersBowImage, RoyalFairyImage, WeaponMasteryImage } from "../images";
+import {
+    AvengersArrowImage,
+    EncroachingDarknessImage,
+    FairyImage,
+    HuntersBowImage,
+    RoyalFairyImage,
+    WeaponMasteryImage,
+} from "../images";
 import { ShieldIcon } from "../images/icons";
 import { attackPower, stealth } from "./../ability/Effects";
 

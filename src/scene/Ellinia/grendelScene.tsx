@@ -10,7 +10,13 @@ const grendelFight = {
             enemies: [null, null, introGrendel, null, null],
         },
         {
-            enemies: [null, null, { ...grendel, abilities: shuffle(grendel.abilities) }, null, null],
+            enemies: [
+                null,
+                null,
+                { ...grendel, abilities: shuffle(grendel.abilities) },
+                null,
+                null,
+            ],
         },
     ],
     type: BATTLE_TYPES.BOSS,

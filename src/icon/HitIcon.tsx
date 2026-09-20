@@ -85,7 +85,7 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
             {
                 duration: HIT_PLAYBACK,
                 fill: "forwards",
-            }
+            },
         );
 
         const iconAnimation = icon.animate(
@@ -101,7 +101,7 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
             {
                 duration: 150,
                 fill: "forwards",
-            }
+            },
         );
 
         return () => {
@@ -138,7 +138,13 @@ const HitIcon = ({ statChanges }: { statChanges?: UpdatedCombatantStats }) => {
     );
 };
 
-const HitIcons = ({ statChanges, delay }: { statChanges?: UpdatedCombatantStats; delay: number }) => {
+const HitIcons = ({
+    statChanges,
+    delay,
+}: {
+    statChanges?: UpdatedCombatantStats;
+    delay: number;
+}) => {
     const [hits, setHits] = useState<{ id: number; statChanges: UpdatedCombatantStats }[]>([]);
 
     const nextId = useRef(0);

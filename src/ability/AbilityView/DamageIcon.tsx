@@ -1,6 +1,11 @@
 import classNames from "classnames";
 import { createUseStyles } from "react-jss";
-import { ActionContext, CombatantInfo, NonCombatPlayerInfo, TRIGGER_SOURCE_TYPES } from "../../battle/types";
+import {
+    ActionContext,
+    CombatantInfo,
+    NonCombatPlayerInfo,
+    TRIGGER_SOURCE_TYPES,
+} from "../../battle/types";
 import { getPlayerAbilityResourceCost } from "../../battle/actions/playerAbility";
 import { calculateBonus } from "../../battle/calculateBonus";
 import { calculateDamage } from "../../battle/calculateDamage";
@@ -39,7 +44,7 @@ export const getDamageStatistics = ({
             action.damage !== undefined ||
             action.flatDamage !== undefined ||
             action.type === ACTION_TYPES.ATTACK ||
-            action.type === ACTION_TYPES.RANGE_ATTACK
+            action.type === ACTION_TYPES.RANGE_ATTACK,
     );
 
     if (damageActions.length === 0) {
@@ -56,7 +61,10 @@ export const getDamageStatistics = ({
     const sourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
     const context: ActionContext = { name: "Damage Statistics", sourceChain };
     const withBonus = damageActions.map((action) => {
-        const actionContext = { ...context, sourceChain: [...sourceChain, { source: action, type: TRIGGER_SOURCE_TYPES.ACTION }] };
+        const actionContext = {
+            ...context,
+            sourceChain: [...sourceChain, { source: action, type: TRIGGER_SOURCE_TYPES.ACTION }],
+        };
 
         return calculateBonus({
             action,
@@ -72,7 +80,10 @@ export const getDamageStatistics = ({
     });
 
     const withArea = withBonus.map((action) => {
-        return { ...action, area: calculateActionArea({ action, actor: actorInfo, context }) };
+        return {
+            ...action,
+            area: calculateActionArea({ action, actor: actorInfo, context }),
+        };
     });
 
     const withAttackPower = withArea.map((action: Action) => {
@@ -117,20 +128,30 @@ export const getDamageStatistics = ({
 
         let secondaryDamage = action.secondaryDamage || 0;
         if (actorInfo?.combatant && secondaryDamage) {
-            secondaryDamage = calculateDamage({ ...damageProps, targetIndex: 1, selectedIndex: 2 });
+            secondaryDamage = calculateDamage({
+                ...damageProps,
+                targetIndex: 1,
+                selectedIndex: 2,
+            });
         }
 
         return {
-            damage: actorInfo?.combatant ? calculateDamage(damageProps) : action.damage || action.flatDamage || 0,
+            damage: actorInfo?.combatant
+                ? calculateDamage(damageProps)
+                : action.damage || action.flatDamage || 0,
             secondaryDamage,
         };
     });
 
     const firstActionDamage = damageActions[0].damage || damageActions[0].flatDamage || 0;
     // This is the potential to have a multiplier; false when a bonus is being applied
-    const hasAttackMultiplier = damageActions.some((action) => action.multiplier) && firstActionDamage === withAttackPower[0].damage;
+    const hasAttackMultiplier =
+        damageActions.some((action) => action.multiplier) &&
+        firstActionDamage === withAttackPower[0].damage;
     // All actions need to do the same damage to be considered a multiplier
-    const isMultiHit = withAttackPower.length > 1 && withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
+    const isMultiHit =
+        withAttackPower.length > 1 &&
+        withAttackPower.every(({ damage }) => damage === withAttackPower[0].damage);
 
     const hasUnfulfilledBonus =
         withBonus[0].damage === firstActionDamage &&
@@ -172,7 +193,13 @@ const useStyles = createUseStyles({
 /**
  * The damage icon that displays on the top left of an ability card
  */
-const DamageIcon = ({ damageStatistics, highlightText }: { damageStatistics: DamageStats; highlightText?: boolean }) => {
+const DamageIcon = ({
+    damageStatistics,
+    highlightText,
+}: {
+    damageStatistics: DamageStats;
+    highlightText?: boolean;
+}) => {
     const { baseDamage, hasMultiplier, isAdditive, hasBonus } = damageStatistics || {};
     const classes = useStyles();
 

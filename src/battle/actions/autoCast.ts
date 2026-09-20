@@ -128,12 +128,18 @@ export const checkHandleAutoCast = ({
                         selectCards: selectCards,
                         selectedAbilityId: parentAbility?.instanceId,
                         player,
-                    })
+                    }),
                 );
 
                 if (card) {
                     if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                        dispatch(depleteAbilities({ actorId: actor.id, abilities: [card], context }));
+                        dispatch(
+                            depleteAbilities({
+                                actorId: actor.id,
+                                abilities: [card],
+                                context,
+                            }),
+                        );
                     } else {
                         dispatch(addCardsToHand([card]));
                         dispatch(triggerAddCardsToHandEvent(cards.length, context));
@@ -147,11 +153,13 @@ export const checkHandleAutoCast = ({
                 const battle: BattleState = getState().battle!;
                 const combatAbility = unmodifiedAbility as CombatAbility; // Cards in the deck are always CombatAbility
 
-                const newDeck = battle.deck.filter((card: CombatAbility) => card.instanceId !== combatAbility.instanceId);
+                const newDeck = battle.deck.filter(
+                    (card: CombatAbility) => card.instanceId !== combatAbility.instanceId,
+                );
                 dispatch(
                     updateBattle({
                         deck: newDeck,
-                    })
+                    }),
                 );
                 dispatch(handleDiscardAfterUse(combatAbility));
             }
@@ -165,12 +173,15 @@ export const checkHandleAutoCast = ({
                     ability: {
                         ...abilityToCast,
                         resourceCost,
-                        instanceId: type === AUTO_CAST_ABILITY_TYPES.FROM_DECK ? (abilityToCast as CombatAbility).instanceId : undefined,
+                        instanceId:
+                            type === AUTO_CAST_ABILITY_TYPES.FROM_DECK
+                                ? (abilityToCast as CombatAbility).instanceId
+                                : undefined,
                     },
                     actorId: actor.id,
                     isAutoCast: true,
                     context,
-                })
+                }),
             );
         });
     };
@@ -193,7 +204,7 @@ const cycleDeck = (context: ActionContext) => {
                         combatantId: combatant.id,
                         effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle,
                         context: context,
-                    })
+                    }),
                 );
             }
         });

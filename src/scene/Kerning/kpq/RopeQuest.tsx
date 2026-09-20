@@ -122,7 +122,9 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
     const classes = useStyles();
 
     useEffect(() => {
-        const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
+        const isIncompleteAnswer =
+            answer.filter((a: string | null) => a).length !==
+            correctCombination.filter((c) => c).length;
         if (isIncompleteAnswer) {
             return;
         }
@@ -148,7 +150,9 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
         setBlockUI(true);
 
         setTimeout(() => {
-            const isCorrectAnswer = answer.every((a: string | null, i: number) => Boolean(correctCombination[i]) === Boolean(a));
+            const isCorrectAnswer = answer.every(
+                (a: string | null, i: number) => Boolean(correctCombination[i]) === Boolean(a),
+            );
             if (isCorrectAnswer) {
                 setCompleted(true);
                 setTimeout(() => {
@@ -254,10 +258,20 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                 <div className={classes.inner}>
                     <img src={RopeQuestImage} />
                     {answer.map((memberName: string | null, i: number) => (
-                        <div className={classNames(classes[`rope${i + 1}`], classes.rope)} onClick={() => handleClickRope(i)} key={i}>
-                            {selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
+                        <div
+                            className={classNames(classes[`rope${i + 1}`], classes.rope)}
+                            onClick={() => handleClickRope(i)}
+                            key={i}
+                        >
+                            {selectedPartyMember && (
+                                <img src={ClickIndicatorImage} className={classes.clickIndicator} />
+                            )}
                             {memberName && (
-                                <Tooltip title={getDialog(memberName)} open={Boolean(getDialog(memberName))} placement={"top"}>
+                                <Tooltip
+                                    title={getDialog(memberName)}
+                                    open={Boolean(getDialog(memberName))}
+                                    placement={"top"}
+                                >
                                     <img
                                         src={PARTY_MEMBER_ROPE_MAP[memberName]}
                                         onClick={() => handleClickPartyMember(memberName)}
@@ -274,13 +288,23 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                         if (isUnassigned(memberName)) {
                             return (
                                 <div className={classes[memberName]} key={memberName}>
-                                    {!selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
-                                    <Tooltip title={getDialog(memberName)} open={Boolean(getDialog(memberName))} placement={"top"}>
+                                    {!selectedPartyMember && (
+                                        <img
+                                            src={ClickIndicatorImage}
+                                            className={classes.clickIndicator}
+                                        />
+                                    )}
+                                    <Tooltip
+                                        title={getDialog(memberName)}
+                                        open={Boolean(getDialog(memberName))}
+                                        placement={"top"}
+                                    >
                                         <img
                                             src={PARTYMEMBER_BASE_IMAGE_MAP[memberName]}
                                             onClick={() => handleClickPartyMember(memberName)}
                                             className={classNames(classes.character, {
-                                                [classes.selected]: selectedPartyMember === memberName,
+                                                [classes.selected]:
+                                                    selectedPartyMember === memberName,
                                                 [classes.playerImage]: memberName === "player",
                                             })}
                                         />
@@ -290,7 +314,11 @@ const RopeQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={WessImage} className={classNames(classes.wess)} onClick={() => onComplete()} />
+                        <img
+                            src={WessImage}
+                            className={classNames(classes.wess)}
+                            onClick={() => onComplete()}
+                        />
                     </Tooltip>
                 </div>
             </div>

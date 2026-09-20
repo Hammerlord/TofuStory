@@ -13,7 +13,15 @@ import {
     PerionTradingPostImage,
     PerionWarriorHallImage,
 } from "../images";
-import { CampingIcon, JapaneseOgreIcon, MedalIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import {
+    CampingIcon,
+    JapaneseOgreIcon,
+    MedalIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+    ThoughtBubbleIcon,
+    WorldMapIcon,
+} from "../images/icons";
 import { dancesWithBalrogScene } from "../scene/Perion/dancesWithBalrogScene";
 import Legend from "./Legend";
 import Pan from "./Pan";
@@ -110,18 +118,25 @@ const { selectInTownNode } = playerStateSlice.actions;
 
 const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state.character);
+    const {
+        nodesVisited: visited = {},
+        townShops,
+        rolledBosses,
+    } = useAppSelector((state) => state.character);
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
     const { tradingPost } = townShops[TOWNS.PERION] || {};
 
-    const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce((acc: number, val: string) => {
-        if (visited[val]) {
-            return acc + 1;
-        }
+    const numActivitiesComplete: number = Object.values(PERION_PLACES).reduce(
+        (acc: number, val: string) => {
+            if (visited[val]) {
+                return acc + 1;
+            }
 
-        return acc;
-    }, 0) as number;
+            return acc;
+        },
+        0,
+    ) as number;
     const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
     const dispatch = useAppDispatch();
@@ -180,7 +195,12 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             onClick={handleClickTradingPost}
                             isVisited={tradingPost?.numTradesRemaining === 0}
                         />
-                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={PerionShopImage} onClick={handleClickShop} />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            label={"Shop"}
+                            nodeImage={PerionShopImage}
+                            onClick={handleClickShop}
+                        />
                         <br />
                         <TownNode
                             icon={CampingIcon}
@@ -191,7 +211,11 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                         />
 
                         <div className={classNames(classes.townCenter)}>
-                            <img src={PerionCenterImage} alt="Perion center" className={classes.townCenterImage} />
+                            <img
+                                src={PerionCenterImage}
+                                alt="Perion center"
+                                className={classes.townCenterImage}
+                            />
                             <div className={classes.townHeader}>
                                 <h2>Perion</h2>
                             </div>
@@ -228,9 +252,21 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                             nodeEl={
                                 <div>
                                     <img src={PerionDummiesPreviewImage} />
-                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer} />
-                                    <img src={mapleDummy.image} alt="Dummy" className={classes.dummyCharContainer2} />
-                                    <img src={basicDummy.image} alt="Dummy" className={classes.dummyCharContainer3} />
+                                    <img
+                                        src={basicDummy.image}
+                                        alt="Dummy"
+                                        className={classes.dummyCharContainer}
+                                    />
+                                    <img
+                                        src={mapleDummy.image}
+                                        alt="Dummy"
+                                        className={classes.dummyCharContainer2}
+                                    />
+                                    <img
+                                        src={basicDummy.image}
+                                        alt="Dummy"
+                                        className={classes.dummyCharContainer3}
+                                    />
                                 </div>
                             }
                         />
@@ -248,7 +284,9 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                                 icon={JapaneseOgreIcon}
                                 isVisited={visited[PERION_PLACES.RICHE]}
                                 label={"[Test] Riche, the Undead Mage"}
-                                onClick={() => handleClickEvent(PERION_PLACES.RICHE, undeadMageScene)}
+                                onClick={() =>
+                                    handleClickEvent(PERION_PLACES.RICHE, undeadMageScene)
+                                }
                                 nodeImage={PerionWarriorHallImage}
                             />
                         )}
@@ -256,7 +294,9 @@ const Perion = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.PERION} />}
-                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.PERION} />}
+                {isTradingPostOpen && (
+                    <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.PERION} />
+                )}
             </div>
         </div>
     );

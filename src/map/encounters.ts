@@ -1,8 +1,27 @@
 import { partition } from "ramda";
-import { Ability, ACTION_TYPES, Effect, EFFECT_CLASSES, EFFECT_TYPES, Minion, TARGET_TYPES } from "../ability/types";
+import {
+    Ability,
+    ACTION_TYPES,
+    Effect,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    Minion,
+    TARGET_TYPES,
+} from "../ability/types";
 import { Wave } from "../battle/types";
 import { lifeLink, poisonous, restless, sneaky, taunting } from "../enemy/effect";
-import { avenger, elite, eliteSquad, eliteThorns, eliteTrio, eruptive, raging, stoneSkin, vengeful, warding } from "./../ability/Effects";
+import {
+    avenger,
+    elite,
+    eliteSquad,
+    eliteThorns,
+    eliteTrio,
+    eruptive,
+    raging,
+    stoneSkin,
+    vengeful,
+    warding,
+} from "./../ability/Effects";
 import { attack, shoot, tantrum } from "./../enemy/abilities";
 import { getRandomItem, moveHeadToTail, shuffle } from "./../utils";
 import { CHANCE_TO_SPAWN_SPECIAL_ENEMY } from "./constants";
@@ -86,7 +105,13 @@ const getRecentEnemies = (previousEncounters: Wave[][]) => {
     return recentEnemyLog;
 };
 
-const pickBaseEnemy = ({ elites, previousEncounters }: { elites: Minion[]; previousEncounters: Wave[][] }): Minion => {
+const pickBaseEnemy = ({
+    elites,
+    previousEncounters,
+}: {
+    elites: Minion[];
+    previousEncounters: Wave[][];
+}): Minion => {
     const recentEnemyLog = getRecentEnemies(previousEncounters);
     const eligibleEnemies = elites.filter((enemy: Minion) => {
         return !recentEnemyLog[enemy.name];
@@ -106,8 +131,17 @@ export const generateEliteSquad = ({
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
-    const baseEnemy = pickBaseEnemy({ elites: eliteMap.squad, previousEncounters });
-    const affixPool = [eliteThorns, { ...raging, turnsTriggerFrequency: 3 }, warding, lifeLink, sneaky];
+    const baseEnemy = pickBaseEnemy({
+        elites: eliteMap.squad,
+        previousEncounters,
+    });
+    const affixPool = [
+        eliteThorns,
+        { ...raging, turnsTriggerFrequency: 3 },
+        warding,
+        lifeLink,
+        sneaky,
+    ];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -115,7 +149,8 @@ export const generateEliteSquad = ({
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * SQUAD_HP_MULTIPLIER));
+    const applyMultiplier = (val: number = 0) =>
+        val === 0 ? 0 : Math.floor(val * SQUAD_HP_MULTIPLIER);
     const finalDamageMod = Math.max(0, damageModifier - 1);
 
     const enemy = {
@@ -124,7 +159,11 @@ export const generateEliteSquad = ({
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities],
-        effects: [...effects, { ...eliteSquad, attackPower: eliteSquad.attackPower + finalDamageMod }, ...affixes],
+        effects: [
+            ...effects,
+            { ...eliteSquad, attackPower: eliteSquad.attackPower + finalDamageMod },
+            ...affixes,
+        ],
     };
 
     const alternate = {
@@ -156,7 +195,10 @@ const generateEliteTriad = ({
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
 
-    const baseEnemy = pickBaseEnemy({ elites: eliteMap.trio, previousEncounters });
+    const baseEnemy = pickBaseEnemy({
+        elites: eliteMap.trio,
+        previousEncounters,
+    });
     const affixPool: Effect[] = [
         eliteThorns,
         { ...raging, turnsTriggerFrequency: 3 },
@@ -169,7 +211,11 @@ const generateEliteTriad = ({
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
-    if (baseEnemy.abilities.some((ability) => ability.actions.some((action) => action.type === ACTION_TYPES.NONE))) {
+    if (
+        baseEnemy.abilities.some((ability) =>
+            ability.actions.some((action) => action.type === ACTION_TYPES.NONE),
+        )
+    ) {
         affixPool.push(restless);
     }
 
@@ -177,7 +223,8 @@ const generateEliteTriad = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, 2)]);
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
 
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * TRIO_HP_MULTIPLIER));
+    const applyMultiplier = (val: number = 0) =>
+        val === 0 ? 0 : Math.floor(val * TRIO_HP_MULTIPLIER);
 
     const enemy = {
         ...baseEnemy,
@@ -185,7 +232,11 @@ const generateEliteTriad = ({
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities, ability],
-        effects: [...effects, { ...eliteTrio, attackPower: eliteTrio.attackPower + damageModifier }, ...affixes],
+        effects: [
+            ...effects,
+            { ...eliteTrio, attackPower: eliteTrio.attackPower + damageModifier },
+            ...affixes,
+        ],
     };
 
     const alternate = {
@@ -221,8 +272,19 @@ const generateEliteDuo = ({
     previousEncounters: Wave[][];
 }): (Minion | null)[] => {
     const { numAffixes = 1, damageModifier = 0 } = options || {};
-    const baseEnemy = pickBaseEnemy({ elites: eliteMap.duo || eliteMap.trio, previousEncounters });
-    const affixPool: Effect[] = [eliteThorns, { ...raging, turnsTriggerFrequency: 3 }, warding, lifeLink, sneaky, poisonous, taunting];
+    const baseEnemy = pickBaseEnemy({
+        elites: eliteMap.duo || eliteMap.trio,
+        previousEncounters,
+    });
+    const affixPool: Effect[] = [
+        eliteThorns,
+        { ...raging, turnsTriggerFrequency: 3 },
+        warding,
+        lifeLink,
+        sneaky,
+        poisonous,
+        taunting,
+    ];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
@@ -232,7 +294,8 @@ const generateEliteDuo = ({
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
 
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * DUO_HP_MULTIPLIER));
+    const applyMultiplier = (val: number = 0) =>
+        val === 0 ? 0 : Math.floor(val * DUO_HP_MULTIPLIER);
 
     const enemy = {
         ...baseEnemy,
@@ -240,7 +303,11 @@ const generateEliteDuo = ({
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities, ability],
-        effects: [...effects, { ...elite, attackPower: elite.attackPower + damageModifier }, ...affixes],
+        effects: [
+            ...effects,
+            { ...elite, attackPower: elite.attackPower + damageModifier },
+            ...affixes,
+        ],
     };
 
     const alternateResource = {
@@ -307,13 +374,28 @@ const generateElite = ({
         },
     };
 
-    const baseEnemy = pickBaseEnemy({ elites: eliteMap.single, previousEncounters });
-    const affixPool = [eliteThorns, { ...raging, turnsTriggerFrequency: 2 }, warding, eruptive, swarming, sneaky, poisonous];
+    const baseEnemy = pickBaseEnemy({
+        elites: eliteMap.single,
+        previousEncounters,
+    });
+    const affixPool = [
+        eliteThorns,
+        { ...raging, turnsTriggerFrequency: 2 },
+        warding,
+        eruptive,
+        swarming,
+        sneaky,
+        poisonous,
+    ];
     if (!baseEnemy.armor) {
         affixPool.push(stoneSkin);
     }
 
-    if (baseEnemy.abilities.some((ability) => ability.actions.some((action) => action.type === ACTION_TYPES.NONE))) {
+    if (
+        baseEnemy.abilities.some((ability) =>
+            ability.actions.some((action) => action.type === ACTION_TYPES.NONE),
+        )
+    ) {
         affixPool.push(restless);
     }
 
@@ -321,7 +403,8 @@ const generateElite = ({
     const { maxHP, armor, abilities = [], effects = [] } = baseEnemy;
     const modifyTantrum = affixes.some((a) => a.name === raging.name || a.name === poisonous.name);
     const ability = getRandomItem([generateTantrumAttack(baseEnemy, modifyTantrum ? 2 : 3)]);
-    const applyMultiplier = (val: number = 0) => (val === 0 ? 0 : Math.floor(val * SINGLE_HP_MULTIPLIER));
+    const applyMultiplier = (val: number = 0) =>
+        val === 0 ? 0 : Math.floor(val * SINGLE_HP_MULTIPLIER);
 
     const enemy = {
         ...baseEnemy,
@@ -329,22 +412,39 @@ const generateElite = ({
         maxHP: applyMultiplier(maxHP),
         armor: applyMultiplier(armor),
         abilities: [...abilities, ability],
-        effects: [...effects, { ...elite, attackPower: elite.attackPower + damageModifier * 2 }, ...affixes],
+        effects: [
+            ...effects,
+            { ...elite, attackPower: elite.attackPower + damageModifier * 2 },
+            ...affixes,
+        ],
     };
 
     if (affixes.some((a) => a.name === swarming.name)) {
-        return [null, getRandomItem(eliteMap.minions), enemy, getRandomItem(eliteMap.minions), null];
+        return [
+            null,
+            getRandomItem(eliteMap.minions),
+            enemy,
+            getRandomItem(eliteMap.minions),
+            null,
+        ];
     }
 
     return [null, null, enemy, null, null];
 };
 
-export const generateElites = (route: Route, previousEncounters: Wave[][]): { enemies: Minion[] }[] | undefined => {
+export const generateElites = (
+    route: Route,
+    previousEncounters: Wave[][],
+): { enemies: Minion[] }[] | undefined => {
     if (!route) {
         return;
     }
 
-    const eliteProps = { eliteMap: route.elites, options: route.eliteOptions, previousEncounters };
+    const eliteProps = {
+        eliteMap: route.elites,
+        options: route.eliteOptions,
+        previousEncounters,
+    };
     const getSquad = () => generateEliteSquad(eliteProps);
     const getTriad = () => generateEliteTriad(eliteProps);
     const getDuo = () => generateEliteDuo(eliteProps);
@@ -378,7 +478,9 @@ export const generateWaves = ({
 
     const waves: Wave[] = [];
     const baseEnemyPool: Minion[][] | undefined =
-        numWaves === 1 ? route.enemies || fallbackRoute?.enemies : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
+        numWaves === 1
+            ? route.enemies || fallbackRoute?.enemies
+            : route.multiWaveEnemies || fallbackRoute?.multiWaveEnemies;
 
     if (!baseEnemyPool) {
         return;
@@ -387,7 +489,8 @@ export const generateWaves = ({
     let enemyPool: Minion[][] = baseEnemyPool.slice();
 
     const lastThreeBattles = previousEncounters.slice().reverse().slice(0, 3);
-    const getNames = (characters: (Minion | null)[]) => JSON.stringify(characters.map((e) => e?.name)); // Quick and dirty way to identify the board enemy side.
+    const getNames = (characters: (Minion | null)[]) =>
+        JSON.stringify(characters.map((e) => e?.name)); // Quick and dirty way to identify the board enemy side.
 
     const filteredEnemyPool = (enemyPool || []).filter((enemies: Minion[]) => {
         const enemyNames = getNames(enemies);
@@ -406,7 +509,10 @@ export const generateWaves = ({
         let retries = 3;
         const generateEnemies = () => {
             let candidates: (Minion | null)[] = enemyPool.shift().slice();
-            const numSameEnemies = waves.length && candidates.map((c, j) => c && c?.name === waves[i - 1][j]?.name).filter((v) => v).length;
+            const numSameEnemies =
+                waves.length &&
+                candidates.map((c, j) => c && c?.name === waves[i - 1][j]?.name).filter((v) => v)
+                    .length;
             const isTooSimilarToPrev = numSameEnemies >= 3;
             if (isTooSimilarToPrev && retries) {
                 enemyPool.push(candidates);
@@ -428,17 +534,22 @@ export const generateWaves = ({
 
                     const [nonemptySlots, emptySlots] = partition(
                         ([c]) => Boolean(c),
-                        candidates.map((c, i) => [c, i])
+                        candidates.map((c, i) => [c, i]),
                     );
 
                     const rollResourceAmount = () => {
                         return getRandomItem([0, 1, 2]);
                     };
 
-                    const emptyIndices: number[] = emptySlots.map(([, i]) => i).filter((i: number) => isNotSpecialEnemy(candidates[i]));
+                    const emptyIndices: number[] = emptySlots
+                        .map(([, i]) => i)
+                        .filter((i: number) => isNotSpecialEnemy(candidates[i]));
                     if (emptyIndices.length > 0) {
                         const emptySlot: number = getRandomItem(emptyIndices);
-                        candidates[emptySlot] = { ...specialEnemy, resources: rollResourceAmount() };
+                        candidates[emptySlot] = {
+                            ...specialEnemy,
+                            resources: rollResourceAmount(),
+                        };
                         return;
                     }
 
@@ -447,7 +558,10 @@ export const generateWaves = ({
                         .filter((i: number) => isNotSpecialEnemy(candidates[i]));
                     if (nonemptyIndices.length) {
                         const occupiedSlot: number = getRandomItem(nonemptyIndices);
-                        candidates[occupiedSlot] = { ...specialEnemy, resources: rollResourceAmount() };
+                        candidates[occupiedSlot] = {
+                            ...specialEnemy,
+                            resources: rollResourceAmount(),
+                        };
                     }
                 });
             }

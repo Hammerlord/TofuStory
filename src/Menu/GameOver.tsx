@@ -75,11 +75,19 @@ const GameOver = ({ onExit, player }) => {
                     <div className={classes.loot}>
                         {player.items.map((item, i: number) => (
                             <div className={classes.itemContainer} key={i}>
-                                <img src={item.image} className={classes.item} style={{ animationDelay: `${0.1 * i}s` }} />
+                                <img
+                                    src={item.image}
+                                    className={classes.item}
+                                    style={{ animationDelay: `${0.1 * i}s` }}
+                                />
                             </div>
                         ))}
                         <div className={classes.itemContainer}>
-                            <img src={mesoImage} className={classes.item} style={{ animationDelay: `${0.1 * player.items.length}s` }} />
+                            <img
+                                src={mesoImage}
+                                className={classes.item}
+                                style={{ animationDelay: `${0.1 * player.items.length}s` }}
+                            />
                         </div>
                     </div>
                     <p>Somewhere out there is a happy adventurer...</p>

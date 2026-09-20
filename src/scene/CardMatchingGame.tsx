@@ -133,7 +133,7 @@ const getRandomizedDeck = (difficulty: "easy" | "medium" | "hard") => {
         flatten,
         (cards) => repeat(cards, 2),
         (cards) => cards.slice(0, DIFFICULTY_SIZE_MAP[difficulty]),
-        shuffle
+        shuffle,
     )(cards);
 };
 
@@ -159,7 +159,8 @@ const CardMatchingGame = ({
     const [opponentScore, setOpponentScore] = useState(0);
     const [opponentSelections, setOpponentSelections] = useState([]);
     const classes = useStyles();
-    const cardsRemaining = cardLayout.length - matchedCards.filter((_, i) => matchedCards[i]).length;
+    const cardsRemaining =
+        cardLayout.length - matchedCards.filter((_, i) => matchedCards[i]).length;
 
     useEffect(() => {
         // Intro
@@ -183,7 +184,11 @@ const CardMatchingGame = ({
     const handleOpponentTurn = () => {
         // Opponent turn
         const selectRandomCardIndex = (excluding = []) => {
-            return getRandomItem(cardLayout.map((_, i) => i).filter((i) => !matchedCards[i] && !excluding.includes(i)));
+            return getRandomItem(
+                cardLayout
+                    .map((_, i) => i)
+                    .filter((i) => !matchedCards[i] && !excluding.includes(i)),
+            );
         };
         let indices = [selectRandomCardIndex()];
 
@@ -282,20 +287,31 @@ const CardMatchingGame = ({
     };
 
     const handleClickCard = (index: number) => {
-        if (disableUI || matchedCards[index] || selectedCardIndices.every((index) => typeof index === "number")) {
+        if (
+            disableUI ||
+            matchedCards[index] ||
+            selectedCardIndices.every((index) => typeof index === "number")
+        ) {
             return;
         }
         handleSelectCard(index);
     };
 
     const isCardRevealed = (i: number): boolean => {
-        const isInitialReveal = typeof flippedCardIndex === "number" && Math.abs(i - flippedCardIndex) <= CARD_RANGE_TO_FLIP - 1;
+        const isInitialReveal =
+            typeof flippedCardIndex === "number" &&
+            Math.abs(i - flippedCardIndex) <= CARD_RANGE_TO_FLIP - 1;
         const isSelected = selectedCardIndices.some((index) => index === i);
         return isInitialReveal || isSelected;
     };
 
     const handleClickExit = () => {
-        onComplete && onComplete({ success: playerScore > opponentScore, score: playerScore, type: "card-matching" });
+        onComplete &&
+            onComplete({
+                success: playerScore > opponentScore,
+                score: playerScore,
+                type: "card-matching",
+            });
     };
 
     return (
@@ -344,7 +360,9 @@ const CardMatchingGame = ({
                     </div>
                 )}
             </div>
-            {showTurnAnnouncement && <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />}
+            {showTurnAnnouncement && (
+                <TurnAnnouncement isPlayerTurn={isPlayerTurn} duration={TURN_ANNOUNCEMENT_TIME} />
+            )}
         </div>
     );
 };

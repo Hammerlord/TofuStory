@@ -1,5 +1,11 @@
 import { isAttackAbility, isOffensiveAbility } from "../../ability/AbilityView/utils";
-import { ACTION_TYPES, Ability, Action, InduceCombatantModes, TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    Ability,
+    Action,
+    InduceCombatantModes,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { CrossedSwordsImage } from "../../images";
 import { AppDispatch, RootState } from "../../store";
@@ -35,7 +41,7 @@ export const checkInduce = ({
                     ...induceCombatant,
                     affectedTargetIds,
                     parentContext,
-                })
+                }),
             );
         }
 
@@ -53,7 +59,9 @@ export const checkInduce = ({
 
                 const attackAbility: Ability = getInducedAttack(combatant);
 
-                const getInitialTargetIndex = (combatantData: CombatantInfo): number | undefined => {
+                const getInitialTargetIndex = (
+                    combatantData: CombatantInfo,
+                ): number | undefined => {
                     const combatant = combatantData?.combatant;
                     const enemyAutoTargeting = combatant?.targeting?.actionTargets?.[0];
                     if (enemyAutoTargeting) {
@@ -67,8 +75,14 @@ export const checkInduce = ({
                                 continue;
                             }
 
-                            const targetData = findCombatantData(getState().battle!, source.targetId);
-                            if (typeof targetData?.index === "number" && targetData?.friendlySide !== combatantData.friendlySide) {
+                            const targetData = findCombatantData(
+                                getState().battle!,
+                                source.targetId,
+                            );
+                            if (
+                                typeof targetData?.index === "number" &&
+                                targetData?.friendlySide !== combatantData.friendlySide
+                            ) {
                                 return targetData.index;
                             }
                         }
@@ -83,7 +97,7 @@ export const checkInduce = ({
                         actorId: id,
                         isProc: true,
                         context: parentContext,
-                    })
+                    }),
                 );
             });
         }
@@ -97,7 +111,13 @@ export const getInducedAttack = (actor: Combatant): Ability => {
         abilities.find((ability) => !ability.resourceCost && isOffensiveAbility);
 
     if (attackAbility) {
-        return { ...attackAbility, actions: attackAbility.actions.map((a) => ({ ...a, playbackTime: INDUCED_ACTION_PLAYBACK_SPEED })) };
+        return {
+            ...attackAbility,
+            actions: attackAbility.actions.map((a) => ({
+                ...a,
+                playbackTime: INDUCED_ACTION_PLAYBACK_SPEED,
+            })),
+        };
     }
 
     let basicAttackDamage = 0;
@@ -158,12 +178,18 @@ const handleInducedActions = ({
                 if (
                     !combatant.HP ||
                     isStunnedOrFrozen(combatant) ||
-                    !passesConditions({ actor: combatantData, battle: getState().battle!, proc: action, context: parentContext })
+                    !passesConditions({
+                        actor: combatantData,
+                        battle: getState().battle!,
+                        proc: action,
+                        context: parentContext,
+                    })
                 ) {
                     return;
                 }
 
-                const { index: initialIndex, side: initialSide } = combatant?.targeting?.actionTargets?.[0] || {};
+                const { index: initialIndex, side: initialSide } =
+                    combatant?.targeting?.actionTargets?.[0] || {};
 
                 const target = autoSelectActionTarget({
                     action,
@@ -186,7 +212,7 @@ const handleInducedActions = ({
                         parentContext,
                         selectedIndex: index,
                         side,
-                    })
+                    }),
                 );
 
                 const context: ActionContext = {
@@ -210,7 +236,7 @@ const handleInducedActions = ({
                                 actions: [action],
                                 effects: [],
                             },
-                        })
+                        }),
                     );
                 }
             });

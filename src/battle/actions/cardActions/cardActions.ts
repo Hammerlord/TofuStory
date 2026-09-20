@@ -22,7 +22,12 @@ import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { usePlayerAbility } from "../playerAbility";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
-import { checkAddCardsToDeck, handleAddCardsToDiscard, handleAddCardsToHand, addCardsToHandWithEvents } from "./addCards";
+import {
+    checkAddCardsToDeck,
+    handleAddCardsToDiscard,
+    handleAddCardsToHand,
+    addCardsToHandWithEvents,
+} from "./addCards";
 import { handleDiscardAfterUse } from "./discardCards";
 import { drawCards } from "./drawCards";
 import { handleMoveCards, handleRetrieveDepletedCards } from "./moveCards";
@@ -35,18 +40,19 @@ const { updateBattle, setNotification } = battleStateSlice?.actions || {};
 /**
  * Remove a card from existence based on its id.
  */
-export const deleteCard = (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const battle: BattleState = getState().battle!;
-    const { hand, deck, discard } = battle;
+export const deleteCard =
+    (abilityId: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+        const battle: BattleState = getState().battle!;
+        const { hand, deck, discard } = battle;
 
-    dispatch(
-        updateBattle({
-            hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
-            discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
-        })
-    );
-};
+        dispatch(
+            updateBattle({
+                hand: hand.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                deck: deck.filter((card: CombatAbility) => card.instanceId !== abilityId),
+                discard: discard.filter((card: CombatAbility) => card.instanceId !== abilityId),
+            }),
+        );
+    };
 
 /**
  * Handle effects that add card(s) to the player's hand, deck, discard.
@@ -89,17 +95,31 @@ export const checkCardActions = ({
             const { hand, discard, playerSide } = battle;
             const player = playerSide.find((c) => c?.isPlayer) as Player;
 
-            const cardsDiscarded = prepareForDiscard({ cards: shuffle(hand).slice(0, amount), alwaysKeepRetain: true, battle, player });
-            const newHand = hand.filter((card) => cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId));
+            const cardsDiscarded = prepareForDiscard({
+                cards: shuffle(hand).slice(0, amount),
+                alwaysKeepRetain: true,
+                battle,
+                player,
+            });
+            const newHand = hand.filter((card) =>
+                cardsDiscarded.every((discarded) => discarded.instanceId !== card.instanceId),
+            );
 
             dispatch(
                 updateBattle({
                     hand: newHand,
                     discard: [...cardsDiscarded, ...discard],
-                })
+                }),
             );
 
-            dispatch(enqueueEvent({ newCards: cardsDiscarded, cardsAddedTo: "discard", context, options: { alwaysGroup: true } }));
+            dispatch(
+                enqueueEvent({
+                    newCards: cardsDiscarded,
+                    cardsAddedTo: "discard",
+                    context,
+                    options: { alwaysGroup: true },
+                }),
+            );
         }
 
         // A new instance of owned cards in case they become stale in between actions
@@ -112,22 +132,40 @@ export const checkCardActions = ({
                     acc[card.name] = true;
                     return acc;
                 },
-                {} as { [cardName: string]: true }
+                {} as { [cardName: string]: true },
             );
         };
 
         if (addCards) {
-            dispatch(handleAddCardsToHand({ addCards, ownedCards: getOwnedCards(), context }));
+            dispatch(
+                handleAddCardsToHand({
+                    addCards,
+                    ownedCards: getOwnedCards(),
+                    context,
+                }),
+            );
         }
 
         dispatch(checkAddCardsToDeck({ action, ownedCards: getOwnedCards(), context }));
 
         if (addCardsToDiscard) {
-            dispatch(handleAddCardsToDiscard({ addCardsToDiscard, ownedCards: getOwnedCards(), context }));
+            dispatch(
+                handleAddCardsToDiscard({
+                    addCardsToDiscard,
+                    ownedCards: getOwnedCards(),
+                    context,
+                }),
+            );
         }
 
         if (typeof retrieveDepletedCards?.amount === "number") {
-            dispatch(handleRetrieveDepletedCards({ amount: retrieveDepletedCards?.amount, source, context }));
+            dispatch(
+                handleRetrieveDepletedCards({
+                    amount: retrieveDepletedCards?.amount,
+                    source,
+                    context,
+                }),
+            );
         }
 
         // If we apply card effects, assume we always want to do it AFTER drawCards/addCards. Otherwise, configure the actions to be separate and in the desired order!
@@ -150,18 +188,24 @@ export const checkCardActions = ({
                             }
                             return acc;
                         },
-                        {} as { [cardId: string]: true }
+                        {} as { [cardId: string]: true },
                     );
 
                 dispatch(
                     updateBattle({
                         [pileKey]: pile.map((card: CombatAbility) => {
                             if (card.instanceId && affectedCards[card.instanceId]) {
-                                return applyAbilityEventEffects({ event: applyAbilityEffects, ability: card, context, battle, player });
+                                return applyAbilityEventEffects({
+                                    event: applyAbilityEffects,
+                                    ability: card,
+                                    context,
+                                    battle,
+                                    player,
+                                });
                             }
                             return card;
                         }),
-                    })
+                    }),
                 );
             };
 
@@ -200,7 +244,7 @@ export const checkCardActions = ({
                     context,
                     battle: getState().battle! as BattleState,
                     player,
-                })
+                }),
             );
 
             dispatch(addCardsToHandWithEvents(cardsToAdd, context));
@@ -219,7 +263,11 @@ const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) 
                     filters.some((filter) => {
                         const { property, value, comparator } = filter;
                         const propertyVal = _.get(card, property);
-                        return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                        return passesValueComparison({
+                            val: propertyVal,
+                            otherVal: value,
+                            comparator,
+                        });
                     })
                 );
             })
@@ -228,9 +276,11 @@ const handleAutoPlayCards = (playCards: AutoPlayCards, context?: ActionContext) 
         dispatch(
             updateBattle({
                 deck: deck.filter((card: CombatAbility) =>
-                    cardsToPlay.every((otherCard: CombatAbility) => card.instanceId !== otherCard.instanceId)
+                    cardsToPlay.every(
+                        (otherCard: CombatAbility) => card.instanceId !== otherCard.instanceId,
+                    ),
                 ),
-            })
+            }),
         );
 
         cardsToPlay.forEach((ability: CombatAbility) => {
@@ -277,8 +327,12 @@ export const handleDrawOriginalAbility = ({
         let foundCard;
         if (!found) {
             // This card can still enter the hand even if it was supposed to be ephemeral. Look up the player's ability history to see if it's there.
-            const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
-            const card = player.abilityHistory.find((ability: CombatAbility) => ability.instanceId === effect.originalAbilityId);
+            const player = playerSide.find(
+                (combatant: Combatant | null) => combatant?.isPlayer,
+            ) as Player;
+            const card = player.abilityHistory.find(
+                (ability: CombatAbility) => ability.instanceId === effect.originalAbilityId,
+            );
             if (!card) {
                 return;
             }
@@ -290,7 +344,13 @@ export const handleDrawOriginalAbility = ({
 
         if (newHand.length >= MAX_HAND_SIZE) {
             newHand = newHand.slice(0, MAX_HAND_SIZE);
-            dispatch(setNotification({ text: battleWarnings.handFull, severity: "warning", id: uuid.v4() }));
+            dispatch(
+                setNotification({
+                    text: battleWarnings.handFull,
+                    severity: "warning",
+                    id: uuid.v4(),
+                }),
+            );
             if (foundCard && !foundCard.removeAfterTurn) {
                 newDiscard.unshift(foundCard);
             }
@@ -302,7 +362,7 @@ export const handleDrawOriginalAbility = ({
                 deck: newDeck,
                 discard: newDiscard,
                 depleted: newDeplete,
-            })
+            }),
         );
     };
 };
@@ -324,7 +384,7 @@ export const triggerAddCardsToHandEvent = (amount: number, context: ActionContex
                             ...context,
                             trackSumAmount: amount,
                         },
-                    })
+                    }),
                 );
             }
         });

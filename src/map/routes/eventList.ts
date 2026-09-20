@@ -3,7 +3,11 @@ import { cultistScene } from "../../scene/CultistScene";
 import { cursedChestScene } from "../../scene/CursedTreasureScene";
 import { dueyIntroScene } from "../../scene/Duey/duey";
 import { fortuneBoxScene } from "../../scene/FortuneBox";
-import { goldRichieIntro, goldRichieMercenaries, goldRichieRetrade } from "../../scene/GoldRichie/GoldRichie";
+import {
+    goldRichieIntro,
+    goldRichieMercenaries,
+    goldRichieRetrade,
+} from "../../scene/GoldRichie/GoldRichie";
 import { noobIntro, noobRivalWarrior } from "../../scene/Noob";
 import { shrineScene } from "../../scene/Shrine";
 import { wantedPosterScene } from "../../scene/WantedPoster/wantedPosterScene";
@@ -263,7 +267,15 @@ export const CLASS_ITEMS = {
         battleGauntlets,
         redDuke,
     ],
-    [PLAYER_CLASSES.MAGICIAN]: [starEarrings, hardwoodWand, greenJester, phoenixWand, blueChaosRobe, silverSnowboard, starryBandana],
+    [PLAYER_CLASSES.MAGICIAN]: [
+        starEarrings,
+        hardwoodWand,
+        greenJester,
+        phoenixWand,
+        blueChaosRobe,
+        silverSnowboard,
+        starryBandana,
+    ],
     [PLAYER_CLASSES.BOWMAN]: [
         brokenArrow,
         drakeSkull,

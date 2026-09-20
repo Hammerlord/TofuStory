@@ -11,7 +11,11 @@ export type ReticleTargetContext = {
     selectedMinion?: { id?: string } | null;
     allowFriendlyMovement: boolean;
     movementAbility: Ability;
-    hoveredCombatant: { side: BATTLEFIELD_SIDES; index: number; id: string | null } | null;
+    hoveredCombatant: {
+        side: BATTLEFIELD_SIDES;
+        index: number;
+        id: string | null;
+    } | null;
     abilityToUse?: Ability | null;
     battle: BattleState;
     actorId: string;
@@ -90,7 +94,11 @@ export const shouldShowReticleForTarget = ({
 };
 
 export type TargetedCombatantContext = {
-    hoveredCombatant: { side: BATTLEFIELD_SIDES; index: number; id: string | null } | null;
+    hoveredCombatant: {
+        side: BATTLEFIELD_SIDES;
+        index: number;
+        id: string | null;
+    } | null;
     abilityToUse?: Ability | null;
     disableActions: boolean;
     actor?: { id?: string } | null;

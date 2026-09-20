@@ -16,7 +16,11 @@ export const aggregateItemEffects = (items: Item[]): CombatEffect[] => {
     const effects: CombatEffect[] = [createCombatEffect(directDamageTakenTrigger)]; // Player always has this effect for calculating whether damage was recently taken
     items.forEach((item) => {
         const itemEffects: CombatEffect[] =
-            item?.effects?.map((e: Effect) => ({ ...createCombatEffect(e), itemSource: item.name, stacks: item?.stacks || 1 })) || [];
+            item?.effects?.map((e: Effect) => ({
+                ...createCombatEffect(e),
+                itemSource: item.name,
+                stacks: item?.stacks || 1,
+            })) || [];
         effects.push(...itemEffects);
     });
     return effects;
@@ -36,7 +40,10 @@ export const aggregateAbilityEffects = (abilities: CombatAbility[]): CombatEffec
     return effects;
 };
 
-export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreMaxLevel?: boolean; maxLevel?: number } = {}) => {
+export const getUpgradeCard = (
+    card: CombatAbility | Ability,
+    options: { ignoreMaxLevel?: boolean; maxLevel?: number } = {},
+) => {
     const { ignoreMaxLevel = false, maxLevel = DEFAULT_CARD_MAX_LEVEL } = options;
     if (!card.upgrades?.length || (card.level && card.level >= maxLevel && !ignoreMaxLevel)) {
         return;
@@ -50,7 +57,8 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
         }
 
         const cannotBeBelowZeroProperties = ["damage", "healing", "armor"];
-        const { addCardOptions, selectCardOptions, addCardsToDeckOptions, addActions, ...other } = upgradeObj;
+        const { addCardOptions, selectCardOptions, addCardsToDeckOptions, addActions, ...other } =
+            upgradeObj;
 
         Object.entries(other).forEach(([key, val]) => {
             if (typeof equivalentObj[key] === "undefined") {
@@ -100,25 +108,29 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
         if (addCardsToDeckOptions && equivalentObj.addCardsToDeck) {
             const { appendCards = 0, upgradeLevels = 0 } = addCardsToDeckOptions;
             const cards = equivalentObj.addCardsToDeck.slice(0, appendCards).map(cloneDeep);
-            equivalentObj.addCardsToDeck = [...equivalentObj.addCardsToDeck, ...cards].map((card) => {
-                for (let i = 0; i < upgradeLevels; ++i) {
-                    card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
-                }
+            equivalentObj.addCardsToDeck = [...equivalentObj.addCardsToDeck, ...cards].map(
+                (card) => {
+                    for (let i = 0; i < upgradeLevels; ++i) {
+                        card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
+                    }
 
-                return card;
-            });
+                    return card;
+                },
+            );
         }
 
         if (selectCardOptions && equivalentObj.selectCards?.cards) {
             const { appendCards = 0, upgradeLevels = 0 } = selectCardOptions;
             const cards = equivalentObj.selectCards.cards.slice(0, appendCards).map(cloneDeep);
-            equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map((card) => {
-                for (let i = 0; i < upgradeLevels; ++i) {
-                    card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
-                }
+            equivalentObj.selectCards.cards = [...equivalentObj.selectCards.cards, ...cards].map(
+                (card) => {
+                    for (let i = 0; i < upgradeLevels; ++i) {
+                        card = getUpgradeCard(card, { ignoreMaxLevel: true }) || card;
+                    }
 
-                return card;
-            });
+                    return card;
+                },
+            );
         }
 
         if (addActions && Array.isArray(equivalentObj.actions)) {
@@ -137,7 +149,10 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
     // So only apply the floor on the top level.
     newCard = {
         ...newCard,
-        resourceCost: typeof newCard.resourceCost === "number" ? Math.max(0, newCard.resourceCost) : newCard.resourceCost,
+        resourceCost:
+            typeof newCard.resourceCost === "number"
+                ? Math.max(0, newCard.resourceCost)
+                : newCard.resourceCost,
     };
 
     const isFunctionallySameCard = JSON.stringify(newCard) === JSON.stringify(card);
@@ -157,7 +172,9 @@ export const getUpgradeCard = (card: CombatAbility | Ability, options: { ignoreM
 export const getCardPool = (player: Player, deck: CombatAbility[]) => {
     const { starters, all } = JOB_CARD_MAP[player.class];
 
-    const disabledCards = new Set(player.items.flatMap((item) => item.disableCardsFromBeingFound ?? []));
+    const disabledCards = new Set(
+        player.items.flatMap((item) => item.disableCardsFromBeingFound ?? []),
+    );
 
     const ownedUniqueCards = new Set(deck.filter((card) => card.isUnique).map((card) => card.name));
 
@@ -170,7 +187,9 @@ export const getCardPool = (player: Player, deck: CombatAbility[]) => {
         }),
     ]
         .concat(NEUTRAL_ABILITIES)
-        .filter((ability) => !ownedUniqueCards.has(ability.name) && !disabledCards.has(ability.name));
+        .filter(
+            (ability) => !ownedUniqueCards.has(ability.name) && !disabledCards.has(ability.name),
+        );
 };
 
 export const getCardChoicesFromItems = ({
@@ -186,13 +205,19 @@ export const getCardChoicesFromItems = ({
 
     const { choices, numChoices } = player.items.reduce(
         (acc, item: Item) => {
-            const { amount = 0, battleTypes: battleTypeFilters, abilities: initAbilities = [] } = item.abilityChoices || {};
+            const {
+                amount = 0,
+                battleTypes: battleTypeFilters,
+                abilities: initAbilities = [],
+            } = item.abilityChoices || {};
             if (battleTypeFilters && battleType && !battleTypeFilters.includes(battleType)) {
                 return acc;
             }
 
             const { choices, numChoices } = acc;
-            const abilities = initAbilities.filter((ability) => !ownedUniqueCards.has(ability.name));
+            const abilities = initAbilities.filter(
+                (ability) => !ownedUniqueCards.has(ability.name),
+            );
             if (abilities.length) {
                 choices.push(getRandomItem(abilities));
             }
@@ -202,7 +227,10 @@ export const getCardChoicesFromItems = ({
                 numChoices: numChoices + amount,
             };
         },
-        { choices: [], numChoices: 0 } as { choices: Ability[]; numChoices: number }
+        { choices: [], numChoices: 0 } as {
+            choices: Ability[];
+            numChoices: number;
+        },
     );
 
     return { choices, numChoices };
@@ -217,7 +245,9 @@ export const filterUnobtainableItems = ({
     excludeItems?: Item[];
     itemsToFilter: Item[];
 }) => {
-    const filterOut = new Set(playerItems.flatMap((item) => [item.name, ...(item.exclusive ?? [])]));
+    const filterOut = new Set(
+        playerItems.flatMap((item) => [item.name, ...(item.exclusive ?? [])]),
+    );
 
     excludeItems?.forEach((item) => filterOut.add(item.name));
 

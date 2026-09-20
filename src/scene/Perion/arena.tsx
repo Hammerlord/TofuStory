@@ -5,7 +5,12 @@ import { Player } from "../../character/types";
 import { ayanEnemy } from "../../enemy/ayan";
 import { manji } from "../../enemy/Manji";
 import { tauromacis, taurospear } from "../../enemy/minotaur";
-import { ArturoImage, BystanderImage, DancesWithBalrogSittingImage, PerionArenaFullImage } from "../../images";
+import {
+    ArturoImage,
+    BystanderImage,
+    DancesWithBalrogSittingImage,
+    PerionArenaFullImage,
+} from "../../images";
 import { EventScene, SceneEncounter } from "../types";
 
 const announcer = {
@@ -143,24 +148,84 @@ const ArenaBackdrop = ({
     return (
         <div className={classes.root}>
             <img src={PerionArenaFullImage} alt="Arena" className={classes.backdrop} />
-            <img src={player.image} alt="Player" className={classNames(classes.player, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander1, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander2, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander3, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander4, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander5, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander6, classes.character)} />
-            <img src={BystanderImage} alt="Bystander" className={classNames(classes.bystander7, classes.character)} />
-            <img src={announcer.image} alt="Announcer" className={classNames(classes.announcer, classes.character)} />
+            <img
+                src={player.image}
+                alt="Player"
+                className={classNames(classes.player, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander1, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander2, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander3, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander4, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander5, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander6, classes.character)}
+            />
+            <img
+                src={BystanderImage}
+                alt="Bystander"
+                className={classNames(classes.bystander7, classes.character)}
+            />
+            <img
+                src={announcer.image}
+                alt="Announcer"
+                className={classNames(classes.announcer, classes.character)}
+            />
             <img
                 src={DancesWithBalrogSittingImage}
                 alt="Dances With Balrog"
                 className={classNames(classes.dancesWithBalrog, classes.character)}
             />
-            {showTaurospear && <img src={taurospear.image} alt="Taurospear" className={classNames(classes.opponent, classes.character)} />}
-            {showTauromacis && <img src={tauromacis.image} alt="Tauromacis" className={classNames(classes.opponent, classes.character)} />}
-            {showManji && <img src={manji.image} alt="Manji" className={classNames(classes.opponent, classes.character)} />}
-            {showAyan && <img src={ayanEnemy.image} alt="Ayan" className={classNames(classes.opponent, classes.character)} />}
+            {showTaurospear && (
+                <img
+                    src={taurospear.image}
+                    alt="Taurospear"
+                    className={classNames(classes.opponent, classes.character)}
+                />
+            )}
+            {showTauromacis && (
+                <img
+                    src={tauromacis.image}
+                    alt="Tauromacis"
+                    className={classNames(classes.opponent, classes.character)}
+                />
+            )}
+            {showManji && (
+                <img
+                    src={manji.image}
+                    alt="Manji"
+                    className={classNames(classes.opponent, classes.character)}
+                />
+            )}
+            {showAyan && (
+                <img
+                    src={ayanEnemy.image}
+                    alt="Ayan"
+                    className={classNames(classes.opponent, classes.character)}
+                />
+            )}
         </div>
     );
 };
@@ -169,7 +234,9 @@ const ayanScript = [
     {
         scene: (other) => <ArenaBackdrop showAyan={true} {...other} />,
         speaker: announcer,
-        dialog: ["Next up! A decade ago, she appeared at the gates without any memories and without a tribe..."],
+        dialog: [
+            "Next up! A decade ago, she appeared at the gates without any memories and without a tribe...",
+        ],
     },
     {
         speaker: announcer,
@@ -187,7 +254,9 @@ const ayanScript = [
     },
     {
         speaker: ayanEnemy,
-        dialog: ["Hello there. I watched you defeat that overgrown bull. I expect you'll give me a challenge."],
+        dialog: [
+            "Hello there. I watched you defeat that overgrown bull. I expect you'll give me a challenge.",
+        ],
     },
     {
         speaker: ayanEnemy,
@@ -251,7 +320,9 @@ const manjiScript = [
     },
     {
         speaker: announcer,
-        dialog: ["He's on a relentless quest to be the strongest swordsman in all of Victoria. Some say he's already earned the title!"],
+        dialog: [
+            "He's on a relentless quest to be the strongest swordsman in all of Victoria. Some say he's already earned the title!",
+        ],
     },
     {
         speaker: announcer,
@@ -273,11 +344,17 @@ const manjiScript = [
     },
     {
         speaker: manji,
-        dialog: ["Impossible.", "I've struck down so many of your kind, but here I find myself bested."],
+        dialog: [
+            "Impossible.",
+            "I've struck down so many of your kind, but here I find myself bested.",
+        ],
     },
     {
         speaker: announcer,
-        dialog: ["Manji has been defeated!!", "The champion today is a mushroom that came from nowhere. What an incredible show!"],
+        dialog: [
+            "Manji has been defeated!!",
+            "The champion today is a mushroom that came from nowhere. What an incredible show!",
+        ],
     },
     {
         speaker: announcer,
@@ -353,7 +430,10 @@ export const arenaScene: EventScene = {
                         },
                         {
                             speaker: announcer,
-                            dialog: ["And on the right, the Tauromacis' challenger today is the equally-fierce and mighty...", "..."],
+                            dialog: [
+                                "And on the right, the Tauromacis' challenger today is the equally-fierce and mighty...",
+                                "...",
+                            ],
                         },
                         {
                             speaker: announcer,
@@ -365,7 +445,9 @@ export const arenaScene: EventScene = {
                         },
                         {
                             speaker: announcer,
-                            dialog: ["Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!"],
+                            dialog: [
+                                "Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!",
+                            ],
                         },
                         {
                             speaker: tauromacis,
@@ -440,7 +522,10 @@ export const arenaScene: EventScene = {
                         },
                         {
                             speaker: announcer,
-                            dialog: ["And on the right, the Taurospear's challenger today is the equally-fierce and mighty...", "..."],
+                            dialog: [
+                                "And on the right, the Taurospear's challenger today is the equally-fierce and mighty...",
+                                "...",
+                            ],
                         },
                         {
                             speaker: announcer,
@@ -452,7 +537,9 @@ export const arenaScene: EventScene = {
                         },
                         {
                             speaker: announcer,
-                            dialog: ["Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!"],
+                            dialog: [
+                                "Alright, looks like mushroom soup is on the appetizer menu tonight. Let the battle commence!",
+                            ],
                         },
                         {
                             speaker: taurospear,

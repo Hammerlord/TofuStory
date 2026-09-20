@@ -1,5 +1,11 @@
 import { counterEffect } from "./effect";
-import { GlitteringMirrorImage, ManjiImage, NamelessSwordImage, SwordImage, TeleportImage } from "../images";
+import {
+    GlitteringMirrorImage,
+    ManjiImage,
+    NamelessSwordImage,
+    SwordImage,
+    TeleportImage,
+} from "../images";
 import { EyeIcon } from "../images/icons";
 import { attackPower, hardy } from "./../ability/Effects";
 import {

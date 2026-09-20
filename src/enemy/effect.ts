@@ -49,7 +49,8 @@ import { Effect } from "./../ability/types";
 
 export const hardwood: Effect = {
     name: "Hardwood",
-    description: "When attacked, character gains +1 damage reduction for the turn. Disabled by Burn.",
+    description:
+        "When attacked, character gains +1 damage reduction for the turn. Disabled by Burn.",
     icon: FirewoodImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
@@ -179,7 +180,8 @@ export const fairySwarm: Effect = {
 
 const frenziedFairies: Effect = {
     name: "Fairy Frenzy",
-    description: "Afflicted with {{ defenseDown }} {{{ _defDown_ }}}. Migrates to the other side when the effect ends.",
+    description:
+        "Afflicted with {{ defenseDown }} {{{ _defDown_ }}}. Migrates to the other side when the effect ends.",
     defenseDown: 1,
     duration: 1,
     type: EFFECT_TYPES.NONE,
@@ -257,7 +259,8 @@ export const lifeLink: Effect = {
     canBeSilenced: false,
     type: EFFECT_TYPES.LIFE_LINK,
     class: EFFECT_CLASSES.BUFF,
-    description: "When slain, this character will eventually revive if Life Linked allies still live.",
+    description:
+        "When slain, this character will eventually revive if Life Linked allies still live.",
     icon: LinkIcon,
     onDeath: {
         usableWhileStunned: true,
@@ -272,7 +275,8 @@ export const lifeLink: Effect = {
                 icon: RespawnTokenImage,
                 persistsWhenDead: true,
                 canBeSilenced: false,
-                description: "When this effect ends, the character will revive and recover a portion of its HP.",
+                description:
+                    "When this effect ends, the character will revive and recover a portion of its HP.",
                 duration: 3,
                 // Edge case where if the final ally died on its turn, it can still 'revive' (though at least the battle ends by then)
                 conditions: [
@@ -330,7 +334,8 @@ export const sneaky: Effect = {
                 name: "Stealth",
                 icon: CloudyIcon,
                 canBeSilenced: true,
-                description: "Untargetable. Effect ends if character attacks or is hit by area damage.",
+                description:
+                    "Untargetable. Effect ends if character attacks or is hit by area damage.",
                 onReceiveAttack: {
                     removeEffect: true,
                 },
@@ -358,7 +363,8 @@ export const sneaky: Effect = {
                 name: "Stealth",
                 icon: CloudyIcon,
                 canBeSilenced: true,
-                description: "Untargetable. Effect ends if character attacks or is hit by area damage.",
+                description:
+                    "Untargetable. Effect ends if character attacks or is hit by area damage.",
                 onReceiveAttack: {
                     removeEffect: true,
                 },
@@ -556,7 +562,8 @@ export const burrowing: Effect = {
     name: "Burrow",
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.BUFF,
-    description: "Heals 3 HP per turn while armor holds. After the full effect duration, this character gains +2 ATT.",
+    description:
+        "Heals 3 HP per turn while armor holds. After the full effect duration, this character gains +2 ATT.",
     icon: PristineShieldIcon,
     preventTurnAction: true,
     canBeSilenced: false,
@@ -608,7 +615,8 @@ export const doomEffect: Effect = {
     icon: SkeletonOfHorrorImage,
     type: EFFECT_TYPES.NONE,
     class: EFFECT_CLASSES.DEBUFF,
-    description: "Deals <b>{{ onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> upon activation.",
+    description:
+        "Deals <b>{{ onTurnStart.ability.actions.0.damage }} {{{ _damage_ }}}</b> upon activation.",
     duration: 3,
     turnsTriggerFrequency: 3,
     onTurnStart: {

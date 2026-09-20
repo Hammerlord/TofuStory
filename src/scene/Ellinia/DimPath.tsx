@@ -31,7 +31,7 @@ const DimPath = ({ player, onComplete }) => {
             Array.from({ length: NUM_ROWS }).map(() => {
                 --initialLit;
                 return Math.random() < 0.5 && initialLit > 0;
-            })
+            }),
         );
     });
     const isComplete = rows.every((row) => row.every((col) => col));

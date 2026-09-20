@@ -29,7 +29,10 @@ export const getMaxResources = (combatant: Combatant): number => {
     }
 
     const { maxResources: initialMaxResources = BASE_MAX_RESOURCES, effects = [] } = combatant;
-    return effects.reduce((maximum, effect) => maximum + (effect?.maxResources || 0), initialMaxResources);
+    return effects.reduce(
+        (maximum, effect) => maximum + (effect?.maxResources || 0),
+        initialMaxResources,
+    );
 };
 
 export const isSilenced = (character: Minion | Combatant | null): boolean => {
@@ -45,7 +48,9 @@ export const isStealthed = (character?: Combatant | null): boolean => {
         return false;
     }
     const silenced = isSilenced(character);
-    return character.effects?.some(({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced));
+    return character.effects?.some(
+        ({ type, canBeSilenced }) => type === EFFECT_TYPES.STEALTH && (!canBeSilenced || !silenced),
+    );
 };
 
 export const isUntargetable = (character?: Combatant | null): boolean => {
@@ -67,14 +72,24 @@ export const hasTruesight = (character?: Combatant): boolean => {
         return false;
     }
     const silenced = isSilenced(character);
-    return character.effects?.some(({ truesight, canBeSilenced }) => truesight && (!canBeSilenced || !silenced));
+    return character.effects?.some(
+        ({ truesight, canBeSilenced }) => truesight && (!canBeSilenced || !silenced),
+    );
 };
 
 export const isStunnedOrFrozen = (combatant: Combatant): boolean => {
-    return combatant?.effects.some((effect: Effect) => [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type));
+    return combatant?.effects.some((effect: Effect) =>
+        [EFFECT_TYPES.STUN, EFFECT_TYPES.FREEZE].includes(effect.type),
+    );
 };
 
-export const calculateMesoMultiplier = ({ player, mesos = 0 }: { player: Player; mesos?: number }): number => {
+export const calculateMesoMultiplier = ({
+    player,
+    mesos = 0,
+}: {
+    player: Player;
+    mesos?: number;
+}): number => {
     const mesosGainedMultiplier = player.effects.reduce((acc, { mesosGained = 0 }) => {
         return acc + mesosGained;
     }, 1);

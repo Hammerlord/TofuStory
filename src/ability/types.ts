@@ -181,7 +181,9 @@ export interface SkillBonus {
     damage: number;
 }
 
-export type Effect = { [key in effectEventKeys]?: EffectEventTrigger | EffectEventTrigger[] } & {
+export type Effect = {
+    [key in effectEventKeys]?: EffectEventTrigger | EffectEventTrigger[];
+} & {
     name: string;
     uptime?: number;
     type: EFFECT_TYPES;
@@ -356,7 +358,8 @@ export interface Minion {
     bypassDisableTribute?: boolean;
 }
 
-export type Comparator = "eq" | "lt" | "lte" | "gt" | "gte" | "not" | "modulo" | "includes" | "not-includes";
+export type Comparator =
+    "eq" | "lt" | "lte" | "gt" | "gte" | "not" | "modulo" | "includes" | "not-includes";
 
 export interface Multiplier {
     type: MULTIPLIER_TYPES;
@@ -580,7 +583,8 @@ export const FROM_CARD_PILE_TYPES = {
     ANYWHERE: "anywhere",
 } as const;
 
-export type CardPileType = (typeof CARD_PILE_TYPES)[keyof typeof CARD_PILE_TYPES] & keyof BattleState;
+export type CardPileType = (typeof CARD_PILE_TYPES)[keyof typeof CARD_PILE_TYPES] &
+    keyof BattleState;
 
 export type FromCardPileType = (typeof FROM_CARD_PILE_TYPES)[keyof typeof FROM_CARD_PILE_TYPES];
 
@@ -759,7 +763,10 @@ export type Action = {
     removeEffects?: string[];
     // Secondary effects to apply to another party. Eg. if the action is an attack but it also heals the actor.
     // Use this to avoid an extra playback for an effect that could be applied in the same action event.
-    secondaryAction?: ActionOptionalProperties & { isPriority?: boolean; returnParentCardToHand?: boolean };
+    secondaryAction?: ActionOptionalProperties & {
+        isPriority?: boolean;
+        returnParentCardToHand?: boolean;
+    };
     /** Wild magic */
     autoCastAbilities?: AutoCastAbility;
     /** Combatant runs away (turns null) */

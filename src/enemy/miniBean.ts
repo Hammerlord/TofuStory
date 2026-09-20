@@ -183,11 +183,29 @@ const suckIn: Ability = {
             // that may not be the case and we may need a no-animation action to handle this instead
             summon: [
                 {
-                    minion: [cake, unagi, bananaGrahamPie, moldyCheese, hotdogSupremeMinion, tofuPlatter, grilledCheese, nastyKebab],
+                    minion: [
+                        cake,
+                        unagi,
+                        bananaGrahamPie,
+                        moldyCheese,
+                        hotdogSupremeMinion,
+                        tofuPlatter,
+                        grilledCheese,
+                        nastyKebab,
+                    ],
                     positionIndex: 0,
                 },
                 {
-                    minion: [cake, unagi, bananaGrahamPie, moldyCheese, hotdogSupremeMinion, tofuPlatter, grilledCheese, nastyKebab],
+                    minion: [
+                        cake,
+                        unagi,
+                        bananaGrahamPie,
+                        moldyCheese,
+                        hotdogSupremeMinion,
+                        tofuPlatter,
+                        grilledCheese,
+                        nastyKebab,
+                    ],
                     positionIndex: 4,
                 },
             ],
@@ -325,13 +343,20 @@ export const eat: Ability = {
                 },
             },
             damage: 100,
-            conditions: [cake, unagi, bananaGrahamPie, hotdogSupremeMinion, tofuPlatter, grilledCheese, moldyCheese, nastyKebab].map(
-                ({ name }) => ({
-                    calculationTarget: CONDITION_TARGETS.TARGET,
-                    name,
-                    comparator: "eq",
-                })
-            ),
+            conditions: [
+                cake,
+                unagi,
+                bananaGrahamPie,
+                hotdogSupremeMinion,
+                tofuPlatter,
+                grilledCheese,
+                moldyCheese,
+                nastyKebab,
+            ].map(({ name }) => ({
+                calculationTarget: CONDITION_TARGETS.TARGET,
+                name,
+                comparator: "eq",
+            })),
         },
     ],
 };

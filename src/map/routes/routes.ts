@@ -283,7 +283,13 @@ export const routeElliniaPerion: Route = {
         [orangeMushroom, null, elliniaGreenMushroom, null, orangeMushroom],
         [elliniaGreenMushroom, null, elliniaHornyMushroom, null, elliniaGreenMushroom],
         [elliniaGreenMushroom, stump, orangeMushroom, stump, elliniaGreenMushroom],
-        [elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom, orangeMushroom, elliniaGreenMushroom],
+        [
+            elliniaGreenMushroom,
+            orangeMushroom,
+            elliniaGreenMushroom,
+            orangeMushroom,
+            elliniaGreenMushroom,
+        ],
         [null, elliniaHornyMushroom, stump, elliniaHornyMushroom, null],
         [null, elliniaHornyMushroom, orangeMushroom, elliniaHornyMushroom, null],
         [null, elliniaHornyMushroom, greenMushroom, elliniaHornyMushroom, null],
@@ -323,12 +329,24 @@ export const routeHenesysEllinia: Route = {
         [null, ribbonPig, null, ribbonPig, null],
         [null, axeStump, stump, axeStump, null],
         [null, lupin, null, lupin, null],
-        [elliniaGreenMushroom, elliniaHornyMushroom, redSnail, elliniaHornyMushroom, elliniaGreenMushroom],
+        [
+            elliniaGreenMushroom,
+            elliniaHornyMushroom,
+            redSnail,
+            elliniaHornyMushroom,
+            elliniaGreenMushroom,
+        ],
         [null, elliniaHornyMushroom, elliniaGreenMushroom, elliniaHornyMushroom, null],
         [null, elliniaHornyMushroom, stump, elliniaHornyMushroom, null],
         [stump, pig, stump, pig, stump],
         [blueSnail, slime, pig, slime, blueSnail],
-        [elliniaGreenMushroom, elliniaGreenMushroom, slime, elliniaGreenMushroom, elliniaGreenMushroom],
+        [
+            elliniaGreenMushroom,
+            elliniaGreenMushroom,
+            slime,
+            elliniaGreenMushroom,
+            elliniaGreenMushroom,
+        ],
         [stump, redSnail, stump, redSnail, stump],
         [blueMushroom, blueSnail, orangeMushroom, blueSnail, blueMushroom],
         [
@@ -479,5 +497,5 @@ export const ROUTE_ID_MAP = [
         ...acc,
         [route.id]: route,
     }),
-    {}
+    {},
 );

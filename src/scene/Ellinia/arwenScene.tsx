@@ -1,5 +1,12 @@
 import { REGIONS } from "../../map/regions";
-import { ACTION_TYPES, EFFECT_CLASSES, EFFECT_TYPES, MORPH_TYPES, Minion, TARGET_TYPES } from "../../ability/types";
+import {
+    ACTION_TYPES,
+    EFFECT_CLASSES,
+    EFFECT_TYPES,
+    MORPH_TYPES,
+    Minion,
+    TARGET_TYPES,
+} from "../../ability/types";
 import { CAMPAIGN_BOSS_MUSIC } from "../../battle/constants";
 import { lostEcho, lostGuardEcho, lostNobleEcho } from "../../enemy/echoes";
 import { lifeLink } from "../../enemy/effect";
@@ -92,8 +99,18 @@ const sickLupin: Minion = {
                                                                     target: TARGET_TYPES.SELF,
                                                                     type: ACTION_TYPES.EFFECT,
                                                                     summon: [
-                                                                        { minion: [eventZombieLupin], positionIndex: 1 },
-                                                                        { minion: [eventZombieLupin], positionIndex: 3 },
+                                                                        {
+                                                                            minion: [
+                                                                                eventZombieLupin,
+                                                                            ],
+                                                                            positionIndex: 1,
+                                                                        },
+                                                                        {
+                                                                            minion: [
+                                                                                eventZombieLupin,
+                                                                            ],
+                                                                            positionIndex: 3,
+                                                                        },
                                                                     ],
                                                                 },
                                                             ],
@@ -297,7 +314,9 @@ const maladyDialog: ScriptNode[] = [
     },
     {
         speaker: aVoice,
-        dialog: ["Send another one, did the fools? It seems they have no shortage of useful idiots!"],
+        dialog: [
+            "Send another one, did the fools? It seems they have no shortage of useful idiots!",
+        ],
         responses: [
             {
                 text: "Who are you?",
@@ -366,7 +385,9 @@ const maladyDialog: ScriptNode[] = [
                                         ],
                                     },
                                     {
-                                        dialog: ["[Silence falls. Is there a reason Malady haven't confronted you directly?]"],
+                                        dialog: [
+                                            "[Silence falls. Is there a reason Malady haven't confronted you directly?]",
+                                        ],
                                     },
                                     {
                                         scene: TwilitForest2,
@@ -384,7 +405,9 @@ const maladyDialog: ScriptNode[] = [
                                             name: "Bronwen",
                                             image: FairyShadeImage,
                                         },
-                                        dialog: ["A vision, Merusa? Another one? Is one certain it was not a dream?"],
+                                        dialog: [
+                                            "A vision, Merusa? Another one? Is one certain it was not a dream?",
+                                        ],
                                     },
                                     {
                                         speaker: {
@@ -438,7 +461,9 @@ const maladyDialog: ScriptNode[] = [
                                                     {
                                                         scene: TwilitForest3,
                                                         background: AltForestBG2Image,
-                                                        dialog: ["[The light restored, you can now continue forward.]"],
+                                                        dialog: [
+                                                            "[The light restored, you can now continue forward.]",
+                                                        ],
                                                     },
                                                     {
                                                         speaker: malady,
@@ -475,7 +500,9 @@ const maladyDialog: ScriptNode[] = [
                                                         ],
                                                     },
                                                     {
-                                                        dialog: ["Abruptly, the echoes turn hostile, and poise to attack you."],
+                                                        dialog: [
+                                                            "Abruptly, the echoes turn hostile, and poise to attack you.",
+                                                        ],
                                                         responses: [
                                                             {
                                                                 text: "Confront them.",
@@ -499,7 +526,9 @@ const maladyDialog: ScriptNode[] = [
                                                     },
                                                     {
                                                         speaker: malady,
-                                                        dialog: ["Is the seeker the same as they are?"],
+                                                        dialog: [
+                                                            "Is the seeker the same as they are?",
+                                                        ],
                                                     },
                                                     {
                                                         scene: TombstonesTwilitForest,
@@ -535,7 +564,9 @@ const maladyDialog: ScriptNode[] = [
                                                                     },
                                                                     {
                                                                         speaker: malady,
-                                                                        dialog: ["We, Malady, are not afraid."],
+                                                                        dialog: [
+                                                                            "We, Malady, are not afraid.",
+                                                                        ],
                                                                     },
                                                                     {
                                                                         scene: TombstonesTwilitForestFairies,
@@ -549,28 +580,34 @@ const maladyDialog: ScriptNode[] = [
                                                                                     {
                                                                                         scene: DarkForest1,
                                                                                         region: REGIONS.ELLINIA,
-                                                                                        background: ElliniaBGImage,
+                                                                                        background:
+                                                                                            ElliniaBGImage,
                                                                                         dialog: [
                                                                                             "[You find yourself where you began in the forest, along with a treasure chest.]",
                                                                                         ],
                                                                                     },
                                                                                     {
-                                                                                        treasureBox: {
-                                                                                            isOpen: true,
-                                                                                            isCursed: true,
-                                                                                        },
-                                                                                        dialog: [""],
+                                                                                        treasureBox:
+                                                                                            {
+                                                                                                isOpen: true,
+                                                                                                isCursed: true,
+                                                                                            },
+                                                                                        dialog: [
+                                                                                            "",
+                                                                                        ],
                                                                                     },
                                                                                     {
                                                                                         scene: DarkForestMaladies,
-                                                                                        speaker: malady,
+                                                                                        speaker:
+                                                                                            malady,
                                                                                         dialog: [
                                                                                             "Ohohoho! Well done. It seems the pawn was even able to befriend the lost echoes of fae folk--perhaps the seeker was once one favored by the forest.",
                                                                                             "But time severs most ties, and so it is with us and our kin.",
                                                                                         ],
                                                                                     },
                                                                                     {
-                                                                                        speaker: malady,
+                                                                                        speaker:
+                                                                                            malady,
                                                                                         dialog: [
                                                                                             "But we, Malady, have decided what we are long ago. Twisted, betrayed, shunned. Our will shall not be stopped.",
                                                                                         ],
@@ -582,16 +619,23 @@ const maladyDialog: ScriptNode[] = [
                                                                                     },
                                                                                     {
                                                                                         scene: DarkForest2,
-                                                                                        speaker: faust,
-                                                                                        dialog: ["......"],
+                                                                                        speaker:
+                                                                                            faust,
+                                                                                        dialog: [
+                                                                                            "......",
+                                                                                        ],
                                                                                     },
                                                                                     {
-                                                                                        speaker: faust,
-                                                                                        dialog: ["[The giant Zombie Lupin charges you!]"],
+                                                                                        speaker:
+                                                                                            faust,
+                                                                                        dialog: [
+                                                                                            "[The giant Zombie Lupin charges you!]",
+                                                                                        ],
                                                                                         responses: [
                                                                                             {
                                                                                                 text: "Defend yourself.",
-                                                                                                encounter: faustFight,
+                                                                                                encounter:
+                                                                                                    faustFight,
                                                                                                 next: [
                                                                                                     {
                                                                                                         scene: DarkForestMaladies,
@@ -599,24 +643,30 @@ const maladyDialog: ScriptNode[] = [
                                                                                                             "[Something shiny tumbles from the fallen heap of rotten fur.]",
                                                                                                         ],
                                                                                                         items: {
-                                                                                                            itemPool: [glassShoe],
+                                                                                                            itemPool:
+                                                                                                                [
+                                                                                                                    glassShoe,
+                                                                                                                ],
                                                                                                         },
                                                                                                     },
                                                                                                     {
-                                                                                                        speaker: malady,
+                                                                                                        speaker:
+                                                                                                            malady,
                                                                                                         dialog: [
                                                                                                             "The beloved one Merusa had foretold this day, long before Malady ever came to be. But we had not understood, then, what a creature a mere mushroom could be.",
                                                                                                         ],
                                                                                                     },
                                                                                                     {
-                                                                                                        speaker: malady,
+                                                                                                        speaker:
+                                                                                                            malady,
                                                                                                         dialog: [
                                                                                                             "The curse will continue on, and may it swallow the humans whole, along with that creature in his undying skin, who is far more a monster than anything he calls such.",
                                                                                                             "A miserable end for what began torturous centuries ago. Eheeheeheehee!",
                                                                                                         ],
                                                                                                     },
                                                                                                     {
-                                                                                                        speaker: malady,
+                                                                                                        speaker:
+                                                                                                            malady,
                                                                                                         dialog: [
                                                                                                             "We will meet again, pawn. And we, Malady, will not be so forgiving when that time comes.",
                                                                                                             "[Malady swoop away.]",
@@ -753,7 +803,9 @@ const inLupinForest = {
                 },
                 {
                     speaker: lupin,
-                    dialog: ["[It's just a Lupin. But something seems off. The Lupin looks at you and makes a wet, gargling noise.]"],
+                    dialog: [
+                        "[It's just a Lupin. But something seems off. The Lupin looks at you and makes a wet, gargling noise.]",
+                    ],
                 },
                 {
                     speaker: lupin,
@@ -761,7 +813,9 @@ const inLupinForest = {
                 },
                 {
                     speaker: lupin,
-                    dialog: ["[Even as it speaks, the Lupin is lunging toward you, its eyes milky.]"],
+                    dialog: [
+                        "[Even as it speaks, the Lupin is lunging toward you, its eyes milky.]",
+                    ],
                     responses: [
                         {
                             text: "Defend yourself.",
@@ -787,11 +841,16 @@ export const arwenScene: EventScene = {
         },
         {
             speaker: arwen,
-            dialog: ["Greetings, adventuring one!", "Looking to have an audience with the old and wise one called Grendel?"],
+            dialog: [
+                "Greetings, adventuring one!",
+                "Looking to have an audience with the old and wise one called Grendel?",
+            ],
         },
         {
             speaker: rowen,
-            dialog: ["Adventurers always want to meet Grendel. He's a very busy one, too busy for casual appointments."],
+            dialog: [
+                "Adventurers always want to meet Grendel. He's a very busy one, too busy for casual appointments.",
+            ],
         },
         {
             speaker: arwen,
@@ -818,7 +877,9 @@ export const arwenScene: EventScene = {
                             dialog: ["Together, oneselves assist the one called Grendel."],
                         },
                         {
-                            dialog: ["[Something about these beings seems uncanny... almost like...]"],
+                            dialog: [
+                                "[Something about these beings seems uncanny... almost like...]",
+                            ],
                             responses: [
                                 {
                                     text: "So you're fairies? Does that mean you're monsters?",
@@ -831,7 +892,9 @@ export const arwenScene: EventScene = {
                                         },
                                         {
                                             speaker: rowen,
-                                            dialog: ["Fairies are not monsters. Very big difference, see?"],
+                                            dialog: [
+                                                "Fairies are not monsters. Very big difference, see?",
+                                            ],
                                         },
                                         inLupinForest,
                                     ],
@@ -860,7 +923,9 @@ export const arwenScene: EventScene = {
                                             ],
                                         },
                                         {
-                                            dialog: ["[Hm. It seems they really think you're just a regular adventurer?]"],
+                                            dialog: [
+                                                "[Hm. It seems they really think you're just a regular adventurer?]",
+                                            ],
                                         },
                                         inLupinForest,
                                     ],

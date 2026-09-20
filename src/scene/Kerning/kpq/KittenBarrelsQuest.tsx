@@ -1,7 +1,14 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { ClickIndicatorImage, KittenBarrelsImage, ShoImage, SleepywoodRegionBGImage, StefaImage, WessImage } from "../../../images";
+import {
+    ClickIndicatorImage,
+    KittenBarrelsImage,
+    ShoImage,
+    SleepywoodRegionBGImage,
+    StefaImage,
+    WessImage,
+} from "../../../images";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
 import generateCombination from "./generateCombination";
@@ -121,7 +128,9 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
     };
 
     useEffect(() => {
-        const isIncompleteAnswer = answer.filter((a: string | null) => a).length !== correctCombination.filter((c) => c).length;
+        const isIncompleteAnswer =
+            answer.filter((a: string | null) => a).length !==
+            correctCombination.filter((c) => c).length;
         if (isIncompleteAnswer) {
             return;
         }
@@ -147,7 +156,9 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
         setBlockUI(true);
         setWessDialog("Alright, I'm checking if this is the right answer...");
         setTimeout(() => {
-            const isCorrectAnswer = answer.every((answer, i) => Boolean(correctCombination[i]) === Boolean(answer));
+            const isCorrectAnswer = answer.every(
+                (answer, i) => Boolean(correctCombination[i]) === Boolean(answer),
+            );
             if (isCorrectAnswer) {
                 setCompleted(true);
                 setWessDialog("We got it!");
@@ -206,7 +217,12 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
                         if (isUnassigned(memberName)) {
                             return (
                                 <div className={classes[memberName]} key={memberName}>
-                                    {!selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
+                                    {!selectedPartyMember && (
+                                        <img
+                                            src={ClickIndicatorImage}
+                                            className={classes.clickIndicator}
+                                        />
+                                    )}
                                     <img
                                         src={PARTY_MEMBER_IMAGE_MAP[memberName]}
                                         onClick={() => handleClickPartyMember(memberName)}
@@ -220,11 +236,21 @@ const KittenBarrelsQuest = ({ player, onComplete }: SceneProps) => {
                         }
                     })}
                     <Tooltip title={wessDialog} open={Boolean(wessDialog)} placement={"top"}>
-                        <img src={WessImage} className={classNames(classes.wess)} onClick={() => onComplete()} />
+                        <img
+                            src={WessImage}
+                            className={classNames(classes.wess)}
+                            onClick={() => onComplete()}
+                        />
                     </Tooltip>
                     {answer.map((memberName: string | null, i: number) => (
-                        <div key={i} className={classNames(classes.basket, classes[`basket${i + 1}`])} onClick={() => handleClickSlot(i)}>
-                            {selectedPartyMember && <img src={ClickIndicatorImage} className={classes.clickIndicator} />}
+                        <div
+                            key={i}
+                            className={classNames(classes.basket, classes[`basket${i + 1}`])}
+                            onClick={() => handleClickSlot(i)}
+                        >
+                            {selectedPartyMember && (
+                                <img src={ClickIndicatorImage} className={classes.clickIndicator} />
+                            )}
 
                             {memberName && (
                                 <img

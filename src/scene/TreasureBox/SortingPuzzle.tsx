@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BlueSnailImage, OrangeMushroomImage, PigImage, RedSnailImage, ShroomImage, SlimeImage, SnailImage } from "../../images";
+import {
+    BlueSnailImage,
+    OrangeMushroomImage,
+    PigImage,
+    RedSnailImage,
+    ShroomImage,
+    SlimeImage,
+    SnailImage,
+} from "../../images";
 import { shuffle } from "../../utils";
 import { PuzzleProps } from "./types";
 
@@ -27,7 +35,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const allOptions = [SnailImage, BlueSnailImage, ShroomImage, RedSnailImage, SlimeImage, PigImage, OrangeMushroomImage];
+const allOptions = [
+    SnailImage,
+    BlueSnailImage,
+    ShroomImage,
+    RedSnailImage,
+    SlimeImage,
+    PigImage,
+    OrangeMushroomImage,
+];
 const optionsOrder = allOptions.reduce((acc, imagePath: string, i) => {
     acc[imagePath] = i;
     return acc;
@@ -39,7 +55,7 @@ const SortingPuzzle = ({ onComplete, completed, onInteraction }: PuzzleProps) =>
     const [answer] = useState(
         tiles.slice().sort((a, b) => {
             return optionsOrder[a] - optionsOrder[b];
-        })
+        }),
     );
 
     const [selectedTile, setSelectedTile] = useState(null);

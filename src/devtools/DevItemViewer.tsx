@@ -29,7 +29,10 @@ const DevItemViewer = () => {
                     [RARITIES.UNCOMMON]: 2,
                     [RARITIES.RARE]: 3,
                 };
-                return rarityChart[a.rarity || RARITIES.COMMON] - rarityChart[b.rarity || RARITIES.COMMON];
+                return (
+                    rarityChart[a.rarity || RARITIES.COMMON] -
+                    rarityChart[b.rarity || RARITIES.COMMON]
+                );
             })
             .map((item) => (
                 <div className={classes.item}>

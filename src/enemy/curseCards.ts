@@ -64,7 +64,8 @@ export const curseCard: Ability = {
     name: "Curse",
     image: CurseImage,
     resourceCost: 2,
-    description: "Reduce cost by 1 for every {{{ _support_ }}} {{{ _summon_ }}} card played this turn.",
+    description:
+        "Reduce cost by 1 for every {{{ _support_ }}} {{{ _summon_ }}} card played this turn.",
     depletedOnUse: true,
     onAbility: {
         abilityEffects: [

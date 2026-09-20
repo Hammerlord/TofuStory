@@ -22,7 +22,13 @@ import { calculateBonus } from "../../calculateBonus";
 import { getMultiplier } from "../../getMultiplier";
 import { passesConditions } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
-import { ActionContext, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
+import {
+    ActionContext,
+    BattleState,
+    CombatantInfo,
+    TRIGGER_SOURCE_TYPES,
+    TriggerSource,
+} from "../../types";
 import { isSilenced, isStunnedOrFrozen } from "../../utils";
 import { checkHandleAutoCast } from "../autoCast";
 import { checkCardActions, handleDrawOriginalAbility } from "../cardActions/cardActions";
@@ -34,7 +40,11 @@ import { checkInduce } from "../inducedAction";
 import { performAction } from "../performAction";
 import { aggregateStatUpdates } from "../playbackCollector";
 import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
-import { autoSelectActionTarget, calculateTargetIndices, isNegatedByStealth } from "../targeting/targeting";
+import {
+    autoSelectActionTarget,
+    calculateTargetIndices,
+    isNegatedByStealth,
+} from "../targeting/targeting";
 import { onUseAbility, useAbility } from "../useAbility";
 import { checkUpdateEffectLifecycle, isTurnToTrigger } from "./effectLifecycle";
 
@@ -133,9 +143,18 @@ const checkEffectEventTriggerGate = ({
         }
 
         const { combatant } = ownerInfo;
-        dispatch(checkUpdateEffectLifecycle({ effect, effectEvent, context, owner: combatant }));
+        dispatch(
+            checkUpdateEffectLifecycle({
+                effect,
+                effectEvent,
+                context,
+                owner: combatant,
+            }),
+        );
 
-        const cannotTrigger = (canBeSilenced && isSilenced(combatant)) || (!usableWhileStunned && isStunnedOrFrozen(combatant));
+        const cannotTrigger =
+            (canBeSilenced && isSilenced(combatant)) ||
+            (!usableWhileStunned && isStunnedOrFrozen(combatant));
         return !cannotTrigger;
     };
 };
@@ -176,7 +195,9 @@ const applyEffectEventStatChanges = ({
         // No stat changes will trigger so skip the whole block
         // This check is pretty cursed and not comprehensive but fixes an issue where Magic Guard's initial turn end did not apply armor
         const onlyMetadata =
-            Object.keys(other).length === 0 || (Object.keys(other).length === 1 && Object.keys(other)[0].toLowerCase().includes("target"));
+            Object.keys(other).length === 0 ||
+            (Object.keys(other).length === 1 &&
+                Object.keys(other)[0].toLowerCase().includes("target"));
         if (onlyMetadata && effects.length === 0) {
             return;
         }
@@ -245,7 +266,9 @@ const applyEffectEventStatChanges = ({
 
         updated.forEach(({ statUpdate }) => {
             const { combatantId } = statUpdate;
-            aggregated = aggregateStatUpdates(aggregated, { [combatantId]: statUpdate });
+            aggregated = aggregateStatUpdates(aggregated, {
+                [combatantId]: statUpdate,
+            });
         });
 
         dispatch(
@@ -266,7 +289,7 @@ const applyEffectEventStatChanges = ({
                 options: {
                     alwaysGroup: true,
                 },
-            })
+            }),
         );
 
         dispatch(
@@ -274,11 +297,17 @@ const applyEffectEventStatChanges = ({
                 updated.map(({ statUpdate }) => ({
                     statUpdate,
                     context: procContext,
-                }))
-            )
+                })),
+            ),
         );
 
-        dispatch(checkInduce({ action: effectEvent, affectedTargetIds: targetIds, parentContext: procContext }));
+        dispatch(
+            checkInduce({
+                action: effectEvent,
+                affectedTargetIds: targetIds,
+                parentContext: procContext,
+            }),
+        );
     };
 };
 
@@ -313,12 +342,17 @@ const triggerEffectEventFollowUpAbility = ({
         }
 
         const ability: Ability | undefined =
-            typeof effectEventAbility === "string" ? abilityNameMap[effectEventAbility] : effectEventAbility;
+            typeof effectEventAbility === "string"
+                ? abilityNameMap[effectEventAbility]
+                : effectEventAbility;
         let abilityUsed = false; // One or more actions must have been performed to trigger onUseAbility
 
         const abilityContext: ActionContext = {
             ...procContext,
-            sourceChain: [...(procContext.sourceChain || []), { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }],
+            sourceChain: [
+                ...(procContext.sourceChain || []),
+                { source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY },
+            ],
         };
 
         ability?.actions.forEach((action: Action) => {
@@ -344,7 +378,8 @@ const triggerEffectEventFollowUpAbility = ({
                 return;
             }
 
-            const isPassAliveConditions = actor.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath;
+            const isPassAliveConditions =
+                actor.HP > 0 || usableWhileDead || effectEventKey === EFFECT_EVENT_KEYS.onDeath;
             const canAct =
                 isPassAliveConditions &&
                 !isTurnActionPrevented(actorInfo!, {
@@ -357,11 +392,26 @@ const triggerEffectEventFollowUpAbility = ({
                 return;
             }
 
-            if (isNegatedByStealth({ actor: actorInfo, target: targetInfo, action, context })) {
+            if (
+                isNegatedByStealth({
+                    actor: actorInfo,
+                    target: targetInfo,
+                    action,
+                    context,
+                })
+            ) {
                 return;
             }
 
-            if (passesConditions({ actor: actorInfo, target: targetInfo, battle: getState().battle!, proc: action, context })) {
+            if (
+                passesConditions({
+                    actor: actorInfo,
+                    target: targetInfo,
+                    battle: getState().battle!,
+                    proc: action,
+                    context,
+                })
+            ) {
                 abilityUsed = true;
 
                 dispatch(
@@ -371,7 +421,7 @@ const triggerEffectEventFollowUpAbility = ({
                         side,
                         actorId: ownerId,
                         parentContext: abilityContext,
-                    })
+                    }),
                 );
             }
         });
@@ -390,7 +440,7 @@ const triggerEffectEventFollowUpAbility = ({
                 actorInfo,
                 context: abilityContext,
                 ability,
-            })
+            }),
         );
     };
 };
@@ -436,7 +486,10 @@ export const onEffectEventTrigger = ({
         // Should all onEffectEventTriggers from effects just be considered procs?
         // This is currently to prevent Charged interacting with Green Bamboo Hat. Also be mindful of the bug where
         // buffs like Sweeping Reach stopped decrementing properly on offense ability.
-        context = { ...context, isProc: source?.type === TRIGGER_SOURCE_TYPES.EFFECT };
+        context = {
+            ...context,
+            isProc: source?.type === TRIGGER_SOURCE_TYPES.EFFECT,
+        };
 
         const battleState = getState().battle!;
         const effectOwner = findCombatantData(battleState, ownerId) as CombatantInfo;
@@ -462,7 +515,7 @@ export const onEffectEventTrigger = ({
                 source,
                 canBeSilenced,
                 usableWhileStunned,
-            })
+            }),
         );
 
         if (!canTrigger) {
@@ -477,9 +530,19 @@ export const onEffectEventTrigger = ({
             targetId: source?.targetId,
             statUpdate: source?.statUpdate,
         };
-        const procContext: ActionContext = { ...context, isProc: true, sourceChain: [...(context?.sourceChain || []), procTriggerSource] };
+        const procContext: ActionContext = {
+            ...context,
+            isProc: true,
+            sourceChain: [...(context?.sourceChain || []), procTriggerSource],
+        };
 
-        dispatch(handleDrawOriginalAbility({ drawOriginalAbility, effect, context: procContext }));
+        dispatch(
+            handleDrawOriginalAbility({
+                drawOriginalAbility,
+                effect,
+                context: procContext,
+            }),
+        );
         dispatch(checkCardActions({ action: other, context: procContext }));
 
         const postCardActionsOwner = findCombatantData(getState().battle!, ownerId);
@@ -502,7 +565,7 @@ export const onEffectEventTrigger = ({
                     parentAbility: parent as any,
                     multiplier,
                     context: procContext,
-                })
+                }),
             );
         }
 
@@ -511,7 +574,9 @@ export const onEffectEventTrigger = ({
                 return [ownerId];
             }
 
-            const player = battleState.playerSide.find((combatant) => combatant?.isPlayer) as Player;
+            const player = battleState.playerSide.find(
+                (combatant) => combatant?.isPlayer,
+            ) as Player;
 
             const targetIds =
                 {
@@ -561,7 +626,7 @@ export const onEffectEventTrigger = ({
                 multiplierConfig,
                 source,
                 effectEvent,
-            })
+            }),
         );
 
         dispatch(
@@ -575,7 +640,7 @@ export const onEffectEventTrigger = ({
                 usableWhileStunned,
                 usableWhileDead,
                 effectEventKey,
-            })
+            }),
         );
     };
 };
@@ -602,7 +667,13 @@ export const checkEventTrigger = ({
         const source = context?.sourceChain?.at(-1);
         const fromProc = source?.isProc || context?.isProc;
 
-        const triggerEffectEvent = ({ effect, effectEvent }: { effect: CombatEffect; effectEvent: EffectEventTrigger }) => {
+        const triggerEffectEvent = ({
+            effect,
+            effectEvent,
+        }: {
+            effect: CombatEffect;
+            effectEvent: EffectEventTrigger;
+        }) => {
             const { uptime, turnsTriggerFrequency = 0, id, disableEffectEvents } = effect;
 
             if (disableEffectEvents) {
@@ -610,22 +681,36 @@ export const checkEventTrigger = ({
             }
 
             // Dead characters generally cannot trigger effects except in case of killing blows
-            const usable = effectEventKey === EFFECT_EVENT_KEYS.onDeath || combatant.HP > 0 || effectEvent?.usableWhileDead;
+            const usable =
+                effectEventKey === EFFECT_EVENT_KEYS.onDeath ||
+                combatant.HP > 0 ||
+                effectEvent?.usableWhileDead;
             if (!usable) {
                 return;
             }
 
             const excludeEffectOwner =
-                effectEvent.excludeEffectOwner && (source?.actorId === combatantId || source?.targetId === combatantId);
+                effectEvent.excludeEffectOwner &&
+                (source?.actorId === combatantId || source?.targetId === combatantId);
             if (excludeEffectOwner) {
                 return;
             }
 
             const eventTriggeredTimes = (effectEvent.eventTriggeredTimes || 0) + 1;
             const triggerSum = (effectEvent.triggerSum || 0) + (context?.trackSumAmount || 1);
-            dispatch(updateEffectEventTriggeredTimes({ combatantId, effectEventKey, eventTriggeredTimes, triggerSum, effectId: id }));
+            dispatch(
+                updateEffectEventTriggeredTimes({
+                    combatantId,
+                    effectEventKey,
+                    eventTriggeredTimes,
+                    triggerSum,
+                    effectId: id,
+                }),
+            );
 
-            const meetsTriggerTimes = !effectEvent.eventTriggerFrequency || eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
+            const meetsTriggerTimes =
+                !effectEvent.eventTriggerFrequency ||
+                eventTriggeredTimes % effectEvent.eventTriggerFrequency === 0;
             const parentSource: Action | CombatEffect | Ability | Item | undefined = source?.source;
             const notTriggeringSameEffect = effect.id !== (parentSource as CombatEffect)?.id;
             const historyKey = [effectEventKey, id].join("-");
@@ -633,7 +718,10 @@ export const checkEventTrigger = ({
             const alreadyTriggered = history.includes(historyKey);
 
             const canTriggerFromProcs = !fromProc || !effectEvent?.disableTriggerFromProcs;
-            const isBattleStartEffect = [EFFECT_EVENT_KEYS.onBattleStart, EFFECT_EVENT_KEYS.onWaveStart].includes(effectEventKey);
+            const isBattleStartEffect = [
+                EFFECT_EVENT_KEYS.onBattleStart,
+                EFFECT_EVENT_KEYS.onWaveStart,
+            ].includes(effectEventKey);
 
             if (
                 !alreadyTriggered &&
@@ -648,7 +736,10 @@ export const checkEventTrigger = ({
                         return 1;
                     }
 
-                    return Math.floor(triggerSum / freq) - Math.floor((effectEvent.triggerSum || 0) / freq);
+                    return (
+                        Math.floor(triggerSum / freq) -
+                        Math.floor((effectEvent.triggerSum || 0) / freq)
+                    );
                 })();
 
                 Array.from({ length: triggerTimesFromSum }).forEach(() => {
@@ -662,7 +753,7 @@ export const checkEventTrigger = ({
                                 ...context,
                                 triggerHistory: [...history, historyKey],
                             },
-                        })
+                        }),
                     );
                 });
             }
@@ -682,7 +773,13 @@ export const checkEventTrigger = ({
         });
 
         if (combatant.isPlayer && !fromProc) {
-            dispatch(triggerCardEffectEvents({ effectEventKey, context, actorId: source?.actorId || combatant.id }));
+            dispatch(
+                triggerCardEffectEvents({
+                    effectEventKey,
+                    context,
+                    actorId: source?.actorId || combatant.id,
+                }),
+            );
         }
     };
 };
@@ -705,7 +802,8 @@ const updateEffectEventTriggeredTimes = ({
 }) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         // Effects could have been removed from one effectEvent trigger to the next, so make sure we're getting the updated one here
-        const currentEffects = findCombatantData(getState().battle!, combatantId)?.combatant?.effects || [];
+        const currentEffects =
+            findCombatantData(getState().battle!, combatantId)?.combatant?.effects || [];
 
         dispatch(
             updateCombatant({
@@ -738,7 +836,7 @@ const updateEffectEventTriggeredTimes = ({
                         };
                     }),
                 },
-            })
+            }),
         );
     };
 };
@@ -758,7 +856,9 @@ const triggerCardEffectEvents = ({
             return;
         }
 
-        const actorIsPlayer = playerSide.some((combatant: Combatant | null) => combatant?.isPlayer && combatant.id === actorId);
+        const actorIsPlayer = playerSide.some(
+            (combatant: Combatant | null) => combatant?.isPlayer && combatant.id === actorId,
+        );
         if (!actorIsPlayer) {
             return;
         }
@@ -766,7 +866,8 @@ const triggerCardEffectEvents = ({
         const checkEventAbility = (pileName: CardPileType) => {
             const pile = getState().battle![pileName];
             pile.forEach((card: CombatAbility) => {
-                const event = card[effectEventKey as keyof CombatAbility] as AbilityEvent | undefined;
+                const event = card[effectEventKey as keyof CombatAbility] as
+                    AbilityEvent | undefined;
                 if (!event || (event?.inPile && !event.inPile.includes(pileName))) {
                     return card;
                 }
@@ -779,7 +880,7 @@ const triggerCardEffectEvents = ({
                             actorId,
                             isProc: true,
                             context,
-                        })
+                        }),
                     );
                 }
             });
@@ -791,7 +892,9 @@ const triggerCardEffectEvents = ({
             const pile = getState().battle![pileName];
 
             return pile.map((card: CombatAbility) => {
-                const event: AbilityEvent | undefined = card[effectEventKey as keyof CombatAbility] as AbilityEvent | undefined;
+                const event: AbilityEvent | undefined = card[
+                    effectEventKey as keyof CombatAbility
+                ] as AbilityEvent | undefined;
                 if (!event || (event?.inPile && !event.inPile.includes(pileName))) {
                     return card;
                 }
@@ -812,7 +915,7 @@ const triggerCardEffectEvents = ({
                 deck: applyEffects("deck"),
                 discard: applyEffects("discard"),
                 depleted: applyEffects("depleted"),
-            })
+            }),
         );
     };
 };

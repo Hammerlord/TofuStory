@@ -24,7 +24,16 @@ import {
     WeaponMasteryImage,
 } from "../images";
 import { AngerIcon, BloodIcon } from "../images/icons";
-import { bleed, burn, explosive, hardy, poison, raging, sentry, warding } from "./../ability/Effects";
+import {
+    bleed,
+    burn,
+    explosive,
+    hardy,
+    poison,
+    raging,
+    sentry,
+    warding,
+} from "./../ability/Effects";
 import { attack } from "./abilities";
 import { poisonous } from "./effect";
 
@@ -80,7 +89,8 @@ const flameRaging: Effect = {
                             type: EFFECT_TYPES.RAGE,
                             class: EFFECT_CLASSES.BUFF,
                             icon: WeaponMasteryImage,
-                            description: "Growing angry. Effect is removed if the character is stunned.",
+                            description:
+                                "Growing angry. Effect is removed if the character is stunned.",
                             attackPower: 1,
                             onReceiveEffect: {
                                 conditions: [
@@ -174,7 +184,8 @@ export const balrog: Minion = {
         {
             name: "Brutal Claw",
             icon: BrutalClawImage,
-            description: "Every 6 cards played, Balrog will attack for 6 damage and discard a card from the player's hand.",
+            description:
+                "Every 6 cards played, Balrog will attack for 6 damage and discard a card from the player's hand.",
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
             disableDisplayIcon: true, // It is displayed above the attack power instead
@@ -225,8 +236,24 @@ export const balrog: Minion = {
                             target: TARGET_TYPES.SELF,
                             type: ACTION_TYPES.EFFECT,
                             summon: [
-                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
-                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
+                                {
+                                    minion: [
+                                        shieldingFlame,
+                                        ragingFlame,
+                                        poisonousFlame,
+                                        sentryFlame,
+                                    ],
+                                    noDuplicateMinions: true,
+                                },
+                                {
+                                    minion: [
+                                        shieldingFlame,
+                                        ragingFlame,
+                                        poisonousFlame,
+                                        sentryFlame,
+                                    ],
+                                    noDuplicateMinions: true,
+                                },
                             ],
                         },
                     ],
@@ -250,8 +277,24 @@ export const balrog: Minion = {
                             target: TARGET_TYPES.SELF,
                             type: ACTION_TYPES.EFFECT,
                             summon: [
-                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
-                                { minion: [shieldingFlame, ragingFlame, poisonousFlame, sentryFlame], noDuplicateMinions: true },
+                                {
+                                    minion: [
+                                        shieldingFlame,
+                                        ragingFlame,
+                                        poisonousFlame,
+                                        sentryFlame,
+                                    ],
+                                    noDuplicateMinions: true,
+                                },
+                                {
+                                    minion: [
+                                        shieldingFlame,
+                                        ragingFlame,
+                                        poisonousFlame,
+                                        sentryFlame,
+                                    ],
+                                    noDuplicateMinions: true,
+                                },
                             ],
                         },
                     ],

@@ -12,7 +12,13 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { BombImage, MasterDummyImage, PandaImage, PandaSpecialMoveImage, UrsusPawDefaultImage } from "../images";
+import {
+    BombImage,
+    MasterDummyImage,
+    PandaImage,
+    PandaSpecialMoveImage,
+    UrsusPawDefaultImage,
+} from "../images";
 import { CloudIcon, MuscleIcon, ShieldIcon } from "../images/icons";
 import { defDown, defUp } from "./../ability/Effects";
 import { attack } from "./abilities";
@@ -278,7 +284,8 @@ export const martialArtist: Minion = {
         },
         {
             name: "Submission",
-            description: "Destroys the target's armor. If the target has no armor, deals {{ actions.1.bonus.damage }} damage.",
+            description:
+                "Destroys the target's armor. If the target has no armor, deals {{ actions.1.bonus.damage }} damage.",
             image: PandaSpecialMoveImage,
             resourceCost: 3,
             castTime: 1,

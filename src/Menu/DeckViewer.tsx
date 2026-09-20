@@ -73,7 +73,12 @@ const DeckViewer = ({
                 </button>
                 {deck.map((card: CombatAbility) => (
                     <div className={classes.abilityContainer} key={card.instanceId}>
-                        <AbilityView ability={card} disableGlow={true} disableBattleBonuses={true} onClick={() => onClickAbility(card)} />
+                        <AbilityView
+                            ability={card}
+                            disableGlow={true}
+                            disableBattleBonuses={true}
+                            onClick={() => onClickAbility(card)}
+                        />
                     </div>
                 ))}
             </div>

@@ -16,7 +16,8 @@ const useStyles = createUseStyles({
  * Draws a targeting line from eg. a selected ally to the mouse position
  */
 const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
-    const origination = originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
+    const origination =
+        originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
     const targetLineRef: React.RefObject<SVGPathElement> = useRef(null);
     const circleRef: React.RefObject<SVGCircleElement> = useRef(null);
     const bullseyeRef: React.RefObject<SVGCircleElement> = useRef(null);
@@ -60,7 +61,10 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
             const c1 = (x + clientX) / 2 + offset;
             const c2 = (y + clientY) / 1.75;
 
-            targetLineRef.current.setAttribute("d", `M ${x} ${y} Q ${c1} ${c2} ${clientX} ${clientY}`);
+            targetLineRef.current.setAttribute(
+                "d",
+                `M ${x} ${y} Q ${c1} ${c2} ${clientX} ${clientY}`,
+            );
 
             bullseyeRef.current?.setAttribute("cx", String(clientX));
             bullseyeRef.current?.setAttribute("cy", String(clientY));

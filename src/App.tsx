@@ -69,12 +69,18 @@ const theme = createTheme({
 export const App = () => {
     const classes = useStyles();
     const isDevToolEnabled = true;
-    const devStore = useMemo(() => (isDevToolEnabled ? getConfiguredStore() : undefined), [isDevToolEnabled]);
+    const devStore = useMemo(
+        () => (isDevToolEnabled ? getConfiguredStore() : undefined),
+        [isDevToolEnabled],
+    );
 
     return (
         <ThemeProvider theme={theme}>
             <Provider store={store}>
-                <div className={classNames(classes.app, classes.root)} onContextMenu={(e) => e.preventDefault()}>
+                <div
+                    className={classNames(classes.app, classes.root)}
+                    onContextMenu={(e) => e.preventDefault()}
+                >
                     <Main />
                 </div>
             </Provider>

@@ -1,5 +1,12 @@
 import { attack } from "./abilities";
-import { BarrelImage, BatsEffectImage, BombImage, StumpyBatImage, StumpyImage, WeaponMasteryImage } from "../images";
+import {
+    BarrelImage,
+    BatsEffectImage,
+    BombImage,
+    StumpyBatImage,
+    StumpyImage,
+    WeaponMasteryImage,
+} from "../images";
 import { MountainIcon } from "../images/icons";
 import { burn, hardy } from "./../ability/Effects";
 import {
@@ -21,7 +28,8 @@ const explosiveBarrel: Minion = {
     effects: [
         {
             name: "Explosive",
-            description: "When destroyed, the barrel explodes, burning characters within 2 tiles on the same side.",
+            description:
+                "When destroyed, the barrel explodes, burning characters within 2 tiles on the same side.",
             icon: BombImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.BUFF,

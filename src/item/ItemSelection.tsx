@@ -65,10 +65,17 @@ const ItemSelection = ({
      * for an unobtained item
      */
     const getInitItems = () => {
-        const itemSelection = filterUnobtainableItems({ playerItems: player.items, itemsToFilter: items || [] });
+        const itemSelection = filterUnobtainableItems({
+            playerItems: player.items,
+            itemsToFilter: items || [],
+        });
 
         if (!disableItemReplacements) {
-            const itemPool = rollItemPool({ player, excludeItems: itemSelection, bonuses });
+            const itemPool = rollItemPool({
+                player,
+                excludeItems: itemSelection,
+                bonuses,
+            });
             const needed = numChoices - itemSelection.length;
             const sliced = shuffle(itemPool).slice(0, needed);
             itemSelection.push(...sliced);
@@ -106,7 +113,12 @@ const ItemSelection = ({
                         </div>
                     ))}
                 </div>
-                <Button variant={"contained"} color="primary" disabled={!choices[selectedIndex]} onClick={handleSelectClick}>
+                <Button
+                    variant={"contained"}
+                    color="primary"
+                    disabled={!choices[selectedIndex]}
+                    onClick={handleSelectClick}
+                >
                     Select!
                 </Button>
             </div>

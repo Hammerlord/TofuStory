@@ -2,7 +2,13 @@ import { Ability, AbilityEffect, CombatAbility, EFFECT_EVENT_KEYS } from "../../
 import { Combatant, Player } from "../../character/types";
 import { AppDispatch, RootState } from "../../store";
 import { battleStateSlice } from "../reducer";
-import { ActionContext, BATTLEFIELD_SIDES, BattleState, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../types";
+import {
+    ActionContext,
+    BATTLEFIELD_SIDES,
+    BattleState,
+    CombatantInfo,
+    TRIGGER_SOURCE_TYPES,
+} from "../types";
 import { getHandAuraEffects } from "../view/Hand";
 import { handleDiscardAfterUse } from "./cardActions/discardCards";
 import { recalculateEffectsFromAbilities } from "./cardActions/drawCards";
@@ -49,7 +55,10 @@ export const isWithinPlayerAbilityArea = ({
 };
 
 /** Returns a card with aura effects applied, if any. */
-export const getCardByInstanceId = (hand: CombatAbility[], id?: string | null): CombatAbility | undefined => {
+export const getCardByInstanceId = (
+    hand: CombatAbility[],
+    id?: string | null,
+): CombatAbility | undefined => {
     if (!id) {
         return;
     }
@@ -86,7 +95,10 @@ export const getPlayerAbilityResourceCost = ({
     return Math.max(0, resourceCost + resourceCostFromEffects);
 };
 
-export const canUsePlayerAbility = (player: Player | undefined, ability?: CombatAbility | Ability | undefined): boolean => {
+export const canUsePlayerAbility = (
+    player: Player | undefined,
+    ability?: CombatAbility | Ability | undefined,
+): boolean => {
     if (!ability) {
         return false;
     }
@@ -125,7 +137,8 @@ export const useHandAbility = ({
             return;
         }
 
-        const isReusable = selectedAbility.reusable || selectedAbility.effects?.some((effect) => effect.reusable);
+        const isReusable =
+            selectedAbility.reusable || selectedAbility.effects?.some((effect) => effect.reusable);
         if (isReusable) {
             // Reusable cards are not discarded when used. They used to be re-appended to the end of the hand, but the position change throws players off.
             dispatch(
@@ -148,7 +161,7 @@ export const useHandAbility = ({
                         }
                         return card;
                     }),
-                })
+                }),
             );
         } else {
             dispatch(removeAbilityFromHand(selectedAbility.instanceId));
@@ -159,7 +172,14 @@ export const useHandAbility = ({
             name: "Use Player Ability",
             playbackCollector: playbackCollectorInstance,
         };
-        dispatch(usePlayerAbility({ selectedTargetIndex, selectedTargetSide, ability: selectedAbility, context }));
+        dispatch(
+            usePlayerAbility({
+                selectedTargetIndex,
+                selectedTargetSide,
+                ability: selectedAbility,
+                context,
+            }),
+        );
         dispatch(pushEventQueue(playbackCollectorInstance.get()));
     };
 };
@@ -189,10 +209,11 @@ export const usePlayerAbility = ({
                 actorId: actor?.id,
                 isProc,
                 context: { ...context, name: "Use Player Ability" },
-            })
+            }),
         );
 
-        const { hostile = [], friendly = [] } = findCombatantData(getState().battle!, actor.id) || {};
+        const { hostile = [], friendly = [] } =
+            findCombatantData(getState().battle!, actor.id) || {};
         hostile.concat(friendly).forEach((combatant) => {
             if (combatant) {
                 dispatch(
@@ -213,7 +234,7 @@ export const usePlayerAbility = ({
                             ],
                             isProc,
                         },
-                    })
+                    }),
                 );
             }
         });
@@ -242,7 +263,7 @@ export const removeAbilityFromHand = (abilityId: string) => {
         dispatch(
             updateBattle({
                 hand: handWithAbilityUsed,
-            })
+            }),
         );
 
         // Order matters; we don't want to allow card draws to be able to draw itself from the discard pile

@@ -70,7 +70,9 @@ export const drawCards = ({
                 // If there are not enough to fulfill the quota, it just whiffs.
                 while (cards.length !== numCards) {
                     const i = newDeck.findIndex((ability) =>
-                        ability.actions.some((action: Action) => action.type && filters.includes(action.type))
+                        ability.actions.some(
+                            (action: Action) => action.type && filters.includes(action.type),
+                        ),
                     );
                     if (i === -1) {
                         break;
@@ -82,7 +84,9 @@ export const drawCards = ({
 
                 while (cards.length !== numCards) {
                     const i = newDiscard.findIndex((ability) =>
-                        ability.actions.some((action: Action) => action.type && filters.includes(action.type))
+                        ability.actions.some(
+                            (action: Action) => action.type && filters.includes(action.type),
+                        ),
                     );
                     if (i === -1) {
                         break;
@@ -125,7 +129,14 @@ export const drawCards = ({
         }
 
         cardsToDraw = cardsToDraw.map((card) =>
-            applyAbilityEffectsOnDraw({ drawnCard: card, context, effects, playerSide, battle, player })
+            applyAbilityEffectsOnDraw({
+                drawnCard: card,
+                context,
+                effects,
+                playerSide,
+                battle,
+                player,
+            }),
         );
 
         const newState = {
@@ -139,7 +150,14 @@ export const drawCards = ({
         if (!isOnTurnDraw) {
             // Order matters: This is for ActionHistory/visual records, and should be grouped with the parent ability
             // so it comes before handleOnDrawEvents, to avoid rolling it into any procs.
-            dispatch(enqueueEvent({ newCards: cardsToDraw, cardsAddedTo: "hand", context, options: { alwaysGroup: true } }));
+            dispatch(
+                enqueueEvent({
+                    newCards: cardsToDraw,
+                    cardsAddedTo: "hand",
+                    context,
+                    options: { alwaysGroup: true },
+                }),
+            );
         }
         dispatch(handleOnDrawEvents({ cardsToDraw, bonus, context }));
 
@@ -147,7 +165,11 @@ export const drawCards = ({
             playerSide.concat(enemySide).forEach((combatant) => {
                 if (combatant) {
                     dispatch(
-                        checkEventTrigger({ combatantId: combatant.id, effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle, context: context })
+                        checkEventTrigger({
+                            combatantId: combatant.id,
+                            effectEventKey: EFFECT_EVENT_KEYS.onDeckCycle,
+                            context: context,
+                        }),
                     );
                 }
             });
@@ -208,9 +230,12 @@ export const recalculateEffectsFromAbilities = () => {
             updateCombatant({
                 combatantId: player.id,
                 newProperties: {
-                    effects: [...effects, ...aggregateAbilityEffects([...deck, ...hand, ...discard])],
+                    effects: [
+                        ...effects,
+                        ...aggregateAbilityEffects([...deck, ...hand, ...discard]),
+                    ],
                 },
-            })
+            }),
         );
     };
 };
@@ -237,7 +262,9 @@ export const handleOnDrawEvents = ({
                 }
 
                 if (ability) {
-                    const player = getState().battle!.playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
+                    const player = getState().battle!.playerSide.find(
+                        (combatant: Combatant | null) => combatant?.isPlayer,
+                    ) as Player;
                     dispatch(useAbility({ ability, actorId: player.id, isProc: true, context }));
                 }
 
@@ -260,19 +287,30 @@ export const handleOnDrawEvents = ({
                             trackSumAmount: cardsToDraw.length,
                             isProc: true,
                         },
-                    })
+                    }),
                 );
             }
         });
     };
 };
 
-const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: CombatAbility; effects: Effect[] }) => {
+const triggerCardActionCombatantBonuses = ({
+    ability,
+    effects,
+}: {
+    ability: CombatAbility;
+    effects: Effect[];
+}) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         const { playerSide, hand, deck, discard } = getState().battle!;
-        const player = playerSide.find((combatant: Combatant | null) => combatant?.isPlayer) as Player;
+        const player = playerSide.find(
+            (combatant: Combatant | null) => combatant?.isPlayer,
+        ) as Player;
         const parentSourceChain = [{ source: ability, type: TRIGGER_SOURCE_TYPES.ABILITY }];
-        const context = { sourceChain: parentSourceChain, name: "Card Action Bonuses" };
+        const context = {
+            sourceChain: parentSourceChain,
+            name: "Card Action Bonuses",
+        };
 
         const updated = getUpdatedStats({
             hand,
@@ -309,8 +347,8 @@ const triggerCardActionCombatantBonuses = ({ ability, effects }: { ability: Comb
                             },
                         ],
                     },
-                }))
-            )
+                })),
+            ),
         );
     };
 };
@@ -338,7 +376,7 @@ const handleCardActionBonus = ({
                 property?: string;
                 value?: any;
                 comparator?: Comparator;
-            }[]
+            }[],
         ) => {
             if (!conditions?.length) {
                 return true;
@@ -350,7 +388,11 @@ const handleCardActionBonus = ({
                         return false;
                     }
                     const propertyVal = _.get(card, property);
-                    return passesValueComparison({ val: propertyVal, otherVal: value, comparator });
+                    return passesValueComparison({
+                        val: propertyVal,
+                        otherVal: value,
+                        comparator,
+                    });
                 });
             });
         };
@@ -368,7 +410,7 @@ const handleCardActionBonus = ({
                         resources: (acc.resources || 0) + (cur.resources || 0),
                     };
                 },
-                {} as { resources: number }
+                {} as { resources: number },
             );
 
         const player = battle.playerSide.find((c) => c?.isPlayer) as Player;
@@ -389,7 +431,15 @@ const handleCardActionBonus = ({
     };
 };
 
-const sumCardDrawAmount = ({ effects, source, amount }: { effects?: AbilityEffect[]; amount: number; source?: TriggerSource }) => {
+const sumCardDrawAmount = ({
+    effects,
+    source,
+    amount,
+}: {
+    effects?: AbilityEffect[];
+    amount: number;
+    source?: TriggerSource;
+}) => {
     if (effects?.length) {
         amount += effects.reduce((acc, cur) => {
             return (acc += cur?.drawCards || 0);

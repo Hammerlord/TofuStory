@@ -1,7 +1,14 @@
 import classNames from "classnames";
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BystanderImage, KerningSewerFull2Image, LakelisImage, ShoImage, StefaImage, WessImage } from "../../../images";
+import {
+    BystanderImage,
+    KerningSewerFull2Image,
+    LakelisImage,
+    ShoImage,
+    StefaImage,
+    WessImage,
+} from "../../../images";
 import { getRandomArbitrary, getRandomItem } from "../../../utils";
 import Tooltip from "../../../view/Tooltip";
 import { SceneProps } from "../../types";
@@ -63,7 +70,7 @@ const SewerEntrance2 = ({ player }: SceneProps) => {
             flip: Math.random() < 0.5,
             left: 400 + i * getRandomArbitrary(20, 30),
             text: getBystanderDialogue(),
-        }))
+        })),
     );
 
     return (

@@ -3,7 +3,9 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
-import defaultCharacterProperties, { wizardProperties } from "../character/defaultCharacterProperties";
+import defaultCharacterProperties, {
+    wizardProperties,
+} from "../character/defaultCharacterProperties";
 import Map from "../map/Map";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { getUpgradeCard } from "../Menu/utils";
@@ -119,25 +121,52 @@ const DevToolButton = () => {
                 </Button>
             </div>
             {devToolsMenuAnchor && (
-                <Popper anchorEl={devToolsMenuAnchor} open={true} placement={"bottom-start"} className={classes.menu}>
+                <Popper
+                    anchorEl={devToolsMenuAnchor}
+                    open={true}
+                    placement={"bottom-start"}
+                    className={classes.menu}
+                >
                     <ClickAwayListener onClickAway={() => setDevToolsMenuAnchor(null)}>
                         <div>
                             Card Matching Minigame
                             <MenuList>
-                                <MenuItem onClick={() => handleCardGameDifficultyClick("easy")}>Easy</MenuItem>
-                                <MenuItem onClick={() => handleCardGameDifficultyClick("medium")}>Medium</MenuItem>
-                                <MenuItem onClick={() => handleCardGameDifficultyClick("hard")}>Hard</MenuItem>
+                                <MenuItem onClick={() => handleCardGameDifficultyClick("easy")}>
+                                    Easy
+                                </MenuItem>
+                                <MenuItem onClick={() => handleCardGameDifficultyClick("medium")}>
+                                    Medium
+                                </MenuItem>
+                                <MenuItem onClick={() => handleCardGameDifficultyClick("hard")}>
+                                    Hard
+                                </MenuItem>
                                 <Divider />
                             </MenuList>
                             <MenuList>
-                                <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>Ability Viewer</MenuItem>
-                                <MenuItem onClick={() => setIsItemViewerOpen((prev) => !prev)}>Item Viewer</MenuItem>
-                                <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>Scene Viewer</MenuItem>
-                                <MenuItem onClick={() => setIsShopOpen((prev) => !prev)}>Shop Viewer</MenuItem>
-                                <MenuItem onClick={() => setIsTradingPostOpen((prev) => !prev)}>Trading Post</MenuItem>
-                                <MenuItem onClick={() => setIsBattle((prev) => !prev)}>Staged Battle</MenuItem>
-                                <MenuItem onClick={() => setIsFortuneBoxOpen((prev) => !prev)}>Fortune Box</MenuItem>
-                                <MenuItem onClick={() => setIsTransmutationOpen((prev) => !prev)}>Transmutation</MenuItem>
+                                <MenuItem onClick={() => setIsAbilityViewerOpen((prev) => !prev)}>
+                                    Ability Viewer
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsItemViewerOpen((prev) => !prev)}>
+                                    Item Viewer
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsSceneViewerOpen((prev) => !prev)}>
+                                    Scene Viewer
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsShopOpen((prev) => !prev)}>
+                                    Shop Viewer
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsTradingPostOpen((prev) => !prev)}>
+                                    Trading Post
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsBattle((prev) => !prev)}>
+                                    Staged Battle
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsFortuneBoxOpen((prev) => !prev)}>
+                                    Fortune Box
+                                </MenuItem>
+                                <MenuItem onClick={() => setIsTransmutationOpen((prev) => !prev)}>
+                                    Transmutation
+                                </MenuItem>
                             </MenuList>
                             Treasure Box Puzzles
                             <MenuList>
@@ -153,7 +182,10 @@ const DevToolButton = () => {
             )}
             {cardGameDifficulty && (
                 <div className={classes.overlay}>
-                    <CardMatchingGame difficulty={cardGameDifficulty} onExit={() => setCardGameDifficulty(null)} />
+                    <CardMatchingGame
+                        difficulty={cardGameDifficulty}
+                        onExit={() => setCardGameDifficulty(null)}
+                    />
                 </div>
             )}
             {isAbilityViewerOpen && (
@@ -187,7 +219,10 @@ const DevToolButton = () => {
             {Quest && (
                 <div className={classes.overlay}>
                     <div className={classes.inner}>
-                        <Quest player={defaultCharacterProperties} onComplete={() => setQuestName(null)} />
+                        <Quest
+                            player={defaultCharacterProperties}
+                            onComplete={() => setQuestName(null)}
+                        />
                     </div>
                 </div>
             )}
@@ -211,7 +246,12 @@ const DevToolButton = () => {
             )}
             {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} />}
             {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} />}
-            {isFortuneBoxOpen && <FortuneBox player={defaultCharacterProperties} onComplete={() => setIsFortuneBoxOpen(false)} />}
+            {isFortuneBoxOpen && (
+                <FortuneBox
+                    player={defaultCharacterProperties}
+                    onComplete={() => setIsFortuneBoxOpen(false)}
+                />
+            )}
             {isTransmutationOpen && (
                 <TransmutationView
                     deck={JOB_CARD_MAP[PLAYER_CLASSES.WARRIOR].all.map((ability) => {

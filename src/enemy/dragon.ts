@@ -9,7 +9,13 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../ability/types";
-import { BlueManonImage, DragonScreechImage, EncroachingDarknessImage, FireMarbleImage, RedMagicClawImage } from "../images";
+import {
+    BlueManonImage,
+    DragonScreechImage,
+    EncroachingDarknessImage,
+    FireMarbleImage,
+    RedMagicClawImage,
+} from "../images";
 import { CrossedSwordsIcon, JapaneseOgreIcon, ZzzIcon } from "../images/icons";
 import { bleed, burn, hardy, poison, raging } from "./../ability/Effects";
 import { loaf } from "./abilities";

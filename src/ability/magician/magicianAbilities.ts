@@ -291,7 +291,8 @@ export const magicClaw: Ability = {
     resourceCost: 2,
     image: MagicClawImage,
     overrideBodyText: true,
-    description: "Hits x2. <br/> <b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} per hit.",
+    description:
+        "Hits x2. <br/> <b>Charged: +{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} per hit.",
     rarity: RARITIES.COMMON,
     actions: [
         {
@@ -429,7 +430,10 @@ export const pong: Ability = {
     depletedOnUse: true,
     actions: [
         {
-            addCards: [ping, ping].map((card) => ({ ...card, removeAfterTurn: true })),
+            addCards: [ping, ping].map((card) => ({
+                ...card,
+                removeAfterTurn: true,
+            })),
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
         },
@@ -1021,7 +1025,8 @@ const pieceOfCake: Ability = {
     name: "Piece Of Cake",
     resourceCost: 0,
     image: PieceOfBirthdayCakeImage,
-    description: "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
+    description:
+        "Gain <b>{{ actions.0.resources }} {{{ _resource_ }}}.</b> Draw <b>{{ actions.0.drawCards.amount }}</b> cards.",
     overrideBodyText: true,
     removeAfterTurn: true,
     actions: [
@@ -1132,7 +1137,8 @@ export const greaterBolt: Ability = {
     image: EnergyBoltImage,
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
-    description: "Deals <b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every other 'Bolt' card in your hand.",
+    description:
+        "Deals <b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every other 'Bolt' card in your hand.",
     actions: [
         {
             damage: 8,
@@ -1236,7 +1242,8 @@ export const glacier: Ability = {
     image: ColdBeamImage,
     resourceCost: 2,
     rarity: RARITIES.UNCOMMON,
-    description: "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _freeze_ }}}",
+    description:
+        "Apply {{{ _chill_ }}} <b>{{ actions.0.effects.0.duration }}</b>{{{ _duration_ }}} + {{{ _freeze_ }}}",
     overrideBodyText: true,
     actions: [
         {
@@ -1520,7 +1527,10 @@ export const arcaneChanneling: Ability = {
         {
             target: TARGET_TYPES.SELF,
             type: ACTION_TYPES.EFFECT,
-            addCards: [greaterBolt, greaterBolt, greaterBolt].map((ability) => ({ ...ability, removeAfterTurn: true })),
+            addCards: [greaterBolt, greaterBolt, greaterBolt].map((ability) => ({
+                ...ability,
+                removeAfterTurn: true,
+            })),
         },
     ],
     upgrades: [
@@ -1560,7 +1570,11 @@ export const polymorph: Ability = {
                     attackPower: -2,
                     maxApplications: 1,
                     override: {
-                        portrait: [ScarfSnowmanImage, StrawHatSnowmanImage, MetalBucketSnowmanImage],
+                        portrait: [
+                            ScarfSnowmanImage,
+                            StrawHatSnowmanImage,
+                            MetalBucketSnowmanImage,
+                        ],
                     },
                     persistsWhenDead: true,
                     type: EFFECT_TYPES.SILENCE,
@@ -1772,7 +1786,8 @@ export const combust: Ability = {
     image: ParalyzeImage,
     resourceCost: 3,
     rarity: RARITIES.RARE,
-    description: "Deals <b>{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each {{{ _burn_ }}} on the target.",
+    description:
+        "Deals <b>{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for each {{{ _burn_ }}} on the target.",
     actions: [
         {
             damage: 10,
@@ -1874,7 +1889,8 @@ export const volatileMagic: Ability = {
     resourceCost: 1,
     rarity: RARITIES.RARE,
     depletedOnUse: true,
-    description: "Once per turn, when you play an active <b>Charged</b> card, cast a <b>0</b> or <b>1</b>-cost {{{ _offense_ }}} spell.",
+    description:
+        "Once per turn, when you play an active <b>Charged</b> card, cast a <b>0</b> or <b>1</b>-cost {{{ _offense_ }}} spell.",
     overrideBodyText: true,
     actions: [
         {
@@ -1890,7 +1906,8 @@ export const volatileMagic: Ability = {
                         effects: [
                             {
                                 name: "Volatile Magic",
-                                description: "When you play an active Charged card, cast a random 0 or 1-cost offense spell.",
+                                description:
+                                    "When you play an active Charged card, cast a random 0 or 1-cost offense spell.",
                                 icon: StarfallMagicSquareImage,
                                 type: EFFECT_TYPES.NONE,
                                 class: EFFECT_CLASSES.BUFF,
@@ -2139,7 +2156,8 @@ const snowBoulder: Ability = {
     resourceCost: 1,
     removeAfterTurn: true,
     rarity: RARITIES.UNCOMMON,
-    description: "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
+    description:
+        "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2180,7 +2198,8 @@ export const snowball: Ability = {
     image: SnowballImage,
     resourceCost: 1,
     rarity: RARITIES.RARE,
-    description: "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
+    description:
+        "Apply <b>{{{ _chill_ }}} {{ actions.0.effects.0.duration }} {{{ _duration_ }}}</b>",
     actions: [
         {
             type: ACTION_TYPES.RANGE_ATTACK,
@@ -2264,7 +2283,8 @@ export const starBolt: Ability = {
     name: "Star Bolt",
     resourceCost: 1,
     image: GlisteningStarImage,
-    description: "Draw {{ actions.0.drawCards.amount }} card. <br/> <b>Charged:</b> Draw {{ actions.0.bonus.drawCards.amount }} more.",
+    description:
+        "Draw {{ actions.0.drawCards.amount }} card. <br/> <b>Charged:</b> Draw {{ actions.0.bonus.drawCards.amount }} more.",
     overrideBodyText: true,
     rarity: RARITIES.UNCOMMON,
     actions: [
@@ -2521,7 +2541,8 @@ const icicleMinion: Minion = {
             icon: IcicleMinionImage,
             type: EFFECT_TYPES.NONE,
             class: EFFECT_CLASSES.NONE,
-            description: "On attack: Applies Chill and self-inflicts 1 damage. Attackers are Chilled.",
+            description:
+                "On attack: Applies Chill and self-inflicts 1 damage. Attackers are Chilled.",
             onReceiveAttack: {
                 targetType: TRIGGER_TARGET_TYPES.ACTOR,
                 usableWhileDead: true,
@@ -2767,7 +2788,8 @@ export const elquines: Ability = {
 
 export const abominableSnowman: Ability = {
     name: "Abominable Snowman",
-    description: "Gains {{ minion.effects.1.onAttack.ability.actions.0.armor }} {{{ _armor_ }}} when it attacks.",
+    description:
+        "Gains {{ minion.effects.1.onAttack.ability.actions.0.armor }} {{{ _armor_ }}} when it attacks.",
     image: GiantSnowmanImage,
     resourceCost: 2,
     rarity: RARITIES.RARE,
@@ -2935,7 +2957,8 @@ export const fireSpirit: Ability = {
 export const flareBolt: Ability = {
     name: "Flare Bolt",
     resourceCost: 2,
-    description: "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}.</b> Summon a <b>Fire Spirit.</b>",
+    description:
+        "Apply <b>{{ actions.0.effects.0.stacks }} {{{ _burn_ }}}.</b> Summon a <b>Fire Spirit.</b>",
     image: FireMarbleImage,
     rarity: RARITIES.UNCOMMON,
     depletedOnUse: true,
@@ -2980,7 +3003,8 @@ export const flareBolt: Ability = {
 
 export const astralRewind: Ability = {
     name: "Astral Rewind",
-    description: "Add Ephemeral copies of the last <b>{{ actions.0.addLastPlayedCards.amount }}</b> cards you used to your hand.",
+    description:
+        "Add Ephemeral copies of the last <b>{{ actions.0.addLastPlayedCards.amount }}</b> cards you used to your hand.",
     image: EpicAdventureImage,
     depletedOnUse: true,
     rarity: RARITIES.RARE,
@@ -3016,7 +3040,8 @@ export const astralRewind: Ability = {
 
 export const burst: Ability = {
     name: "Burst",
-    description: "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique {{{ _offense_ }}} card used this battle.",
+    description:
+        "<b>+{{ actions.0.bonus.damage }}</b> {{{ _damage_ }}} for every unique {{{ _offense_ }}} card used this battle.",
     overrideBodyText: true,
     image: BlazingExtinctionImage,
     disableConditionGlow: true,
@@ -3184,7 +3209,8 @@ export const lucidDream: Ability = {
     image: LucidDreamImage,
     rarity: RARITIES.RARE,
     removeAfterTurn: true,
-    description: "Cast a random spell for every unique {{{ _offense_ }}} card played this battle. <b>(Spells: {{ _multiplier_ }})</b>",
+    description:
+        "Cast a random spell for every unique {{{ _offense_ }}} card played this battle. <b>(Spells: {{ _multiplier_ }})</b>",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -3239,7 +3265,8 @@ export const picoPicoHammerAbility: Ability = {
     resourceCost: 1,
     image: PicoPicoHammerImage,
     rarity: RARITIES.UNCOMMON,
-    description: "Apply {{{ _stun_ }}}. <br/> <b>Charged:</b> Cast another <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer.",
+    description:
+        "Apply {{{ _stun_ }}}. <br/> <b>Charged:</b> Cast another <b>{{ actions.1.damage }}</b> {{{ _damage_ }}} hammer.",
     actions: [
         {
             damage: 7,
@@ -3523,7 +3550,8 @@ export const mysticDoor: Ability = {
     rarity: RARITIES.UNCOMMON,
     image: MysticDoorImage,
     resourceCost: 1,
-    description: "Draw {{ actions.1.drawCards.amount }} cards. <br/> <b>Charged:</b> Draw from your discard instead.",
+    description:
+        "Draw {{ actions.1.drawCards.amount }} cards. <br/> <b>Charged:</b> Draw from your discard instead.",
     actions: [
         {
             target: TARGET_TYPES.SELF,
@@ -3639,7 +3667,8 @@ export const thunderSpear: Ability = {
     rarity: RARITIES.RARE,
     image: ThunderSpearImage,
     resourceCost: 1,
-    description: "<b>Echo.</b> <b>Charged:</b> Cast again for <b>{{{ actions.1.damage }}} {{{ _damage_ }}}.</b>",
+    description:
+        "<b>Echo.</b> <b>Charged:</b> Cast again for <b>{{{ actions.1.damage }}} {{{ _damage_ }}}.</b>",
     echo: true,
     actions: [
         {
@@ -3721,7 +3750,8 @@ const wyvernMinion: Minion = {
         {
             name: "Frost Breath",
             image: SnowballImage,
-            description: "Inflicts {{{ _chill_ }}} for {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.",
+            description:
+                "Inflicts {{{ _chill_ }}} for {{ actions.0.effects.0.duration }} {{{ _duration_ }}}.",
             actions: [
                 {
                     target: TARGET_TYPES.HOSTILE,
@@ -3746,7 +3776,8 @@ export const wyvernAbility: Ability = {
     rarity: RARITIES.RARE,
     minion: wyvernMinion,
     resourceCost: 2,
-    description: "<b>Controllable.</b> Applies {{{ _burn_ }}}, {{{ _stun_ }}}, or {{{ _chill_ }}}, changing each attack.",
+    description:
+        "<b>Controllable.</b> Applies {{{ _burn_ }}}, {{{ _stun_ }}}, or {{{ _chill_ }}}, changing each attack.",
     actions: [],
     upgrades: [
         {

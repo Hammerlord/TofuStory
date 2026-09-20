@@ -200,7 +200,13 @@ const useStyles = createUseStyles({
 /**
  * Shows the stun, bleed, etc. icons for status effects on the combatant's portrait
  */
-const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: CombatantInfo; statChanges: UpdatedCombatantStats }) => {
+const PortraitStatusEffects = ({
+    combatantInfo,
+    statChanges,
+}: {
+    combatantInfo: CombatantInfo;
+    statChanges: UpdatedCombatantStats;
+}) => {
     const classes = useStyles();
 
     if (!combatantInfo?.combatant) {
@@ -215,7 +221,8 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: 
     const isStunned = hasStatusEffect(EFFECT_TYPES.STUN);
     const isStealthed = hasStatusEffect(EFFECT_TYPES.STEALTH);
     const isSilenced = hasStatusEffect(EFFECT_TYPES.SILENCE);
-    const isImmune = hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
+    const isImmune =
+        hasStatusEffect(EFFECT_TYPES.IMMUNITY) || hasStatusEffect(EFFECT_TYPES.ATTACK_IMMUNITY);
     const isFrozen = hasStatusEffect(EFFECT_TYPES.FREEZE);
     const bleeds = effects.filter((effect) => effect.type === EFFECT_TYPES.BLEED) || [];
     const isFeared = hasStatusEffect(EFFECT_TYPES.FEAR);
@@ -255,20 +262,31 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: 
                     <>
                         {Array.from({ length: 3 }).map((_, i) => (
                             <span
-                                className={classNames(classes.customEffect, classes.pulseCustomEffectAnimation)}
+                                className={classNames(
+                                    classes.customEffect,
+                                    classes.pulseCustomEffectAnimation,
+                                )}
                                 style={{ animationDelay: `${0.2 * i}s` }}
                                 key={i}
                             >
                                 {getEffectImage(portraitImage)}
                             </span>
                         ))}
-                        <span className={classNames(classes.customEffect, classes.pulseBase)} key={i}>
+                        <span
+                            className={classNames(classes.customEffect, classes.pulseBase)}
+                            key={i}
+                        >
                             {getEffectImage(portraitImage)}
                         </span>
                     </>
                 )}
                 {!displayPulse && (
-                    <span className={classNames(classes.customEffect, classes.defaultCustomEffectAnimation)}>
+                    <span
+                        className={classNames(
+                            classes.customEffect,
+                            classes.defaultCustomEffectAnimation,
+                        )}
+                    >
                         {getEffectImage(portraitImage)}
                     </span>
                 )}
@@ -286,7 +304,9 @@ const PortraitStatusEffects = ({ combatantInfo, statChanges }: { combatantInfo: 
                     <Stealth isStealthed={isStealthed} />
                 </div>
             }
-            {isSilenced && <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />}
+            {isSilenced && (
+                <Icon icon={<SpeechBubbleIcon />} size="xl" className={classes.silence} />
+            )}
             {isStunned && <Icon icon={<DizzyIcon />} size="xl" className={classes.stun} />}
             {isFrozen && <img src={NimbleJewelCImage} alt="Frozen" className={classes.freeze} />}
             {isFeared && <Icon icon={<SweatDropsIcon />} size="xl" className={classes.fear} />}

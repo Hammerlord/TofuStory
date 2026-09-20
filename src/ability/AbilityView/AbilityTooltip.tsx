@@ -55,7 +55,9 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
 
     if (ability.tooltip) {
         const { title, description, icon } = ability.tooltip;
-        tooltips.push(<TooltipSection title={title} description={description} icon={icon} key={title} />);
+        tooltips.push(
+            <TooltipSection title={title} description={description} icon={icon} key={title} />,
+        );
     }
 
     if (ability.overrideTooltip) {
@@ -105,7 +107,7 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
                         <AbilityView ability={card} />
                     </div>
                 ))}
-            </div>
+            </div>,
         );
     }
 
@@ -119,14 +121,20 @@ const AbilityTooltip = ({ ability, children }: { ability: Ability; children: Rea
                 }
                 icon={diamond}
                 key="summon"
-            />
+            />,
         );
     }
 
     tooltips.push(<KeywordsTooltips object={ability} key={"keywords-tooltips"} />);
 
     return (
-        <Tooltip title={tooltips} placement={"right-end"} classes={{ tooltip: classes.tooltip }} enterDelay={500} disableInteractive={true}>
+        <Tooltip
+            title={tooltips}
+            placement={"right-end"}
+            classes={{ tooltip: classes.tooltip }}
+            enterDelay={500}
+            disableInteractive={true}
+        >
             {children}
         </Tooltip>
     );

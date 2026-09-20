@@ -211,7 +211,8 @@ export const undeadMage: Minion = {
         {
             name: "Arise, Minions!",
             image: SkullStaffImage,
-            description: "Summons 3 skeletons. For each that doesn't fit, an existing minion is Tributed.",
+            description:
+                "Summons 3 skeletons. For each that doesn't fit, an existing minion is Tributed.",
             resourceCost: 3,
             castTime: 1,
             dialog: "Arise, minions!!!",

@@ -143,8 +143,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const { updateTownShop, updateMesos, updatePlayer, updateDeck, acquireItems, onPurchaseConsumable, refreshTownItemShop } =
-    playerStateSlice.actions;
+const {
+    updateTownShop,
+    updateMesos,
+    updatePlayer,
+    updateDeck,
+    acquireItems,
+    onPurchaseConsumable,
+    refreshTownItemShop,
+} = playerStateSlice.actions;
 
 const ShopView = ({
     onBuyItem,
@@ -165,7 +172,9 @@ const ShopView = ({
     }) => void;
     onExit?: () => void; // MUST be provided to get the button to leave the shop
     shopState: ShopState;
-    onUpdateShopState: (updatedConfig: { [key in keyof ShopState]?: ShopState[key] }) => void;
+    onUpdateShopState: (updatedConfig: {
+        [key in keyof ShopState]?: ShopState[key];
+    }) => void;
     onRefresh: (cost: number) => void;
 }) => {
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
@@ -177,7 +186,11 @@ const ShopView = ({
     // Items like Tofu Special and Shopper's Club Membership should take effect if bought. So regenerate the 'shop customer properties'.
     const shopOptions = getShopCustomerProperties(player);
 
-    const { discount = 0, numRefreshes: initRefreshes = 0, freeFood: initFreeFood = 0 } = shopOptions;
+    const {
+        discount = 0,
+        numRefreshes: initRefreshes = 0,
+        freeFood: initFreeFood = 0,
+    } = shopOptions;
     const hasFreeFood: boolean = initFreeFood - usedFreeFood > 0;
     const numRefreshes = initRefreshes - usedNumRefreshes;
 
@@ -221,7 +234,13 @@ const ShopView = ({
         }
 
         if (items[selectedItemIndex]) {
-            const { price: initPrice, item, isConsumable, isFood, statChanges } = items[selectedItemIndex];
+            const {
+                price: initPrice,
+                item,
+                isConsumable,
+                isFood,
+                statChanges,
+            } = items[selectedItemIndex];
             const price = getFinalConsumableItemPrice(item, initPrice);
 
             if (isFood) {
@@ -234,7 +253,12 @@ const ShopView = ({
                     }
                 } else {
                     if (statChanges) {
-                        onBuyItem({ items: [], mesosSpent: price, type: "item", statChanges });
+                        onBuyItem({
+                            items: [],
+                            mesosSpent: price,
+                            type: "item",
+                            statChanges,
+                        });
                     } else {
                         onBuyItem({ items: [item], mesosSpent: price, type: "item" });
                     }
@@ -262,7 +286,12 @@ const ShopView = ({
 
     const getShopAbility = (shopItem, i: number) => {
         if (!shopItem) {
-            return <div className={classNames(classes.abilityContainer, classes.abilityPlaceholder)} key={i} />;
+            return (
+                <div
+                    className={classNames(classes.abilityContainer, classes.abilityPlaceholder)}
+                    key={i}
+                />
+            );
         }
 
         const { item, price: initPrice } = shopItem;
@@ -307,7 +336,12 @@ const ShopView = ({
 
     const getShopItem = (shopItem, i: number) => {
         if (!shopItem) {
-            return <div className={classNames(classes.itemContainer, classes.itemPlaceholder)} key={i} />;
+            return (
+                <div
+                    className={classNames(classes.itemContainer, classes.itemPlaceholder)}
+                    key={i}
+                />
+            );
         }
 
         const { item, price: initPrice, isFood } = shopItem;
@@ -366,7 +400,9 @@ const ShopView = ({
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
-                <div className={classes.doneContainer}>{onExit && <LeaveButton onClick={handleExitClick} />}</div>
+                <div className={classes.doneContainer}>
+                    {onExit && <LeaveButton onClick={handleExitClick} />}
+                </div>
                 <div className={classes.refreshContainer}>
                     <span
                         className={classNames(classes.refreshText, {
@@ -378,18 +414,29 @@ const ShopView = ({
                             <span className={classes.free}>FREE</span>
                         ) : (
                             <>
-                                <img src={MesoCoinImage} alt={"Mesos"} className={classes.refreshMesos} /> {shopRefreshCost}
+                                <img
+                                    src={MesoCoinImage}
+                                    alt={"Mesos"}
+                                    className={classes.refreshMesos}
+                                />{" "}
+                                {shopRefreshCost}
                             </>
                         )}
                     </span>
-                    <Button color={"secondary"} onClick={() => onRefresh(shopRefreshCost)} disabled={player.mesos < shopRefreshCost}>
+                    <Button
+                        color={"secondary"}
+                        onClick={() => onRefresh(shopRefreshCost)}
+                        disabled={player.mesos < shopRefreshCost}
+                    >
                         Refresh
                     </Button>
                 </div>
 
                 <div className={classes.container}>
                     <div className={classNames(classes.column, classes.abilityColumn)}>
-                        <div className={classes.abilitiesSection}>{abilities.map(getShopAbility)}</div>
+                        <div className={classes.abilitiesSection}>
+                            {abilities.map(getShopAbility)}
+                        </div>
                     </div>
                     <div className={classes.column}>{items.map(getShopItem)}</div>
                 </div>
@@ -402,7 +449,11 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
     const { deck, player, townShops } = useAppSelector((state) => state.character);
 
     // Only used if `town` is not supplied, for temporary merchant shops not found in town
-    const [shopState, setShopState] = useState({ ...generateShopInventory({ player, deck }), usedFreeFood: 0, usedNumRefreshes: 0 });
+    const [shopState, setShopState] = useState({
+        ...generateShopInventory({ player, deck }),
+        usedFreeFood: 0,
+        usedNumRefreshes: 0,
+    });
 
     const shopStateRedux = townShops?.[town]?.shop;
     const dispatch = useAppDispatch();
@@ -411,7 +462,11 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
         if (shopStateRedux) {
             dispatch(refreshTownItemShop(town!));
         } else {
-            setShopState((prev) => ({ ...prev, ...generateShopInventory({ player, deck }), usedNumRefreshes: prev.usedNumRefreshes + 1 }));
+            setShopState((prev) => ({
+                ...prev,
+                ...generateShopInventory({ player, deck }),
+                usedNumRefreshes: prev.usedNumRefreshes + 1,
+            }));
         }
 
         dispatch(updateMesos(-cost));
@@ -426,7 +481,7 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
             updatePlayer({
                 HP: newHP,
                 maxHP: player.maxHP + maxHP,
-            })
+            }),
         );
 
         if (type === "ability") {

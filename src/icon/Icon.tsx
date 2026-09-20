@@ -113,8 +113,19 @@ interface IconInterface {
 
 const Icon = forwardRef(
     (
-        { text, icon, background, size = "md", className, style, children, highlightText, highlightIcon, ...other }: IconInterface,
-        ref: any
+        {
+            text,
+            icon,
+            background,
+            size = "md",
+            className,
+            style,
+            children,
+            highlightText,
+            highlightIcon,
+            ...other
+        }: IconInterface,
+        ref: any,
     ) => {
         const classes = useStyles();
         size = ["min", "xs", "sm", "md", "lg", "xl"].includes(size) ? size : undefined;
@@ -135,7 +146,9 @@ const Icon = forwardRef(
 
         return (
             <span
-                className={classNames("icon-root", classes.root, className, size, { [classes.highlightIcon]: highlightIcon })}
+                className={classNames("icon-root", classes.root, className, size, {
+                    [classes.highlightIcon]: highlightIcon,
+                })}
                 style={{ background, ...style }}
                 {...other}
                 ref={ref}
@@ -157,7 +170,7 @@ const Icon = forwardRef(
                 </span>
             </span>
         );
-    }
+    },
 );
 
 export default Icon;

@@ -74,7 +74,11 @@ const Notification = ({
         return null;
     }
     return (
-        <div style={{ opacity: opacity }} className={classNames(classes.root, severity)} onClick={onClick}>
+        <div
+            style={{ opacity: opacity }}
+            className={classNames(classes.root, severity)}
+            onClick={onClick}
+        >
             {children}
         </div>
     );

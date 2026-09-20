@@ -36,7 +36,9 @@ export const getArmorStatistics = ({
     const { actions: primaryActions = [] } = ability;
 
     const calcArmorFromActions = (actions: (Action | undefined)[] = []) => {
-        const armorActions: Action[] = actions.filter((action): action is Action => (action?.armor || 0) > 0);
+        const armorActions: Action[] = actions.filter(
+            (action): action is Action => (action?.armor || 0) > 0,
+        );
         if (armorActions.length === 0) {
             return {
                 base: 0,
@@ -99,11 +101,14 @@ export const getArmorStatistics = ({
         const armorActionsArmor = armorActions[0].armor || 0;
 
         // This is not accurate because of secondaryAction being baked into withArmorReceivedArmor/armorActionsArmor but not the bonus check
-        const hasUnfulfilledBonus = withArmorReceivedArmor === armorActionsArmor && armorActions.some(({ bonus }) => bonus);
+        const hasUnfulfilledBonus =
+            withArmorReceivedArmor === armorActionsArmor && armorActions.some(({ bonus }) => bonus);
         const withBonusArmor = withBonus[0].armor || 0;
 
         // This is the potential to have a multiplier; false when a bonus is being applied
-        const hasMultiplier = armorActions.some((action) => action.multiplier) && armorActionsArmor === withArmorReceivedArmor;
+        const hasMultiplier =
+            armorActions.some((action) => action.multiplier) &&
+            armorActionsArmor === withArmorReceivedArmor;
 
         const hasAdditiveArmor = withArmorReceived.some(({ armor }) => {
             return armor && armor !== withArmorReceivedArmor;
@@ -121,7 +126,9 @@ export const getArmorStatistics = ({
     };
 
     const primaryArmor = calcArmorFromActions(primaryActions);
-    const secondaryArmor = calcArmorFromActions(primaryActions.map((action) => action.secondaryAction));
+    const secondaryArmor = calcArmorFromActions(
+        primaryActions.map((action) => action.secondaryAction),
+    );
     if (primaryArmor.base) {
         return primaryArmor;
     }
@@ -148,7 +155,13 @@ const useStyles = createUseStyles({
 /**
  * The armor icon that displays on the top left of an ability card
  */
-const ArmorIcon = ({ armorStatistics, highlightText }: { armorStatistics: ArmorStats; highlightText?: boolean }) => {
+const ArmorIcon = ({
+    armorStatistics,
+    highlightText,
+}: {
+    armorStatistics: ArmorStats;
+    highlightText?: boolean;
+}) => {
     const { base, hasMultiplier, isAdditive, hasBonus, hasPenalty } = armorStatistics;
     const classes = useStyles();
 

@@ -157,7 +157,9 @@ const FollowFairies = ({ onComplete }) => {
                         onClick={() => handleClickProp(name)}
                         className={classNames(classes.propContainer, {
                             [classes.inactive]: !response.length && !lightUpProp && initialized,
-                            [classes.flash]: !isComplete && (response[response.length - 1] === name || lightUpProp === name),
+                            [classes.flash]:
+                                !isComplete &&
+                                (response[response.length - 1] === name || lightUpProp === name),
                             [classes.complete]: isComplete,
                         })}
                         key={name}

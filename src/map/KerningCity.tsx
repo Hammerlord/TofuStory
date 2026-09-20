@@ -21,7 +21,14 @@ import {
     SwampRegionBGImage,
     TownTransmuteImage,
 } from "../images";
-import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, QuestionMarkIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import {
+    CampingIcon,
+    JapaneseOgreIcon,
+    MoneyBagIcon,
+    QuestionMarkIcon,
+    ThoughtBubbleIcon,
+    WorldMapIcon,
+} from "../images/icons";
 import { barScene } from "../scene/Kerning/darkLordScene";
 import { KPQ } from "../scene/Kerning/kpq/KPQ";
 import { EventScene, SceneEncounter } from "../scene/types";
@@ -109,7 +116,11 @@ export const dyleScene: EventScene = {
 
 const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) => {
     const classes = useStyles();
-    const { nodesVisited: visited = {}, townShops, rolledBosses } = useAppSelector((state) => state.character);
+    const {
+        nodesVisited: visited = {},
+        townShops,
+        rolledBosses,
+    } = useAppSelector((state) => state.character);
     const dispatch = useAppDispatch();
     const [isShopOpen, setIsShopOpen] = useState(false);
     const [isTradingPostOpen, setIsTradingPostOpen] = useState(false);
@@ -117,13 +128,16 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
     const { workshop, tradingPost } = townShops[TOWNS.KERNING] || {};
     const numTransmutesRemaining = workshop?.numTransmutesRemaining || 0;
 
-    const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce((acc: number, val: string) => {
-        if (visited[val]) {
-            return acc + 1;
-        }
+    const numActivitiesComplete: number = Object.values(KERNING_PLACES).reduce(
+        (acc: number, val: string) => {
+            if (visited[val]) {
+                return acc + 1;
+            }
 
-        return acc;
-    }, 0) as number;
+            return acc;
+        },
+        0,
+    ) as number;
 
     const canLeaveTown = numActivitiesComplete >= 4;
     const screenCentre = { x: 0, y: window.innerHeight / 2 };
@@ -225,7 +239,12 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
                             onClick={handleClickWorkshop}
                             isVisited={numTransmutesRemaining === 0}
                         />
-                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={KerningShopImage} onClick={handleClickShop} />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            label={"Shop"}
+                            nodeImage={KerningShopImage}
+                            onClick={handleClickShop}
+                        />
                         <br />
                         <TownNode
                             icon={CampingIcon}
@@ -236,7 +255,11 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
                         />
 
                         <div className={classNames(classes.townCenter)}>
-                            <img src={KerningCenterImage} alt="Kerning Center" className={classes.townCenterImage} />
+                            <img
+                                src={KerningCenterImage}
+                                alt="Kerning Center"
+                                className={classes.townCenterImage}
+                            />
                             <div className={classes.townHeader}>
                                 <h2>Kerning City</h2>
                             </div>
@@ -294,8 +317,12 @@ const KerningCity = ({ player, onExit, onClickScene, onCamp }: TownProperties) =
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.KERNING} />}
-                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.KERNING} />}
-                {isWorkshopOpen && <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.KERNING} />}
+                {isTradingPostOpen && (
+                    <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.KERNING} />
+                )}
+                {isWorkshopOpen && (
+                    <Transmutation onExit={() => setIsWorkshopOpen(false)} town={TOWNS.KERNING} />
+                )}
             </div>
         </div>
     );

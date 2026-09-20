@@ -15,7 +15,13 @@ import {
     SleepywoodShopImage,
     SleepywoodTradingPostImage,
 } from "../images";
-import { CampingIcon, JapaneseOgreIcon, MoneyBagIcon, ThoughtBubbleIcon, WorldMapIcon } from "../images/icons";
+import {
+    CampingIcon,
+    JapaneseOgreIcon,
+    MoneyBagIcon,
+    ThoughtBubbleIcon,
+    WorldMapIcon,
+} from "../images/icons";
 import Shop from "../shops/Shop";
 import TradingPost from "../shops/TradingPost";
 import Legend from "./Legend";
@@ -111,7 +117,12 @@ const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProp
                             onClick={handleClickTradingPost}
                             isVisited={tradingPost.numTradesRemaining === 0}
                         />
-                        <TownNode icon={MoneyBagIcon} label={"Shop"} nodeImage={SleepywoodShopImage} onClick={handleClickShop} />
+                        <TownNode
+                            icon={MoneyBagIcon}
+                            label={"Shop"}
+                            nodeImage={SleepywoodShopImage}
+                            onClick={handleClickShop}
+                        />
                         <br />
                         <TownNode
                             icon={CampingIcon}
@@ -122,7 +133,11 @@ const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProp
                         />
 
                         <div className={classNames(classes.townCenter)}>
-                            <img src={SleepywoodCenterImage} alt="Sleepywood Center" className={classes.townCenterImage} />
+                            <img
+                                src={SleepywoodCenterImage}
+                                alt="Sleepywood Center"
+                                className={classes.townCenterImage}
+                            />
                             <div className={classes.townHeader}>
                                 <h2>Sleepywood</h2>
                             </div>
@@ -153,11 +168,16 @@ const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProp
                                 if (checkVisitPlace(SLEEPYWOOD_PLACES.BALROG)) {
                                     onBattle(
                                         {
-                                            waves: [{ enemies: [null, null, balrog, null, null], winCondition: { defeatBoss: true } }],
+                                            waves: [
+                                                {
+                                                    enemies: [null, null, balrog, null, null],
+                                                    winCondition: { defeatBoss: true },
+                                                },
+                                            ],
                                             type: BATTLE_TYPES.BOSS,
                                             backgroundImage: DeepDungeonBGImage,
                                         },
-                                        () => {}
+                                        () => {},
                                     );
                                 }
                             }}
@@ -173,12 +193,21 @@ const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProp
                                     onBattle(
                                         {
                                             waves: [
-                                                { enemies: [null, null, theRememberer, null, null], winCondition: { defeatBoss: true } },
+                                                {
+                                                    enemies: [
+                                                        null,
+                                                        null,
+                                                        theRememberer,
+                                                        null,
+                                                        null,
+                                                    ],
+                                                    winCondition: { defeatBoss: true },
+                                                },
                                             ],
                                             type: BATTLE_TYPES.BOSS,
                                             backgroundImage: SleepywoodRegionBGImage,
                                         },
-                                        () => {}
+                                        () => {},
                                     );
                                 }
                             }}
@@ -187,7 +216,12 @@ const Sleepywood = ({ player, onExit, onClickScene, onCamp, onBattle }: TownProp
                 </Pan>
                 <Legend />
                 {isShopOpen && <Shop onExit={() => setIsShopOpen(false)} town={TOWNS.SLEEPYWOOD} />}
-                {isTradingPostOpen && <TradingPost onExit={() => setIsTradingPostOpen(false)} town={TOWNS.SLEEPYWOOD} />}
+                {isTradingPostOpen && (
+                    <TradingPost
+                        onExit={() => setIsTradingPostOpen(false)}
+                        town={TOWNS.SLEEPYWOOD}
+                    />
+                )}
             </div>
         </div>
     );

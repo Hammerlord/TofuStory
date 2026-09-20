@@ -9,7 +9,15 @@ import { TRIGGER_SOURCE_TYPES } from "../../battle/types";
 
 const PLAYBACK_TIME = 3000;
 
-const floatAnimation = ({ object, delay, playbackTime = PLAYBACK_TIME }: { object: HTMLElement; delay: number; playbackTime?: number }) => {
+const floatAnimation = ({
+    object,
+    delay,
+    playbackTime = PLAYBACK_TIME,
+}: {
+    object: HTMLElement;
+    delay: number;
+    playbackTime?: number;
+}) => {
     const animationFrames: any[] = [
         {
             opacity: 0.5,
@@ -90,7 +98,9 @@ const StatusEffectAnnouncer = ({
     const [queue, setQueue] = useState<EffectQueued[]>([]);
 
     const isInvalidCombatant =
-        !combatant || (combatant.HP === 0 && combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
+        !combatant ||
+        (combatant.HP === 0 &&
+            combatant.effects.every((effect) => effect.type !== EFFECT_TYPES.LIFE_LINK));
 
     const aggregate = (effects: CombatEffect[]): CombatEffect[] => {
         const aggregated = effects.reduce(
@@ -108,7 +118,7 @@ const StatusEffectAnnouncer = ({
 
                 return acc;
             },
-            {} as { [effectName: string]: CombatEffect }
+            {} as { [effectName: string]: CombatEffect },
         );
 
         return Object.values(aggregated);
@@ -126,7 +136,14 @@ const StatusEffectAnnouncer = ({
         }
 
         // Only display effects that are visible via icon
-        const { effects = [], removedEffects = [], failedToApplyEffects = [], failedToAddCards, missed, context } = statChanges;
+        const {
+            effects = [],
+            removedEffects = [],
+            failedToApplyEffects = [],
+            failedToAddCards,
+            missed,
+            context,
+        } = statChanges;
 
         const isVisible = (effect: { icon?: string; disableDisplayIcon?: boolean }): boolean =>
             Boolean(effect.icon && !effect.disableDisplayIcon);
@@ -136,7 +153,7 @@ const StatusEffectAnnouncer = ({
                 acc[getKey(item.effect, item.type)] = true;
                 return acc;
             },
-            {} as { [key: string]: true }
+            {} as { [key: string]: true },
         );
 
         const isAlreadyQueued = (effect: { id: string }, type: QUEUED_EFFECT_TYPES): boolean => {
@@ -147,9 +164,15 @@ const StatusEffectAnnouncer = ({
         const newQueue = [...queue];
 
         if (missed) {
-            const ability = context?.sourceChain?.find((a) => a.type === TRIGGER_SOURCE_TYPES.ABILITY)?.source as CombatAbility;
+            const ability = context?.sourceChain?.find(
+                (a) => a.type === TRIGGER_SOURCE_TYPES.ABILITY,
+            )?.source as CombatAbility;
             if (ability) {
-                const effect = { id: ability.instanceId!, icon: ability.image, name: ability.name };
+                const effect = {
+                    id: ability.instanceId!,
+                    icon: ability.image,
+                    name: ability.name,
+                };
                 newQueue.push({ effect, type: QUEUED_EFFECT_TYPES.MISS });
             }
         }
@@ -239,7 +262,7 @@ const StatusEffectAnnouncer = ({
                         prev.filter((item) => {
                             const queueItemKey = getKey(item.effect, item.type);
                             return queueItemKey !== key;
-                        })
+                        }),
                     );
                 };
             });
@@ -254,7 +277,8 @@ const StatusEffectAnnouncer = ({
                     if (type === QUEUED_EFFECT_TYPES.ADDED) {
                         return (
                             <>
-                                + <Icon icon={e.icon} size="sm" /> {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined}
+                                + <Icon icon={e.icon} size="sm" /> {e.name}{" "}
+                                {e.stacks > 1 ? `x${e.stacks}` : undefined}
                             </>
                         );
                     }
@@ -262,8 +286,8 @@ const StatusEffectAnnouncer = ({
                     if (type === QUEUED_EFFECT_TYPES.FADED) {
                         return (
                             <>
-                                <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}{" "}
-                                {e.stacks > 1 ? `x${e.stacks}` : undefined} faded
+                                <Icon icon={e.icon} size="sm" className={classes.fadedIcon} />{" "}
+                                {e.name} {e.stacks > 1 ? `x${e.stacks}` : undefined} faded
                             </>
                         );
                     }
@@ -271,7 +295,9 @@ const StatusEffectAnnouncer = ({
                     if (type === QUEUED_EFFECT_TYPES.IMMUNED) {
                         return (
                             <>
-                                Resisted <Icon icon={e.icon} size="sm" className={classes.fadedIcon} /> {e.name}
+                                Resisted{" "}
+                                <Icon icon={e.icon} size="sm" className={classes.fadedIcon} />{" "}
+                                {e.name}
                             </>
                         );
                     }
@@ -290,7 +316,10 @@ const StatusEffectAnnouncer = ({
                     <div
                         key={key}
                         className={classNames(classes.effectItem, {
-                            [classes.faded]: [QUEUED_EFFECT_TYPES.FADED, QUEUED_EFFECT_TYPES.IMMUNED].includes(type),
+                            [classes.faded]: [
+                                QUEUED_EFFECT_TYPES.FADED,
+                                QUEUED_EFFECT_TYPES.IMMUNED,
+                            ].includes(type),
                         })}
                         ref={(element) => {
                             if (element) {

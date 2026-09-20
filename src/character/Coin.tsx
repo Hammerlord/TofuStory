@@ -38,7 +38,13 @@ const Coin = ({
 }) => {
     const classes = useStyles();
 
-    const amount = Math.abs(action?.mesos || action?.stealMesos || statChanges?.mesos || (isDeathBlow && combatant?.mesos) || 0);
+    const amount = Math.abs(
+        action?.mesos ||
+            action?.stealMesos ||
+            statChanges?.mesos ||
+            (isDeathBlow && combatant?.mesos) ||
+            0,
+    );
 
     const [coins, setCoins] = useState<number[]>([]);
     const nextCoinId = useRef(0);
