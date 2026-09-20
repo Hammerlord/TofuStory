@@ -68,7 +68,7 @@ const theme = createTheme({
 
 export const App = () => {
     const classes = useStyles();
-    const isDevToolEnabled = true;
+    const isDevToolEnabled = import.meta.env.DEV;
     const devStore = useMemo(
         () => (isDevToolEnabled ? getConfiguredStore() : undefined),
         [isDevToolEnabled],
