@@ -356,7 +356,7 @@ const AnimationCanvas = ({
                     const shakeDuration = 175;
                     playShakeAnimation({
                         object: battlefieldRef.current,
-                        delay: (playbackTime - shakeDuration) / 2,
+                        delay: playbackTime / 2,
                         playbackTime: shakeDuration,
                         direction,
                         amplitude,

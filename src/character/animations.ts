@@ -415,38 +415,38 @@ export const playTossUpAnimation = ({
 };
 
 /**
- * Quickly shake `object` vertically.
- * @param direction - 1 for downward bias, -1 for upward bias
- * @param amplitude - the maximum translateY percentage of the shake
+ * Quickly shake `object` along a direction vector.
+ * @param direction - normalized direction vector; {x:0, y:1} shakes purely vertically
+ * @param amplitude - the maximum translate percentage of the shake
  */
 export const playShakeAnimation = ({
     object,
     delay,
     playbackTime,
-    direction = 1,
+    direction = { x: 0, y: 1 },
     amplitude = 0.5,
 }: {
     object: HTMLElement;
     delay?: number;
     playbackTime: number;
-    direction?: number;
+    direction?: { x: number; y: number };
     amplitude?: number;
 }) => {
     const animationFrames = [
         {
-            transform: "translateY(0%)",
+            transform: "translateX(0%) translateY(0%)",
             easing: "ease-out",
         },
         {
-            transform: `translateY(${direction * amplitude}%)`,
+            transform: `translateX(${direction.x * amplitude}%) translateY(${direction.y * amplitude}%)`,
             easing: "ease-in-out",
         },
         {
-            transform: `translateY(${-direction * amplitude}%)`,
+            transform: `translateX(${-direction.x * amplitude}%) translateY(${-direction.y * amplitude}%)`,
             easing: "ease-in-out",
         },
         {
-            transform: "translateY(0%)",
+            transform: "translateX(0%) translateY(0%)",
             easing: "ease-in",
         },
     ];
