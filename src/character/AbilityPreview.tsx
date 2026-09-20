@@ -235,6 +235,7 @@ const AbilityPreview = ({
             actionDamage,
             actionArmor,
             isDefiniteKill,
+            damageDealt,
         } = previewStatUpdate.reduce(
             (acc, preview) => {
                 const { action, nondeterministic, statUpdate } = preview || {};
@@ -246,6 +247,7 @@ const AbilityPreview = ({
                     armor = 0,
                     resources = 0,
                     isDeathBlow,
+                    damageDealt,
                 } = statUpdate;
                 const combinedEffects = acc.effects || [];
                 effects.forEach((e) => {
@@ -277,6 +279,7 @@ const AbilityPreview = ({
                     ),
                     armor: (acc.armor || 0) + armor,
                     isDeathBlow: acc.isDeathBlow || isDeathBlow,
+                    damageDealt: (acc.damageDealt || 0) + (damageDealt || 0),
                     actionDamage: (acc.actionDamage || 0) + (action.damage || 0),
                     actionArmor: (acc.actionArmor || 0) + (action.armor || 0),
                     isDefiniteKill: rawDamage === Infinity,
@@ -294,6 +297,7 @@ const AbilityPreview = ({
                 actionDamage: number;
                 actionArmor: number;
                 isDefiniteKill: boolean;
+                damageDealt: number;
             },
         );
 
@@ -354,7 +358,10 @@ const AbilityPreview = ({
                                 [classes.negative]: rawDamage < actionDamage,
                             })}
                         >
-                            {rawDamage || 0}
+                            {/**
+                             * For enemies, it's better to let the player see how much damage would be wasted on overkills without having to do the math.
+                             * Overkill figure continues to display for player-side characters so that it's clear to the player how much armor they need to save that character. */}
+                            {isEnemy ? damageDealt || 0 : rawDamage || 0}
                             {nondeterministic && "?"}{" "}
                         </span>
                     </>

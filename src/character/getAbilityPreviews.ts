@@ -116,6 +116,7 @@ export const previewAction = ({
                     effects,
                     healing,
                     overkill: 0,
+                    damageDealt: finalDamage,
                 };
                 statUpdates[key].push({ ...projectedStatUpdate, action });
             });

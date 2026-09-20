@@ -48,6 +48,8 @@ export interface UpdatedCombatantStats {
     failedToApplyEffects?: CombatEffect[]; // Effects that were immuned
     failedToAddCards?: CombatAbility[];
     overkill?: number;
+    // Effective damage excluding overkill (armor absorbed + health damage)
+    damageDealt?: number;
     context?: ActionContext;
     action?: Action; // Appended in previews, but is it generally used?
     missed?: boolean;
@@ -179,6 +181,7 @@ export const getUpdatedStats = ({
             Math.max(0, bypassArmor ? damage : damage - totalArmor),
         );
         const rawDamage = damage;
+        const damageDealt = bypassArmor ? Math.min(rawDamage, targetApplicableHP) : Math.min(rawDamage, totalArmor + targetApplicableHP);
 
         let rawHealing = 0;
         if (targetCombatant.HP - healthDamage > 0 || resurrect) {
@@ -223,6 +226,7 @@ export const getUpdatedStats = ({
             rawResources: resources,
             isDeathBlow,
             overkill: isDeathBlow ? targetCombatant.HP - healthDamage + healing : 0,
+            damageDealt,
             mesos: moneyDiff,
             isArmorDecay: decayArmor,
             isArmorBroken: targetCombatant.armor > 0 && updatedTargetArmor === 0,
