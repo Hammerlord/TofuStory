@@ -289,6 +289,33 @@ const AnimationCanvas = ({
         if (Array.isArray(animations)) {
             animations.forEach(handleCharacterAnimation);
         }
+
+        if (battlefieldRef.current) {
+            eventGroup?.events.forEach((event) => {
+                if (!event.statUpdates) {
+                    return;
+                }
+
+                 Object.values(event.statUpdates).forEach((statUpdate) => {
+                    const damage = statUpdate.healthDamage || 0;
+                    if (damage === 0 || statUpdate.missed) {
+                        return;
+                    }
+
+                    const isPlayerTarget = event.targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE;
+                    const direction = isPlayerTarget ? 1 : -1;
+                    const amplitude = Math.min(0.5, damage * 0.01)
+                    const shakeDuration = 175;
+                    playShakeAnimation({
+                        object: battlefieldRef.current,
+                        delay: ((playbackTime - shakeDuration) / 2),
+                        playbackTime: shakeDuration,
+                        direction,
+                        amplitude,
+                    });
+                });
+            });
+        }
     }, [eventId]);
 
     /**
