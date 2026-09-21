@@ -159,6 +159,33 @@ const getRotation = (animation: ANIMATION_TYPES) => {
 };
 
 /**
+ * Normalized direction from `from` toward `to`, used to shake the battlefield
+ * diagonally based on the relative positions of the attacker and the defender.
+ * Falls back to a pure vertical bias when either element is unavailable.
+ */
+const getShakeDirection = (
+    from: HTMLElement | undefined,
+    to: HTMLElement | undefined,
+    fallback: { x: number; y: number },
+): { x: number; y: number } => {
+    if (!from || !to) {
+        return fallback;
+    }
+
+    const { x, y } = getCenterCoords(from);
+    const { x: x2, y: y2 } = getCenterCoords(to);
+
+    const xDiff = x2 - x;
+    const yDiff = y2 - y;
+    const distance = Math.hypot(xDiff, yDiff);
+    if (distance === 0) {
+        return fallback;
+    }
+
+    return { x: xDiff / distance, y: yDiff / distance };
+};
+
+/**
  * Component that controls animations such as moving an attacker to its target, or a projectile
  */
 const AnimationCanvas = ({
@@ -344,14 +371,20 @@ const AnimationCanvas = ({
                     return;
                 }
 
-                Object.values(event.statUpdates).forEach((statUpdate) => {
+                Object.entries(event.statUpdates).forEach(([combatantId, statUpdate]) => {
                     const damage = statUpdate.healthDamage || 0;
                     if (damage === 0 || statUpdate.missed) {
                         return;
                     }
 
                     const isPlayerTarget = event.targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE;
-                    const direction = isPlayerTarget ? 1 : -1;
+                    // Diagonal shake from the attacker toward whoever took the hit.
+                    // Falls back to a vertical bias (toward the damaged side) when no actor/element is available.
+                    const direction = getShakeDirection(
+                        getRefFromCharacterId(event.actorId)?.current,
+                        getRefFromCharacterId(combatantId)?.current,
+                        isPlayerTarget ? { x: 0, y: 1 } : { x: 0, y: -1 },
+                    );
                     const amplitude = Math.min(0.5, damage * 0.01);
                     const shakeDuration = 175;
                     playShakeAnimation({
