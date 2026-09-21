@@ -11,8 +11,11 @@ const useStyles = createUseStyles({
             fontWeight: 600,
             fontSize: "0.9rem",
             letterSpacing: "0.05rem",
+            textStroke: "3px rgba(0,0,0,0.7)",
+            WebkitTextStroke: "3px rgba(0,0,0,0.7)",
             textShadow:
                 "0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1), 0 0 2px rgba(0, 0, 0, 1)",
+            paintOrder: "stroke fill",
             color: "rgba(255, 255, 255, 0.9) !important",
 
             "&:active": {
