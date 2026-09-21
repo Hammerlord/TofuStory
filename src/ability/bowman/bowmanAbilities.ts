@@ -3098,7 +3098,7 @@ export const surge: Ability = {
         {
             type: ACTION_TYPES.EFFECT,
             target: TARGET_TYPES.SELF,
-            effects: [{ ...aimEffect, stacks: 4 }],
+            effects: [{ ...aimEffect, stacks: 5 }],
             moveCards: {
                 from: FROM_CARD_PILE_TYPES.ANYWHERE,
                 to: CARD_PILE_TYPES.HAND,
@@ -3115,7 +3115,7 @@ export const surge: Ability = {
     ],
     upgrades: [
         {
-            actions: [{}, { effects: [{ stacks: 2 }] }],
+            actions: [{}, { effects: [{ stacks: 3 }] }],
         },
     ],
 };
