@@ -14,6 +14,23 @@ import Button from "../view/Button";
 const useStyles = createUseStyles({
     root: {
         margin: "0 16px",
+        display: "flex",
+        alignItems: "center",
+        flexGrow: 1,
+        minWidth: 0,
+        overflow: "hidden",
+        width: "50vw",
+    },
+    inventoryContainer: {
+        display: "flex",
+        flexWrap: "wrap",
+        overflow: "hidden",
+        minWidth: 0,
+        width: "100%",
+    },
+    inventoryContainerCollapsed: {
+        flexWrap: "nowrap",
+        overflow: "hidden",
     },
     itemContainer: {
         display: "inline-flex",
@@ -116,26 +133,42 @@ const Inventory = ({
     player,
     inventory,
     onUseItem,
+    collapsed,
+    containerRef,
 }: {
     player: Player;
     inventory: Item[];
     onUseItem?: (item: Item) => void;
+    collapsed?: boolean;
+    containerRef?: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
     const playerSide = useAppSelector((state) => state.battle?.playerSide);
+    const classes = useStyles();
 
     const handleOnUseItem = (item: Item) => {
         onUseItem && onUseItem(item);
     };
 
-    return inventory.map((item) => (
-        <InventoryItem
-            playerSide={playerSide}
-            item={item}
-            key={item.name}
-            onUseItem={handleOnUseItem}
-            player={player}
-        />
-    ));
+    return (
+        <div className={classes.root}>
+            <div
+                ref={containerRef}
+                className={classNames(classes.inventoryContainer, {
+                    [classes.inventoryContainerCollapsed]: collapsed,
+                })}
+            >
+                {inventory.map((item) => (
+                    <InventoryItem
+                        playerSide={playerSide}
+                        item={item}
+                        key={item.name}
+                        onUseItem={handleOnUseItem}
+                        player={player}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 };
 
 const InventoryItem = ({

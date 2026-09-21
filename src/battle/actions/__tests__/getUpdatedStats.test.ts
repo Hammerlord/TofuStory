@@ -5,9 +5,6 @@ import { Combatant } from "../../../character/types";
 import { Action } from "../../../ability/types";
 import { BATTLEFIELD_SIDES } from "../../types";
 
-// Only mock the entry-point calculation functions; their internal dependencies
-// (getMultiplier, passesConditions, etc.) are never reached because calculateDamage,
-// calculateBonus, and calculateArmor are intercepted above them.
 vi.mock("../../calculateDamage", () => ({
     calculateDamage: vi.fn(({ action }) => action.damage || 0),
 }));
@@ -61,7 +58,6 @@ function createMockCombatant(overrides: Partial<Combatant> = {}): Combatant {
         items: [],
         mesos: 0,
         resourcesPerTurn: 0,
-        drawCardsPerTurn: 0,
         maxResources: 0,
         ...overrides,
     };

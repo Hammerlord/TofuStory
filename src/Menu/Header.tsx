@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { getMaxHP } from "../battle/utils";
 import { useAppSelector } from "../hooks";
@@ -23,6 +23,9 @@ const useStyles = createUseStyles({
         color: "white",
         fontWeight: 500,
         padding: "8px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     playerPortrait: {
         height: "50px",
@@ -70,6 +73,7 @@ const useStyles = createUseStyles({
         margin: "0 16px",
         verticalAlign: "top",
         borderBottom: "1px solid rgba(255, 255, 255, 0.4)",
+        flexShrink: 0,
     },
     profileInner: {
         display: "flex",
@@ -98,6 +102,24 @@ const useStyles = createUseStyles({
         verticalAlign: "middle",
         marginRight: 8,
     },
+    inventoryCarat: {
+        border: "1px solid rgba(255, 255, 255, 0.5)",
+        borderRadius: "3px",
+        color: "white",
+        cursor: "pointer",
+        fontSize: "16px",
+        padding: "2px 8px",
+        marginLeft: "4px",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        verticalAlign: "middle",
+        transition: "transform 0.2s ease",
+        background: "rgba(255, 255, 255, 0.1)",
+        "&:hover": {
+            background: "rgba(255, 255, 255, 0.2)",
+        },
+    },
 });
 
 const Header = ({
@@ -117,7 +139,18 @@ const Header = ({
 }) => {
     const classes = useStyles();
     const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false);
+    const [isInventoryCollapsed, setIsInventoryCollapsed] = useState(true);
+    const [inventoryOverflows, setInventoryOverflows] = useState(false);
+    const headerRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
+    const inventorySectionRef = useRef<HTMLDivElement>(null);
+    const inventoryContainerRef = useRef<HTMLDivElement>(null);
     const playerSide = useAppSelector((state) => state.battle?.playerSide) || [];
+
+    const handleToggleInventory = () => {
+        setIsInventoryCollapsed((prev) => !prev);
+    };
+
     const character = useAppSelector((state) => state.character);
     const { player: playerCharacter, deck, infamy } = character || {};
     const playerCombatant = playerSide.find((combatant) => combatant?.isPlayer);
@@ -126,10 +159,27 @@ const Header = ({
         return null;
     }
 
+    useEffect(() => {
+        const checkOverflow = () => {
+            if (!inventorySectionRef.current || !inventoryContainerRef.current) return;
+            const sectionWidth = inventorySectionRef.current.clientWidth;
+            const totalWidth = Array.from(inventoryContainerRef.current.children).reduce(
+                (sum, child) => sum + (child as HTMLElement).getBoundingClientRect().width,
+                0,
+            );
+            // Inventory root has margin: 0 16px = 32px total
+            console.log(totalWidth, sectionWidth);
+            setInventoryOverflows(totalWidth > sectionWidth - 400);
+        };
+        checkOverflow();
+        window.addEventListener("resize", checkOverflow);
+        return () => window.removeEventListener("resize", checkOverflow);
+    }, [player.items.length]);
+
     return (
         <>
-            <div className={classes.headerBar}>
-                <div className={classes.profile}>
+            <div className={classes.headerBar} ref={headerRef}>
+                <div className={classes.profile} ref={profileRef}>
                     <div className={classes.profileInner}>
                         <div>
                             <img src={player.image} className={classes.playerPortrait} />{" "}
@@ -189,7 +239,28 @@ const Header = ({
                         <WeaponSkins player={player} onSelectWeaponSkin={onSelectWeaponSkin} />
                     </div>
                 </div>
-                <Inventory player={player} inventory={player.items} onUseItem={onUseItem} />
+                <div
+                    ref={inventorySectionRef}
+                    style={{ display: "flex", alignItems: "center", flexGrow: 1 }}
+                >
+                    <Inventory
+                        player={player}
+                        inventory={player.items}
+                        onUseItem={onUseItem}
+                        collapsed={isInventoryCollapsed}
+                        containerRef={inventoryContainerRef}
+                    />
+                    {inventoryOverflows && (
+                        <button
+                            className={classes.inventoryCarat}
+                            onClick={handleToggleInventory}
+                            tabIndex={0}
+                            style={{ flexShrink: 0, transform: isInventoryCollapsed ? "rotate(90deg)" : "rotate(-90deg)" }}
+                        >
+                            ❯
+                        </button>
+                    )}
+                </div>
             </div>
             {isAbilitiesOpen && (
                 <DeckViewer deck={deck} onClose={() => setIsAbilitiesOpen(false)} />
