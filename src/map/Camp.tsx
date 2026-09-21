@@ -203,10 +203,9 @@ const Camp = ({
     }
 
     const hasTransmutationItem = player.items.some((item) => item.camp?.allowTransmute);
-    const transmutationInProgress = numTransmutations === 1;
     const canTransmuteAbility =
         !completedActivities[CAMP_ACTIVITIES.TRANSMUTE_CARD] &&
-        (transmutationInProgress || numActivitiesRemaining > 0) &&
+        numActivitiesRemaining > 0 &&
         hasTransmutationItem;
 
     if (isTransmutingAbility) {

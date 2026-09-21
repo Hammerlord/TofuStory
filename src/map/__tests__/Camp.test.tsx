@@ -3,7 +3,8 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createCombatAbility } from "../../ability/createCombatAbility";
 import { warriorDefaultAttack } from "../../ability/warrior/warriorAbilities";
 import defaultCharacterProperties from "../../character/defaultCharacterProperties";
-import { personalAnvil } from "../../item/items";
+import { Item } from "../../item/types";
+import { coffeePot, personalAnvil } from "../../item/items";
 import { NUM_CAMP_TRANSMUTATIONS } from "../../shops/constants";
 import Camp from "../Camp";
 
@@ -31,10 +32,21 @@ vi.mock("../../shops/Transmutation", () => ({
     },
 }));
 
-const renderCamp = () => {
+vi.mock("../../Menu/CardUpgradeGrid", () => ({
+    default: function MockCardUpgradeGrid({ onConfirm }: any) {
+        return (
+            <div data-testid="mock-upgrade-grid">
+                <h2>Upgrade an Ability</h2>
+                <button onClick={() => onConfirm([])}>Confirm Upgrade</button>
+            </div>
+        );
+    },
+}));
+
+const renderCamp = (extraItems: Item[] = []) => {
     const player = {
         ...defaultCharacterProperties,
-        items: [...defaultCharacterProperties.items, personalAnvil],
+        items: [...defaultCharacterProperties.items, personalAnvil, ...extraItems],
     };
 
     const updateDeck = vi.fn();
@@ -85,5 +97,27 @@ describe("Camp transmutation", () => {
         await waitFor(() => {
             expect(screen.getByText("Activities remaining: 0")).toBeInTheDocument();
         });
+    });
+
+    it("disables transmute when there are no activities remaining", () => {
+        // The Coffee Pot grants an extra camp activity, so the player starts with 2.
+        renderCamp([coffeePot]);
+
+        expect(screen.getByText("Activities remaining: 2")).toBeInTheDocument();
+
+        // Spend both activities hone-ing, leaving 0 remaining.
+        for (let i = 0; i < 2; i++) {
+            fireEvent.click(screen.getByText("HONE"));
+            fireEvent.click(screen.getByText("Confirm Upgrade"));
+        }
+
+        expect(screen.getByText("Activities remaining: 0")).toBeInTheDocument();
+
+        // Transmute must be disabled when there are no activities remaining.
+        const transmuteActivity = screen.getByText("TRANSMUTE").parentElement as HTMLElement;
+        expect(transmuteActivity).toHaveClass("disabled");
+
+        fireEvent.click(screen.getByText("TRANSMUTE"));
+        expect(screen.queryByText("Transmute Ability")).not.toBeInTheDocument();
     });
 });
