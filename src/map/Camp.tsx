@@ -170,12 +170,11 @@ const Camp = ({
     const finishTransmute = () => {
         const newTransmutations = numTransmutations - 1;
         setNumTransmutations(newTransmutations);
+        setNumActivitiesRemaining((prev) => Math.max(0, prev - 1));
 
         if (newTransmutations === 0) {
             setIsTransmutingAbility(false);
             completeActivity(CAMP_ACTIVITIES.TRANSMUTE_CARD);
-        } else {
-            setNumActivitiesRemaining((prev) => Math.max(0, prev - 1));
         }
     };
 
