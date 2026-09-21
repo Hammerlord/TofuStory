@@ -77,6 +77,10 @@ export const isAttackAbility = (ability: Ability): boolean => {
     return (ability?.actions || []).some(isAttackAction);
 };
 
+export const hasOffensiveAbility = (combatant?: Combatant | null): boolean => {
+    return Boolean(combatant?.abilities?.some(isOffensiveAbility));
+};
+
 export const isSupportAction = (action: Action): boolean => {
     return (
         action.target !== undefined &&

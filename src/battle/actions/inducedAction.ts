@@ -1,4 +1,8 @@
-import { isAttackAbility, isOffensiveAbility } from "../../ability/AbilityView/utils";
+import {
+    hasOffensiveAbility,
+    isAttackAbility,
+    isOffensiveAbility,
+} from "../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     Ability,
@@ -46,7 +50,16 @@ export const checkInduce = ({
         }
 
         if (induceCombatantAttack) {
-            shuffle(affectedTargetIds).forEach((id) => {
+            const battle = getState().battle!;
+            const hasOffense = (id: string): boolean =>
+                hasOffensiveAbility(findCombatantData(battle, id)?.combatant);
+
+            // Prioritize friendly units that actually have an offensive ability (eg. Lock On
+            // should command the Player over a Puppet that cannot attack).
+            const offensiveIds = affectedTargetIds.filter(hasOffense);
+            const targetIds = offensiveIds.length > 0 ? offensiveIds : affectedTargetIds;
+
+            shuffle(targetIds).forEach((id) => {
                 const combatantData = findCombatantData(getState().battle!, id);
                 if (!combatantData) {
                     return;
@@ -108,7 +121,7 @@ export const getInducedAttack = (actor: Combatant): Ability => {
     const abilities = actor.abilities || [];
     const attackAbility =
         abilities.find((ability) => !ability.resourceCost && isAttackAbility(ability)) ||
-        abilities.find((ability) => !ability.resourceCost && isOffensiveAbility);
+        abilities.find((ability) => !ability.resourceCost && isOffensiveAbility(ability));
 
     if (attackAbility) {
         return {

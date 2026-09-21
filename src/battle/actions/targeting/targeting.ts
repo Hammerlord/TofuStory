@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { isOffensiveAction } from "../../../ability/AbilityView/utils";
+import { hasOffensiveAbility, isOffensiveAction } from "../../../ability/AbilityView/utils";
 import {
     ACTION_TYPES,
     Action,
@@ -217,7 +217,14 @@ export const getValidTargetIndicesForAction = ({
     let isPlayerHostile: boolean | undefined;
     const { friendly, hostile, friendlySide, hostileSide, combatant, index } = actorData;
     const actorId = combatant?.id;
-    const { targetArea: area = 0, target, targetName, excludeActor, radiate } = action || {};
+    const {
+        targetArea: area = 0,
+        target,
+        targetName,
+        excludeActor,
+        radiate,
+        induceCombatantAttack,
+    } = action || {};
 
     // Only constrain targets to be near an already-selected index when there is one;
     // without a selection (a fresh roll) any valid target is acceptable.
@@ -316,9 +323,21 @@ export const getValidTargetIndicesForAction = ({
             return isNearInitialSelection(i);
         });
 
+        // `induceCombatantAttack` actions are choosing WHICH friendly unit gets to perform
+        // a follow-up attack, so prioritize units that actually have an offensive ability
+        // (eg. Lock On should command the Player over a Puppet that cannot attack).
+        // Fall back to the full pool if none qualify.
+        let candidateIndices = targetIndices;
+        if (induceCombatantAttack) {
+            const offensiveIndices = targetIndices.filter((i) => hasOffensiveAbility(friendly[i]));
+            if (offensiveIndices.length) {
+                candidateIndices = offensiveIndices;
+            }
+        }
+
         return [
             {
-                index: getRandomItem(targetIndices),
+                index: getRandomItem(candidateIndices),
                 side: friendlySide,
             },
         ];

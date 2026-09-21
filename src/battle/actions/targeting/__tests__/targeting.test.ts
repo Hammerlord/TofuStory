@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../../../ability/AbilityView/utils", () => ({
     isOffensiveAction: () => false,
+    hasOffensiveAbility: (combatant: any) => Boolean(combatant?.abilities?.length),
 }));
 
 vi.mock("../../../../battle/utils", () => ({
@@ -49,6 +50,7 @@ vi.mock("../../../../battle/actions/statusEffect/getEnabledEffects", () => ({
 import {
     ACTION_TYPES,
     Action,
+    CombatAbility,
     CombatEffect,
     EFFECT_TYPES,
     TARGET_TYPES,
@@ -195,6 +197,89 @@ describe("getValidTargetIndicesForAction", () => {
         });
 
         expect(validIndices).toEqual([{ index: 0, side: BATTLEFIELD_SIDES.PLAYER_SIDE }]);
+    });
+
+    it("restricts an induceCombatantAttack friendly pick to units with an offensive ability", () => {
+        const playerSideWithPuppet: (Combatant | null)[] = [
+            makeCombatant({
+                id: "player",
+                name: "Player",
+                isPlayer: true,
+                HP: 50,
+                abilities: [{} as CombatAbility],
+            }),
+            null,
+            null,
+            makeCombatant({ id: "puppet", name: "Puppet", HP: 7, abilities: [] }),
+            null,
+        ];
+
+        const induceFriendlyAction: Action = {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.RANDOM_FRIENDLY,
+            induceCombatantAttack: true,
+        };
+
+        const validIndices = getValidTargetIndicesForAction({
+            action: induceFriendlyAction,
+            actorData: { ...actorData, friendly: playerSideWithPuppet },
+        });
+
+        // The Player is the only candidate that can actually follow up (has an offensive ability),
+        // so it is always picked over the Puppet.
+        expect(validIndices).toEqual([{ index: 0, side: BATTLEFIELD_SIDES.ENEMY_SIDE }]);
+    });
+
+    it("filters non-offensive candidates for induceCombatantAttack while keeping eligible ones", () => {
+        const mixedPlayerSide: (Combatant | null)[] = [
+            makeCombatant({ id: "ally-0", name: "Ally 0", HP: 50, abilities: [] }),
+            null,
+            makeCombatant({
+                id: "ally-2",
+                name: "Ally 2",
+                HP: 50,
+                abilities: [{} as CombatAbility],
+            }),
+            null,
+        ];
+
+        const induceFriendlyAction: Action = {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.RANDOM_FRIENDLY,
+            induceCombatantAttack: true,
+        };
+
+        const validIndices = getValidTargetIndicesForAction({
+            action: induceFriendlyAction,
+            actorData: { ...actorData, friendly: mixedPlayerSide },
+        });
+
+        expect(validIndices).toEqual([{ index: 2, side: BATTLEFIELD_SIDES.ENEMY_SIDE }]);
+    });
+
+    it("falls back to all friendly combatants when none have an offensive ability", () => {
+        const allSupportPlayerSide: (Combatant | null)[] = [
+            makeCombatant({ id: "ally-0", name: "Ally 0", HP: 50, abilities: [] }),
+            null,
+            null,
+            makeCombatant({ id: "ally-3", name: "Ally 3", HP: 50, abilities: [] }),
+            null,
+        ];
+
+        const induceFriendlyAction: Action = {
+            type: ACTION_TYPES.EFFECT,
+            target: TARGET_TYPES.RANDOM_FRIENDLY,
+            induceCombatantAttack: true,
+        };
+
+        const validIndices = getValidTargetIndicesForAction({
+            action: induceFriendlyAction,
+            actorData: { ...actorData, friendly: allSupportPlayerSide },
+        });
+
+        expect(validIndices).toHaveLength(1);
+        expect([0, 3]).toContain(validIndices[0].index);
+        expect(validIndices[0].side).toBe(BATTLEFIELD_SIDES.ENEMY_SIDE);
     });
 });
 
