@@ -511,7 +511,7 @@ export const isNegatedByStealth = ({
     }
 
     const isPreviousActionTriggeredBypass = (context?.sourceChain || []).some((source) =>
-        (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity),
+        (source.source as CombatAbility)?.actions?.some((a) => a.bypassImmunity || a.bypassStealth),
     );
 
     if (isPreviousActionTriggeredBypass || action.bypassStealth || action.bypassImmunity) {
