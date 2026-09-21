@@ -400,7 +400,7 @@ export const manoEnemy: Minion = {
                         playbackTime: 750,
                         damage: 7,
                         secondaryDamage: 1,
-                        numTargets: 1,
+                        numExtraTargets: 1,
                         targetArea: 2,
                     },
                 ],

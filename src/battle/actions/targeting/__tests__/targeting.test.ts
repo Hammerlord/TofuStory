@@ -55,7 +55,11 @@ import {
 } from "../../../../ability/types";
 import { Combatant } from "../../../../character/types";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "../../../../battle/types";
-import { autoSelectActionTarget, getValidTargetIndicesForAction } from "../targeting";
+import {
+    autoSelectActionTarget,
+    calculateTargetIndices,
+    getValidTargetIndicesForAction,
+} from "../targeting";
 
 const makeCombatant = (overrides: Partial<Combatant> = {}): Combatant => ({
     id: "combatant",
@@ -194,5 +198,53 @@ describe("autoSelectActionTarget", () => {
         });
 
         expect(target).toEqual({ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
+    });
+});
+
+describe("calculateTargetIndices", () => {
+    it("bounces to an extra target within targetArea for Rollout", () => {
+        const playerSideWithTwoTargets: (Combatant | null)[] = [
+            makeCombatant({ id: "player-0", name: "Player 0", isPlayer: true, HP: 50 }),
+            null,
+            makeCombatant({ id: "player-2", name: "Player 2", isPlayer: true, HP: 50 }),
+        ];
+
+        const enemySide: (Combatant | null)[] = [
+            makeCombatant({ id: "red-snail", name: "Red Snail" }),
+        ];
+
+        const battle = { playerSide: playerSideWithTwoTargets, enemySide } as any;
+        const actorData: CombatantInfo = {
+            combatant: enemySide[0]!,
+            index: 0,
+            friendly: enemySide,
+            hostile: playerSideWithTwoTargets,
+            friendlySide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        };
+
+        const targetData: CombatantInfo = {
+            combatant: playerSideWithTwoTargets[2]!,
+            index: 2,
+            friendly: playerSideWithTwoTargets,
+            hostile: enemySide,
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        };
+
+        const result = calculateTargetIndices({
+            action: rolloutAction,
+            selectedIndex: 2,
+            side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            actorData,
+            targetData,
+            battle,
+            isPreviewMode: false,
+        });
+
+        const targetedIndices = result.targetedIndices;
+        expect(targetedIndices).toContain(2); // primary target
+        expect(targetedIndices).toContain(0); // extra target (bounced)
+        expect(targetedIndices.length).toBe(2);
     });
 });

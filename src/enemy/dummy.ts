@@ -69,7 +69,7 @@ export const devDummy = {
                     animationOptions: {
                         ricochet: true,
                     },
-                    numTargets: 2,
+                    numExtraTargets: 2,
                     targetArea: 2,
                     playbackTime: 750,
                 },

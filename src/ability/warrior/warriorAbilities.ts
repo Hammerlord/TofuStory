@@ -1186,7 +1186,7 @@ export const bladestorm: Ability = {
     ],
 };
 
-export const dustDevilsActiveAbility = {
+export const dustDevilsActiveAbility: Ability = {
     name: "Dust Devils",
     image: TornadoImage,
     actions: [
@@ -1198,7 +1198,7 @@ export const dustDevilsActiveAbility = {
             },
             damage: 2,
             icon: TornadoImage,
-            numTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
+            numExtraTargets: 2, // 1 more target is hit than stated in this property due to the initial auto target
             targetArea: 5,
         },
     ],
