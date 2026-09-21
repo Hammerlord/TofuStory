@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactElement, useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     ClickIndicatorImage,
@@ -26,6 +26,13 @@ import Pan from "./Pan";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
 import { getRandomItem } from "../utils";
 import { toLith } from "./routes/routes";
+
+const NODE_ICON_SIZE = 24;
+const X_SIZE = 32;
+const NODE_MARGIN = 300; // Buffer for the "map size" so that elements/nodes don't get cut off
+const PLAYER_MOVE_ANIMATION_TIME = 0.5; // Seconds. How long the "jump" between nodes takes.
+const toPixel = (fraction: number = 0, size: number) =>
+    NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
 
 const useStyles = createUseStyles({
     imageContainer: {
@@ -78,13 +85,24 @@ const useStyles = createUseStyles({
     visited: {
         filter: "saturate(0)",
     },
+    playerMove: {
+        transformBox: "fill-box",
+        transformOrigin: "center",
+        animation: `$playerJump ${PLAYER_MOVE_ANIMATION_TIME}s ease-in-out`,
+    },
+    "@keyframes playerJump": {
+        "0%": {
+            transform: "translate(var(--jumpX), var(--jumpY)) rotate(0deg)",
+        },
+        "50%": {
+            transform:
+                "translate(calc(var(--jumpX) / 2), calc(var(--jumpY) / 2 - 45px)) rotate(180deg)",
+        },
+        "100%": {
+            transform: "translate(0px, 0px) rotate(360deg)",
+        },
+    },
 });
-
-const NODE_ICON_SIZE = 24;
-const X_SIZE = 32;
-const NODE_MARGIN = 300; // Buffer for the "map size" so that elements/nodes don't get cut off
-const toPixel = (fraction: number = 0, size: number) =>
-    NODE_MARGIN + fraction * Math.max(size - NODE_MARGIN * 2, 0);
 
 const Map = ({
     onSelectNode,
@@ -104,6 +122,14 @@ const Map = ({
     const classes = useStyles();
     const containerRef = useRef(null) as any;
     const [container, setContainer] = useState({});
+
+    // Used to animate the player sprite from its previous node to its current one.
+    const prevPlayerLocationRef = useRef<GeneratedRouteNode | null>(null);
+    const lastMoveFromRef = useRef<{ x: number; y: number } | null>(null);
+
+    useEffect(() => {
+        prevPlayerLocationRef.current = playerLocationNode;
+    }, [playerLocationNode]);
 
     const updateContainer = () => {
         if (containerRef.current?.getBoundingClientRect) {
@@ -132,6 +158,7 @@ const Map = ({
         routeNodes,
         lines,
         visitedIds,
+        playerMoveFrom,
     }: {
         prev?: GeneratedRouteNode;
         current: GeneratedRouteNode | null;
@@ -139,6 +166,7 @@ const Map = ({
         routeNodes: ReactElement[];
         lines: ReactElement[];
         visitedIds: Set<string>;
+        playerMoveFrom: { x: number; y: number } | null;
     }) => {
         if (!current) {
             return;
@@ -219,7 +247,20 @@ const Map = ({
                     {current.type === NODE_TYPES.BOSS && <JapaneseOgreIcon {...iconProps} />}
                 </g>
                 {isPlayerPosition && (
-                    <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />
+                    <g
+                        key={`player-move-${current.id}`}
+                        className={playerMoveFrom ? classes.playerMove : undefined}
+                        style={
+                            playerMoveFrom
+                                ? ({
+                                      "--jumpX": `${playerMoveFrom.x - x}px`,
+                                      "--jumpY": `${playerMoveFrom.y - y}px`,
+                                  } as CSSProperties)
+                                : undefined
+                        }
+                    >
+                        <image href={playerImage} height="36" width="36" x={x - 18} y={y - 50} />
+                    </g>
                 )}
                 {visited[current.id] && !isPlayerPosition && (
                     <XIcon
@@ -283,6 +324,7 @@ const Map = ({
                     nodeBGs,
                     lines,
                     visitedIds,
+                    playerMoveFrom,
                 }),
             );
         }
@@ -291,18 +333,35 @@ const Map = ({
     const routeNodes: ReactElement[] = [];
     const lines: ReactElement[] = [];
     const nodeBGs: ReactElement[] = [];
-    drawRouteNode({
-        current: generatedRoute,
-        routeNodes,
-        nodeBGs: nodeBGs,
-        lines,
-        visitedIds: new Set(),
-    });
 
     const { width: mapWidth, height: mapHeight } = container as {
         width: number;
         height: number;
     };
+
+    let playerMoveFrom = lastMoveFromRef.current;
+    const prevPlayerLocation = prevPlayerLocationRef.current;
+    if (
+        prevPlayerLocation &&
+        playerLocationNode &&
+        prevPlayerLocation.id !== playerLocationNode.id
+    ) {
+        playerMoveFrom = {
+            x: toPixel(prevPlayerLocation.x, mapWidth),
+            y: toPixel(prevPlayerLocation.y, mapHeight),
+        };
+        lastMoveFromRef.current = playerMoveFrom;
+    }
+
+    drawRouteNode({
+        current: generatedRoute,
+        routeNodes,
+        nodeBGs,
+        lines,
+        visitedIds: new Set(),
+        playerMoveFrom,
+    });
+
     const screenCentre = {
         x: window.innerWidth / -2,
         y: window.innerHeight / -2,
