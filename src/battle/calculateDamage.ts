@@ -80,7 +80,7 @@ export const calculateDamage = ({
     let maximumDamage = action.maxDamage;
 
     if (isAttack && actor) {
-        getEnabledEffects({ combatantInfo: actor, context }).forEach((effect) => {
+        getEnabledEffects({ combatantInfo: actor, context, actor, target }).forEach((effect) => {
             const {
                 attackPower = 0,
                 skillBonus = [],
@@ -120,6 +120,8 @@ export const calculateDamage = ({
     const targetEnabledEffects = getEnabledEffects({
         combatantInfo: target,
         context,
+        actor,
+        target,
     });
 
     targetEnabledEffects.forEach((effect: CombatEffect) => {

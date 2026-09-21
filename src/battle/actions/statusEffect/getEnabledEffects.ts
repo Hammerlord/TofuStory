@@ -14,10 +14,14 @@ export const getEnabledEffects = ({
     combatantInfo,
     battle,
     context,
+    actor,
+    target,
 }: {
     combatantInfo?: NonCombatPlayerInfo | CombatantInfo;
     battle?: BattleState | null;
     context?: ActionContext;
+    actor?: NonCombatPlayerInfo | CombatantInfo;
+    target?: NonCombatPlayerInfo | CombatantInfo;
 }): CombatEffect[] => {
     const { combatant } = combatantInfo || {};
     if (!combatant?.effects) {
@@ -44,6 +48,8 @@ export const getEnabledEffects = ({
                 proc: effect,
                 battle,
                 context,
+                actor,
+                target,
             }) &&
             isTurnToTrigger({ turnsTriggerFrequency, uptime })
         );
