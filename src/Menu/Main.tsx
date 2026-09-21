@@ -44,6 +44,7 @@ import TradingPost from "../shops/TradingPost";
 import Transmutation from "../shops/Transmutation";
 import { store } from "../store";
 import { getRandomItem } from "../utils";
+import FadeIn from "../view/FadeIn";
 import Overlay from "../view/Overlay";
 import CardRemovalGrid from "./CardRemovalGrid";
 import CardRewards from "./CardRewards";
@@ -721,41 +722,49 @@ const Main = () => {
                         />
                     )}
                     {activity === ACTIVITIES.CAMP && (
-                        <Camp
-                            onExit={() => {
-                                setActivity(null);
-                                saveGame(store.getState().character);
-                            }}
-                            player={player}
-                            deck={deck}
-                            updateDeck={handleUpdateDeck}
-                            updatePlayer={setPlayer}
-                        />
+                        <FadeIn>
+                            <Camp
+                                onExit={() => {
+                                    setActivity(null);
+                                    saveGame(store.getState().character);
+                                }}
+                                player={player}
+                                deck={deck}
+                                updateDeck={handleUpdateDeck}
+                                updatePlayer={setPlayer}
+                            />
+                        </FadeIn>
                     )}
                     {activity === ACTIVITIES.SHOP && (
-                        <Shop
-                            onExit={() => {
-                                setActivity(null);
-                                saveGame(store.getState().character);
-                            }}
-                        />
+                        <FadeIn>
+                            <Shop
+                                onExit={() => {
+                                    setActivity(null);
+                                    saveGame(store.getState().character);
+                                }}
+                            />
+                        </FadeIn>
                     )}
                     {activity === ACTIVITIES.TRADING_POST && (
-                        <TradingPost
-                            onExit={() => {
-                                setActivity(null);
-                                saveGame(store.getState().character);
-                            }}
-                        />
+                        <FadeIn>
+                            <TradingPost
+                                onExit={() => {
+                                    setActivity(null);
+                                    saveGame(store.getState().character);
+                                }}
+                            />
+                        </FadeIn>
                     )}
                     {activity === ACTIVITIES.WORKSHOP && (
-                        <Transmutation
-                            onExit={() => {
-                                setActivity(null);
-                                saveGame(store.getState().character);
-                            }}
-                            backdrop={KerningWorkshopImage}
-                        />
+                        <FadeIn>
+                            <Transmutation
+                                onExit={() => {
+                                    setActivity(null);
+                                    saveGame(store.getState().character);
+                                }}
+                                backdrop={KerningWorkshopImage}
+                            />
+                        </FadeIn>
                     )}
                     {cardRewardsOpen && (
                         <CardRewards
@@ -781,15 +790,17 @@ const Main = () => {
                     )}
 
                     {treasure && (
-                        <TreasureBox
-                            onExit={handleCloseTreasureChest}
-                            onLoot={handleObtainLoot}
-                            /**Puzzle={treasure.puzzle}**/
-                            initItems={treasure.items}
-                            initMesos={treasure.mesos}
-                            curse={treasure.curse}
-                            player={player}
-                        />
+                        <FadeIn>
+                            <TreasureBox
+                                onExit={handleCloseTreasureChest}
+                                onLoot={handleObtainLoot}
+                                /**Puzzle={treasure.puzzle}**/
+                                initItems={treasure.items}
+                                initMesos={treasure.mesos}
+                                curse={treasure.curse}
+                                player={player}
+                            />
+                        </FadeIn>
                     )}
                     {battle && <BattlefieldContainer onWin={onBattleWin} />}
                     {usingItem?.upgradeCard && (

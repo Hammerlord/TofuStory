@@ -21,6 +21,7 @@ import { mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
 import { getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
+import FadeIn from "../view/FadeIn";
 import Overlay from "../view/Overlay";
 import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
@@ -912,13 +913,15 @@ const ScenePlayer = ({
                     )}
                 </div>
                 {showCamp && (
-                    <Camp
-                        deck={deck}
-                        player={player}
-                        updateDeck={updateDeck}
-                        updatePlayer={updatePlayer}
-                        onExit={() => setShowCamp(false)}
-                    />
+                    <FadeIn>
+                        <Camp
+                            deck={deck}
+                            player={player}
+                            updateDeck={updateDeck}
+                            updatePlayer={updatePlayer}
+                            onExit={() => setShowCamp(false)}
+                        />
+                    </FadeIn>
                 )}
                 {itemChoices && (
                     <ItemSelection
@@ -943,20 +946,22 @@ const ScenePlayer = ({
                 )}
             </div>
             {treasureBoxOptions && (
-                <TreasureBox
-                    onExit={() => {
-                        setTreasureBoxOptions(null);
-                        const nextIndex = dialogIndex + 1;
-                        if (script[nextIndex]) {
-                            enterNode(script[nextIndex], script, nextIndex);
-                        } else {
-                            onExit();
-                        }
-                    }}
-                    onLoot={handleObtainLoot}
-                    player={player}
-                    {...treasureBoxOptions}
-                />
+                <FadeIn>
+                    <TreasureBox
+                        onExit={() => {
+                            setTreasureBoxOptions(null);
+                            const nextIndex = dialogIndex + 1;
+                            if (script[nextIndex]) {
+                                enterNode(script[nextIndex], script, nextIndex);
+                            } else {
+                                onExit();
+                            }
+                        }}
+                        onLoot={handleObtainLoot}
+                        player={player}
+                        {...treasureBoxOptions}
+                    />
+                </FadeIn>
             )}
         </>
     );
