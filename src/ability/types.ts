@@ -186,7 +186,7 @@ export type Effect = {
 } & {
     name: string;
     uptime?: number;
-    type: EFFECT_TYPES;
+    type?: EFFECT_TYPES;
     class: EFFECT_CLASSES;
     // Cannot be targeted directly by any kind of ability. Can still be hit by AoE but character cannot be the primary target of an AoE
     untargetable?: boolean;
@@ -318,6 +318,7 @@ export type CombatEffect = Effect & {
     turnsTriggerFrequency: number;
     duration: number;
     maxDuration: number;
+    type: EFFECT_TYPES;
 };
 
 export interface WeaponImageOptions {

@@ -1,11 +1,12 @@
 import { cloneDeep } from "lodash";
 import * as uuid from "uuid";
-import { CombatEffect, Effect } from "../../ability/types";
+import { CombatEffect, Effect, EFFECT_TYPES } from "../../ability/types";
 import { effectNameMap } from "../../enemy/effect";
 
 export const createCombatEffect = (e: Effect | CombatEffect): CombatEffect => {
     return {
         id: uuid.v4(),
+        type: EFFECT_TYPES.NONE,
         uptime: 1,
         stacks: 1,
         maxStacks: Infinity,
