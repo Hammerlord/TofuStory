@@ -3,6 +3,7 @@ import { getUpdatedStats } from "../getUpdatedStats";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 import { Combatant } from "../../../character/types";
 import { Action } from "../../../ability/types";
+import { arcaneAim } from "../../../ability/magician/magicianAbilities";
 import { BATTLEFIELD_SIDES } from "../../types";
 
 vi.mock("../../calculateDamage", () => ({
@@ -171,5 +172,32 @@ describe("getUpdatedStats - damageDealt", () => {
         // bypassArmor: damageDealt = min(80, 50) = 50 (capped at HP)
         expect(statUpdate.damageDealt).toBe(50);
         expect(statUpdate.rawDamage).toBe(80);
+    });
+
+    it("keeps a 0-duration status effect (Arcane Aim) at duration 0 so it expires at end of turn", () => {
+        const player = createMockCombatant({
+            id: "player",
+            name: "Player",
+            isPlayer: true,
+            effects: [],
+        });
+        const getCombatantById = createMockGetCombatantById(player);
+
+        const result = getUpdatedStats({
+            actorId: player.id,
+            targetIds: [player.id],
+            action: arcaneAim.actions[0] as Action,
+            getCombatantById,
+            deck: [],
+            hand: [],
+            discard: [],
+        });
+
+        const statUpdate = result[0].statUpdate as UpdatedCombatantStats;
+        const appliedArcaneAim = statUpdate.effects?.find((e) => e.name === "Arcane Aim");
+
+        expect(appliedArcaneAim).toBeDefined();
+        expect(appliedArcaneAim?.duration).toBe(0);
+        expect(appliedArcaneAim?.originalDuration).toBe(0);
     });
 });

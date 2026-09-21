@@ -12,7 +12,7 @@ export const createCombatEffect = (e: Effect | CombatEffect): CombatEffect => {
         maxStacks: Infinity,
         maxDuration: Infinity,
         maxApplications: Infinity,
-        originalDuration: e.duration || Infinity,
+        originalDuration: e.duration ?? Infinity,
         turnsTriggerFrequency: 0,
         duration: Infinity,
         ...cloneDeep(e),

@@ -181,7 +181,9 @@ export const getUpdatedStats = ({
             Math.max(0, bypassArmor ? damage : damage - totalArmor),
         );
         const rawDamage = damage;
-        const damageDealt = bypassArmor ? Math.min(rawDamage, targetApplicableHP) : Math.min(rawDamage, totalArmor + targetApplicableHP);
+        const damageDealt = bypassArmor
+            ? Math.min(rawDamage, targetApplicableHP)
+            : Math.min(rawDamage, totalArmor + targetApplicableHP);
 
         let rawHealing = 0;
         if (targetCombatant.HP - healthDamage > 0 || resurrect) {
@@ -344,7 +346,7 @@ const getStatusEffectDiff = ({
     const allEnabledEffects = getEnabledEffects({ combatantInfo: actor }).concat(enabledEffects);
 
     const getEffectDuration = (incomingEffect: Effect) => {
-        if (incomingEffect === undefined || !incomingEffect.duration) {
+        if (incomingEffect === undefined || incomingEffect.duration === undefined) {
             return Infinity;
         }
 
