@@ -70,9 +70,12 @@ export const calculateTargetIndices = ({
 
     const isAffected = (combatant: Combatant | null, i: number): boolean => {
         // When summoning a minion, it can auto attack an enemy target. Display that proc as an indeterminate ability.
+        // ...but if the proc's target already resolved to a single determinate candidate (eg. an induced attack being
+        // directed by a PRIORITY_TARGET/TAUNT effect), display it as a determinate hit on that target instead.
         const isProcPreview =
             isPreviewMode &&
             context?.isProc &&
+            context?.determinateTarget !== true &&
             isOffensiveAction(action) &&
             side === BATTLEFIELD_SIDES.ENEMY_SIDE;
         if (isProcPreview) {
@@ -120,6 +123,64 @@ export const calculateTargetIndices = ({
  * Sometimes, multi-action abilities have you select an enemy, but then have an additional action that eg. targets yourself.
  * This orients the target to the right place (if applicable) as actions are parsed.
  */
+export const resolveActionTarget = ({
+    initialSelectedIndex,
+    initialSelectedSide,
+    action,
+    actorId,
+    battle: battle,
+}: {
+    initialSelectedIndex?: number;
+    initialSelectedSide?: BATTLEFIELD_SIDES;
+    action: Action;
+    actorId: string;
+    battle: BattleState;
+}): { target: { index: number; side: BATTLEFIELD_SIDES } | undefined; isDeterminate: boolean } => {
+    const actorData = findCombatantData(battle, actorId);
+    if (!actorData) {
+        return { target: undefined, isDeterminate: true };
+    }
+
+    const indices = getValidTargetIndicesForAction({
+        initialSelectedIndex,
+        initialSelectedSide,
+        action,
+        actorData,
+    });
+
+    // A single candidate means the target is fully determined, eg. there is exactly one valid taunt or
+    // PRIORITY_TARGET combatant (the case for, say, an `induceCombatantAttack` follow-up being directed by
+    // `Locked On`). Note: crossing into RANDOM_HOSTILE/RANDOM_FRIENDLY collapses to a single candidate
+    // regardless, but those targets are never offensive-direction-sensitive for the determinate-proc preview logic.
+    if (indices.length === 1) {
+        return { target: indices[0], isDeterminate: true };
+    }
+
+    if (indices.length > 1) {
+        const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
+        if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
+            const index = pickHostileIndex({
+                targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined),
+                actorData,
+            });
+            if (typeof index === "number") {
+                return { target: { index, side: indices[0].side }, isDeterminate: false };
+            }
+            return { target: undefined, isDeterminate: false };
+        }
+        return { target: getRandomItem(indices), isDeterminate: false };
+    }
+
+    if (initialSelectedSide && typeof initialSelectedIndex === "number") {
+        return {
+            target: { index: initialSelectedIndex, side: initialSelectedSide },
+            isDeterminate: true,
+        };
+    }
+
+    return { target: undefined, isDeterminate: true };
+};
+
 export const autoSelectActionTarget = ({
     initialSelectedIndex,
     initialSelectedSide,
@@ -133,40 +194,13 @@ export const autoSelectActionTarget = ({
     actorId: string;
     battle: BattleState;
 }): { index: number; side: BATTLEFIELD_SIDES } | undefined => {
-    const actorData = findCombatantData(battle, actorId);
-    if (!actorData) {
-        return;
-    }
-
-    const indices = getValidTargetIndicesForAction({
+    return resolveActionTarget({
         initialSelectedIndex,
         initialSelectedSide,
         action,
-        actorData,
-    });
-
-    if (indices.length === 1) {
-        return indices[0];
-    }
-
-    if (indices.length > 1) {
-        const noValidSelection = typeof initialSelectedIndex !== "number" || !initialSelectedSide;
-        if (action?.target === TARGET_TYPES.HOSTILE && noValidSelection) {
-            const index = pickHostileIndex({
-                targetIndices: indices.map((item) => item.index).filter((v) => v !== undefined),
-                actorData,
-            });
-            if (typeof index === "number") {
-                return { index, side: indices[0].side };
-            }
-            return;
-        }
-        return getRandomItem(indices);
-    }
-
-    if (initialSelectedSide && typeof initialSelectedIndex === "number") {
-        return { index: initialSelectedIndex, side: initialSelectedSide };
-    }
+        actorId,
+        battle,
+    }).target;
 };
 
 export const getValidTargetIndicesForAction = ({

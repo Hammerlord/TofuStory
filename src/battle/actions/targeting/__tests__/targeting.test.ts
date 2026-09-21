@@ -59,6 +59,7 @@ import {
     autoSelectActionTarget,
     calculateTargetIndices,
     getValidTargetIndicesForAction,
+    resolveActionTarget,
 } from "../targeting";
 
 const makeCombatant = (overrides: Partial<Combatant> = {}): Combatant => ({
@@ -82,6 +83,16 @@ const makeCombatant = (overrides: Partial<Combatant> = {}): Combatant => ({
 });
 
 const tauntEffect: CombatEffect = { type: EFFECT_TYPES.TAUNT } as CombatEffect;
+
+const priorityTargetEffect: CombatEffect = {
+    type: EFFECT_TYPES.PRIORITY_TARGET,
+} as CombatEffect;
+
+const hostileAttackAction: Action = {
+    type: ACTION_TYPES.ATTACK,
+    target: TARGET_TYPES.HOSTILE,
+    damage: 3,
+};
 
 const rolloutAction: Action = {
     type: ACTION_TYPES.ATTACK,
@@ -198,6 +209,84 @@ describe("autoSelectActionTarget", () => {
         });
 
         expect(target).toEqual({ index: 3, side: BATTLEFIELD_SIDES.PLAYER_SIDE });
+    });
+});
+
+describe("resolveActionTarget", () => {
+    it("resolves deterministically to the lone priority target", () => {
+        const playerSideWithPriorityTarget: (Combatant | null)[] = [
+            makeCombatant({ id: "player", name: "Player", isPlayer: true, HP: 50 }),
+            null,
+            null,
+            makeCombatant({
+                id: "locked-on-minion",
+                name: "Locked On Minion",
+                effects: [priorityTargetEffect],
+            }),
+            null,
+        ];
+
+        const battle = { playerSide: playerSideWithPriorityTarget, enemySide } as any;
+
+        const resolved = resolveActionTarget({
+            action: hostileAttackAction,
+            actorId: "red-snail",
+            battle,
+        });
+
+        expect(resolved.isDeterminate).toBe(true);
+        expect(resolved.target).toEqual({
+            index: 3,
+            side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        });
+    });
+
+    it("resolves indeterminately when multiple combatants hold the priority-target debuff", () => {
+        const playerSideWithTwoPriorityTargets: (Combatant | null)[] = [
+            makeCombatant({
+                id: "locked-on-0",
+                name: "Locked On 0",
+                effects: [priorityTargetEffect],
+            }),
+            null,
+            null,
+            makeCombatant({
+                id: "locked-on-3",
+                name: "Locked On 3",
+                effects: [priorityTargetEffect],
+            }),
+            null,
+        ];
+
+        const battle = { playerSide: playerSideWithTwoPriorityTargets, enemySide } as any;
+
+        const resolved = resolveActionTarget({
+            action: hostileAttackAction,
+            actorId: "red-snail",
+            battle,
+        });
+
+        expect(resolved.isDeterminate).toBe(false);
+        expect([0, 3]).toContain(resolved.target?.index);
+        expect(resolved.target?.side).toBe(BATTLEFIELD_SIDES.PLAYER_SIDE);
+    });
+
+    it("resolves deterministically to an already-selected hostile target", () => {
+        const battle = { playerSide, enemySide } as any;
+
+        const resolved = resolveActionTarget({
+            action: hostileAttackAction,
+            actorId: "red-snail",
+            battle,
+            initialSelectedIndex: 0,
+            initialSelectedSide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        });
+
+        expect(resolved.isDeterminate).toBe(true);
+        expect(resolved.target).toEqual({
+            index: 0,
+            side: BATTLEFIELD_SIDES.PLAYER_SIDE,
+        });
     });
 });
 

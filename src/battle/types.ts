@@ -117,6 +117,12 @@ export interface ActionContext {
     name: string; // No logic attached to this. For caller identification/debugging purposes
     sourceChain?: TriggerSource[];
     isProc?: boolean; // Whether this action was triggered by a proc (eg. onAttack, onReceiveDamage, etc.)
+    /**
+     * Whether the action's target(s) resolved to a single, uniquely determined combatant (eg. an induced attack that
+     * is directed by a `PRIORITY_TARGET`/`TAUNT` effect). Ability previews use this to display the action as a
+     * determinate hit rather than an indeterminate "could hit anyone" proc.
+     */
+    determinateTarget?: boolean;
     // Logs ids of effects, etc. in the chain of event triggers. This is used to prevent duplicate procs in a single event chain.
     triggerHistory?: string[];
     // Number of eg. resources to add to EffectEventTrigger.triggerSum

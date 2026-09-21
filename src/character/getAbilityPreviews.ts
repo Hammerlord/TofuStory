@@ -301,7 +301,10 @@ const getAbilityPreviews = ({
                     totalTargets && affectedTargetCount > totalTargets && targetIndex !== index;
                 const isProc = statUpdate.context?.sourceChain?.at(-1)?.isProc;
                 const isProcHostileAction =
-                    isProc && isOffensiveAction(currentAction) && affectedTargetCount > 1;
+                    isProc &&
+                    statUpdate.context?.determinateTarget !== true &&
+                    isOffensiveAction(currentAction) &&
+                    affectedTargetCount > 1;
                 const nondeterministic = Boolean(
                     hasRandomSecondaryTargets || targetsRandomly || isProcHostileAction,
                 );

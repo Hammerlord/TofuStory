@@ -20,7 +20,7 @@ import { ActionContext } from "./../types";
 import { performAction } from "./performAction";
 import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon/summon";
-import { autoSelectActionTarget } from "./targeting/targeting";
+import { resolveActionTarget } from "./targeting/targeting";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { updateCombatant } from "./combatantData";
 import { handleAddCardsToHand } from "./cardActions/addCards";
@@ -109,7 +109,8 @@ export const useAbility = ({
         const isEffectRandomTargeting = combatant.effects?.some((e) => e.hitRandomTarget);
 
         let prevSelection:
-            { index: number | undefined; side: BATTLEFIELD_SIDES | undefined } | undefined;
+            | { index: number | undefined; side: BATTLEFIELD_SIDES | undefined }
+            | undefined;
 
         const handleAction = (action: Action, i: number) => {
             const actorInfo = findCombatantData(getState().battle!, actorId);
@@ -129,6 +130,7 @@ export const useAbility = ({
             }
 
             let selection;
+            let determinateTarget = true;
 
             const targetingAbility = actor.targeting?.ability;
             const selectedActionTargets = actor.targeting?.actionTargets?.[i];
@@ -138,7 +140,7 @@ export const useAbility = ({
             ) {
                 selection = selectedActionTargets;
             } else if (isEffectRandomTargeting && action.target === TARGET_TYPES.HOSTILE) {
-                selection = autoSelectActionTarget({
+                const resolved = resolveActionTarget({
                     initialSelectedIndex: selectedIndex,
                     initialSelectedSide: initialSide,
                     action: {
@@ -148,6 +150,8 @@ export const useAbility = ({
                     actorId,
                     battle: getState().battle!,
                 });
+                selection = resolved.target;
+                determinateTarget = resolved.isDeterminate;
             }
             // If it is a multi-hit ability, the attacks should go to the same target
             else if (
@@ -157,13 +161,15 @@ export const useAbility = ({
             ) {
                 selection = prevSelection;
             } else {
-                selection = autoSelectActionTarget({
+                const resolved = resolveActionTarget({
                     initialSelectedIndex: selectedIndex,
                     initialSelectedSide: initialSide,
                     action,
                     actorId,
                     battle: getState().battle!,
                 });
+                selection = resolved.target;
+                determinateTarget = resolved.isDeterminate;
 
                 prevSelection = selection;
             }
@@ -193,7 +199,10 @@ export const useAbility = ({
                         selectedIndex: index,
                         side,
                         actorId,
-                        parentContext,
+                        parentContext: {
+                            ...parentContext,
+                            determinateTarget,
+                        },
                         isAutoCast,
                     }),
                 );
@@ -204,10 +213,7 @@ export const useAbility = ({
             for (let i = 0; i < actions.length; ++i) {
                 const action = actions[i];
                 if (
-                    shouldDisableChanceInPreview(
-                        action.chance,
-                        parentContext?.isPreviewMode,
-                    ) ||
+                    shouldDisableChanceInPreview(action.chance, parentContext?.isPreviewMode) ||
                     !passesChance(action.chance)
                 ) {
                     continue;
