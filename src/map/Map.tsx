@@ -18,6 +18,7 @@ import {
     QuestionMarkIcon,
     XIcon,
 } from "../images/icons";
+import BackgroundImage from "./BackgroundImage";
 import Overlay from "../view/Overlay";
 import { REGION_PLATFORMS, TOWN_NODE_BACKGROUNDS } from "./constants";
 import Legend from "./Legend";
@@ -41,14 +42,6 @@ const useStyles = createUseStyles({
             width: "100%",
             height: "100%",
         },
-    },
-    bgImage: {
-        position: "fixed",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        zIndex: 0,
     },
     tint: {
         position: "fixed",
@@ -328,7 +321,7 @@ const Map = ({
     return (
         <Overlay>
             <div className={classes.root}>
-                {bgRegion && <img src={BG_MAP[bgRegion]} className={classes.bgImage} />}
+                {bgRegion && <BackgroundImage src={BG_MAP[bgRegion]} />}
                 <div className={classes.tint} />
                 <div className={classes.canvasLayer}>
                     <Pan userPosition={panPosition} isIntro={isIntro}>
