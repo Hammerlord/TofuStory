@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { createUseStyles } from "react-jss";
+import { getZoomFactor } from "../../constants";
 
 const useStyles = createUseStyles({
     canvas: {
@@ -16,6 +17,7 @@ const useStyles = createUseStyles({
  * Draws a targeting line from eg. a selected ally to the mouse position
  */
 const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
+    const scale = getZoomFactor();
     const origination =
         originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
     const targetLineRef: React.RefObject<SVGPathElement> = useRef(null);
@@ -27,11 +29,10 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
     const classes = useStyles();
 
     const getInitialLine = () => {
-        const x = origination.left + origination.width / 2;
-        // TODO: x2 and y2 same as x and y, should grab the coordinates from the initial card click mouse event instead
-        const x2 = origination.left + origination.width / 2;
-        const y = origination.top + origination.height / 2;
-        const y2 = origination.top + origination.height / 2;
+        const x = (origination.left + origination.width / 2) / scale;
+        const x2 = (origination.left + origination.width / 2) / scale;
+        const y = (origination.top + origination.height / 2) / scale;
+        const y2 = (origination.top + origination.height / 2) / scale;
 
         return `M ${x} ${y} Q ${x2} ${y2} ${x2} ${y2}`;
     };
@@ -40,8 +41,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
         if (!origination) return;
 
         lastMouseRef.current = {
-            x: e.clientX,
-            y: e.clientY,
+            x: e.clientX / scale,
+            y: e.clientY / scale,
         };
 
         if (frameRef.current !== null) return;
@@ -54,8 +55,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
 
             const { x: clientX, y: clientY } = point;
 
-            const x = origination.left + origination.width / 2;
-            const y = origination.top + origination.height / 2;
+            const x = (origination.left + origination.width / 2) / scale;
+            const y = (origination.top + origination.height / 2) / scale;
 
             const offset = (x - clientX) / 3;
             const c1 = (x + clientX) / 2 + offset;
@@ -94,8 +95,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                             ref={bullseyeRef}
                             fill={color}
                             r="8"
-                            cx={origination.left + origination.width / 2}
-                            cy={origination.top + origination.height / 2}
+                            cx={(origination.left + origination.width / 2) / scale}
+                            cy={(origination.top + origination.height / 2) / scale}
                         />
                         <circle
                             ref={circleRef}
@@ -103,8 +104,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                             strokeWidth="5px"
                             fill="transparent"
                             r="16"
-                            cx={origination.left + origination.width / 2}
-                            cy={origination.top + origination.height / 2}
+                            cx={(origination.left + origination.width / 2) / scale}
+                            cy={(origination.top + origination.height / 2) / scale}
                         />
                     </svg>
                 )}

@@ -6,8 +6,19 @@ import DevToolButton from "./devtools/DevToolButton";
 import { useMemo } from "react";
 import classNames from "classnames";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { ZOOM_HEIGHT_MED, ZOOM_AMOUNT_MED, ZOOM_HEIGHT_SM, ZOOM_AMOUNT_SM } from "./constants";
 
 const useStyles = createUseStyles({
+    [`@media screen and (max-height: ${ZOOM_HEIGHT_MED}px)`]: {
+        app: {
+            zoom: ZOOM_AMOUNT_MED,
+        },
+    },
+    [`@media screen and (max-height: ${ZOOM_HEIGHT_SM}px)`]: {
+        app: {
+            zoom: ZOOM_AMOUNT_SM,
+        },
+    },
     app: {
         fontFamily: "Barlow, Arial",
         userSelect: "none",

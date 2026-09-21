@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { ANIMATION_TYPES } from "../../ability/types";
-import { getCenterCoords } from "../../character/animations";
+import { getUnscaledCenterCoords } from "../../character/animations";
 import { Fireworks } from "../../fireworks/fireworks";
 import { BATTLEFIELD_SIDES, Event, EventGroup } from "../types";
 import { clamp } from "ramda";
@@ -81,7 +81,7 @@ const ParticleCanvas = ({
                 particles.current.updateOptions(fireworksSettings);
                 allTargets.forEach((element) => {
                     if (element) {
-                        particles.current!.launch(getCenterCoords(element));
+                        particles.current!.launch(getUnscaledCenterCoords(element));
                     }
                 });
             }, playbackTime / 2);
@@ -112,7 +112,7 @@ const ParticleCanvas = ({
 
                         const element = targetElements[index]?.current;
                         if (element) {
-                            particles.current!.launch(getCenterCoords(element));
+                            particles.current!.launch(getUnscaledCenterCoords(element));
                         }
                         return;
                     }
@@ -129,7 +129,7 @@ const ParticleCanvas = ({
 
                         const element = targetElements[index]?.current;
                         if (element) {
-                            particles.current!.launch(getCenterCoords(element));
+                            particles.current!.launch(getUnscaledCenterCoords(element));
                         }
                     }
                 });

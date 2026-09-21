@@ -1,4 +1,5 @@
 import { getRandomArbitrary } from "./../utils";
+import { getZoomFactor } from "../constants";
 
 type TravelCoordinates = {
     x: number;
@@ -14,6 +15,15 @@ export const getCenterCoords = (element: HTMLElement): { x: number; y: number } 
     return {
         x: x + width / 2,
         y: y + height / 2,
+    };
+};
+
+export const getUnscaledCenterCoords = (element: HTMLElement): { x: number; y: number } => {
+    const { x, y, height, width } = element.getBoundingClientRect();
+    const scale = getZoomFactor();
+    return {
+        x: (x + width / 2) / scale,
+        y: (y + height / 2) / scale,
     };
 };
 
@@ -122,8 +132,8 @@ export const playTravelAnimation = ({
     }
 
     const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
-    const { x, y } = getCenterCoords(from);
-    const objectCoords = getCenterCoords(elementsToAnimate[0]);
+    const { x, y } = getUnscaledCenterCoords(from);
+    const objectCoords = getUnscaledCenterCoords(elementsToAnimate[0]);
 
     // If `object` and `from` are both supplied, make sure the object starts at the `from` position
     // TODO object is potentially an array where all items need to have their origin adjusted to `from`
@@ -131,7 +141,7 @@ export const playTravelAnimation = ({
     const originOffsetY = freezeAxis === "y" ? 0 : y - objectCoords.y;
 
     const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
-        let { x: toX, y: toY } = getCenterCoords(element);
+        let { x: toX, y: toY } = getUnscaledCenterCoords(element);
         const maxOffset = 3;
         toX += getRandomArbitrary(-maxOffset, maxOffset);
         toY += getRandomArbitrary(-maxOffset, maxOffset);
@@ -597,8 +607,9 @@ export const refreshToPile = ({
     to: HTMLElement;
     delay?: number;
 }) => {
-    const { x, y } = getCenterCoords(object);
-    const { x: x2, y: y2 } = getCenterCoords(to);
+    const scale = getZoomFactor();
+    const { x, y } = getUnscaledCenterCoords(object);
+    const { x: x2, y: y2 } = getUnscaledCenterCoords(to);
     const xDiff = x2 - x; // *3 because of 0.3 scale
     const yDiff = y2 - y; // *3 because of 0.3 scale
 
