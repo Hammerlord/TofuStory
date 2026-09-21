@@ -1,8 +1,9 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { SparklesIcon } from "../../images/icons";
 import { getRandomArbitrary, getRandomInt } from "../../utils";
 import Icon from "./../../icon/Icon";
+import { HIT_PLAYBACK } from "../../icon/constants";
 
 const useStyles = createUseStyles({
     text: {
@@ -17,7 +18,7 @@ const useStyles = createUseStyles({
             .join(", "),
         fontWeight: "bold",
         zIndex: "3",
-        display: "none",
+        opacity: 0,
     },
     root: {
         width: "100%",
@@ -26,7 +27,7 @@ const useStyles = createUseStyles({
     },
     icon: {
         position: "absolute",
-        display: "none",
+        opacity: 0,
         boxShadow: "0 0 5px 3px rgba(255, 245, 200, 0.5)",
         "& svg": {
             filter: "drop-shadow(0 0 2px #fff2c4) drop-shadow(0 0 2px #fff2c4)",
@@ -50,59 +51,73 @@ const getParticles = () => {
     });
 };
 
-const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
+const HealingEffect = ({
+    healing,
+    particles,
+    onDone,
+}: {
+    healing: number;
+    particles: Array<{ left: string; bottom: string; animationDelay: number }>;
+    onDone: () => void;
+}) => {
     const classes = useStyles();
-    const [particles, setParticles] = useState(getParticles());
-    const particleRefs = useRef([]);
-    const particleAnimationRefs = useRef([]);
-    const textRef: RefObject<HTMLSpanElement | null> = useRef(null);
-    const textAnimationRef: RefObject<Animation | null | undefined> = useRef(null);
-    const healing = statChanges?.healing || 0;
+    const particleRefs = useRef<Element[]>([]);
+    const textRef = useRef<HTMLSpanElement>(null);
+    const particleAnimationRefs = useRef<Animation[]>([]);
+    const textAnimationRef = useRef<Animation | null>(null);
 
     useEffect(() => {
-        if (healing > 0) {
-            textAnimationRef.current?.cancel();
-            const textAnim = textRef.current?.animate(
+        const textAnim = textRef.current?.animate(
+            [
+                { opacity: 1, offset: 0.8 },
+                { opacity: 0 },
+            ],
+            {
+                duration: HIT_PLAYBACK,
+                fill: "forwards",
+            },
+        );
+
+        textAnimationRef.current = textAnim ?? null;
+
+        particleAnimationRefs.current?.forEach((anim) => anim.cancel());
+
+        const particleAnims = particleRefs.current.map((particle, i) => {
+            return particle?.animate(
                 [
                     {
                         opacity: 1,
-                        offset: 0.8,
-                        display: "block",
+                        offset: particles[i]?.animationDelay,
                     },
-                    { opacity: 0, display: "block" },
+                    {
+                        opacity: 0,
+                        transform: "translateY(-200%)",
+                    },
                 ],
-                1500,
+                {
+                    duration: HIT_PLAYBACK,
+                    fill: "forwards",
+                },
             );
+        });
 
-            textAnimationRef.current = textAnim;
+        particleAnimationRefs.current = particleAnims;
 
-            particleAnimationRefs.current?.forEach((animation) => animation?.cancel());
+        const timeout = setTimeout(() => {
+            textAnimationRef.current?.cancel();
+            particleAnimationRefs.current.forEach((anim) => anim.cancel());
+            onDone();
+        }, HIT_PLAYBACK);
 
-            const particleAnims = particleRefs.current?.map((particle, i) => {
-                return particle?.animate(
-                    [
-                        {
-                            transform: "translateY(0)",
-                            opacity: 1,
-                            display: "block",
-                            offset: particles[i]?.animationDelay,
-                        },
-                        {
-                            transform: "translateY(-200%)",
-                            opacity: 0,
-                            display: "block",
-                        },
-                    ],
-                    1500,
-                );
-            });
-
-            particleAnimationRefs.current = particleAnims;
-        }
-    }, [healing]);
+        return () => {
+            clearTimeout(timeout);
+            textAnimationRef.current?.cancel();
+            particleAnimationRefs.current.forEach((anim) => anim.cancel());
+        };
+    }, []);
 
     return (
-        <div className={classes.root}>
+        <>
             {particles.map((style, i) => (
                 // @ts-ignore
                 <Icon
@@ -118,6 +133,49 @@ const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
                     {healing}
                 </span>
             )}
+        </>
+    );
+};
+
+const Healing = ({ statChanges }: { statChanges?: { healing?: number } }) => {
+    const classes = useStyles();
+    const [activeEffects, setActiveEffects] = useState<
+        { id: number; healing: number; particles: ReturnType<typeof getParticles> }[]
+    >([]);
+    const nextId = useRef(0);
+
+    useEffect(() => {
+        const healing = statChanges?.healing || 0;
+        if (healing <= 0) {
+            return;
+        }
+
+        const id = nextId.current++;
+        const particles = getParticles();
+
+        setActiveEffects((prev) => [...prev, { id, healing, particles }]);
+
+        const timeout = setTimeout(() => {
+            setActiveEffects((prev) => prev.filter((effect) => effect.id !== id));
+        }, HIT_PLAYBACK);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [statChanges]);
+
+    return (
+        <div className={classes.root}>
+            {activeEffects.map((effect) => (
+                <HealingEffect
+                    key={effect.id}
+                    healing={effect.healing}
+                    particles={effect.particles}
+                    onDone={() => {
+                        setActiveEffects((prev) => prev.filter((e) => e.id !== effect.id));
+                    }}
+                />
+            ))}
         </div>
     );
 };
