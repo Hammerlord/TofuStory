@@ -629,6 +629,7 @@ export { default as RagingBlowImage } from "./RagingBlow.png";
 export { default as RainbowBowImage } from "./RainbowBow.png";
 export { default as RavenImage } from "./Raven.gif";
 export { default as RecklessChargeImage } from "./RecklessCharge.png";
+export { default as RedArtenImage } from "./RedArten.png";
 export { default as RedBoxingGloveImage } from "./RedBoxingGlove.png";
 export { default as RedCrayonImage } from "./RedCrayon.png";
 export { default as RedDrakeImage } from "./RedDrake.gif";

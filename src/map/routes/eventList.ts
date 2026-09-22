@@ -135,6 +135,7 @@ import {
     battleGauntlets,
     redDuke,
     charmOfTheUndead,
+    redArten,
 } from "./../../item/items";
 
 export const events: EventScene[] = [
@@ -275,6 +276,7 @@ export const CLASS_ITEMS = {
         blueChaosRobe,
         silverSnowboard,
         starryBandana,
+        redArten,
     ],
     [PLAYER_CLASSES.BOWMAN]: [
         brokenArrow,

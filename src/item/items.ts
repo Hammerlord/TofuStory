@@ -15,7 +15,7 @@ import {
     taunt,
     thorns,
 } from "../ability/Effects";
-import { lesserBolt } from "../ability/magician/defaultAttacks";
+import { lesserBolt, magicianDefaultAttack } from "../ability/magician/defaultAttacks";
 import { swift } from "../ability/magician/magicianAbilities";
 import {
     firstExiledArm,
@@ -114,6 +114,7 @@ import {
     PolearmImage,
     PrettyPinkBeanBalloonImage,
     RabbitFootImage,
+    RedArtenImage,
     RedDukeImage,
     RedHeadbandImage,
     RedHeartedEarringsImage,
@@ -3401,6 +3402,50 @@ export const charmOfTheUndead: Item = {
             },
             onFailedToReceiveHindranceCard: {
                 decrementStacks: 1,
+            },
+        },
+    ],
+};
+
+const artenEffect: Effect = {
+    name: "Red Arten",
+    class: EFFECT_CLASSES.BUFF,
+    onBeforeReceiveEffect: {
+        conditions: [
+            {
+                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
+                comparator: "eq",
+                hasEffect: "Charged",
+            },
+            {
+                calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
+                comparator: "eq",
+                name: "Charged",
+                sourceType: TRIGGER_SOURCE_TYPES.EFFECT,
+            },
+        ],
+        conditionOperator: "and",
+        addCards: [
+            {
+                ...magicianDefaultAttack,
+            },
+        ],
+        removeEffect: true,
+    },
+};
+
+export const redArten: Item = {
+    name: "Red Arten",
+    image: RedArtenImage,
+    description: "Once per turn, gaining Charged while it's already active adds Bolt to your hand.",
+    type: ITEM_TYPES.EQUIPMENT,
+    rarity: RARITIES.RARE,
+    effects: [
+        {
+            name: "Red Arten",
+            class: EFFECT_CLASSES.BUFF,
+            onTurnStart: {
+                effects: [artenEffect],
             },
         },
     ],
