@@ -44,6 +44,8 @@ export const chargedEffect: Effect = {
     icon: AlchemistStoneImage,
     description:
         "Grants a bonus to certain cards. If unused at the end of your turn, fire a Lesser Bolt.",
+    maxStacks: 1,
+    maxApplications: 1,
     weaponAnimation: "glow",
     onAbility: {
         conditions: [abilityHasChargedCondition],
@@ -64,13 +66,6 @@ export const chargingStoneEffect: Effect = {
     onAbility: {
         targetType: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
         disableTriggerFromProcs: true,
-        conditions: [
-            {
-                calculationTarget: TRIGGER_TARGET_TYPES.EFFECT_OWNER,
-                comparator: "not",
-                hasEffect: "Charged",
-            },
-        ],
         effects: [chargedEffect],
     },
 };
