@@ -49,7 +49,7 @@ import {
     PlayerSelectCardsPrompt,
 } from "../types";
 import { canTargetIfStealthed, isUntargetable } from "../utils";
-import AnimationCanvas from "./AnimationCanvas";
+import AnimationCanvas from "./animation/AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
 import Discard from "./Discard";

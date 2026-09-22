@@ -1,0 +1,7 @@
+export const PROJECTILE_WIDTH = 50;
+export const PROJECTILE_HEIGHT = 50;
+export const MIN_PROJECTILE_SIZE = 50;
+export const DISPLACEMENT_SPEED = 500;
+export const MAX_BEAM_PROJECTILES = 5;
+export const DEFAULT_PROJECTILE_RAIN_COUNT = 2;
+export const NUM_SPACES_AWAY_DELAY = 30;
