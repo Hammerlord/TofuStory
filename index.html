@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -6,7 +6,8 @@
         <link rel="icon" type="image/png" href="./favicon.png" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow" />
         <title>
-            Reincarnated as a common food item, I somehow gained rule-breaking skills that allow me to survive while being delicious
+            Reincarnated as a common food item, I somehow gained rule-breaking skills that allow me
+            to survive while being delicious
         </title>
         <style>
             body {
@@ -14,8 +15,23 @@
                 margin: 0;
                 overflow: hidden;
             }
+            img {
+                user-drag: none;
+                -webkit-user-drag: none;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
         </style>
-      <script type="module" crossorigin src="./assets/index-jWVM2B4t.js"></script>
+        <script>
+            document.addEventListener("dragstart", (e) => {
+                if (e.target.tagName === "IMG") {
+                    e.preventDefault();
+                }
+            }, false);
+        </script>
+      <script type="module" crossorigin src="./assets/index-BZW4wLTn.js"></script>
     </head>
     <body>
         <div id="root"></div>
