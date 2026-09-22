@@ -2329,7 +2329,7 @@ export const hardwoodWand: Item = {
     rarity: RARITIES.COMMON,
     type: ITEM_TYPES.EQUIPMENT,
     image: HardwoodWandImage,
-    description: "On turn start, gain Charged.",
+    description: "On turn start, gain {{{ _charged_ }}} Charged.",
     effects: [
         {
             name: "Hardwood Wand Effect",
@@ -3000,7 +3000,8 @@ export const blueChaosRobe: Item = {
     image: BlueChaosRobeImage,
     rarity: RARITIES.RARE,
     type: ITEM_TYPES.EQUIPMENT,
-    description: "When you play an activated Charged card, gain 1 flat {{{ _armor_ }}}.",
+    description:
+        "When you play an activated {{{ _charged_ }}} Charged card, gain 1 flat {{{ _armor_ }}}.",
     effects: [
         {
             name: "Blue Chaos Robe",
@@ -3438,7 +3439,8 @@ const artenEffect: Effect = {
 export const redArten: Item = {
     name: "Red Arten",
     image: RedArtenImage,
-    description: "Once per turn, gaining Charged while it's already active adds Bolt to your hand.",
+    description:
+        "Once per turn, gaining {{{ _charged_ }}} Charged while it's already active adds Bolt to your hand.",
     type: ITEM_TYPES.EQUIPMENT,
     rarity: RARITIES.RARE,
     effects: [

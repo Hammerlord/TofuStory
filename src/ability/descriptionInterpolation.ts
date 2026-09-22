@@ -4,6 +4,7 @@ import { getMultiplier } from "../battle/getMultiplier";
 import { CombatantInfo, NonCombatPlayerInfo } from "../battle/types";
 import { Combatant, Player } from "../character/types";
 import {
+    AlchemistStoneImage,
     BloodEmojiImage,
     CriticalShotImage,
     CrossedSwordsImage,
@@ -89,6 +90,7 @@ const ICON_INTERPOLATIONS = {
     _silence_: `<img src="${SealImage}" alt="Silence" style="${styleStrWithShadow}"/>`,
     _freeze_: `<img src="${NimbleJewelCImage}" alt="Freeze" style="${styleStrWithShadow}"/>`,
     _critical_: `<img src="${CriticalShotImage}" alt="Critical" style="${styleStrWithShadow}"/>`,
+    _charged_: `<img src="${AlchemistStoneImage}" alt="Charged" style="${styleStrWithShadow}"/>`,
     _thorns_: inlineSvg(cactusSvg),
     _attDown_: inlineSvg(attDownSvg),
     _attUp_: inlineSvg(attUpSvg),
