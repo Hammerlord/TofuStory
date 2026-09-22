@@ -1823,7 +1823,7 @@ export const leechingFlame: Ability = {
     resourceCost: 1,
     rarity: RARITIES.UNCOMMON,
     description:
-        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. Gain <br/> <b>{{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}}</b> + <b>{{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}}</b> per turn. <br/> <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
+        "Apply <b>{{ actions.0.effects.0.stacks }}</b> {{{ _burn_ }}}. Gain <b>{{ actions.0.effects.1.onTurnStart.effects.0.onTurnStart.healing }} {{{ _healing_ }}}</b> + <b>{{ actions.0.effects.1.onTurnStart.effects.0.resourcesPerTurn }} {{{ _resource_ }}}</b> per turn. <br/> <b>{{ actions.0.effects.1.duration }}</b>{{{ _duration_ }}}",
     overrideBodyText: true,
     image: EliteFirebrandImage,
     depletedOnUse: true,

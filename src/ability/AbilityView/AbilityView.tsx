@@ -647,6 +647,27 @@ const AbilityView = forwardRef(
             inBattle &&
             (isLocked || (unplayable && !effects.some((e: AbilityEffect) => e.bypassUnplayable)));
 
+        const keywords: string[] = [];
+        if (preemptive) {
+            keywords.push("Pre-emptive");
+        }
+        if (removeAfterTurn) {
+            keywords.push("Ephemeral");
+        }
+        if (depletedOnUse) {
+            keywords.push("Deplete");
+        }
+        if (ability.reusable) {
+            keywords.push("Reusable");
+        }
+        if (unplayable) {
+            keywords.push("Unplayable");
+        }
+        if (retain) {
+            keywords.push("Retain");
+        }
+        const keywordHtml = keywords.map((keyword) => `<b>${keyword}.</b>`).join(" ");
+
         return (
             <AbilityTooltip ability={ability}>
                 <div
@@ -710,13 +731,6 @@ const AbilityView = forwardRef(
                                         {taunt && <span className={classes.bold}> Taunt</span>}
                                     </div>
                                 )}
-                                {preemptive && <div className={classes.bold}>Pre-emptive</div>}
-                                {removeAfterTurn && <div className={classes.bold}>Ephemeral</div>}
-                                {depletedOnUse && <div className={classes.bold}>Deplete</div>}
-                                {ability.reusable && <div className={classes.bold}>Reusable</div>}
-                                {unplayable && <div className={classes.bold}>Unplayable</div>}
-                                {retain && <div className={classes.bold}>Retain</div>}
-
                                 {!healingCornerIcon && healing > 0 && (
                                     <div>
                                         Heal for{" "}
@@ -788,10 +802,16 @@ const AbilityView = forwardRef(
                                 {interpolatedDescription && showDescription && (
                                     <div
                                         dangerouslySetInnerHTML={{
-                                            __html: interpolatedDescription,
+                                            __html: `${keywordHtml ? `${keywordHtml} ` : ""}${interpolatedDescription}`,
                                         }}
                                     />
                                 )}
+                                {keywords.length > 0 && !(interpolatedDescription && showDescription) &&
+                                    keywords.map((keyword) => (
+                                        <div className={classes.bold} key={keyword}>
+                                            {keyword}
+                                        </div>
+                                    ))}
                             </div>
                             <div className={classes.footer}>
                                 {
