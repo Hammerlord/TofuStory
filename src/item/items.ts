@@ -3428,6 +3428,7 @@ const artenEffect: Effect = {
         addCards: [
             {
                 ...magicianDefaultAttack,
+                removeAfterTurn: true,
             },
         ],
         removeEffect: true,
