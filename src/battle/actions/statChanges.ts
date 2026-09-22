@@ -17,6 +17,45 @@ import { updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTarget
 const { updateBattle } = battleStateSlice?.actions || {};
 const { updatePlayer } = playerStateSlice?.actions || {};
 
+export const triggerBeforeStatChangeEvents =
+    (
+        statChanges: {
+            statUpdate: UpdatedCombatantStats;
+            context: ActionContext;
+        }[],
+    ) =>
+    (dispatch: AppDispatch) => {
+        // Fires before the incoming effects are committed to battle state, so
+        // onBeforeReceiveEffect conditions are evaluated against the pre-application state.
+        statChanges.forEach(({ statUpdate, context }) => {
+            const { combatantId, effects = [] } = statUpdate;
+            if (!combatantId) {
+                return;
+            }
+
+            const prevSource = context?.sourceChain?.at(-1);
+
+            effects.forEach((e: CombatEffect) => {
+                const source: TriggerSource = {
+                    ...prevSource,
+                    statUpdate,
+                    source: e,
+                    type: TRIGGER_SOURCE_TYPES.EFFECT,
+                    targetId: combatantId,
+                };
+                const sourceChain = [...(context?.sourceChain || []), source];
+
+                dispatch(
+                    checkEventTrigger({
+                        combatantId,
+                        effectEventKey: EFFECT_EVENT_KEYS.onBeforeReceiveEffect,
+                        context: { ...context, sourceChain },
+                    }),
+                );
+            });
+        });
+    };
+
 export const triggerStatChangeEvents =
     (
         statChanges: {

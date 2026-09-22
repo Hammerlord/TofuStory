@@ -20,7 +20,7 @@ import { BattleState } from "../../types";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
 import { findCombatantData, updateCombatant } from "../combatantData";
 import { getUpdatedStats } from "../getUpdatedStats";
-import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
 import { applyAbilityEventEffects } from "./utils";
@@ -328,6 +328,27 @@ const triggerCardActionCombatantBonuses = ({
             getCombatantById: (id) => findCombatantData(getState().battle!, id),
         });
 
+        dispatch(
+            triggerBeforeStatChangeEvents(
+                updated.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    context: {
+                        ...context,
+                        sourceChain: [
+                            ...parentSourceChain,
+                            {
+                                source: action,
+                                type: TRIGGER_SOURCE_TYPES.EFFECT,
+                                actorId: player.id,
+                                targetId: player.id,
+                                statUpdate,
+                                triggerHistory: [],
+                            },
+                        ],
+                    },
+                })),
+            ),
+        );
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
         dispatch(
             triggerStatChangeEvents(

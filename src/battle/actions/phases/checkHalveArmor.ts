@@ -1,6 +1,6 @@
 import { ActionContext, CombatantInfo } from "../../types";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
-import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import { AppDispatch } from "../../../store";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 
@@ -29,6 +29,7 @@ export const checkHalveArmor =
          * Trigger armor decay regardless of whether any armor actually decayed.
          * @see preventArmorDecayPlayer the player "Pristine Armor" needs this event to know when to tick down.
          */
+        dispatch(triggerBeforeStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, context }))));
         dispatch(applyStatChanges(statChanges));
         dispatch(
             triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, context }))),

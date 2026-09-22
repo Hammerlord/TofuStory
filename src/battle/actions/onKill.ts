@@ -10,7 +10,7 @@ import { BATTLE_STATES } from "./../states";
 import { ActionContext } from "./../types";
 import { findCombatantData, isActorPlayerSide } from "./combatantData";
 import { getUpdatedStats } from "./getUpdatedStats";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "./statChanges";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
@@ -62,27 +62,26 @@ export const handleOnKill = (context: ActionContext) => {
                     getCombatantById: (id) => findCombatantData(getState().battle!, id),
                 });
 
-                dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
                 const lifeOnKillSource: TriggerSource = {
                     type: TRIGGER_SOURCE_TYPES.EFFECT,
                     actorId: killedBy.id,
                     targetId: killedBy.id,
                 };
 
-                dispatch(
-                    triggerStatChangeEvents(
-                        updated.map(({ statUpdate, action }) => ({
-                            statUpdate,
-                            context: {
-                                ...context,
-                                sourceChain: [
-                                    ...(context?.sourceChain || []),
-                                    { ...lifeOnKillSource, action, statUpdate },
-                                ],
-                            },
-                        })),
-                    ),
-                );
+                const statChangeContexts = updated.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    context: {
+                        ...context,
+                        sourceChain: [
+                            ...(context?.sourceChain || []),
+                            { ...lifeOnKillSource, action, statUpdate },
+                        ],
+                    },
+                }));
+
+                dispatch(triggerBeforeStatChangeEvents(statChangeContexts));
+                dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
+                dispatch(triggerStatChangeEvents(statChangeContexts));
             }
         }
 

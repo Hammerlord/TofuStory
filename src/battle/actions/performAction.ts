@@ -32,7 +32,7 @@ import { UpdatedCombatantStats, UpdatedStatsProps, getUpdatedStats } from "./get
 import { checkInduce } from "./inducedAction";
 import { checkHandleMovement, checkHandleVacuum } from "./movement";
 import { aggregateStatUpdates } from "./playbackCollector";
-import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "./statChanges";
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { checkHandleMorph } from "./summon/morphMerge";
@@ -178,6 +178,19 @@ export const performAction = ({
 
         const updated: { statUpdate: UpdatedCombatantStats; action: Action }[] =
             getUpdatedStats(updatedStatsProps);
+
+        const sourceChain = context?.sourceChain || [];
+        const mainStatChangeContexts = updated.map(({ statUpdate, action }) => {
+            const sourceWithUpdatedAction = { ...source, source: action };
+            return {
+                statUpdate,
+                context: {
+                    ...context,
+                    sourceChain: [...sourceChain, sourceWithUpdatedAction],
+                },
+            };
+        });
+        dispatch(triggerBeforeStatChangeEvents(mainStatChangeContexts));
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
 
         const hitTriggerSource: TriggerSource = {
@@ -200,6 +213,17 @@ export const performAction = ({
             getState,
         });
         hitEffects.forEach((statChanges) => {
+            const hitEffectContexts = statChanges.map(({ statUpdate, action }) => ({
+                statUpdate,
+                context: {
+                    ...context,
+                    sourceChain: [
+                        ...sourceChain,
+                        { ...hitTriggerSource, source: action, statUpdate },
+                    ],
+                } as ActionContext,
+            }));
+            dispatch(triggerBeforeStatChangeEvents(hitEffectContexts));
             dispatch(applyStatChanges(statChanges.map(({ statUpdate }) => statUpdate)));
         });
 
@@ -231,22 +255,7 @@ export const performAction = ({
             }),
         );
 
-        const sourceChain = context?.sourceChain || [];
-
-        dispatch(
-            triggerStatChangeEvents(
-                updated.map(({ statUpdate, action }) => {
-                    const sourceWithUpdatedAction = { ...source, source: action };
-                    return {
-                        statUpdate,
-                        context: {
-                            ...context,
-                            sourceChain: [...sourceChain, sourceWithUpdatedAction],
-                        },
-                    };
-                }),
-            ),
-        );
+        dispatch(triggerStatChangeEvents(mainStatChangeContexts));
 
         if (secondaryAction && !secondaryAction.isPriority) {
             updatedSecondary = triggerSecondaryAction();
@@ -751,6 +760,17 @@ const handleSecondaryAction = ({
             action: secondaryAction,
         });
 
+        dispatch(
+            triggerBeforeStatChangeEvents(
+                updatedSecondary.map(({ statUpdate, action }) => ({
+                    statUpdate,
+                    context: {
+                        ...context,
+                        sourceChain: [...(context?.sourceChain || []), { source: action, statUpdate }],
+                    },
+                })),
+            ),
+        );
         dispatch(applyStatChanges(updatedSecondary.map(({ statUpdate }) => statUpdate)));
 
         if (secondaryAction.returnParentCardToHand) {

@@ -2,7 +2,7 @@ import { CombatantInfo, ActionContext } from "../../types";
 import { isStunnedOrFrozen } from "../../utils";
 import { getMaxResources } from "../../utils";
 import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
-import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import { UpdatedCombatantStats } from "../getUpdatedStats";
 import { AppDispatch } from "../../../store";
 
@@ -33,6 +33,7 @@ export const checkTurnResourceGain =
             })
             .filter((v): v is UpdatedCombatantStats => v !== undefined);
 
+        dispatch(triggerBeforeStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, context }))));
         dispatch(applyStatChanges(statChanges));
         dispatch(
             triggerStatChangeEvents(statChanges.map((statUpdate) => ({ statUpdate, context }))),

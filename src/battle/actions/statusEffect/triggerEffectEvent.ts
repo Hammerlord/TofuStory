@@ -39,7 +39,7 @@ import { getUpdatedStats } from "../getUpdatedStats";
 import { checkInduce } from "../inducedAction";
 import { performAction } from "../performAction";
 import { aggregateStatUpdates } from "../playbackCollector";
-import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import {
     autoSelectActionTarget,
     calculateTargetIndices,
@@ -265,6 +265,14 @@ const applyEffectEventStatChanges = ({
             getCombatantById: (id: string) => findCombatantData(getState().battle!, id),
         });
 
+        dispatch(
+            triggerBeforeStatChangeEvents(
+                updated.map(({ statUpdate }) => ({
+                    statUpdate,
+                    context: procContext,
+                })),
+            ),
+        );
         dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
         let aggregated = {};
 

@@ -6,7 +6,7 @@ import { findCombatantData } from "../combatantData";
 import { ActionContext } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { UpdatedCombatantStats, getUpdatedStats } from "../getUpdatedStats";
-import { applyStatChanges, triggerStatChangeEvents } from "../statChanges";
+import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import { AppDispatch, RootState } from "../../../store";
 
 /**
@@ -69,6 +69,26 @@ export const handleDoTs =
                     getCombatantById: (id) => findCombatantData(getState().battle!, id),
                 });
 
+                dispatch(
+                    triggerBeforeStatChangeEvents(
+                        updated.map(({ statUpdate, action, actorId }) => ({
+                            statUpdate,
+                            context: {
+                                ...context,
+                                sourceChain: [
+                                    ...(context?.sourceChain || []),
+                                    {
+                                        source: action,
+                                        actorId,
+                                        targetId: statUpdate.combatantId,
+                                        statUpdate,
+                                        type: TRIGGER_SOURCE_TYPES.ACTION,
+                                    },
+                                ],
+                            },
+                        })),
+                    ),
+                );
                 dispatch(applyStatChanges(updated.map(({ statUpdate }) => statUpdate)));
                 updatedStats.push(...updated);
             });

@@ -125,6 +125,7 @@ export enum EFFECT_EVENT_KEYS {
     onReceiveHealing = "onReceiveHealing",
     onReceiveArmor = "onReceiveArmor",
     onReceiveEffect = "onReceiveEffect",
+    onBeforeReceiveEffect = "onBeforeReceiveEffect", // Fires before an effect is applied, so conditions can check the pre-application state
     onFailedToReceiveEffect = "onFailedToReceiveEffect", // If the effect recipient was immune to that effect
     onFailedToApplyEffect = "onFailedToApplyEffect",
     onApplyEffect = "onApplyEffect",
