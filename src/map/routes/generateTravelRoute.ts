@@ -198,9 +198,9 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                     notInPrevLevel(NODE_TYPES.SHOP)
                 ) {
                     types.push(NODE_TYPES.SHOP);
-                } else if (route.enemies || route.multiWaveEnemies) {
+                } else if (route.enemies?.length || route.multiWaveEnemies?.length) {
                     types.push(NODE_TYPES.ENCOUNTER);
-                } else if (numEliteEncounters > 0) {
+                } else if (route.elites) {
                     types.push(NODE_TYPES.ELITE_ENCOUNTER);
                 }
             }
@@ -212,7 +212,9 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             if (type === NODE_TYPES.ENCOUNTER) {
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.ELITE_ENCOUNTER) {
-                --numEliteEncounters;
+                if (numEliteEncounters > 0) {
+                    --numEliteEncounters;
+                }
                 ++numEncountersSinceRestPoint;
             } else if (type === NODE_TYPES.EVENT) {
                 --numEvents;
