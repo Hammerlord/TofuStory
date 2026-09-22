@@ -17,8 +17,9 @@ import {
 import { Combatant, Player } from "../../character/types";
 import { useAppSelector } from "../../hooks";
 import Icon from "../../icon/Icon";
-import { CriticalShotImage, MapleLeavesImage } from "../../images";
+import { AlchemistStoneImage, CriticalShotImage, MapleLeavesImage } from "../../images";
 import { CrossedSwordsIcon, HeartIcon, LockIcon, ShieldIcon } from "../../images/icons";
+import { PLAYER_CLASSES } from "../../Menu/types";
 import { RARITIES } from "../../item/types";
 import { interpolateAbilityDescription } from "../descriptionInterpolation";
 import {
@@ -540,6 +541,11 @@ const AbilityView = forwardRef(
 
         const showCritical = effects.some((e) => e.name === CRITICAL_KEYWORD);
 
+        const showCharged =
+            player?.class === PLAYER_CLASSES.MAGICIAN &&
+            !!ability.description?.includes("Charged:") &&
+            player.effects?.some((effect) => effect.name === "Charged");
+
         const cornerIcons = (() => {
             const icons = [];
             if (baseDamage !== undefined) {
@@ -584,6 +590,13 @@ const AbilityView = forwardRef(
                 icons.push(CriticalIcon);
             } else {
                 icons.push(<div className={classes.iconPlaceholder} key="placeholder" />);
+            }
+
+            if (showCharged) {
+                const ChargedIcon = (
+                    <Icon icon={AlchemistStoneImage} highlightIcon size="sm" key="charged" />
+                );
+                icons.push(ChargedIcon);
             }
             return icons;
         })();
