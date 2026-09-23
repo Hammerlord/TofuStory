@@ -107,6 +107,7 @@ import {
 } from "../../images";
 import { SnowflakeIcon } from "../../images/icons";
 import { chargedEffect, useActiveChargeCondition } from "../../item/starterItemEffects";
+import { CHARGED } from "../AbilityView/constants";
 import { RARITIES } from "../../item/types";
 import {
     ACTION_TYPES,
@@ -165,6 +166,7 @@ export const magicFang: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
                 damage: 2,
@@ -244,6 +246,7 @@ export const energyBolt: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
                 damage: 3,
@@ -280,6 +283,7 @@ const magicClawAction: Action = {
             {
                 calculationTarget: CONDITION_TARGETS.ACTOR,
                 hasEffect: "Charged",
+                tag: CHARGED,
             },
         ],
         damage: 2,
@@ -406,6 +410,7 @@ export const ping: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
             },
@@ -491,6 +496,7 @@ export const barrier: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
                 armor: 2,
@@ -928,6 +934,7 @@ export const fireArrow: Ability = {
                         {
                             calculationTarget: CONDITION_TARGETS.ACTOR,
                             hasEffect: "Charged",
+                            tag: CHARGED,
                         },
                     ],
                     effects: [
@@ -1340,6 +1347,7 @@ export const thunderBolt: Ability = {
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     hasEffect: "Charged",
+                    tag: CHARGED,
                 },
             ],
         },
@@ -2311,6 +2319,7 @@ export const starBolt: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
             },
@@ -3187,6 +3196,7 @@ export const shatter: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
             },
@@ -3286,6 +3296,7 @@ export const picoPicoHammerAbility: Ability = {
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     hasEffect: "Charged",
+                    tag: CHARGED,
                 },
             ],
         },
@@ -3405,6 +3416,7 @@ export const chargedBlast: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
                 damage: 12,
@@ -3565,6 +3577,7 @@ export const mysticDoor: Ability = {
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     hasEffect: "Charged",
+                    tag: CHARGED,
                 },
             ],
             stopAction: true,
@@ -3613,6 +3626,7 @@ export const doomAbility: Ability = {
                     {
                         calculationTarget: CONDITION_TARGETS.ACTOR,
                         hasEffect: "Charged",
+                        tag: CHARGED,
                     },
                 ],
             },
@@ -3681,6 +3695,7 @@ export const thunderSpear: Ability = {
                 {
                     calculationTarget: CONDITION_TARGETS.ACTOR,
                     hasEffect: "Charged",
+                    tag: CHARGED,
                 },
             ],
         },

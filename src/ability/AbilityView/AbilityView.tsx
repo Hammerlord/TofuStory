@@ -42,10 +42,10 @@ import AbilityTypeView from "./AbilityTypeView";
 import Area, { AreaIndicator } from "./AreaView";
 import ArmorIcon, { getArmorStatistics } from "./ArmorIcon";
 import CardsToAdd from "./CardsToAdd";
-import { CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
+import { CHARGED, CARD_WIDTH, CRITICAL_KEYWORD } from "./constants";
 import DamageIcon, { getDamageStatistics } from "./DamageIcon";
 import AbilityResourceIcon, { ResourceIcon } from "./ResourceIcon";
-import { getAbilityColor, getLastPlayedCards } from "./utils";
+import { abilityHasConditionTag, getAbilityColor, getLastPlayedCards } from "./utils";
 import { lookupEffect } from "../../character/effects/createCombatEffect";
 
 const useStyles = createUseStyles({
@@ -543,7 +543,7 @@ const AbilityView = forwardRef(
 
         const showCharged =
             player?.class === PLAYER_CLASSES.MAGICIAN &&
-            !!ability.description?.includes("Charged:") &&
+            abilityHasConditionTag(ability, CHARGED) &&
             player.effects?.some((effect) => effect.name === "Charged");
 
         const cornerIcons = (() => {

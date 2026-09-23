@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { isOffensiveAbility } from "../ability/AbilityView/utils";
+import { abilityHasConditionTag, isOffensiveAbility } from "../ability/AbilityView/utils";
 import {
     Ability,
     Action,
@@ -185,6 +185,7 @@ const passesTriggerSourceCondition = ({
         value,
         notProc,
         hasAbilityEffectName,
+        hasTag,
     } = condition;
 
     const isProc = context?.isProc;
@@ -252,6 +253,10 @@ const passesTriggerSourceCondition = ({
             return ((sourcePayload as CombatAbility)?.effects || []).some(
                 (e) => e.name === hasAbilityEffectName,
             );
+        }
+
+        if (hasTag !== undefined) {
+            return abilityHasConditionTag(sourcePayload as Ability, hasTag);
         }
 
         return true;

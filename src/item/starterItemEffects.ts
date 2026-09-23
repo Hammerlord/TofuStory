@@ -7,16 +7,14 @@ import {
     EFFECT_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "./../ability/types";
+import { CHARGED } from "../ability/AbilityView/constants";
 
 import { lesserBolt } from "../ability/magician/defaultAttacks";
 import { TRIGGER_SOURCE_TYPES } from "../battle/types";
 
-// TODO we probably want a named bonus for this
 export const abilityHasChargedCondition: Condition = {
     calculationTarget: CONDITION_TARGETS.TRIGGER_SOURCE,
-    comparator: "includes",
-    property: "description",
-    value: "Charged:",
+    hasTag: CHARGED,
     sourceType: TRIGGER_SOURCE_TYPES.ABILITY,
 };
 

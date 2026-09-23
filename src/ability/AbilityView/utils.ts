@@ -6,7 +6,9 @@ import {
     Ability,
     AbilityEffect,
     Action,
+    Bonus,
     CombatAbility,
+    Condition,
     Effect,
     TARGET_TYPES,
 } from "./../types";
@@ -139,4 +141,40 @@ export const getLastPlayedCards = ({
         .reverse()
         .filter((ability): ability is CombatAbility => "instanceId" in ability && !ability.isUnique)
         .slice(0, amount);
+};
+
+/**
+ * Every Condition attached to an ability's actions, including conditions on its bonuses
+ * and secondary actions. Used by the `hasTag` condition check to systemically identify
+ * abilities (eg. cards that consume the Charged effect).
+ */
+export const getAllActionConditions = (ability?: Ability | null): Condition[] => {
+    const getActionBonusConditions = (action: Action): Condition[] => {
+        const bonuses = Array.isArray(action.bonus)
+            ? action.bonus
+            : action.bonus
+              ? [action.bonus]
+              : [];
+        return bonuses.flatMap((bonus) => bonus?.conditions || []);
+    };
+
+    return (ability?.actions || []).flatMap((action) => {
+        const conditions = [...(action.conditions || []), ...getActionBonusConditions(action)];
+        if (!action.secondaryAction) {
+            return conditions;
+        }
+
+        return [
+            ...conditions,
+            ...(action.secondaryAction.conditions || []),
+            ...getActionBonusConditions(action.secondaryAction),
+        ];
+    });
+};
+
+export const abilityHasConditionTag = (ability?: Ability | null, tag?: string): boolean => {
+    if (!tag) {
+        return false;
+    }
+    return getAllActionConditions(ability).some((condition) => condition?.tag === tag);
 };

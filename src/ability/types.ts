@@ -424,8 +424,17 @@ export interface Condition {
     hasEffectClass?: EFFECT_CLASSES.BUFF | EFFECT_CLASSES.DEBUFF;
     hasEffect?: string; // Effect name
 
+    /**
+     * A name to group conditions that share the same mechanic (eg. the CHARGED keyword on cards that
+     * consume the Charged effect). NOT evaluated as part of the condition check itself; it exists so
+     * that such conditions can be systemically identified (eg. by the `hasTag` check).
+     */
+    tag?: string;
+
     // For ability source types only
     hasAbilityEffectName?: string;
+    // For ability source types only: whether the source ability contains any condition tagged with this name (see `tag`)
+    hasTag?: string;
 
     /** Unique effects, not stacks */
     numEffects?: number;
