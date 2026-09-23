@@ -7,6 +7,7 @@ import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import { Checkbox } from "@mui/material";
 import CardSortControls, { useCardSort } from "./CardSortControls";
+import { scrollableCardSection } from "./cardGridStyles";
 
 const useStyles = createUseStyles({
     root: {
@@ -25,9 +26,7 @@ const useStyles = createUseStyles({
         fontSize: "1.2rem",
     },
     abilitySection: {
-        width: "80vw",
-        height: "70vh",
-        overflow: "auto",
+        ...scrollableCardSection,
     },
     ability: {
         margin: "16px",

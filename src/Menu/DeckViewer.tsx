@@ -3,6 +3,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { ClickAwayListener } from "@mui/material";
 import { CombatAbility } from "../ability/types";
 import CardSortControls, { useCardSort } from "./CardSortControls";
+import { scrollFade } from "./cardGridStyles";
 
 const useStyles = createUseStyles({
     root: {
@@ -17,8 +18,16 @@ const useStyles = createUseStyles({
         paddingTop: "0",
         left: "50%",
         transform: "translateX(-50%)",
-        overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
         textAlign: "center",
+    },
+    cardsSection: {
+        overflow: "auto",
+        flex: 1,
+        minHeight: 0,
+        marginTop: "16px",
+        ...scrollFade,
     },
     abilityContainer: {
         margin: "16px",
@@ -71,16 +80,18 @@ const DeckViewer = ({
                         onSortDirectionChange={toggleSortDirection}
                     />
                 </div>
-                {sortedCards.map((card: CombatAbility) => (
-                    <div className={classes.abilityContainer} key={card.instanceId}>
-                        <AbilityView
-                            ability={card}
-                            disableGlow={true}
-                            disableBattleBonuses={true}
-                            onClick={() => onClickAbility(card)}
-                        />
-                    </div>
-                ))}
+                <div className={classes.cardsSection}>
+                    {sortedCards.map((card: CombatAbility) => (
+                        <div className={classes.abilityContainer} key={card.instanceId}>
+                            <AbilityView
+                                ability={card}
+                                disableGlow={true}
+                                disableBattleBonuses={true}
+                                onClick={() => onClickAbility(card)}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </ClickAwayListener>
     );

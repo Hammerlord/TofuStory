@@ -14,6 +14,7 @@ import { getUpgradeCard } from "./utils";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { getArmorStatistics } from "../ability/AbilityView/ArmorIcon";
 import CardSortControls, { useCardSort } from "./CardSortControls";
+import { scrollableCardSection } from "./cardGridStyles";
 
 const useStyles = createUseStyles({
     root: {
@@ -100,9 +101,7 @@ const useGridStyles = createUseStyles({
         fontSize: "1.2rem",
     },
     abilitySection: {
-        width: "80vw",
-        height: "70vh",
-        overflow: "auto",
+        ...scrollableCardSection,
     },
     tileContainer: {
         display: "inline-block",
