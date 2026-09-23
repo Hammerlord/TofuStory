@@ -238,7 +238,7 @@ const ClassSelection = ({
                     delay: (i + 1) * 50,
                     shiftUp: true,
                     playbackTime: 250,
-                    fill: "forwards",
+                    fill: "both",
                 });
             }
         });

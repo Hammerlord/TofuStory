@@ -15,6 +15,13 @@ import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { getArmorStatistics } from "../ability/AbilityView/ArmorIcon";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
+import {
+    panelKeyframes,
+    slideFadeInStyle,
+    slideFadeOutStyle,
+    useCardStaggerAnimation,
+    usePanelTransition,
+} from "./panelAnimation";
 
 const HEADER_BAR = 72;
 
@@ -87,6 +94,7 @@ const UpgradeTile = ({
 };
 
 const useGridStyles = createUseStyles({
+    ...panelKeyframes,
     root: {
         width: "100%",
         height: "100%",
@@ -96,6 +104,10 @@ const useGridStyles = createUseStyles({
         flexDirection: "column",
         background: "rgba(25, 25, 25, 0.9)",
         color: "white",
+        ...slideFadeInStyle,
+        "&.panelClosing": {
+            ...slideFadeOutStyle,
+        },
     },
     inner: {
         flex: 1,
@@ -158,6 +170,12 @@ const CardUpgradeGrid = ({
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
 
     const classes = useGridStyles();
+    const { isClosing, close, closeDuration } = usePanelTransition();
+    const { setCardRef, animateCardsOut } = useCardStaggerAnimation();
+
+    const handleClose = (onFinished?: () => void) => {
+        close(onFinished, animateCardsOut());
+    };
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
@@ -197,7 +215,10 @@ const CardUpgradeGrid = ({
     };
 
     return (
-        <div className={classes.root}>
+        <div
+            className={classNames(classes.root, { panelClosing: isClosing })}
+            style={{ animationDuration: isClosing ? `${closeDuration}ms` : undefined }}
+        >
             <div className={disablePortal ? undefined : classes.inner}>
                 <h3>Upgrade an Ability</h3>
                 <div className={classes.cardSection}>
@@ -217,8 +238,12 @@ const CardUpgradeGrid = ({
                         </label>
                     </div>
                     <div className={disablePortal ? undefined : classes.abilitySection}>
-                        {sortedCards.map((card: CombatAbility) => (
-                            <div className={classes.tileContainer} key={card.instanceId}>
+                        {sortedCards.map((card: CombatAbility, index: number) => (
+                            <div
+                                className={classes.tileContainer}
+                                key={card.instanceId}
+                                ref={setCardRef(index)}
+                            >
                                 <UpgradeTile
                                     card={card}
                                     upgrade={upgrade(card)}
@@ -247,7 +272,7 @@ const CardUpgradeGrid = ({
                                                     upgrade(cardToUpgrade),
                                                 ];
                                                 setSelectedAbilityId(null);
-                                                onConfirm && onConfirm(updatedCards);
+                                                handleClose(() => onConfirm?.(updatedCards));
                                             }}
                                             disabled={!selectedAbilityId}
                                         >
@@ -260,7 +285,12 @@ const CardUpgradeGrid = ({
                     </div>
                     <div className={classes.cancelContainer}>
                         {onCancel && (
-                            <Button variant={"contained"} onClick={onCancel as any}>
+                            <Button
+                                variant={"contained"}
+                                onClick={() => {
+                                    handleClose(onCancel);
+                                }}
+                            >
                                 Cancel
                             </Button>
                         )}

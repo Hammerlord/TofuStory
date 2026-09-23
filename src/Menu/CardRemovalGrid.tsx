@@ -1,6 +1,6 @@
 import { Checkbox } from "@mui/material";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
@@ -8,12 +8,20 @@ import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
+import {
+    panelKeyframes,
+    slideFadeInStyle,
+    slideFadeOutStyle,
+    useCardStaggerAnimation,
+    usePanelTransition,
+} from "./panelAnimation";
 
 const HEADER_BAR = 72;
 
 const REMOVAL_ANIMATION_MS = 300;
 
 const useStyles = createUseStyles({
+    ...panelKeyframes,
     root: {
         width: "100%",
         height: "100%",
@@ -23,6 +31,10 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         background: "rgba(25, 25, 25, 0.9)",
         color: "white",
+        ...slideFadeInStyle,
+        "&.panelClosing": {
+            ...slideFadeOutStyle,
+        },
     },
     inner: {
         flex: 1,
@@ -107,20 +119,15 @@ const CardRemovalGrid = ({
     onCancel?: () => void;
 }) => {
     const classes = useStyles();
+    const { isClosing, close, closeDuration } = usePanelTransition();
+    const { setCardRef, animateCardsOut } = useCardStaggerAnimation();
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(false);
     const [removalInProgress, setRemovalInProgress] = useState<string | null>(null);
-    const removalCancelledRef = useRef(false);
-    const removalTimeoutRef = useRef<number | null>(null);
 
-    useEffect(() => {
-        return () => {
-            removalCancelledRef.current = true;
-            if (removalTimeoutRef.current !== null) {
-                window.clearTimeout(removalTimeoutRef.current);
-            }
-        };
-    }, []);
+    const handleClose = (onFinished?: () => void) => {
+        close(onFinished, animateCardsOut());
+    };
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
@@ -139,23 +146,18 @@ const CardRemovalGrid = ({
             (card: CombatAbility) => card.instanceId !== selectedAbilityId,
         );
         setRemovalInProgress(selectedAbilityId);
-        removalTimeoutRef.current = window.setTimeout(() => {
-            if (removalCancelledRef.current) {
-                return;
-            }
-            onRemoveAbility(updatedDeck);
-            setRemovalInProgress(null);
-            removalTimeoutRef.current = null;
-        }, REMOVAL_ANIMATION_MS);
+        handleClose(() => onRemoveAbility(updatedDeck));
     };
 
     const handleCancel = () => {
-        removalCancelledRef.current = true;
-        onCancel?.();
+        handleClose(onCancel);
     };
 
     return (
-        <div className={classes.root}>
+        <div
+            className={classNames(classes.root, { panelClosing: isClosing })}
+            style={{ animationDuration: isClosing ? `${closeDuration}ms` : undefined }}
+        >
             <div className={classes.inner}>
                 <h3>Remove An Ability</h3>
                 <div>
@@ -188,12 +190,13 @@ const CardRemovalGrid = ({
                             [classes.nonInteractive]: !!removalInProgress,
                         })}
                     >
-                        {sortedCards.map((card: CombatAbility) => (
+                        {sortedCards.map((card: CombatAbility, index: number) => (
                             <div
                                 className={classNames(classes.tileContainer, {
                                     removing: card.instanceId === removalInProgress,
                                 })}
                                 key={card.instanceId}
+                                ref={setCardRef(index)}
                             >
                                 <div
                                     className={classNames(classes.ability, {

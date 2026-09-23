@@ -1,11 +1,20 @@
 import { createUseStyles } from "react-jss";
+import classNames from "classnames";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { ClickAwayListener } from "@mui/material";
 import { CombatAbility } from "../ability/types";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollFade } from "./cardGridStyles";
+import {
+    panelKeyframes,
+    slideFadeInStyle,
+    slideFadeOutStyle,
+    useCardStaggerAnimation,
+    usePanelTransition,
+} from "./panelAnimation";
 
 const useStyles = createUseStyles({
+    ...panelKeyframes,
     root: {
         background: "rgba(15, 15, 15, 0.9)",
         width: "calc(80vw)",
@@ -21,6 +30,10 @@ const useStyles = createUseStyles({
         display: "flex",
         flexDirection: "column",
         textAlign: "center",
+        ...slideFadeInStyle,
+        "&.panelClosing": {
+            ...slideFadeOutStyle,
+        },
     },
     cardsSection: {
         overflow: "auto",
@@ -63,13 +76,22 @@ const DeckViewer = ({
     onClickAbility?: (card: CombatAbility) => void;
 }) => {
     const classes = useStyles();
+    const { isClosing, close, closeDuration } = usePanelTransition();
+    const { setCardRef, animateCardsOut } = useCardStaggerAnimation();
     const { sortedCards, sortBy, setSortBy, sortDirection, toggleSortDirection } =
         useCardSort(deck);
 
+    const handleClose = () => {
+        close(onClose, animateCardsOut());
+    };
+
     return (
-        <ClickAwayListener onClickAway={onClose}>
-            <div className={classes.root}>
-                <button className={classes.closeBar} onClick={onClose}>
+        <ClickAwayListener onClickAway={handleClose}>
+            <div
+                className={classNames(classes.root, { panelClosing: isClosing })}
+                style={{ animationDuration: isClosing ? `${closeDuration}ms` : undefined }}
+            >
+                <button className={classes.closeBar} onClick={handleClose}>
                     Close
                 </button>
                 <div className={classes.sortControls}>
@@ -81,8 +103,12 @@ const DeckViewer = ({
                     />
                 </div>
                 <div className={classes.cardsSection}>
-                    {sortedCards.map((card: CombatAbility) => (
-                        <div className={classes.abilityContainer} key={card.instanceId}>
+                    {sortedCards.map((card: CombatAbility, index: number) => (
+                        <div
+                            className={classes.abilityContainer}
+                            key={card.instanceId}
+                            ref={setCardRef(index)}
+                        >
                             <AbilityView
                                 ability={card}
                                 disableGlow={true}

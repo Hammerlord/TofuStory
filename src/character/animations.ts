@@ -783,7 +783,7 @@ export const playFadeInAnimation = ({
     playbackTime?: number;
     shiftUp?: boolean;
     delay?: number;
-    fill?: "forwards";
+    fill?: "forwards" | "both";
 }) => {
     const animationFrames: any[] = [
         {
@@ -798,6 +798,44 @@ export const playFadeInAnimation = ({
     if (shiftUp) {
         animationFrames[0].transform = "translateY(50px)";
         animationFrames[1].transform = "translateY(0px)";
+    }
+
+    return object.animate(animationFrames, {
+        duration: playbackTime,
+        delay,
+        fill,
+    });
+};
+
+/**
+ * Fade out an entity that is disappearing, such as when a panel closes.
+ */
+export const playFadeOutAnimation = ({
+    object,
+    playbackTime = 250,
+    shiftDown,
+    delay,
+    fill,
+}: {
+    object: HTMLElement;
+    playbackTime?: number;
+    shiftDown?: boolean;
+    delay?: number;
+    fill?: "forwards" | "both";
+}) => {
+    const animationFrames: any[] = [
+        {
+            opacity: 1,
+            easing: "ease-in",
+        },
+        {
+            opacity: 0,
+        },
+    ];
+
+    if (shiftDown) {
+        animationFrames[0].transform = "translateY(0px)";
+        animationFrames[1].transform = "translateY(50px)";
     }
 
     return object.animate(animationFrames, {
