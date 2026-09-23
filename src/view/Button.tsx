@@ -33,7 +33,7 @@ const useStyles = createUseStyles({
                 color: "rgba(255, 255, 255, 1) !important",
             },
             "&.base": {
-                background: "rgba(120, 120, 120) !important",
+                background: "linear-gradient(360deg, #6d6d6d 0%, #a3a3a3 100%) !important",
             },
             "&.disabled": {
                 color: "rgba(255, 255, 255) !important",
