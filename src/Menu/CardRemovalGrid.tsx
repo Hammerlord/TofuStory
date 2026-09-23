@@ -6,6 +6,7 @@ import { Ability, CombatAbility } from "../ability/types";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import { Checkbox } from "@mui/material";
+import CardSortControls, { useCardSort } from "./CardSortControls";
 
 const useStyles = createUseStyles({
     root: {
@@ -61,6 +62,14 @@ const useStyles = createUseStyles({
         marginTop: "16px",
         maxWidth: "600px",
     },
+    toolbar: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "24px",
+        margin: "16px 0 8px",
+    },
 });
 
 const CardRemovalGrid = ({
@@ -82,6 +91,9 @@ const CardRemovalGrid = ({
     }, {});
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
+    const { sortedCards, sortBy, setSortBy, sortDirection, toggleSortDirection } = useCardSort(
+        cardsList as CombatAbility[],
+    );
     const handleRemoveAbility = () => {
         if (selectedAbilityId) {
             onRemoveAbility(
@@ -99,15 +111,23 @@ const CardRemovalGrid = ({
                     permanent.
                 </div>
                 <hr className={classes.divider} />
-                <label>
-                    <Checkbox
-                        checked={isHideDuplicates}
-                        onChange={() => setIsHideDuplicates((prev) => !prev)}
-                    />{" "}
-                    Hide duplicates
-                </label>
+                <div className={classes.toolbar}>
+                    <CardSortControls
+                        sortBy={sortBy}
+                        onSortByChange={setSortBy}
+                        sortDirection={sortDirection}
+                        onSortDirectionChange={toggleSortDirection}
+                    />
+                    <label>
+                        <Checkbox
+                            checked={isHideDuplicates}
+                            onChange={() => setIsHideDuplicates((prev) => !prev)}
+                        />{" "}
+                        Hide duplicates
+                    </label>
+                </div>
                 <div className={classes.abilitySection}>
-                    {cardsList.map((card: CombatAbility) => (
+                    {sortedCards.map((card: CombatAbility) => (
                         <div className={classes.tileContainer} key={card.instanceId}>
                             <div
                                 className={classNames(classes.ability, {

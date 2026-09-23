@@ -13,6 +13,7 @@ import { PLAYER_CLASSES } from "./types";
 import { getUpgradeCard } from "./utils";
 import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { getArmorStatistics } from "../ability/AbilityView/ArmorIcon";
+import CardSortControls, { useCardSort } from "./CardSortControls";
 
 const useStyles = createUseStyles({
     root: {
@@ -111,6 +112,14 @@ const useGridStyles = createUseStyles({
         minHeight: 38,
         marginBottom: 16,
     },
+    toolbar: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "24px",
+        marginBottom: "8px",
+    },
 });
 
 const CardUpgradeGrid = ({
@@ -140,6 +149,9 @@ const CardUpgradeGrid = ({
     }, {});
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
+    const { sortedCards, sortBy, setSortBy, sortDirection, toggleSortDirection } = useCardSort(
+        cardsList as CombatAbility[],
+    );
     const upgrade = (card: CombatAbility) => {
         const isStarter = JOB_CARD_MAP[playerClass]?.starters.some(
             ({ name }) => name === card.name,
@@ -172,15 +184,23 @@ const CardUpgradeGrid = ({
         <div className={classes.root}>
             <div className={disablePortal ? undefined : classes.inner}>
                 <h3>Upgrade an Ability</h3>
-                <label>
-                    <Checkbox
-                        checked={isHideDuplicates}
-                        onChange={() => setIsHideDuplicates((prev) => !prev)}
-                    />{" "}
-                    Hide duplicates
-                </label>
+                <div className={classes.toolbar}>
+                    <CardSortControls
+                        sortBy={sortBy}
+                        onSortByChange={setSortBy}
+                        sortDirection={sortDirection}
+                        onSortDirectionChange={toggleSortDirection}
+                    />
+                    <label>
+                        <Checkbox
+                            checked={isHideDuplicates}
+                            onChange={() => setIsHideDuplicates((prev) => !prev)}
+                        />{" "}
+                        Hide duplicates
+                    </label>
+                </div>
                 <div className={disablePortal ? undefined : classes.abilitySection}>
-                    {cardsList.map((card: CombatAbility) => (
+                    {sortedCards.map((card: CombatAbility) => (
                         <div className={classes.tileContainer} key={card.instanceId}>
                             <UpgradeTile
                                 card={card}
