@@ -69,6 +69,14 @@ const useStyles = createUseStyles({
         gap: "24px",
         margin: "16px 0 8px",
     },
+    cardSection: {
+        position: "relative",
+    },
+    cancelContainer: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+    },
 });
 
 const CardRemovalGrid = ({
@@ -110,56 +118,60 @@ const CardRemovalGrid = ({
                     permanent.
                 </div>
                 <hr className={classes.divider} />
-                <div className={classes.toolbar}>
-                    <CardSortControls
-                        sortBy={sortBy}
-                        onSortByChange={setSortBy}
-                        sortDirection={sortDirection}
-                        onSortDirectionChange={toggleSortDirection}
-                    />
-                    <label>
-                        <Checkbox
-                            checked={isHideDuplicates}
-                            onChange={() => setIsHideDuplicates((prev) => !prev)}
-                        />{" "}
-                        Hide duplicates
-                    </label>
-                </div>
-                <div className={classes.abilitySection}>
-                    {sortedCards.map((card: CombatAbility) => (
-                        <div className={classes.tileContainer} key={card.instanceId}>
-                            <div
-                                className={classNames(classes.ability, {
-                                    selectedForRemoval: card.instanceId === selectedAbilityId,
-                                })}
-                                onClick={() => setSelectedAbilityId(card.instanceId)}
-                            >
-                                <AbilityView ability={card} />
-                                {card.instanceId === selectedAbilityId && (
-                                    <div className={classes.x}>
-                                        <XIcon />
-                                    </div>
-                                )}
+                <div className={classes.cardSection}>
+                    <div className={classes.toolbar}>
+                        <CardSortControls
+                            sortBy={sortBy}
+                            onSortByChange={setSortBy}
+                            sortDirection={sortDirection}
+                            onSortDirectionChange={toggleSortDirection}
+                        />
+                        <label>
+                            <Checkbox
+                                checked={isHideDuplicates}
+                                onChange={() => setIsHideDuplicates((prev) => !prev)}
+                            />{" "}
+                            Hide duplicates
+                        </label>
+                    </div>
+                    <div className={classes.abilitySection}>
+                        {sortedCards.map((card: CombatAbility) => (
+                            <div className={classes.tileContainer} key={card.instanceId}>
+                                <div
+                                    className={classNames(classes.ability, {
+                                        selectedForRemoval: card.instanceId === selectedAbilityId,
+                                    })}
+                                    onClick={() => setSelectedAbilityId(card.instanceId)}
+                                >
+                                    <AbilityView ability={card} />
+                                    {card.instanceId === selectedAbilityId && (
+                                        <div className={classes.x}>
+                                            <XIcon />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={classes.confirmContainer}>
+                                    {card.instanceId === selectedAbilityId && (
+                                        <Button
+                                            variant={"contained"}
+                                            color={"warning"}
+                                            onClick={handleRemoveAbility}
+                                        >
+                                            Remove Selection
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
-                            <div className={classes.confirmContainer}>
-                                {card.instanceId === selectedAbilityId && (
-                                    <Button
-                                        variant={"contained"}
-                                        color={"warning"}
-                                        onClick={handleRemoveAbility}
-                                    >
-                                        Remove Selection
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <div className={classes.cancelContainer}>
+                        {onCancel && (
+                            <Button variant={"contained"} onClick={onCancel}>
+                                Cancel
+                            </Button>
+                        )}
+                    </div>
                 </div>
-                {onCancel && (
-                    <Button variant={"contained"} onClick={onCancel}>
-                        Cancel
-                    </Button>
-                )}
             </div>
         </div>
     );

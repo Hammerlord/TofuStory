@@ -111,6 +111,9 @@ const useGridStyles = createUseStyles({
         minHeight: 38,
         marginBottom: 16,
     },
+    cardSection: {
+        position: "relative",
+    },
     toolbar: {
         display: "flex",
         justifyContent: "center",
@@ -118,6 +121,11 @@ const useGridStyles = createUseStyles({
         flexWrap: "wrap",
         gap: "24px",
         marginBottom: "8px",
+    },
+    cancelContainer: {
+        position: "absolute",
+        top: 0,
+        right: 0,
     },
 });
 
@@ -183,68 +191,71 @@ const CardUpgradeGrid = ({
         <div className={classes.root}>
             <div className={disablePortal ? undefined : classes.inner}>
                 <h3>Upgrade an Ability</h3>
-                <div className={classes.toolbar}>
-                    <CardSortControls
-                        sortBy={sortBy}
-                        onSortByChange={setSortBy}
-                        sortDirection={sortDirection}
-                        onSortDirectionChange={toggleSortDirection}
-                    />
-                    <label>
-                        <Checkbox
-                            checked={isHideDuplicates}
-                            onChange={() => setIsHideDuplicates((prev) => !prev)}
-                        />{" "}
-                        Hide duplicates
-                    </label>
-                </div>
-                <div className={disablePortal ? undefined : classes.abilitySection}>
-                    {sortedCards.map((card: CombatAbility) => (
-                        <div className={classes.tileContainer} key={card.instanceId}>
-                            <UpgradeTile
-                                card={card}
-                                upgrade={upgrade(card)}
-                                onClick={() => setSelectedAbilityId(card.instanceId)}
-                                isSelected={selectedAbilityId === card.instanceId}
-                            />
-                            <div className={classes.confirmContainer}>
-                                {selectedAbilityId === card.instanceId && (
-                                    <Button
-                                        variant={"contained"}
-                                        color={"primary"}
-                                        onClick={() => {
-                                            const cardToUpgrade = cards.find(
-                                                ({ instanceId }) =>
-                                                    instanceId === selectedAbilityId,
-                                            );
-                                            if (!cardToUpgrade) {
-                                                return;
-                                            }
+                <div className={classes.cardSection}>
+                    <div className={classes.toolbar}>
+                        <CardSortControls
+                            sortBy={sortBy}
+                            onSortByChange={setSortBy}
+                            sortDirection={sortDirection}
+                            onSortDirectionChange={toggleSortDirection}
+                        />
+                        <label>
+                            <Checkbox
+                                checked={isHideDuplicates}
+                                onChange={() => setIsHideDuplicates((prev) => !prev)}
+                            />{" "}
+                            Hide duplicates
+                        </label>
+                    </div>
+                    <div className={disablePortal ? undefined : classes.abilitySection}>
+                        {sortedCards.map((card: CombatAbility) => (
+                            <div className={classes.tileContainer} key={card.instanceId}>
+                                <UpgradeTile
+                                    card={card}
+                                    upgrade={upgrade(card)}
+                                    onClick={() => setSelectedAbilityId(card.instanceId)}
+                                    isSelected={selectedAbilityId === card.instanceId}
+                                />
+                                <div className={classes.confirmContainer}>
+                                    {selectedAbilityId === card.instanceId && (
+                                        <Button
+                                            variant={"contained"}
+                                            color={"primary"}
+                                            onClick={() => {
+                                                const cardToUpgrade = cards.find(
+                                                    ({ instanceId }) =>
+                                                        instanceId === selectedAbilityId,
+                                                );
+                                                if (!cardToUpgrade) {
+                                                    return;
+                                                }
 
-                                            const updatedCards = [
-                                                ...cards.filter(
-                                                    (card) => card.instanceId !== selectedAbilityId,
-                                                ),
-                                                upgrade(cardToUpgrade),
-                                            ];
-                                            setSelectedAbilityId(null);
-                                            onConfirm && onConfirm(updatedCards);
-                                        }}
-                                        disabled={!selectedAbilityId}
-                                    >
-                                        Confirm
-                                    </Button>
-                                )}
+                                                const updatedCards = [
+                                                    ...cards.filter(
+                                                        (card) =>
+                                                            card.instanceId !== selectedAbilityId,
+                                                    ),
+                                                    upgrade(cardToUpgrade),
+                                                ];
+                                                setSelectedAbilityId(null);
+                                                onConfirm && onConfirm(updatedCards);
+                                            }}
+                                            disabled={!selectedAbilityId}
+                                        >
+                                            Confirm
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-                <div>
-                    {onCancel && (
-                        <Button variant={"contained"} onClick={onCancel as any}>
-                            Cancel
-                        </Button>
-                    )}
+                        ))}
+                    </div>
+                    <div className={classes.cancelContainer}>
+                        {onCancel && (
+                            <Button variant={"contained"} onClick={onCancel as any}>
+                                Cancel
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
