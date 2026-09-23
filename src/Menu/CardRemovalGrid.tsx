@@ -1,15 +1,17 @@
+import { Checkbox } from "@mui/material";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, CombatAbility } from "../ability/types";
+import { CombatAbility } from "../ability/types";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
-import { Checkbox } from "@mui/material";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
 
 const HEADER_BAR = 72;
+
+const REMOVAL_ANIMATION_MS = 300;
 
 const useStyles = createUseStyles({
     root: {
@@ -56,6 +58,13 @@ const useStyles = createUseStyles({
     tileContainer: {
         display: "inline-block",
         verticalAlign: "top",
+        "&.removing": {
+            opacity: 0,
+            transition: `opacity ${REMOVAL_ANIMATION_MS}ms ease`,
+        },
+    },
+    nonInteractive: {
+        pointerEvents: "none",
     },
     confirmContainer: {
         minHeight: "38px",
@@ -100,6 +109,18 @@ const CardRemovalGrid = ({
     const classes = useStyles();
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(false);
+    const [removalInProgress, setRemovalInProgress] = useState<string | null>(null);
+    const removalCancelledRef = useRef(false);
+    const removalTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            removalCancelledRef.current = true;
+            if (removalTimeoutRef.current !== null) {
+                window.clearTimeout(removalTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
         acc[`${card.name}-${card.level || 1}`] = card;
@@ -111,11 +132,26 @@ const CardRemovalGrid = ({
         cardsList as CombatAbility[],
     );
     const handleRemoveAbility = () => {
-        if (selectedAbilityId) {
-            onRemoveAbility(
-                cards.filter((card: CombatAbility) => card.instanceId !== selectedAbilityId),
-            );
+        if (removalInProgress || !selectedAbilityId) {
+            return;
         }
+        const updatedDeck = cards.filter(
+            (card: CombatAbility) => card.instanceId !== selectedAbilityId,
+        );
+        setRemovalInProgress(selectedAbilityId);
+        removalTimeoutRef.current = window.setTimeout(() => {
+            if (removalCancelledRef.current) {
+                return;
+            }
+            onRemoveAbility(updatedDeck);
+            setRemovalInProgress(null);
+            removalTimeoutRef.current = null;
+        }, REMOVAL_ANIMATION_MS);
+    };
+
+    const handleCancel = () => {
+        removalCancelledRef.current = true;
+        onCancel?.();
     };
 
     return (
@@ -128,7 +164,11 @@ const CardRemovalGrid = ({
                 </div>
                 <hr className={classes.divider} />
                 <div className={classes.cardSection}>
-                    <div className={classes.toolbar}>
+                    <div
+                        className={classNames(classes.toolbar, {
+                            [classes.nonInteractive]: !!removalInProgress,
+                        })}
+                    >
                         <CardSortControls
                             sortBy={sortBy}
                             onSortByChange={setSortBy}
@@ -143,14 +183,28 @@ const CardRemovalGrid = ({
                             Hide duplicates
                         </label>
                     </div>
-                    <div className={classes.abilitySection}>
+                    <div
+                        className={classNames(classes.abilitySection, {
+                            [classes.nonInteractive]: !!removalInProgress,
+                        })}
+                    >
                         {sortedCards.map((card: CombatAbility) => (
-                            <div className={classes.tileContainer} key={card.instanceId}>
+                            <div
+                                className={classNames(classes.tileContainer, {
+                                    removing: card.instanceId === removalInProgress,
+                                })}
+                                key={card.instanceId}
+                            >
                                 <div
                                     className={classNames(classes.ability, {
                                         selectedForRemoval: card.instanceId === selectedAbilityId,
                                     })}
-                                    onClick={() => setSelectedAbilityId(card.instanceId)}
+                                    onClick={() => {
+                                        if (removalInProgress) {
+                                            return;
+                                        }
+                                        setSelectedAbilityId(card.instanceId);
+                                    }}
                                 >
                                     <AbilityView ability={card} />
                                     {card.instanceId === selectedAbilityId && (
@@ -164,6 +218,7 @@ const CardRemovalGrid = ({
                                         <Button
                                             variant={"contained"}
                                             color={"warning"}
+                                            disabled={!!removalInProgress}
                                             onClick={handleRemoveAbility}
                                         >
                                             Remove Selection
@@ -175,7 +230,7 @@ const CardRemovalGrid = ({
                     </div>
                     <div className={classes.cancelContainer}>
                         {onCancel && (
-                            <Button variant={"contained"} onClick={onCancel}>
+                            <Button variant={"contained"} onClick={handleCancel}>
                                 Cancel
                             </Button>
                         )}
