@@ -6,8 +6,9 @@ export const scrollFade = {
 };
 
 export const scrollableCardSection = {
-    width: "80vw",
-    height: "70vh",
+    width: "100vw",
+    flex: 1,
+    minHeight: 0,
     overflow: "auto",
     ...scrollFade,
 };

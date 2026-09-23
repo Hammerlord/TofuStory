@@ -9,20 +9,25 @@ import { Checkbox } from "@mui/material";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
 
+const HEADER_BAR = 72;
+
 const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
+        paddingTop: HEADER_BAR,
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
         background: "rgba(25, 25, 25, 0.9)",
         color: "white",
     },
     inner: {
+        flex: 1,
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
         textAlign: "center",
-        margin: "auto",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
         fontSize: "1.2rem",
     },
     abilitySection: {
@@ -71,11 +76,15 @@ const useStyles = createUseStyles({
     },
     cardSection: {
         position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        minHeight: 0,
     },
     cancelContainer: {
         position: "absolute",
         top: 0,
-        right: 0,
+        right: "1rem",
     },
 });
 
