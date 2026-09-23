@@ -75,6 +75,9 @@ const theme = createTheme({
             contrastText: "white",
         },
     },
+    typography: {
+        fontFamily: "Barlow, Arial",
+    },
 });
 
 export const App = () => {
