@@ -123,7 +123,7 @@ const CardRemovalGrid = ({
     const classes = useStyles();
     const { isClosing, close, closeDuration } = usePanelTransition();
     const { setCardRef, animateCardsOut } = useCardStaggerAnimation();
-    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState<string | null>(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(false);
     const [removalInProgress, setRemovalInProgress] = useState<string | null>(null);
     const removalTimeoutRef = useRef<number | null>(null);
@@ -140,10 +140,13 @@ const CardRemovalGrid = ({
         close(onFinished, animateCardsOut());
     };
 
-    const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
-        acc[`${card.name}-${card.level || 1}`] = card;
-        return acc;
-    }, {});
+    const uniqueCardsMap = cards?.reduce<{ [key: string]: CombatAbility }>(
+        (acc, card: CombatAbility) => {
+            acc[`${card.name}-${card.level || 1}`] = card;
+            return acc;
+        },
+        {},
+    );
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const { sortedCards, sortBy, setSortBy, sortDirection, toggleSortDirection } = useCardSort(

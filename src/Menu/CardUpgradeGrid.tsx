@@ -7,7 +7,10 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { CombatAbility } from "../ability/types";
+import { findCombatantData } from "../battle/actions/combatantData";
+import { CombatantInfo, NonCombatPlayerInfo } from "../battle/types";
 import { HEADER_BAR } from "../constants";
+import { useAppSelector } from "../hooks";
 import { Item } from "../item/types";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
@@ -31,6 +34,10 @@ import Icon from "../icon/Icon";
 import { GoldenHammerImage } from "../images";
 
 const FADE_OUT_MS = 400;
+
+// "x" means to expend the remainder of your resources; treat it as the maximum possible cost when comparing
+const toResourceCost = (cost?: number | "x") =>
+    typeof cost === "number" ? cost : Number.MAX_SAFE_INTEGER;
 
 const useStyles = createUseStyles({
     root: {
@@ -61,17 +68,32 @@ const UpgradeTile = ({
 }: {
     card: CombatAbility;
     upgrade?: CombatAbility;
-    onClick;
+    onClick: () => void;
     isSelected: boolean;
 }) => {
     const classes = useStyles();
+    const character = useAppSelector((state) => state.character);
+    const battle = useAppSelector((state) => state.battle);
 
     if (!upgrade) {
         return null;
     }
 
-    const baseDmgStats = getDamageStatistics({ ability: card });
-    const upgradedDmgStats = getDamageStatistics({ ability: upgrade });
+    let playerInfo: NonCombatPlayerInfo | CombatantInfo | undefined;
+    if (!battle) {
+        if (character.player) {
+            playerInfo = { combatant: character.player };
+        }
+    } else {
+        playerInfo = findCombatantData(battle, character.player?.id);
+    }
+
+    const baseDmgStats = playerInfo
+        ? getDamageStatistics({ ability: card, actorInfo: playerInfo })
+        : undefined;
+    const upgradedDmgStats = playerInfo
+        ? getDamageStatistics({ ability: upgrade, actorInfo: playerInfo })
+        : undefined;
 
     const baseArmorStats = getArmorStatistics({ ability: card });
     const upgradedArmorStats = getArmorStatistics({ ability: upgrade });
@@ -91,9 +113,13 @@ const UpgradeTile = ({
             >
                 <AbilityView
                     ability={upgrade}
-                    highlightDamage={upgradedDmgStats.baseDamage > baseDmgStats.baseDamage}
+                    highlightDamage={
+                        !!upgradedDmgStats &&
+                        !!baseDmgStats &&
+                        (upgradedDmgStats.baseDamage ?? 0) > (baseDmgStats.baseDamage ?? 0)
+                    }
                     highlightArmor={upgradedArmorStats.base > baseArmorStats.base}
-                    highlightResource={upgrade.resourceCost < card.resourceCost}
+                    highlightResource={toResourceCost(upgrade.resourceCost) < toResourceCost(card.resourceCost)}
                 />
             </div>
         </div>
@@ -191,7 +217,7 @@ const CardUpgradeGrid = ({
     playerItems?: Item[];
     disablePortal?: boolean;
 }) => {
-    const [selectedAbilityId, setSelectedAbilityId] = useState(null);
+    const [selectedAbilityId, setSelectedAbilityId] = useState<string | null>(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
     const [isFadingUpgradeView, setIsFadingUpgradeView] = useState(false);
     const [upgradedCard, setUpgradedCard] = useState<{
@@ -213,10 +239,13 @@ const CardUpgradeGrid = ({
         onConfirm?.(updatedDeck);
     };
 
-    const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
-        acc[`${card.name}-${card.level || 1}`] = card;
-        return acc;
-    }, {});
+    const uniqueCardsMap = cards?.reduce<{ [key: string]: CombatAbility }>(
+        (acc, card: CombatAbility) => {
+            acc[`${card.name}-${card.level || 1}`] = card;
+            return acc;
+        },
+        {},
+    );
 
     const cardsList = isHideDuplicates ? Object.values(uniqueCardsMap) : cards;
     const { sortedCards, sortBy, setSortBy, sortDirection, toggleSortDirection } = useCardSort(

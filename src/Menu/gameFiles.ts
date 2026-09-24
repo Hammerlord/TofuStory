@@ -1,8 +1,10 @@
 import * as uuid from "uuid";
 import { JOB_CARD_MAP } from "../ability";
 import { NEUTRAL_ABILITIES } from "../ability/neutralAbilities";
-import { Ability, CombatAbility } from "../ability/types";
-import type { CharacterState } from "../character/playerReducer";
+import { createCombatAbility } from "../ability/createCombatAbility";
+import { CombatAbility } from "../ability/types";
+import { CharacterState, ShopState, TownShops } from "../character/playerReducer";
+import type { Player } from "../character/types";
 import { cakeItem, halfEatenHotdog, unagiItem } from "../item/consumables";
 import {
     chargingStone,
@@ -19,6 +21,54 @@ import { getUpgradeCard } from "./utils";
 import { tofu, tofuSoup } from "../item/items";
 import { ITEM_MASTERLIST } from "../item/masterList";
 
+/**
+ * The flattened form of a deck card. Due to card effects sometimes using SVGs
+ * (functions, which cannot be stringified), objects are flattened to just their
+ * name/level here and do a lookup on retrieval.
+ */
+type FlatCard = {
+    name: string;
+    level?: number;
+};
+
+/** The flattened form of a player item. */
+type FlatPlayerItem = {
+    name: string;
+    stacks?: number;
+};
+
+/** A ShopItem whose `item` has been flattened to just the item's name. */
+type FlatShopItem = Omit<ShopItem, "item"> & {
+    item: string;
+};
+
+/** A ShopAbility whose `item` has been flattened to its name/level. */
+type FlatShopAbility = {
+    price: number;
+    item: FlatCard;
+};
+
+/** TownShops with every Ability/Item replaced by its lookup name. */
+type FlatTownShops = {
+    shop: Omit<ShopState, "abilities" | "items"> & {
+        abilities: (FlatShopAbility | null)[];
+        items: (FlatShopItem | null)[];
+    };
+    tradingPost: Omit<TownShops["tradingPost"], "items"> & {
+        items: string[];
+    };
+    workshop: TownShops["workshop"];
+};
+
+/** The serialized form of a CharacterState, as written to localStorage. */
+type SaveFile = {
+    deck: FlatCard[];
+    player: Omit<Player, "items"> & {
+        items: FlatPlayerItem[];
+    };
+    townShops: Record<string, FlatTownShops>;
+} & Omit<CharacterState, "deck" | "player" | "townShops">;
+
 export const saveGame = (characterObject: CharacterState) => {
     const { deck, player, townShops } = characterObject;
 
@@ -26,7 +76,6 @@ export const saveGame = (characterObject: CharacterState) => {
         return;
     }
 
-    // Due to card effects sometimes using SVGs (functions, which cannot be stringified), flatten the objects to just their name/level here and do a lookup on retrieval.
     const flattenDeck = deck.map((card) => ({
         name: card.name,
         level: card.level,
@@ -35,62 +84,70 @@ export const saveGame = (characterObject: CharacterState) => {
         name: item.name,
         stacks: item.stacks,
     }));
-    const flattenTownShops = Object.entries(townShops).reduce((acc, [townName, shopsObj]) => {
-        acc[townName] = {
-            ...shopsObj,
-        };
-        const { shop, tradingPost } = shopsObj;
 
-        /**
-         * Given: { price: number, item: Item }
-         * Output: { price: number, item: [<item name>: string] }
-         * Or null if the input is null.
-         */
-        const flattenShopItem = (
-            item: { price: number; item: Item } | null,
-        ): { price: number; item: string } | null => {
-            if (!item) return item as null;
-            return {
-                ...item,
-                item: item.item.name,
+    const flattenTownShops = Object.entries(townShops).reduce<Record<string, FlatTownShops>>(
+        (acc, [townName, shopsObj]) => {
+            const { shop, tradingPost, workshop } = shopsObj;
+
+            /**
+             * Given: { price: number, item: Item, ... }
+             * Output: { price: number, item: <item name>, ... }
+             * Or null if the input is null.
+             */
+            const flattenShopItem = (item: ShopItem | null): FlatShopItem | null => {
+                if (!item) return item as null;
+                return {
+                    ...item,
+                    item: item.item.name,
+                };
             };
-        };
 
-        /**
-         * Given: { price: number, item: Ability }
-         * Output: { price: number, item: { name: string<item name>, level?: number } }
-         * Or null if the input is null.
-         */
-        const flattenShopAbility = (
-            item: { price: number; item: Ability } | null,
-        ): { price: number; item: { name: string; level?: number } } | null => {
-            if (!item) return item as null;
-            return {
-                ...item,
-                item: {
-                    name: item.item.name,
-                    level: item.item.level,
-                },
+            /**
+             * Given: { price: number, item: Ability }
+             * Output: { price: number, item: { name: string, level?: number } }
+             * Or null if the input is null.
+             */
+            const flattenShopAbility = (item: ShopAbility | null): FlatShopAbility | null => {
+                if (!item) return item as null;
+                return {
+                    ...item,
+                    item: {
+                        name: item.item.name,
+                        level: item.item.level,
+                    },
+                };
             };
-        };
 
-        if (shop) {
-            acc[townName].shop = {
-                ...shop,
-                abilities: shop.abilities.map(flattenShopAbility),
-                items: shop.items.map(flattenShopItem),
+            if (shop) {
+                acc[townName] = {
+                    ...acc[townName],
+                    shop: {
+                        ...shop,
+                        abilities: shop.abilities.map(flattenShopAbility),
+                        items: shop.items.map(flattenShopItem),
+                    },
+                };
+            }
+
+            if (tradingPost) {
+                acc[townName] = {
+                    ...acc[townName],
+                    tradingPost: {
+                        ...tradingPost,
+                        items: tradingPost.items.map((item) => item.name),
+                    },
+                };
+            }
+
+            acc[townName] = {
+                ...acc[townName],
+                workshop,
             };
-        }
 
-        if (tradingPost) {
-            acc[townName].tradingPost = {
-                ...tradingPost,
-                items: tradingPost.items.map((item) => item.name),
-            };
-        }
-
-        return acc;
-    }, {});
+            return acc;
+        },
+        {},
+    );
 
     try {
         localStorage.setItem(
@@ -113,21 +170,23 @@ export const saveGame = (characterObject: CharacterState) => {
     }
 };
 
-export const getGameFile = () => {
+export const getGameFile = (): CharacterState | undefined => {
     const saveFileString = localStorage.getItem("saveFile");
     if (!saveFileString) {
         return;
     }
 
     try {
-        const fileObj = JSON.parse(saveFileString);
-        const { deck = [], player = {}, townShops = {} } = fileObj;
+        const fileObj = JSON.parse(saveFileString) as SaveFile;
+        const { deck = [], player, townShops = {} } = fileObj;
+
+        if (!player) {
+            return;
+        }
+
         const cards = [...JOB_CARD_MAP[player.class].all, ...NEUTRAL_ABILITIES];
 
-        const hydrateAbility = (flatCard: {
-            name: string;
-            level?: number;
-        }): CombatAbility | undefined => {
+        const hydrateAbility = (flatCard: FlatCard): CombatAbility | undefined => {
             const { name, level = 1 } = flatCard;
             const hydrated = cards.find((card) => card.name === name);
             if (hydrated) {
@@ -140,11 +199,11 @@ export const getGameFile = () => {
                         break;
                     }
                 }
-                return { ...upgradedCard, instanceId: uuid.v4() };
+                return createCombatAbility({ ...upgradedCard, instanceId: uuid.v4() });
             }
         };
 
-        const hydratedDeck = deck.map(hydrateAbility).filter((v) => v);
+        const hydratedDeck = deck.map(hydrateAbility).filter((v): v is CombatAbility => !!v);
 
         const starters = [
             rageStone,
@@ -164,7 +223,7 @@ export const getGameFile = () => {
             ...other,
         ];
 
-        const items = player.items.map((item: Item) => {
+        const items: Item[] = player.items.map((item: FlatPlayerItem): Item => {
             const found = itemLookup.find((otherItem) => otherItem.name === item.name);
             if (found) {
                 return {
@@ -173,66 +232,84 @@ export const getGameFile = () => {
                 };
             }
 
-            return item;
+            // The item is not in the lookup (eg. an outdated save file).
+            return item as unknown as Item;
         });
 
-        const hydrateTownShops = Object.entries(townShops).reduce((acc, [townName, shopsObj]) => {
-            acc[townName] = {};
-            const { shop, tradingPost, workshop } = shopsObj as any;
+        const hydrateTownShops = Object.entries(townShops).reduce<Record<string, TownShops>>(
+            (acc, [townName, shopsObj]) => {
+                const { shop, tradingPost, workshop } = shopsObj;
 
-            /**
-             * See output of flattenShopItem above for the input here.
-             */
-            const hydrateShopItem = (
-                shopItem: { price: number; item: string } | null,
-            ): ShopItem | null => {
-                if (!shopItem) return shopItem;
-                const lookup = itemLookup.find(({ name }) => name === shopItem.item);
-                if (lookup) {
-                    return {
-                        ...shopItem,
-                        item: lookup,
+                /**
+                 * See the output of flattenShopItem above for the input here.
+                 */
+                const hydrateShopItem = (
+                    shopItem: FlatShopItem | null,
+                ): ShopItem | FlatShopItem | null => {
+                    if (!shopItem) return shopItem;
+                    const lookup = itemLookup.find(({ name }) => name === shopItem.item);
+                    if (lookup) {
+                        return {
+                            ...shopItem,
+                            item: lookup,
+                        };
+                    }
+
+                    return shopItem;
+                };
+
+                const hydrateShopAbility = (item: FlatShopAbility | null): ShopAbility | null => {
+                    if (!item) return item as null;
+                    const hydratedAbility = hydrateAbility(item.item);
+                    // The ability has no matching card in the class/neutral pool
+                    // (eg. an outdated save file). Treat the slot as empty.
+                    if (!hydratedAbility) {
+                        return null;
+                    }
+                    return { ...item, item: hydratedAbility };
+                };
+
+                if (shop) {
+                    acc[townName] = {
+                        ...acc[townName],
+                        shop: {
+                            ...shop,
+                            abilities: shop.abilities.map(hydrateShopAbility),
+                            items: shop.items
+                                .map(hydrateShopItem)
+                                .filter(
+                                    (v): v is ShopItem | null =>
+                                        v === null || typeof v.item !== "string",
+                                ),
+                        },
                     };
                 }
 
-                return shopItem;
-            };
+                if (tradingPost) {
+                    acc[townName] = {
+                        ...acc[townName],
+                        tradingPost: {
+                            ...tradingPost,
+                            items: tradingPost.items
+                                .map((itemName: string) => {
+                                    return itemLookup.find(
+                                        (otherItem) => otherItem.name === itemName,
+                                    );
+                                })
+                                .filter((v): v is Item => !!v),
+                        },
+                    };
+                }
 
-            const hydrateShopAbility = (
-                item: {
-                    price: number;
-                    item: { name: string; level?: number };
-                } | null,
-            ): ShopAbility | null => {
-                if (!item) return item as null;
-                return { ...item, item: hydrateAbility(item.item) };
-            };
-
-            if (shop) {
-                acc[townName].shop = {
-                    ...shop,
-                    abilities: shop.abilities.map(hydrateShopAbility),
-                    items: shop.items
-                        .map(hydrateShopItem)
-                        .filter((v: ShopItem | null) => v === null || typeof v.item !== "string"),
+                acc[townName] = {
+                    ...acc[townName],
+                    workshop,
                 };
-            }
 
-            if (tradingPost) {
-                acc[townName].tradingPost = {
-                    ...tradingPost,
-                    items: tradingPost.items
-                        .map((itemName: string) => {
-                            return itemLookup.find((otherItem) => otherItem.name === itemName);
-                        })
-                        .filter((v: Item) => v),
-                };
-            }
-
-            acc[townName].workshop = workshop;
-
-            return acc;
-        }, {});
+                return acc;
+            },
+            {},
+        );
 
         return {
             ...fileObj,
