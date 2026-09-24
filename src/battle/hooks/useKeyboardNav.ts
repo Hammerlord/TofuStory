@@ -7,7 +7,7 @@ import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BATTLEFIELD_SIDES } from "../types";
 import { canUsePlayerAbility } from "../actions/playerAbility";
-import { shouldShowReticleForTarget } from "./targetHelpers";
+import { shouldShowReticleForTarget } from "../view/targetHelpers";
 import { BattleControls } from "./useBattleControls";
 
 export type KeyboardNav =
@@ -41,11 +41,7 @@ const { selectHandAbility, selectAlly, updateBattleState } = battleStateSlice.ac
 export interface KeyboardNavOutput {
     keyboardNav: KeyboardNav | null;
     setKeyboardNav: React.Dispatch<React.SetStateAction<KeyboardNav | null>>;
-    isKeyboardTargetValid: (
-        card: CombatAbility,
-        side: BATTLEFIELD_SIDES,
-        index: number,
-    ) => boolean;
+    isKeyboardTargetValid: (card: CombatAbility, side: BATTLEFIELD_SIDES, index: number) => boolean;
     keyboardPreviewTarget: {
         side: BATTLEFIELD_SIDES;
         index: number;

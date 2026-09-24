@@ -12,7 +12,7 @@ import { battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo } from "../types";
 import { isUntargetable } from "../utils";
-import { shouldShowReticleForTarget } from "./targetHelpers";
+import { shouldShowReticleForTarget } from "../view/targetHelpers";
 import { BattleControls } from "./useBattleControls";
 import { KeyboardNavOutput } from "./useKeyboardNav";
 

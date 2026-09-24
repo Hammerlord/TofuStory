@@ -18,7 +18,7 @@ import { HasteImage } from "../../images";
 import { findCombatantData } from "../actions/combatantData";
 import { getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
 import { battleWarnings } from "../constants";
-import { useBattlePhase } from "../hooks/useBattlePhase";
+import { useBattlePhase } from "./useBattlePhase";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BATTLEFIELD_SIDES, BattleState, PlayerSelectCardsPrompt } from "../types";

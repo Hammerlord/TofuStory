@@ -31,9 +31,9 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 import { isTargetedForAbility } from "./targetHelpers";
-import { useBattleControls } from "./useBattleControls";
-import { useKeyboardNav } from "./useKeyboardNav";
-import { useMouseControls } from "./useMouseControls";
+import { useBattleControls } from "../hooks/useBattleControls";
+import { useKeyboardNav } from "../hooks/useKeyboardNav";
+import { useMouseControls } from "../hooks/useMouseControls";
 import ActionHistory from "./ActionHistory";
 import { usePreloadImages } from "../../hooks/usePreloadImage";
 
