@@ -1,7 +1,7 @@
-import { ReactElement, useCallback, useState } from "react";
-import { Ability, CombatAbility, EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
-import { Combatant, Player } from "../../character/types";
-import { useAppDispatch } from "../../hooks";
+import { useCallback, useState } from "react";
+import { EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
+import { Combatant } from "../../character/types";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { applyAbilityEventEffects } from "../actions/cardActions/utils";
 import { findCombatantData, hasEffectType } from "../actions/combatantData";
 import { canUsePlayerAbility, getCardByInstanceId } from "../actions/playerAbility";
@@ -10,97 +10,57 @@ import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
 import { battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
-import { BATTLEFIELD_SIDES, BattleState, CombatantInfo } from "../types";
+import { BATTLEFIELD_SIDES, CombatantInfo } from "../types";
 import { isUntargetable } from "../utils";
 import { shouldShowReticleForTarget } from "./targetHelpers";
-import { KeyboardNav } from "./useKeyboardNav";
+import { BattleControls } from "./useBattleControls";
+import { KeyboardNavOutput } from "./useKeyboardNav";
 
 const { selectAlly, selectHandAbility, updateBattle } = battleStateSlice.actions;
 
 export interface UseMouseControlsArgs {
-    battle: BattleState;
-    player: Player;
-    playerSide: (Combatant | null)[];
-    enemySide: (Combatant | null)[];
-    hand: CombatAbility[];
-    baseHand: CombatAbility[];
-    deck: CombatAbility[];
-    depleted: CombatAbility[];
-    selectedAbilityFromHand: CombatAbility | undefined;
-    abilityToUse: CombatAbility | undefined;
-    selectedMinion: Combatant | null | undefined;
-    actorId: string;
-    isPlayerTurn: boolean;
-    disableActions: boolean;
-    hasSelectCardsPrompt: boolean;
-    allowMoveCardFromHandToDeck: boolean;
-    allowFriendlyMovement: boolean;
-    selectedHandAbilityId: string | null;
-    selectedAllyId: string | null;
-    movementAbility: Ability;
-    isEligibleToAttack: (ally: Combatant | null) => boolean;
-    warn: (text: string | ReactElement) => void;
-    warnNeedMoreResources: (card: CombatAbility) => void;
-    handleAbilityUse: (args: {
-        selectedIndex: number;
-        side: BATTLEFIELD_SIDES;
-        selectedAbility?: CombatAbility;
-    }) => void;
-    handleSelectCardsPrerequisite: (args: {
-        selectedIndex: number;
-        side: BATTLEFIELD_SIDES;
-        selectedCard?: CombatAbility;
-    }) => void;
-    keyboardNav: KeyboardNav | null;
-    setKeyboardNav: React.Dispatch<React.SetStateAction<KeyboardNav | null>>;
-    isKeyboardTargetValid: (
-        card: CombatAbility,
-        side: BATTLEFIELD_SIDES,
-        index: number,
-    ) => boolean;
-    keyboardPreviewTarget: {
-        side: BATTLEFIELD_SIDES;
-        index: number;
-        id: string | null;
-    } | null;
+    controls: BattleControls;
+    keyboard: KeyboardNavOutput;
 }
 
 /**
  * Mouse interaction with the battlefield: clicking cards, allies, enemies and the deck,
  * plus hovering combatants. Clicking always takes over from keyboard navigation.
  */
-export const useMouseControls = ({
-    battle,
-    player,
-    playerSide,
-    enemySide,
-    hand,
-    baseHand,
-    deck,
-    depleted,
-    selectedAbilityFromHand,
-    abilityToUse,
-    selectedMinion,
-    actorId,
-    isPlayerTurn,
-    disableActions,
-    hasSelectCardsPrompt,
-    allowMoveCardFromHandToDeck,
-    allowFriendlyMovement,
-    selectedHandAbilityId,
-    selectedAllyId,
-    movementAbility,
-    isEligibleToAttack,
-    warn,
-    warnNeedMoreResources,
-    handleAbilityUse,
-    handleSelectCardsPrerequisite,
-    keyboardNav,
-    setKeyboardNav,
-    isKeyboardTargetValid,
-    keyboardPreviewTarget,
-}: UseMouseControlsArgs) => {
+export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) => {
     const dispatch = useAppDispatch();
+    const battle = useAppSelector((state) => state.battle)!;
+    const {
+        playerSide,
+        enemySide,
+        deck,
+        hand: baseHand,
+        depleted,
+        isPlayerTurn,
+        selectCardsPrompt,
+        selectedHandAbilityId,
+        selectedAllyId,
+    } = battle;
+    const hasSelectCardsPrompt = Boolean(selectCardsPrompt);
+
+    const {
+        player,
+        hand,
+        selectedAbilityFromHand,
+        abilityToUse,
+        selectedMinion,
+        actorId,
+        disableActions,
+        allowMoveCardFromHandToDeck,
+        allowFriendlyMovement,
+        movementAbility,
+        isEligibleToAttack,
+        warn,
+        warnNeedMoreResources,
+        handleAbilityUse,
+        handleSelectCardsPrerequisite,
+    } = controls;
+    const { keyboardNav, setKeyboardNav, isKeyboardTargetValid, keyboardPreviewTarget } = keyboard;
 
     const [hoveredCombatant, setHoveredCombatant] = useState<{
         side: BATTLEFIELD_SIDES;

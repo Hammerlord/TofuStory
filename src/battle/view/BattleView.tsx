@@ -1,46 +1,21 @@
-import React, { ReactElement, RefObject, useMemo, useRef } from "react";
+import React, { RefObject, useMemo, useRef } from "react";
 import { createUseStyles } from "react-jss";
-import * as uuid from "uuid";
-import { getDamageStatistics } from "../../ability/AbilityView/DamageIcon";
-import { ResourceIcon } from "../../ability/AbilityView/ResourceIcon";
-import { resourceClassNameMap } from "../../ability/AbilityView/constants";
-import { getAbilityColor, getAbilityUpgradedFromEffects } from "../../ability/AbilityView/utils";
-import {
-    ACTION_TYPES,
-    Ability,
-    CombatAbility,
-    CombatEffect,
-    Effect,
-    SELECT_CARD_TYPES,
-    TARGET_TYPES,
-} from "../../ability/types";
+import { getAbilityColor } from "../../ability/AbilityView/utils";
+import { CombatAbility, Effect } from "../../ability/types";
 import CombatantView from "../../character/CombatantView";
 import { getEmptyTileKey } from "../../character/getAbilityPreviews";
-import { Combatant, Player } from "../../character/types";
+import { Combatant } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import EffectGroupIcon from "../../icon/EffectGroupIcon";
 import Icon from "../../icon/Icon";
-import {
-    ClearImage,
-    ClickIndicatorImage,
-    HasteImage,
-    LithRegionBGImage,
-    MapleLeavesImage,
-} from "../../images";
+import { ClearImage, ClickIndicatorImage, LithRegionBGImage, MapleLeavesImage } from "../../images";
 import Tooltip from "../../view/Tooltip";
 import { checkCardActions } from "../actions/cardActions/cardActions";
-import { findCombatantData } from "../actions/combatantData";
 import { canUsePlayerAbility, getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
-import { TURN_ANNOUNCEMENT_TIME, battleWarnings } from "../constants";
-import { useBattlePhase } from "../hooks/useBattlePhase";
+import { TURN_ANNOUNCEMENT_TIME } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
-import {
-    BATTLEFIELD_SIDES,
-    BattleState,
-    EventGroup,
-    PlayerSelectCardsPrompt,
-} from "../types";
+import { BATTLEFIELD_SIDES, BattleState, EventGroup } from "../types";
 import AnimationCanvas from "./animation/AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -56,6 +31,7 @@ import TargetLineCanvas from "./TargetLineCanvas";
 import WaveInfo from "./WaveInfo";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 import { isTargetedForAbility } from "./targetHelpers";
+import { useBattleControls } from "./useBattleControls";
 import { useKeyboardNav } from "./useKeyboardNav";
 import { useMouseControls } from "./useMouseControls";
 import ActionHistory from "./ActionHistory";
@@ -232,47 +208,8 @@ const useStyles = createUseStyles({
 
 const BATTLEFIELD_SIZE = 5;
 
-const {
-    updateBattleState,
-    updateBattle,
-    promptPlayerSelectCards,
-    closePlayerSelectCardsPrompt,
-    setNotification,
-    selectHandAbility,
-    selectAlly,
-} = battleStateSlice.actions;
-
-const movementAbility: Ability = {
-    name: "Move",
-    image: HasteImage,
-    resourceCost: 0,
-    actions: [
-        {
-            target: TARGET_TYPES.MOVE,
-            type: ACTION_TYPES.MOVEMENT,
-            movement: 2,
-        },
-    ],
-};
-
-// Look up special effects that allow the player to do extra actions on the battlefield
-export const getPlayerSpecialMovementEffects = (player?: Player | null) => {
-    const moveCardFromHandToDeckEffects: CombatEffect[] = [];
-    let allowFriendlyMovement = false;
-
-    if (player?.effects) {
-        for (const effect of player.effects as CombatEffect[]) {
-            if (effect.allowMoveCardFromHandToDeck) {
-                moveCardFromHandToDeckEffects.push(effect);
-            }
-            if (effect.allowFriendlyMovement) {
-                allowFriendlyMovement = true;
-            }
-        }
-    }
-
-    return { moveCardFromHandToDeckEffects, allowFriendlyMovement };
-};
+const { updateBattleState, closePlayerSelectCardsPrompt, setNotification, selectHandAbility } =
+    battleStateSlice.actions;
 
 const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void }) => {
     const dispatch = useAppDispatch();
@@ -283,16 +220,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         deck,
         discard,
         depleted,
-        hand: baseHand,
         isPlayerTurn,
         enemySide,
         playerSide,
         eventQueue: eventGroups,
-        charactersAttackedThisTurn,
         currentWaveIndex,
         waves,
         selectCardsPrompt,
-        state: battleState,
         notification,
         backgroundImage,
         round,
@@ -301,7 +235,26 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         selectedHandAbilityId,
         showTurnAnnouncement,
     } = battle;
-    const player: Player = playerSide.find((c: Combatant | Player | null) => c?.isPlayer) as Player;
+    const currentEventGroup: EventGroup = eventGroups[0];
+
+    const controls = useBattleControls({ battle, onWin });
+    const {
+        player,
+        hand,
+        moveCardFromHandToDeckEffects,
+        allowMoveCardFromHandToDeck,
+        allowFriendlyMovement,
+        movementAbility,
+        disableActions,
+        isWinConditionTriggered,
+        showWaveClear,
+        selectedMinion,
+        selectedAbilityFromHand,
+        abilityToUse,
+        actor,
+        actorId,
+        isEligibleToAttack,
+    } = controls;
 
     const allyRefs: RefObject<HTMLDivElement | null>[] = Array.from({
         length: BATTLEFIELD_SIZE,
@@ -317,62 +270,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     const classes = useStyles({ backgroundImage });
 
-    const hand = useMemo(
-        () =>
-            baseHand.map((ability) =>
-                getAbilityUpgradedFromEffects({ ability, combatant: player }),
-            ),
-        [baseHand],
-    );
-
-    const { moveCardFromHandToDeckEffects, allowFriendlyMovement } = useMemo(
-        () => getPlayerSpecialMovementEffects(player),
-        [player],
-    );
-
-    const allowMoveCardFromHandToDeck = moveCardFromHandToDeckEffects.length > 0;
-
-    const { isWinConditionTriggered, showWaveClear } = useBattlePhase({ onWin });
-
-    const disableActions: boolean = Boolean(
-        !isPlayerTurn ||
-        battleState !== BATTLE_STATES.TURN_IN_PROGRESS ||
-        isWinConditionTriggered ||
-        selectCardsPrompt,
-    );
-    const selectedMinion = playerSide.find(
-        (combatant: Combatant | null) => selectedAllyId && combatant?.id === selectedAllyId,
-    );
-
-    const selectedAbilityFromHand = getCardByInstanceId(hand, selectedHandAbilityId);
-    const abilityToUse = selectedAbilityFromHand || selectedMinion?.abilities?.[0];
-
-    const actor = selectedMinion || player;
-    const actorId: string | undefined = actor?.id;
-    const currentEventGroup: EventGroup = eventGroups[0];
-
-    const isEligibleToAttack = (ally: Combatant | null): boolean => {
-        if (
-            !ally ||
-            ally.isPlayer ||
-            ally.HP === 0 ||
-            !ally.controllable ||
-            !ally.abilities?.length
-        ) {
-            return false;
-        }
-
-        const totalDamage =
-            getDamageStatistics({
-                ability: ally.abilities[0],
-                actorInfo: findCombatantData(battle, ally.id)!,
-                hand,
-                deck,
-                discard,
-            })?.baseDamage || 0;
-        return totalDamage > 0 && charactersAttackedThisTurn.every((id) => id !== ally.id);
-    };
-
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
         (!hand.length ||
@@ -380,47 +277,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 (ability: CombatAbility) =>
                     !canUsePlayerAbility(player, getCardByInstanceId(hand, ability.instanceId)),
             ));
-
-    const warn = (text: string | ReactElement) => {
-        dispatch(
-            setNotification({
-                severity: "warning",
-                text,
-                id: uuid.v4(),
-            }),
-        );
-    };
-
-    const warnNeedMoreResources = (card: CombatAbility) => {
-        warn(
-            <div>
-                Need more <ResourceIcon playerClass={player.class} />{" "}
-                {resourceClassNameMap[player.class]} to use {card.name}.
-            </div>,
-        );
-    };
-
-    const handleAbilityUse = async ({
-        selectedIndex,
-        side,
-        selectedAbility = selectedAbilityFromHand,
-    }: {
-        selectedIndex: number;
-        side: BATTLEFIELD_SIDES;
-        selectedAbility?: CombatAbility;
-    }) => {
-        if (!selectedAbility) {
-            return;
-        }
-
-        dispatch(
-            useHandAbility({
-                selectedTargetIndex: selectedIndex,
-                selectedAbility,
-                selectedTargetSide: side,
-            }),
-        );
-    };
 
     const handleSelectCardFromPrompt = () => {
         handleCancelSelectCard();
@@ -444,75 +300,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         dispatch(closePlayerSelectCardsPrompt());
     };
 
-    const handleSelectCardsPrerequisite = ({
-        selectedIndex,
-        side,
-        selectedCard = selectedAbilityFromHand,
-    }: {
-        selectedIndex: number;
-        side: BATTLEFIELD_SIDES;
-        selectedCard?: CombatAbility;
-    }) => {
-        const { type } = selectedCard?.selectCards || {};
-
-        if (hand.length <= 1) {
-            if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                warn(battleWarnings.depleteMinCardInHand);
-                return;
-            } else if (type === SELECT_CARD_TYPES.COPY_FROM_HAND) {
-                warn(battleWarnings.minCardInHand);
-                return;
-            }
-        }
-
-        // Wayfind does not require a discard to benefit from the +1 extra card draw, so don't show an empty overlay in that case
-        const skipOverlayTypes = [
-            SELECT_CARD_TYPES.DISCARD_TO_DRAW,
-            SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
-        ];
-        if (type && skipOverlayTypes.includes(type) && hand.length === 1) {
-            handleAbilityUse({ selectedIndex, side, selectedAbility: selectedCard });
-            return;
-        }
-
-        dispatch(
-            promptPlayerSelectCards({
-                selectCards: selectedCard?.selectCards,
-                abilityQueued: {
-                    selectedAbilityId: selectedHandAbilityId || selectedCard?.instanceId,
-                    selectedAbility: selectedCard,
-                    selectedTargetSide: side,
-                    selectedTargetIndex: selectedIndex,
-                },
-            } as PlayerSelectCardsPrompt),
-        );
-    };
-
     // Arrow-key navigation of the hand and its targets plus the E end-turn keybind.
-    const {
-        keyboardNav,
-        setKeyboardNav,
-        isKeyboardTargetValid,
-        keyboardPreviewTarget,
-    } = useKeyboardNav({
-        hand,
-        player,
-        playerSide,
-        enemySide,
-        battle,
-        depleted,
-        movementAbility,
-        allowMoveCardFromHandToDeck,
-        disableActions,
-        eventGroupsLength: eventGroups.length,
-        hasSelectCardsPrompt: Boolean(selectCardsPrompt),
-        selectedHandAbilityId,
-        selectedAllyId,
-        warn,
-        warnNeedMoreResources,
-        handleAbilityUse,
-        handleSelectCardsPrerequisite,
-    });
+    const keyboard = useKeyboardNav(controls);
+    const { keyboardNav, setKeyboardNav, keyboardPreviewTarget } = keyboard;
 
     const {
         hoveredCombatant,
@@ -524,37 +314,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         handleEnemyMouseEnter,
         handleAllyMouseEnter,
         handleCombatantMouseLeave,
-    } = useMouseControls({
-        battle,
-        player,
-        playerSide,
-        enemySide,
-        hand,
-        baseHand,
-        deck,
-        depleted,
-        selectedAbilityFromHand,
-        abilityToUse,
-        selectedMinion,
-        actorId,
-        isPlayerTurn,
-        disableActions,
-        hasSelectCardsPrompt: Boolean(selectCardsPrompt),
-        allowMoveCardFromHandToDeck,
-        allowFriendlyMovement,
-        selectedHandAbilityId,
-        selectedAllyId,
-        movementAbility,
-        isEligibleToAttack,
-        warn,
-        warnNeedMoreResources,
-        handleAbilityUse,
-        handleSelectCardsPrerequisite,
-        keyboardNav,
-        setKeyboardNav,
-        isKeyboardTargetValid,
-        keyboardPreviewTarget,
-    });
+    } = useMouseControls({ controls, keyboard });
 
     usePreloadImages(ClearImage, playerSide, enemySide, hand, deck, discard);
 

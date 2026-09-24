@@ -1,13 +1,14 @@
-import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
-import { Ability, CombatAbility } from "../../ability/types";
-import { Combatant, Player } from "../../character/types";
-import { useAppDispatch } from "../../hooks";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CombatAbility } from "../../ability/types";
+import { Combatant } from "../../character/types";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
-import { BATTLEFIELD_SIDES, BattleState } from "../types";
+import { BATTLEFIELD_SIDES } from "../types";
 import { canUsePlayerAbility } from "../actions/playerAbility";
 import { shouldShowReticleForTarget } from "./targetHelpers";
+import { BattleControls } from "./useBattleControls";
 
 export type KeyboardNav =
     | { mode: "card"; cardIndex: number }
@@ -37,57 +38,51 @@ const getInitialKeyboardTarget = (
 
 const { selectHandAbility, selectAlly, updateBattleState } = battleStateSlice.actions;
 
-export interface UseKeyboardNavArgs {
-    hand: CombatAbility[];
-    player: Player;
-    playerSide: (Combatant | null)[];
-    enemySide: (Combatant | null)[];
-    battle: BattleState;
-    depleted: CombatAbility[];
-    movementAbility: Ability;
-    allowMoveCardFromHandToDeck: boolean;
-    disableActions: boolean;
-    eventGroupsLength: number;
-    hasSelectCardsPrompt: boolean;
-    selectedHandAbilityId: string | null;
-    selectedAllyId: string | null;
-    warn: (text: string | ReactElement) => void;
-    warnNeedMoreResources: (card: CombatAbility) => void;
-    handleAbilityUse: (args: {
-        selectedIndex: number;
+export interface KeyboardNavOutput {
+    keyboardNav: KeyboardNav | null;
+    setKeyboardNav: React.Dispatch<React.SetStateAction<KeyboardNav | null>>;
+    isKeyboardTargetValid: (
+        card: CombatAbility,
+        side: BATTLEFIELD_SIDES,
+        index: number,
+    ) => boolean;
+    keyboardPreviewTarget: {
         side: BATTLEFIELD_SIDES;
-        selectedAbility?: CombatAbility;
-    }) => void;
-    handleSelectCardsPrerequisite: (args: {
-        selectedIndex: number;
-        side: BATTLEFIELD_SIDES;
-        selectedCard?: CombatAbility;
-    }) => void;
+        index: number;
+        id: string | null;
+    } | null;
 }
 
 /**
  * Arrow-key navigation of the hand and its targets, plus the E end-turn keybind.
  */
-export const useKeyboardNav = ({
-    hand,
-    player,
-    playerSide,
-    enemySide,
-    battle,
-    depleted,
-    movementAbility,
-    allowMoveCardFromHandToDeck,
-    disableActions,
-    eventGroupsLength,
-    hasSelectCardsPrompt,
-    selectedHandAbilityId,
-    selectedAllyId,
-    warn,
-    warnNeedMoreResources,
-    handleAbilityUse,
-    handleSelectCardsPrerequisite,
-}: UseKeyboardNavArgs) => {
+export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     const dispatch = useAppDispatch();
+    const battle = useAppSelector((state) => state.battle)!;
+    const {
+        playerSide,
+        enemySide,
+        depleted,
+        eventQueue: eventGroups,
+        selectCardsPrompt,
+        selectedHandAbilityId,
+        selectedAllyId,
+    } = battle;
+    const eventGroupsLength = eventGroups.length;
+    const hasSelectCardsPrompt = Boolean(selectCardsPrompt);
+
+    const {
+        player,
+        hand,
+        movementAbility,
+        allowMoveCardFromHandToDeck,
+        disableActions,
+        warn,
+        warnNeedMoreResources,
+        handleAbilityUse,
+        handleSelectCardsPrerequisite,
+    } = controls;
+
     // State for the arrow-key navigation of the hand and its targets. Reset whenever the player takes over with the mouse.
     const [keyboardNav, setKeyboardNav] = useState<KeyboardNav | null>(null);
 
