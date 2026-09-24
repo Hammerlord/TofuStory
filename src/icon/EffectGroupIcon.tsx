@@ -11,7 +11,6 @@ import { useEffect, useMemo, useRef } from "react";
 import { getIconInterpolationMap } from "../ability/descriptionInterpolation";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { isTurnToTrigger } from "../battle/actions/statusEffect/effectLifecycle";
-import { BattleState } from "../battle/types";
 import { playExpandContractAnimation } from "../character/animations";
 import { BUFF_COLOUR, DEBUFF_COLOUR } from "../character/effects/constants";
 import { useAppSelector } from "../hooks";
@@ -261,7 +260,7 @@ const EffectGroupIcon = ({
     const extraOptionsIconRef = useRef(null);
 
     const classes = useStyles();
-    const battle: BattleState = useAppSelector((state) => state.battle);
+    const battle = useAppSelector((state) => state.battle)!;
     const selectedAlly = battle.selectedAllyId;
     const selectedAbility = battle.selectedHandAbilityId;
 
@@ -296,8 +295,8 @@ const EffectGroupIcon = ({
             return;
         }
 
-        const propertyVal = _.get(effects[0], property) || 0;
-        const moduloVal = _.get(effects[0], modulo);
+        const propertyVal = (_.get(effects[0], property) as number) || 0;
+        const moduloVal = modulo !== undefined ? (_.get(effects[0], modulo) as number) : undefined;
         if (moduloVal !== undefined) {
             return moduloVal - (propertyVal % moduloVal) || undefined;
         }
@@ -328,10 +327,10 @@ const EffectGroupIcon = ({
         silenced || !isConditionsPassed || !isTurnToTrigger({ turnsTriggerFrequency, uptime });
 
     const { stackCount, displayStacks } = effects.reduce(
-        (acc, effect: CombatEffect) => {
+        (acc, effect) => {
             return {
                 stackCount: acc.stackCount + (effect.stacks || 1),
-                displayStacks: acc.displayStacks || effect.alwaysDisplayStacks,
+                displayStacks: acc.displayStacks || Boolean(effect.alwaysDisplayStacks),
             };
         },
         { stackCount: 0, displayStacks: false },
@@ -390,7 +389,7 @@ const EffectGroupIcon = ({
                 <EffectGroupTooltipContent
                     effects={effects}
                     owner={owner}
-                    isSilenced={silenced}
+                    isSilenced={Boolean(silenced)}
                     allSameDuration={allSameDuration}
                     stackCount={stackCount}
                     disabled={disabled}

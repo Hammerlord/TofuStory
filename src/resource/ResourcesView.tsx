@@ -20,7 +20,7 @@ interface ResourceInterface {
     size?: "xl" | "lg" | "md" | "sm";
 }
 
-export const Fury = forwardRef(({ text, className, size }: ResourceInterface, ref) => {
+export const Fury = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
     const classes = useFuryStyles();
     return (
         <Icon
@@ -34,7 +34,7 @@ export const Fury = forwardRef(({ text, className, size }: ResourceInterface, re
     );
 });
 
-export const Mana = forwardRef(({ text, className, size }: ResourceInterface, ref) => {
+export const Mana = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
     return (
         <Icon
             className={classNames(className)}
@@ -54,7 +54,7 @@ const useStaminaStyles = createUseStyles({
     },
 });
 
-export const Stamina = forwardRef(({ text, className, size }: ResourceInterface, ref) => {
+export const Stamina = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
     const classes = useStaminaStyles();
 
     return (

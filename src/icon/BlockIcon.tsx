@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { UpdatedCombatantStats } from "../battle/actions/getUpdatedStats";
 import { ShieldImage } from "../images";
@@ -40,8 +40,8 @@ const useStyles = createUseStyles({
  */
 const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
     const classes = useStyles();
-    const rootRef: RefObject<HTMLSpanElement> = useRef(null);
-    const iconRef: RefObject<HTMLImageElement> = useRef(null);
+    const rootRef = useRef<HTMLSpanElement>(null);
+    const iconRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
         const { armor = 0 } = statChanges || {};
@@ -76,7 +76,7 @@ const BlockIcon = ({ statChanges }: { statChanges: UpdatedCombatantStats }) => {
     return (
         <span className={classes.root} ref={rootRef}>
             <img src={ShieldImage} className={classes.icon} ref={iconRef} />
-            <span className={classes.text}>{Math.abs(statChanges.armor)}</span>
+            <span className={classes.text}>{Math.abs(statChanges.armor || 0)}</span>
         </span>
     );
 };
@@ -93,8 +93,7 @@ const BlockIcons = ({
     const nextId = useRef(0);
 
     useEffect(() => {
-        const armor = statChanges?.armor || 0;
-        if (armor >= 0) {
+        if (!statChanges || (statChanges.armor ?? 0) >= 0) {
             return;
         }
 
