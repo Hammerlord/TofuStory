@@ -1,6 +1,6 @@
 import { Checkbox } from "@mui/material";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
@@ -11,6 +11,7 @@ import { scrollableCardSection } from "./cardGridStyles";
 import {
     confirmButtonDropStyle,
     panelKeyframes,
+    REMOVING_CLASS,
     slideFadeInStyle,
     slideFadeOutStyle,
     useCardStaggerAnimation,
@@ -71,7 +72,7 @@ const useStyles = createUseStyles({
     tileContainer: {
         display: "inline-block",
         verticalAlign: "top",
-        "&.removing": {
+        [`&.${REMOVING_CLASS}`]: {
             opacity: 0,
             transition: `opacity ${REMOVAL_ANIMATION_MS}ms ease`,
         },
@@ -126,6 +127,15 @@ const CardRemovalGrid = ({
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(false);
     const [removalInProgress, setRemovalInProgress] = useState<string | null>(null);
+    const removalTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (removalTimeoutRef.current !== null) {
+                window.clearTimeout(removalTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const handleClose = (onFinished?: () => void) => {
         close(onFinished, animateCardsOut());
@@ -148,7 +158,10 @@ const CardRemovalGrid = ({
             (card: CombatAbility) => card.instanceId !== selectedAbilityId,
         );
         setRemovalInProgress(selectedAbilityId);
-        handleClose(() => onRemoveAbility(updatedDeck));
+        removalTimeoutRef.current = window.setTimeout(() => {
+            removalTimeoutRef.current = null;
+            handleClose(() => onRemoveAbility(updatedDeck));
+        }, REMOVAL_ANIMATION_MS);
     };
 
     const handleCancel = () => {
@@ -195,7 +208,7 @@ const CardRemovalGrid = ({
                         {sortedCards.map((card: CombatAbility, index: number) => (
                             <div
                                 className={classNames(classes.tileContainer, {
-                                    removing: card.instanceId === removalInProgress,
+                                    [REMOVING_CLASS]: card.instanceId === removalInProgress,
                                 })}
                                 key={card.instanceId}
                                 ref={setCardRef(index)}
@@ -220,11 +233,7 @@ const CardRemovalGrid = ({
                                 </div>
                                 <div
                                     className={classes.confirmContainer}
-                                    key={
-                                        card.instanceId === selectedAbilityId
-                                            ? "show"
-                                            : "hide"
-                                    }
+                                    key={card.instanceId === selectedAbilityId ? "show" : "hide"}
                                 >
                                     {card.instanceId === selectedAbilityId && (
                                         <Button

@@ -6,6 +6,7 @@ export const CLOSE_PANEL_ANIMATION_MS = 250;
 const DIST = 48;
 export const CONFIRM_BUTTON_DROP_PX = 18;
 export const CONFIRM_BUTTON_ANIMATION_MS = 250;
+export const REMOVING_CLASS = "removing";
 
 export const panelKeyframes = {
     "@keyframes slideDownFadeIn": {
@@ -108,22 +109,21 @@ export const useCardStaggerAnimation = (): {
         }
         entranceAnimationsRef.current.forEach((animation) => animation.cancel());
         entranceAnimationsRef.current = [];
-        const cards = cardRefs.current;
-        const cardCount = cards.filter((ref) => ref !== null).length;
+        const cards = cardRefs.current.filter(
+            (ref): ref is HTMLDivElement => !!ref && !ref.classList.contains(REMOVING_CLASS),
+        );
+        const cardCount = cards.length;
         const delayBudget = Math.max(0, CLOSE_ANIMATION_BUDGET_MS - CLOSE_CARD_ANIMATION_MS);
         const slot = cardCount > 0 ? Math.min(CARD_ANIMATION_DELAY_MS, delayBudget / cardCount) : 0;
         const animations = cards
-            .map((ref, index) => {
-                if (!ref) {
-                    return null;
-                }
-                return playFadeOutAnimation({
+            .map((ref, index) =>
+                playFadeOutAnimation({
                     object: ref,
                     delay: Math.max(0, cardCount - index) * slot,
                     playbackTime: CLOSE_CARD_ANIMATION_MS,
                     fill: "both",
-                });
-            })
+                }),
+            )
             .filter((animation): animation is Animation => animation !== null);
         exitAnimationsRef.current = animations;
         return CLOSE_CARD_ANIMATION_MS + cardCount * slot;
