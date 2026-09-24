@@ -1121,8 +1121,15 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 e.key !== "ArrowLeft" &&
                 e.key !== "ArrowRight" &&
                 e.key !== "ArrowUp" &&
-                e.key !== "ArrowDown"
+                e.key !== "ArrowDown" &&
+                e.key !== "e" &&
+                e.key !== "E"
             ) {
+                return;
+            }
+
+            if (e.key === "e" || e.key === "E") {
+                dispatch(updateBattleState(BATTLE_STATES.TURN_END));
                 return;
             }
 
