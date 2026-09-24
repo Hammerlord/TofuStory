@@ -68,9 +68,9 @@ export const confirmButtonDropStyle = {
     animationFillMode: "forwards",
 };
 
-const CARD_ANIMATION_MS = 150;
+export const CARD_ANIMATION_MS = 150;
 const CLOSE_CARD_ANIMATION_MS = 100;
-const CARD_ANIMATION_DELAY_MS = 10;
+export const CARD_ANIMATION_DELAY_MS = 10;
 const CLOSE_ANIMATION_BUDGET_MS = 250;
 
 export const useCardStaggerAnimation = (): {

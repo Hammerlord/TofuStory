@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { clamp } from "ramda";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
@@ -21,7 +21,12 @@ import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
 import { OnBuyItem, SHOP_REFRESH_COST, ShopAbility, ShopItem } from "./constants";
 import { generateShopInventory, getShopCustomerProperties, rollShopItem } from "./shopUtils";
-import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
+import {
+    confirmButtonDropStyle,
+    panelKeyframes,
+    CARD_ANIMATION_MS,
+    CARD_ANIMATION_DELAY_MS,
+} from "../Menu/panelAnimation";
 
 const HEADER_BAR = 72;
 
@@ -207,6 +212,10 @@ const ShopView = ({
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState<number | null>(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const abilityRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const itemContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
+    // Incremented every time the shop is refreshed so the entrance animation replays.
+    const [refreshCount, setRefreshCount] = useState<number>(0);
     // The shop is only reachable once a player exists (after class selection).
     const player = useAppSelector((state) => state.character?.player)!;
     const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
@@ -429,10 +438,34 @@ const ShopView = ({
 
     const classes = useStyles();
 
+    useEffect(() => {
+        const shopEntries = [...abilityRefs.current, ...itemContainerRefs.current];
+        const animations = shopEntries
+            .map((ref, index) => {
+                if (!ref) {
+                    return null;
+                }
+                return playFadeInAnimation({
+                    object: ref,
+                    delay: (index + 1) * CARD_ANIMATION_DELAY_MS,
+                    playbackTime: CARD_ANIMATION_MS,
+                    fill: "both",
+                });
+            })
+            .filter((animation): animation is Animation => animation !== null);
+
+        return () => {
+            animations.forEach((animation) => animation.cancel());
+        };
+    }, [refreshCount]);
+
     const getShopAbility = (shopItem: ShopAbility | null, i: number) => {
         if (!shopItem) {
             return (
                 <div
+                    ref={(el) => {
+                        abilityRefs.current[i] = el;
+                    }}
                     className={classNames(classes.abilityContainer, classes.abilityPlaceholder)}
                     key={i}
                 />
@@ -443,7 +476,13 @@ const ShopView = ({
         const price = applyDiscount(initPrice);
 
         return (
-            <div className={classes.abilityContainer} key={[item.name, i].join("-")}>
+            <div
+                ref={(el) => {
+                    abilityRefs.current[i] = el;
+                }}
+                className={classes.abilityContainer}
+                key={[item.name, i].join("-")}
+            >
                 <RarityTag rarity={item.rarity} />
                 <div
                     className={classNames(classes.ability, {
@@ -486,6 +525,9 @@ const ShopView = ({
         if (!shopItem) {
             return (
                 <div
+                    ref={(el) => {
+                        itemContainerRefs.current[i] = el;
+                    }}
                     className={classNames(classes.itemContainer, classes.itemPlaceholder)}
                     key={i}
                 />
@@ -497,7 +539,13 @@ const ShopView = ({
         const cannotAfford = (!isFood || !hasFreeFood) && player.mesos < price;
 
         return (
-            <div className={classes.itemContainer} key={[item.name, i].join("-")}>
+            <div
+                ref={(el) => {
+                    itemContainerRefs.current[i] = el;
+                }}
+                className={classes.itemContainer}
+                key={[item.name, i].join("-")}
+            >
                 <div
                     ref={(el) => {
                         itemRefs.current[i] = el;
@@ -579,7 +627,10 @@ const ShopView = ({
                     </span>
                     <Button
                         color={"secondary"}
-                        onClick={() => onRefresh(shopRefreshCost)}
+                        onClick={() => {
+                            onRefresh(shopRefreshCost);
+                            setRefreshCount((count) => count + 1);
+                        }}
                         disabled={player.mesos < shopRefreshCost}
                     >
                         Refresh
