@@ -93,9 +93,9 @@ export const playTravelAnimation = ({
     startEase = "ease-out",
     endEase = "ease-in",
 }: {
-    object?: HTMLElement | HTMLElement[]; // Object to move. If not supplied, `from` is used instead.
-    from: HTMLElement;
-    to: HTMLElement | HTMLElement[];
+    object?: HTMLElement | HTMLElement[] | null; // Object to move. If not supplied, `from` is used instead.
+    from: HTMLElement | null | undefined;
+    to: HTMLElement | HTMLElement[] | null | undefined;
     playbackTime: number;
     spin?: number;
     rotate?: number;

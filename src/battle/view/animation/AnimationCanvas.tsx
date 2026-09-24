@@ -35,8 +35,8 @@ const useStyles = createUseStyles({
  * Falls back to a pure vertical bias when either element is unavailable.
  */
 const getShakeDirection = (
-    from: HTMLElement | undefined,
-    to: HTMLElement | undefined,
+    from: HTMLElement | null | undefined,
+    to: HTMLElement | null | undefined,
     fallback: { x: number; y: number },
 ): { x: number; y: number } => {
     if (!from || !to) {
@@ -69,12 +69,12 @@ const AnimationCanvas = ({
     depleteRef,
 }: {
     eventGroup?: EventGroup;
-    allyRefs?: RefObject<HTMLElement>[];
-    enemyRefs?: RefObject<HTMLElement>[];
-    battlefieldRef: RefObject<HTMLElement>;
-    deckRef: RefObject<HTMLElement>;
-    discardRef: RefObject<HTMLElement>;
-    depleteRef: RefObject<HTMLElement>;
+    allyRefs?: RefObject<HTMLElement | null>[];
+    enemyRefs?: RefObject<HTMLElement | null>[];
+    battlefieldRef: RefObject<HTMLElement | null>;
+    deckRef: RefObject<HTMLElement | null>;
+    discardRef: RefObject<HTMLElement | null>;
+    depleteRef: RefObject<HTMLElement | null>;
 }) => {
     const {
         id: eventId,
@@ -102,7 +102,7 @@ const AnimationCanvas = ({
         return enemySide.findIndex((enemy) => characterId === enemy?.id);
     };
 
-    const getRefFromCharacterId = (characterId?: string): RefObject<HTMLElement> | undefined => {
+    const getRefFromCharacterId = (characterId?: string): RefObject<HTMLElement | null> | undefined => {
         if (!characterId) {
             return;
         }
@@ -222,7 +222,8 @@ const AnimationCanvas = ({
             animations.forEach(handleCharacterAnimation);
         }
 
-        if (battlefieldRef.current) {
+        const battlefield = battlefieldRef.current;
+        if (battlefield) {
             eventGroup?.events.forEach((event) => {
                 if (!event.statUpdates) {
                     return;
@@ -245,7 +246,7 @@ const AnimationCanvas = ({
                     const amplitude = Math.min(0.5, damage * 0.01);
                     const shakeDuration = 175;
                     playShakeAnimation({
-                        object: battlefieldRef.current,
+                        object: battlefield,
                         delay: playbackTime / 2,
                         playbackTime: shakeDuration,
                         direction,
@@ -292,7 +293,7 @@ const AnimationCanvas = ({
         ...animations,
     ];
     const actor: {
-        element: HTMLElement | undefined;
+        element: HTMLElement | null | undefined;
         combatant: Combatant | null | undefined;
         index: number | undefined;
     } = {

@@ -209,7 +209,7 @@ export const battleStateSlice = createSlice({
                 }),
             };
         },
-        setNotification: (state, action: PayloadAction<Notification>) => {
+        setNotification: (state, action: PayloadAction<Notification | undefined>) => {
             return {
                 ...state!,
                 notification: action.payload,

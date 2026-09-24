@@ -262,7 +262,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const enemyRefs: RefObject<HTMLDivElement | null>[] = Array.from({
         length: BATTLEFIELD_SIZE,
     }).map(() => useRef(null));
-    const handRef = useRef({});
+    const handRef = useRef<{ [cardId: string]: HTMLElement }>({});
     const battlefieldRef: RefObject<HTMLDivElement | null> = useRef(null);
     const deckRef: RefObject<HTMLDivElement | null> = useRef(null);
     const discardRef: RefObject<HTMLDivElement | null> = useRef(null);
@@ -338,7 +338,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         const index = playerSide.findIndex(
             (combatant: Combatant | null) => combatant && combatant.id === selectedAllyId,
         );
-        return allyRefs[index]?.current || handRef.current?.[selectedHandAbilityId];
+        return allyRefs[index]?.current || handRef.current?.[selectedHandAbilityId ?? ""];
     }, [disableActions, keyboardNav, selectedAllyId, selectedHandAbilityId]);
 
     // Whether a given slot is the currently keyboard-selected target
@@ -365,7 +365,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         (hoveredCombatant?.side === BATTLEFIELD_SIDES.PLAYER_SIDE ||
             !selectedMinion?.abilities?.length);
     const targetLineColor = getAbilityColor(
-        selectedAbilityFromHand || (showMovementAbility && movementAbility),
+        selectedAbilityFromHand || (showMovementAbility ? movementAbility : undefined),
     );
 
     const selectedAbility = selectedMinion?.abilities[0] || selectedAbilityFromHand;
@@ -432,7 +432,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     <div className={classes.notificationContainer}>
                         <Notification
                             severity={notification.severity}
-                            onClick={() => dispatch(setNotification(null))}
+                            onClick={() => dispatch(setNotification(undefined))}
                             id={notification.id}
                         >
                             {notification.text}

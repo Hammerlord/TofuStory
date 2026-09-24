@@ -69,9 +69,9 @@ const CardAnimations = ({
     depleteRef,
 }: {
     eventGroup?: EventGroup;
-    deckRef: RefObject<HTMLElement>;
-    discardRef: RefObject<HTMLElement>;
-    depleteRef: RefObject<HTMLElement>;
+    deckRef: RefObject<HTMLElement | null>;
+    discardRef: RefObject<HTMLElement | null>;
+    depleteRef: RefObject<HTMLElement | null>;
 }) => {
     const deck = useAppSelector((state) => state.battle!.deck);
     const deckCycled = useAppSelector((state) => state.battle!.deckCycled);
@@ -114,8 +114,8 @@ const CardAnimations = ({
             }
 
             // No animation for added to hand -- having the hand gain cards will suffice
-            if (ref?.current && props) {
-                sendToPile({ object: ref.current, ...props });
+            if (ref?.current && props?.to) {
+                sendToPile({ object: ref.current, ...props, to: props.to });
             }
         };
 
@@ -134,11 +134,16 @@ const CardAnimations = ({
             return;
         }
 
+        const deckElement = deckRef.current;
+        if (!deckElement) {
+            return;
+        }
+
         const animations = deckCycleRefs.slice(0, deck.length).map((ref, i) => {
             return refreshToPile({
                 object: ref.current,
                 playbackTime: DECK_CYCLE_TIME,
-                to: deckRef.current,
+                to: deckElement,
                 delay: i * 25,
             });
         });
