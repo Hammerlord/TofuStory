@@ -41,12 +41,14 @@ const Hand = ({
     selectedAbilityId,
     className,
     cardRefs,
+    highlightIndex,
 }: {
     hand: CombatAbility[];
     onAbilityClick: (event: React.MouseEvent, id: string) => void;
     selectedAbilityId?: string | null;
     className: string;
     cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
+    highlightIndex?: number | null;
 }) => {
     const handleAbilityMouseDown = (event: React.MouseEvent, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
@@ -97,7 +99,9 @@ const Hand = ({
                         >
                             <AbilityView
                                 onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
-                                isSelected={selectedAbilityId === ability.instanceId}
+                                isSelected={
+                                    selectedAbilityId === ability.instanceId || highlightIndex === i
+                                }
                                 ability={ability}
                                 ref={(element) => {
                                     if (element) {

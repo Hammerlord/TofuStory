@@ -1,4 +1,12 @@
-import React, { ReactElement, RefObject, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+    ReactElement,
+    RefObject,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../../ability/AbilityView/DamageIcon";
@@ -48,7 +56,7 @@ import {
     EventGroup,
     PlayerSelectCardsPrompt,
 } from "../types";
-import { canTargetIfStealthed, isUntargetable } from "../utils";
+import { isUntargetable } from "../utils";
 import AnimationCanvas from "./animation/AnimationCanvas";
 import ClearOverlay from "./ClearOverlay";
 import Deck from "./Deck";
@@ -238,6 +246,22 @@ const useStyles = createUseStyles({
 
 const BATTLEFIELD_SIZE = 5;
 
+// The centre slot is a natural starting point when keyboard-targeting. Return the valid
+// target whose index is closest to the centre, preferring the earlier entry on ties
+// (enemy side comes before the player side, and lower indices before higher ones).
+const getInitialKeyboardTarget = (
+    validTargets: { side: BATTLEFIELD_SIDES; index: number }[],
+): { side: BATTLEFIELD_SIDES; index: number } => {
+    const centreIndex = Math.floor(BATTLEFIELD_SIZE / 2);
+    let closest = validTargets[0];
+    for (const target of validTargets) {
+        if (Math.abs(target.index - centreIndex) < Math.abs(closest.index - centreIndex)) {
+            closest = target;
+        }
+    }
+    return closest;
+};
+
 const {
     updateBattleState,
     updateBattle,
@@ -279,6 +303,14 @@ export const getPlayerSpecialMovementEffects = (player?: Player | null) => {
 
     return { moveCardFromHandToDeckEffects, allowFriendlyMovement };
 };
+
+type KeyboardNav =
+    | { mode: "card"; cardIndex: number }
+    | {
+          mode: "target";
+          cardIndex: number;
+          target: { side: BATTLEFIELD_SIDES; index: number };
+      };
 
 const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void }) => {
     const dispatch = useAppDispatch();
@@ -326,6 +358,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         index: number;
         id: string | null;
     } | null>(null);
+    // State for the arrow-key navigation of the hand and its targets. Reset whenever the player takes over with the mouse.
+    const [keyboardNav, setKeyboardNav] = useState<KeyboardNav | null>(null);
     const classes = useStyles({ backgroundImage });
 
     const hand = useMemo(
@@ -412,6 +446,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     };
 
     const handleAbilityClick = (e: React.MouseEvent, id: string) => {
+        setKeyboardNav(null);
+
         if (selectCardsPrompt) {
             warn(battleWarnings.promptFinishSelecting);
             return;
@@ -454,18 +490,20 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const handleAbilityUse = async ({
         selectedIndex,
         side,
+        selectedAbility = selectedAbilityFromHand,
     }: {
         selectedIndex: number;
         side: BATTLEFIELD_SIDES;
+        selectedAbility?: CombatAbility;
     }) => {
-        if (!selectedAbilityFromHand) {
+        if (!selectedAbility) {
             return;
         }
 
         dispatch(
             useHandAbility({
                 selectedTargetIndex: selectedIndex,
-                selectedAbility: selectedAbilityFromHand,
+                selectedAbility,
                 selectedTargetSide: side,
             }),
         );
@@ -501,11 +539,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const handleSelectCardsPrerequisite = ({
         selectedIndex,
         side,
+        selectedCard = selectedAbilityFromHand,
     }: {
         selectedIndex: number;
         side: BATTLEFIELD_SIDES;
+        selectedCard?: CombatAbility;
     }) => {
-        const { type } = selectedAbilityFromHand?.selectCards || {};
+        const { type } = selectedCard?.selectCards || {};
 
         if (hand.length <= 1) {
             if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
@@ -523,16 +563,16 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
         ];
         if (type && skipOverlayTypes.includes(type) && hand.length === 1) {
-            handleAbilityUse({ selectedIndex, side });
+            handleAbilityUse({ selectedIndex, side, selectedAbility: selectedCard });
             return;
         }
 
         dispatch(
             promptPlayerSelectCards({
-                selectCards: selectedAbilityFromHand?.selectCards,
+                selectCards: selectedCard?.selectCards,
                 abilityQueued: {
-                    selectedAbilityId: selectedHandAbilityId,
-                    selectedAbility: selectedAbilityFromHand,
+                    selectedAbilityId: selectedHandAbilityId || selectedCard?.instanceId,
+                    selectedAbility: selectedCard,
                     selectedTargetSide: side,
                     selectedTargetIndex: selectedIndex,
                 },
@@ -540,7 +580,45 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         );
     };
 
+    const handleKeyboardUseCard = useCallback(
+        (nav: { cardIndex: number; target: { side: BATTLEFIELD_SIDES; index: number } }) => {
+            const selectedCard = hand[nav.cardIndex];
+            if (!selectedCard) {
+                return;
+            }
+            const { side, index: selectedIndex } = nav.target;
+            setKeyboardNav(null);
+
+            if (selectedCard.selectCards) {
+                handleSelectCardsPrerequisite({
+                    side,
+                    selectedIndex,
+                    selectedCard,
+                });
+                return;
+            }
+
+            if (
+                side === BATTLEFIELD_SIDES.PLAYER_SIDE &&
+                selectedCard.actions.some((action) => action.retrieveDepletedCards) &&
+                depleted.length === 0
+            ) {
+                warn(battleWarnings.minDepleted);
+                return;
+            }
+
+            handleAbilityUse({
+                selectedIndex,
+                side,
+                selectedAbility: selectedCard,
+            });
+        },
+        [hand, depleted, handleAbilityUse, handleSelectCardsPrerequisite, warn],
+    );
+
     const handleAllyClick = (e: React.MouseEvent, index: number) => {
+        setKeyboardNav(null);
+
         if (e.button === 2) {
             // Right click will deselect the ability
             return;
@@ -621,6 +699,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     };
 
     const handleEnemyClick = (e: React.MouseEvent, index: number) => {
+        setKeyboardNav(null);
+
         if (e.button === 2) {
             // Right click will deselect the ability
             e.preventDefault();
@@ -689,9 +769,19 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     usePreloadImages(ClearImage, playerSide, enemySide, hand, deck, discard);
 
+    const keyboardPreviewTarget = useMemo(() => {
+        if (keyboardNav?.mode !== "target") {
+            return null;
+        }
+        const { target } = keyboardNav;
+        const combatants = target.side === BATTLEFIELD_SIDES.PLAYER_SIDE ? playerSide : enemySide;
+        const combatant = combatants[target.index];
+        return { side: target.side, index: target.index, id: combatant?.id || null };
+    }, [keyboardNav, playerSide, enemySide]);
+
     const isTargeted = (side: BATTLEFIELD_SIDES, i: number | null): boolean =>
         isTargetedForAbility({
-            hoveredCombatant,
+            hoveredCombatant: keyboardPreviewTarget || hoveredCombatant,
             abilityToUse,
             disableActions,
             actor,
@@ -712,7 +802,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 selectedMinion,
                 allowFriendlyMovement,
                 movementAbility,
-                hoveredCombatant,
+                hoveredCombatant: keyboardPreviewTarget || hoveredCombatant,
                 abilityToUse,
                 battle,
                 actorId,
@@ -724,6 +814,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             selectedAbilityFromHand,
             allowFriendlyMovement,
             movementAbility,
+            keyboardPreviewTarget,
             hoveredCombatant,
             abilityToUse,
             battle,
@@ -733,7 +824,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     );
 
     const origination = useMemo(() => {
-        if (disableActions) {
+        if (disableActions || keyboardNav?.mode === "card") {
             return null;
         }
 
@@ -741,7 +832,87 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             (combatant: Combatant | null) => combatant && combatant.id === selectedAllyId,
         );
         return allyRefs[index]?.current || handRef.current?.[selectedHandAbilityId];
-    }, [disableActions, selectedAllyId, selectedHandAbilityId]);
+    }, [disableActions, keyboardNav, selectedAllyId, selectedHandAbilityId]);
+
+    const isKeyboardTargetValid = useCallback(
+        (card: CombatAbility, side: BATTLEFIELD_SIDES, index: number): boolean => {
+            if (!player) {
+                return false;
+            }
+
+            return shouldShowReticleForTarget({
+                selectedAbilityFromHand: card,
+                player,
+                selectedMinion: null,
+                allowFriendlyMovement: false,
+                movementAbility,
+                hoveredCombatant: null,
+                abilityToUse: card,
+                battle,
+                actorId: player.id,
+                combatantSide: side,
+                combatantIndex: index,
+            });
+        },
+        [player, movementAbility, battle],
+    );
+
+    /**
+     * The slots a card can be played on via keyboard navigation. Applies the same validity rules as mouse selection:
+     * resources, taunts, untargetable combatants, conditions, empty slots, etc.
+     */
+    const getKeyboardValidTargets = useCallback(
+        (card: CombatAbility): { side: BATTLEFIELD_SIDES; index: number }[] => {
+            const targets: { side: BATTLEFIELD_SIDES; index: number }[] = [];
+            const collect = (side: BATTLEFIELD_SIDES, slots: (Combatant | null)[]) => {
+                slots.forEach((_, index) => {
+                    if (isKeyboardTargetValid(card, side, index)) {
+                        targets.push({ side, index });
+                    }
+                });
+            };
+            collect(BATTLEFIELD_SIDES.ENEMY_SIDE, enemySide);
+            collect(BATTLEFIELD_SIDES.PLAYER_SIDE, playerSide);
+            return targets;
+        },
+        [isKeyboardTargetValid, enemySide, playerSide],
+    );
+
+    // Whether a given slot is the currently keyboard-selected target
+    const isKeyboardTargetSelected = (side: BATTLEFIELD_SIDES, index: number): boolean =>
+        Boolean(
+            keyboardNav?.mode === "target" &&
+            keyboardNav.target.side === side &&
+            keyboardNav.target.index === index,
+        );
+
+    // Element that the target line should anchor to while keyboard-targeting a slot
+    const keyboardTargetRef = useMemo(() => {
+        if (keyboardNav?.mode !== "target") {
+            return null;
+        }
+        const { target } = keyboardNav;
+        const refs = target.side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
+        return refs[target.index]?.current || null;
+    }, [keyboardNav]);
+
+    // Whether the keyboard-highlighted card could be selected by a mouse click (unplayable/locked/resource checks)
+    const canSelectCardForKeyboard = useCallback(
+        (card: CombatAbility | null | undefined): boolean => {
+            if (!card) {
+                return false;
+            }
+            if (allowMoveCardFromHandToDeck) {
+                return true;
+            }
+            const isUnplayable = card.unplayable && !card.effects?.some((e) => e.bypassUnplayable);
+            if (isUnplayable || card.effects?.some((e) => e.isLocked)) {
+                return false;
+            }
+            return canUsePlayerAbility(player, card);
+        },
+        [player, allowMoveCardFromHandToDeck],
+    );
 
     const showMovementAbility =
         allowFriendlyMovement &&
@@ -798,7 +969,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         () =>
             getAbilityUsePreviews({
                 selectedAbility,
-                hoveredCombatant,
+                hoveredCombatant: keyboardPreviewTarget || hoveredCombatant,
                 selectedMinion,
                 player,
                 playerSide,
@@ -806,7 +977,15 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 battle,
                 shouldShowReticle,
             }),
-        [selectedAbility, hoveredCombatant, playerSide, enemySide, selectedMinion, player],
+        [
+            selectedAbility,
+            keyboardPreviewTarget,
+            hoveredCombatant,
+            playerSide,
+            enemySide,
+            selectedMinion,
+            player,
+        ],
     );
     const { result: abilityUsePreviews, combatantStates: previewAbilityCombatants } =
         abilityPreviewData;
@@ -844,8 +1023,15 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 index: i,
                 id: combatant?.id || null,
             });
+
+            if (keyboardNav?.mode === "target") {
+                const card = hand[keyboardNav.cardIndex];
+                if (card && isKeyboardTargetValid(card, side, i)) {
+                    setKeyboardNav(null);
+                }
+            }
         },
-        [],
+        [keyboardNav, hand, isKeyboardTargetValid],
     );
 
     const handleEnemyMouseEnter = useCallback(
@@ -864,8 +1050,190 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         setHoveredCombatant(null);
     }, []);
 
+    // Reset keyboard navigation whenever the player can no longer act (turn ended, prompts open, etc.)
+    useEffect(() => {
+        if (disableActions) {
+            setKeyboardNav(null);
+        }
+    }, [disableActions]);
+
+    const selectHandCard = useCallback(
+        (cardIndex: number) => {
+            const card = hand[cardIndex];
+            dispatch(
+                selectHandAbility(card && canSelectCardForKeyboard(card) ? card.instanceId : null),
+            );
+        },
+        [hand, canSelectCardForKeyboard, dispatch],
+    );
+
+    const beginTargeting = useCallback(
+        (cardIndex: number) => {
+            const card = hand[cardIndex];
+            if (!card) {
+                return;
+            }
+            if (!allowMoveCardFromHandToDeck) {
+                const isUnplayable =
+                    card.unplayable && !card.effects?.some((e) => e.bypassUnplayable);
+                if (isUnplayable || card.effects?.some((e) => e.isLocked)) {
+                    warn(battleWarnings.unplayable);
+                    return;
+                }
+                if (!canUsePlayerAbility(player, card)) {
+                    warnNeedMoreResources(card);
+                    return;
+                }
+            }
+            const validTargets = getKeyboardValidTargets(card);
+            if (!validTargets.length) {
+                return;
+            }
+            dispatch(selectHandAbility(card.instanceId));
+            setKeyboardNav({
+                mode: "target",
+                cardIndex,
+                target: getInitialKeyboardTarget(validTargets),
+            });
+        },
+        [
+            hand,
+            allowMoveCardFromHandToDeck,
+            canUsePlayerAbility,
+            player,
+            getKeyboardValidTargets,
+            warn,
+            warnNeedMoreResources,
+            dispatch,
+        ],
+    );
+
+    useEffect(() => {
+        if (disableActions || eventGroups.length) {
+            return;
+        }
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) {
+                return;
+            }
+            if (
+                e.key !== "ArrowLeft" &&
+                e.key !== "ArrowRight" &&
+                e.key !== "ArrowUp" &&
+                e.key !== "ArrowDown"
+            ) {
+                return;
+            }
+
+            if (!keyboardNav) {
+                if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowDown") {
+                    if (!hand.length) {
+                        return;
+                    }
+                    let cardIndex = selectedHandAbilityId
+                        ? hand.findIndex((card) => card.instanceId === selectedHandAbilityId)
+                        : -1;
+                    if (cardIndex < 0) {
+                        cardIndex = e.key === "ArrowLeft" ? hand.length - 1 : 0;
+                    }
+                    if (selectedHandAbilityId || selectedAllyId) {
+                        dispatch(selectAlly(null));
+                        dispatch(selectHandAbility(null));
+                    }
+                    setKeyboardNav({ mode: "card", cardIndex });
+                    selectHandCard(cardIndex);
+                } else if (e.key === "ArrowUp") {
+                    if (!selectedHandAbilityId) {
+                        return;
+                    }
+                    const cardIndex = hand.findIndex(
+                        (card) => card.instanceId === selectedHandAbilityId,
+                    );
+                    if (cardIndex < 0) {
+                        return;
+                    }
+                    dispatch(selectAlly(null));
+                    setKeyboardNav({ mode: "card", cardIndex });
+                    selectHandCard(cardIndex);
+                    beginTargeting(cardIndex);
+                }
+                return;
+            }
+
+            if (keyboardNav.mode === "card") {
+                if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                    if (!hand.length) {
+                        return;
+                    }
+                    const delta = e.key === "ArrowLeft" ? hand.length - 1 : 1;
+                    const cardIndex = (keyboardNav.cardIndex + delta) % hand.length;
+                    setKeyboardNav({ mode: "card", cardIndex });
+                    selectHandCard(cardIndex);
+                } else if (e.key === "ArrowUp") {
+                    beginTargeting(keyboardNav.cardIndex);
+                }
+                return;
+            }
+
+            const selectedCard = hand[keyboardNav.cardIndex];
+            if (!selectedCard) {
+                setKeyboardNav(null);
+                return;
+            }
+            const validTargets = getKeyboardValidTargets(selectedCard);
+            if (!validTargets.length) {
+                setKeyboardNav(null);
+                return;
+            }
+
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                const currentIndex = validTargets.findIndex(
+                    (target) =>
+                        target.side === keyboardNav.target.side &&
+                        target.index === keyboardNav.target.index,
+                );
+                const delta = e.key === "ArrowLeft" ? validTargets.length - 1 : 1;
+                const nextIndex =
+                    currentIndex >= 0 ? (currentIndex + delta) % validTargets.length : 0;
+                setKeyboardNav({
+                    mode: "target",
+                    cardIndex: keyboardNav.cardIndex,
+                    target: validTargets[nextIndex],
+                });
+            } else if (e.key === "ArrowUp") {
+                handleKeyboardUseCard(keyboardNav);
+            } else if (e.key === "ArrowDown") {
+                setKeyboardNav({
+                    mode: "card",
+                    cardIndex: keyboardNav.cardIndex,
+                });
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [
+        disableActions,
+        eventGroups.length,
+        keyboardNav,
+        hand,
+        selectedHandAbilityId,
+        selectedAllyId,
+        getKeyboardValidTargets,
+        handleKeyboardUseCard,
+        selectHandCard,
+        beginTargeting,
+        canSelectCardForKeyboard,
+        dispatch,
+    ]);
+
     return (
-        <TargetLineCanvas originationRef={origination} color={targetLineColor}>
+        <TargetLineCanvas
+            originationRef={origination}
+            targetRef={keyboardTargetRef}
+            color={targetLineColor}
+        >
             <div className={classes.root}>
                 {notification && (
                     <div className={classes.notificationContainer}>
@@ -892,10 +1260,12 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                     className={classes.battlefieldContainer}
                     onContextMenu={(e) => {
                         dispatch(selectHandAbility(null));
+                        setKeyboardNav(null);
                         e.preventDefault();
                     }}
                     onMouseDown={() => {
                         dispatch(selectHandAbility(null));
+                        setKeyboardNav(null);
                     }}
                 >
                     <ParticleCanvas
@@ -926,7 +1296,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                             isSelected={false}
                                             onMouseEnter={handleEnemyMouseEnter}
                                             onMouseLeave={handleCombatantMouseLeave}
-                                            isTargeted={isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i)}
+                                            isTargeted={
+                                                isTargeted(BATTLEFIELD_SIDES.ENEMY_SIDE, i) ||
+                                                isKeyboardTargetSelected(
+                                                    BATTLEFIELD_SIDES.ENEMY_SIDE,
+                                                    i,
+                                                )
+                                            }
                                             key={`enemy-slot-${i}`}
                                             currentEventGroup={currentEventGroup}
                                             eventGroupQueue={eventGroups}
@@ -1003,10 +1379,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                 )}
                                                 onMouseEnter={handleAllyMouseEnter}
                                                 onMouseLeave={handleCombatantMouseLeave}
-                                                isTargeted={isTargeted(
-                                                    BATTLEFIELD_SIDES.PLAYER_SIDE,
-                                                    i,
-                                                )}
+                                                isTargeted={
+                                                    isTargeted(BATTLEFIELD_SIDES.PLAYER_SIDE, i) ||
+                                                    isKeyboardTargetSelected(
+                                                        BATTLEFIELD_SIDES.PLAYER_SIDE,
+                                                        i,
+                                                    )
+                                                }
                                                 isHoveringCombatant={Boolean(hoveredCombatant)}
                                                 key={`ally-slot-${i}`}
                                                 currentEventGroup={currentEventGroup}
@@ -1084,6 +1463,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         cardRefs={handRef}
                         selectedAbilityId={selectedHandAbilityId}
                         onAbilityClick={handleAbilityClick}
+                        highlightIndex={keyboardNav?.cardIndex ?? null}
                     />
                 </div>
                 {showWaveClear && (

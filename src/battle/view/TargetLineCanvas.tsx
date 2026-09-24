@@ -13,13 +13,38 @@ const useStyles = createUseStyles({
     },
 });
 
+const getCenter = (rect: DOMRect | undefined, scale: number) => {
+    if (!rect) {
+        return null;
+    }
+    return {
+        x: (rect.left + rect.width / 2) / scale,
+        y: (rect.top + rect.height / 2) / scale,
+    };
+};
+
 /**
- * Draws a targeting line from eg. a selected ally to the mouse position
+ * Draws a targeting line from eg. a selected ally to the mouse position.
+ * When `targetRef` is provided, the line is drawn to the centre of that element instead of the mouse (eg. keyboard targeting).
  */
-const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)", ...other }) => {
+type TargetLineCanvasProps = {
+    children: React.ReactNode;
+    originationRef?: Element | null;
+    targetRef?: Element | null;
+    color?: string;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+const TargetLineCanvas = ({
+    children,
+    originationRef,
+    targetRef,
+    color = "rgb(221, 46, 68)",
+    ...other
+}: TargetLineCanvasProps) => {
     const scale = getZoomFactor();
     const origination =
         originationRef?.getBoundingClientRect && originationRef.getBoundingClientRect();
+    const target = targetRef?.getBoundingClientRect && targetRef.getBoundingClientRect();
     const targetLineRef: React.RefObject<SVGPathElement> = useRef(null);
     const circleRef: React.RefObject<SVGCircleElement> = useRef(null);
     const bullseyeRef: React.RefObject<SVGCircleElement> = useRef(null);
@@ -28,17 +53,21 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
 
     const classes = useStyles();
 
-    const getInitialLine = () => {
-        const x = (origination.left + origination.width / 2) / scale;
-        const x2 = (origination.left + origination.width / 2) / scale;
-        const y = (origination.top + origination.height / 2) / scale;
-        const y2 = (origination.top + origination.height / 2) / scale;
+    const originationCenter = getCenter(origination, scale);
+    const targetCenter = getCenter(target, scale);
+    // The line ends at a fixed target while keyboard-targeting, otherwise it follows the mouse.
+    const lineEnd = targetCenter || lastMouseRef.current;
 
-        return `M ${x} ${y} Q ${x2} ${y2} ${x2} ${y2}`;
+    const getInitialLine = () => {
+        const { x, y } = originationCenter || { x: 0, y: 0 };
+        const end = targetCenter || originationCenter || { x, y };
+
+        return `M ${x} ${y} Q ${end.x} ${end.y} ${end.x} ${end.y}`;
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!origination) return;
+        if (target) return;
 
         lastMouseRef.current = {
             x: e.clientX / scale,
@@ -95,8 +124,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                             ref={bullseyeRef}
                             fill={color}
                             r="8"
-                            cx={(origination.left + origination.width / 2) / scale}
-                            cy={(origination.top + origination.height / 2) / scale}
+                            cx={lineEnd?.x ?? originationCenter?.x}
+                            cy={lineEnd?.y ?? originationCenter?.y}
                         />
                         <circle
                             ref={circleRef}
@@ -104,8 +133,8 @@ const TargetLineCanvas = ({ children, originationRef, color = "rgb(221, 46, 68)"
                             strokeWidth="5px"
                             fill="transparent"
                             r="16"
-                            cx={(origination.left + origination.width / 2) / scale}
-                            cy={(origination.top + origination.height / 2) / scale}
+                            cx={lineEnd?.x ?? originationCenter?.x}
+                            cy={lineEnd?.y ?? originationCenter?.y}
                         />
                     </svg>
                 )}
