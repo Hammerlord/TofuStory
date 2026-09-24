@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
 import { CombatAbility, SELECT_CARD_TYPES } from "../../ability/types";
@@ -88,6 +88,8 @@ const SelectCardOverlay = ({
     discard: CombatAbility[];
 }) => {
     const [selectedAbilityIds, setSelectedAbilityIds] = useState<string[]>([]);
+    // The card currently focused by the arrow keys.
+    const [currentIndex, setCurrentIndex] = useState(0);
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
     const { type, maxAmount: configuredMax, effects } = selectCards;
@@ -133,6 +135,81 @@ const SelectCardOverlay = ({
         );
     };
 
+    const isConfirmDisabled =
+        type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
+        !selectedAbilityIds.length &&
+        abilityChoices.length > 0;
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat || hide) {
+                return;
+            }
+            if (e.key === "Escape") {
+                // Only Deplete from hand can be safely backed out of mid-selection
+                if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
+                    e.preventDefault();
+                    onCancel();
+                }
+                return;
+            }
+            if (!abilityChoices.length) {
+                return;
+            }
+            const singleSelect = maxAmount === 1;
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                e.preventDefault();
+                const delta = e.key === "ArrowLeft" ? abilityChoices.length - 1 : 1;
+                const nextIndex = (currentIndex + delta) % abilityChoices.length;
+                setCurrentIndex(nextIndex);
+                if (singleSelect) {
+                    // Single select can skip the intermediate highlight stage.
+                    setSelectedAbilityIds([abilityChoices[nextIndex].instanceId]);
+                }
+            } else if (e.key === "ArrowUp") {
+                if (singleSelect) {
+                    return;
+                }
+                e.preventDefault();
+                const ability = abilityChoices[currentIndex % abilityChoices.length];
+                if (ability) {
+                    setSelectedAbilityIds((prev) =>
+                        prev.includes(ability.instanceId) || prev.length >= maxAmount
+                            ? prev
+                            : [...prev, ability.instanceId],
+                    );
+                }
+            } else if (e.key === "ArrowDown") {
+                if (singleSelect) {
+                    return;
+                }
+                e.preventDefault();
+                const ability = abilityChoices[currentIndex % abilityChoices.length];
+                if (ability) {
+                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
+                }
+            } else if (e.key === "Enter") {
+                if (!isConfirmDisabled) {
+                    e.preventDefault();
+                    handleSelectClick();
+                }
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [
+        hide,
+        type,
+        onCancel,
+        abilityChoices,
+        maxAmount,
+        currentIndex,
+        selectedAbilityIds,
+        isConfirmDisabled,
+        handleSelectClick,
+    ]);
+
     return (
         <>
             {!hide && (
@@ -156,7 +233,7 @@ const SelectCardOverlay = ({
                             </h2>
                         </div>
                         <div className={classes.abilityContainer}>
-                            {abilityChoices.map((ability: CombatAbility) => (
+                            {abilityChoices.map((ability: CombatAbility, i: number) => (
                                 <div
                                     className={classNames(classes.ability, {
                                         selected: selectedAbilityIds.includes(ability.instanceId),
@@ -165,6 +242,7 @@ const SelectCardOverlay = ({
                                         ),
                                     })}
                                     onClick={() => {
+                                        setCurrentIndex(i);
                                         if (maxAmount === 1) {
                                             setSelectedAbilityIds([ability.instanceId]);
                                             return;
@@ -185,7 +263,10 @@ const SelectCardOverlay = ({
                                     }}
                                     key={ability.instanceId}
                                 >
-                                    <AbilityView ability={ability} />
+                                    <AbilityView
+                                        ability={ability}
+                                        isSelected={maxAmount > 1 && currentIndex === i}
+                                    />
                                     {isSelectedForRemoval(ability.instanceId) && (
                                         <div className={classes.x}>
                                             <XIcon />
@@ -205,11 +286,7 @@ const SelectCardOverlay = ({
                         <Button
                             variant={"contained"}
                             color="primary"
-                            disabled={
-                                type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
-                                !selectedAbilityIds.length &&
-                                abilityChoices.length > 0
-                            }
+                            disabled={isConfirmDisabled}
                             onClick={handleSelectClick}
                         >
                             Confirm

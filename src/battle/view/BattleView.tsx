@@ -1109,7 +1109,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     );
 
     useEffect(() => {
-        if (disableActions || eventGroups.length) {
+        if (disableActions || eventGroups.length || selectCardsPrompt) {
             return;
         }
 
@@ -1216,6 +1216,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     }, [
         disableActions,
         eventGroups.length,
+        selectCardsPrompt,
         keyboardNav,
         hand,
         selectedHandAbilityId,
