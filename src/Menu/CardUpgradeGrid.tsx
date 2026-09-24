@@ -15,6 +15,8 @@ import { getDamageStatistics } from "../ability/AbilityView/DamageIcon";
 import { getArmorStatistics } from "../ability/AbilityView/ArmorIcon";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
+import Overlay from "../view/Overlay";
+import UpgradedCardsView from "../scene/UpgradedCards";
 import {
     panelKeyframes,
     slideFadeInStyle,
@@ -22,8 +24,10 @@ import {
     useCardStaggerAnimation,
     usePanelTransition,
 } from "./panelAnimation";
+import FadeIn from "../view/FadeIn";
 
 const HEADER_BAR = 72;
+const FADE_OUT_MS = 400;
 
 const useStyles = createUseStyles({
     root: {
@@ -148,6 +152,23 @@ const useGridStyles = createUseStyles({
         top: 0,
         right: "1rem",
     },
+    upgradedView: {
+        textAlign: "center",
+        margin: "auto",
+        position: "absolute",
+        top: "45%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
+    fadeWrapper: {
+        width: "100%",
+        height: "100%",
+        opacity: 1,
+        transition: `opacity ${FADE_OUT_MS}ms ease-in`,
+        "&.fadingOut": {
+            opacity: 0,
+        },
+    },
 });
 
 const CardUpgradeGrid = ({
@@ -168,6 +189,12 @@ const CardUpgradeGrid = ({
 }) => {
     const [selectedAbilityId, setSelectedAbilityId] = useState(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(true);
+    const [isFadingUpgradeView, setIsFadingUpgradeView] = useState(false);
+    const [upgradedCard, setUpgradedCard] = useState<{
+        original: CombatAbility;
+        upgraded: CombatAbility;
+        updatedDeck: CombatAbility[];
+    } | null>(null);
 
     const classes = useGridStyles();
     const { isClosing, close, closeDuration } = usePanelTransition();
@@ -175,6 +202,11 @@ const CardUpgradeGrid = ({
 
     const handleClose = (onFinished?: () => void) => {
         close(onFinished, animateCardsOut());
+    };
+
+    const handleUpgradedCardsComplete = (updatedDeck: CombatAbility[]) => {
+        setUpgradedCard(null);
+        onConfirm?.(updatedDeck);
     };
 
     const uniqueCardsMap = cards?.reduce((acc, card: CombatAbility) => {
@@ -264,15 +296,25 @@ const CardUpgradeGrid = ({
                                                     return;
                                                 }
 
+                                                const upgradedCard = upgrade(cardToUpgrade);
+                                                if (!upgradedCard) {
+                                                    return;
+                                                }
+
                                                 const updatedCards = [
                                                     ...cards.filter(
                                                         (card) =>
                                                             card.instanceId !== selectedAbilityId,
                                                     ),
-                                                    upgrade(cardToUpgrade),
+                                                    upgradedCard,
                                                 ];
                                                 setSelectedAbilityId(null);
-                                                handleClose(() => onConfirm?.(updatedCards));
+                                                setIsFadingUpgradeView(false);
+                                                setUpgradedCard({
+                                                    original: cardToUpgrade,
+                                                    upgraded: upgradedCard,
+                                                    updatedDeck: updatedCards,
+                                                });
                                             }}
                                             disabled={!selectedAbilityId}
                                         >
@@ -297,6 +339,29 @@ const CardUpgradeGrid = ({
                     </div>
                 </div>
             </div>
+            {upgradedCard && (
+                <div
+                    className={classNames(classes.fadeWrapper, {
+                        fadingOut: isFadingUpgradeView,
+                    })}
+                >
+                    <FadeIn>
+                        <Overlay>
+                            <div className={classes.upgradedView}>
+                                <UpgradedCardsView
+                                    original={[upgradedCard.original]}
+                                    upgraded={[upgradedCard.upgraded]}
+                                    onExit={() =>
+                                        handleUpgradedCardsComplete(upgradedCard.updatedDeck)
+                                    }
+                                    onFadeOutStart={() => setIsFadingUpgradeView(true)}
+                                    showContinueButton={false}
+                                />
+                            </div>
+                        </Overlay>
+                    </FadeIn>
+                </div>
+            )}
         </div>
     );
 };
