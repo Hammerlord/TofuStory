@@ -55,13 +55,16 @@ export const rollShopItem = ({
 }: {
     player: Player;
     excludeItems?: Item[];
-}): ShopItem => {
-    const item: Item = getRandomItem(
+}): ShopItem | null => {
+    const item: Item | undefined = getRandomItem(
         rollItemPool({
             player,
             excludeItems: [...excludeItems, mesoItem, bigMesoItem, hugeMesoItem],
         }),
     );
+    if (!item) {
+        return null;
+    }
 
     const priceRangeForRarity = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON] as [
         number,
@@ -103,12 +106,13 @@ export const generateShopInventory = ({
     // Items
     const itemsRolledForSale: ShopItem[] = [];
     Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
-        itemsRolledForSale.push(
-            rollShopItem({
-                player,
-                excludeItems: itemsRolledForSale.map(({ item }) => item),
-            }),
-        );
+        const rolledItem = rollShopItem({
+            player,
+            excludeItems: itemsRolledForSale.map(({ item }) => item),
+        });
+        if (rolledItem) {
+            itemsRolledForSale.push(rolledItem);
+        }
     });
 
     const items = [...itemsRolledForSale];
