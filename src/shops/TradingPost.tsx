@@ -137,7 +137,10 @@ const TradingPostView = ({
     tradesRemaining = 2,
 }: {
     player: Player;
-    onTrade;
+    onTrade: (options: {
+        selectedPlayerItem: Item | null;
+        selectedVendorItem: Item | null;
+    }) => void;
     vendorItems: Item[];
     tradesRemaining: number;
     onExit?: () => void;
@@ -146,10 +149,10 @@ const TradingPostView = ({
     const classes = useStyles();
     const upgradedStarterItem = STARTER_ITEM_UPGRADE_MAP[player.class];
     const starterItem = player.items.find((item) => item.rarity === RARITIES.STARTER);
-    const [selectedPlayerItem, setSelectedPlayerItem] = useState(null);
-    const [selectedVendorItem, setSelectedVendorItem] = useState(null);
+    const [selectedPlayerItem, setSelectedPlayerItem] = useState<Item | null>(null);
+    const [selectedVendorItem, setSelectedVendorItem] = useState<Item | null>(null);
     const isSelectedUpgradedStarter = selectedVendorItem?.name === upgradedStarterItem?.name;
-    const dialogMemo = useRef([]);
+    const dialogMemo = useRef<string[]>([]);
 
     const playerItems = player.items.filter(
         (item: Item) =>
@@ -178,7 +181,7 @@ const TradingPostView = ({
                 return "Well struck. Anything else catch your eye?";
             }
 
-            if (!selectedVendorItem) {
+            if (!selectedVendorItem && selectedPlayerItem) {
                 if (selectedPlayerItem.rarity === RARITIES.STARTER) {
                     return "Hmmm, that item. It seems to be resonating with something of mine.";
                 }
@@ -194,7 +197,7 @@ const TradingPostView = ({
                 return "Hmm... offer another item, perhaps.";
             }
 
-            if (!selectedPlayerItem) {
+            if (!selectedPlayerItem && selectedVendorItem) {
                 if (isSelectedUpgradedStarter) {
                     return "Oh, this? I've had it for a long time. It seems to be... resonating with something you own.";
                 }
@@ -215,7 +218,7 @@ const TradingPostView = ({
                 return "I'm afraid there's nothing I'd like to trade for this item.";
             }
 
-            if (selectedPlayerItem.rarity === RARITIES.STARTER) {
+            if (selectedPlayerItem?.rarity === RARITIES.STARTER) {
                 return "Ah! Can you feel that magnetism?";
             }
             return "Well then, shall we settle the deal?";
@@ -250,7 +253,7 @@ const TradingPostView = ({
         }
     };
 
-    const offerElement = (item: Item, isPlayerItem: boolean) => {
+    const offerElement = (item: Item | null, isPlayerItem: boolean) => {
         if (!item) {
             return (
                 <div className={classes.itemPlaceholder}>
@@ -274,10 +277,12 @@ const TradingPostView = ({
         return item?.rarity || RARITIES.COMMON;
     };
 
-    const RARITY_CHART = {
+    const RARITY_CHART: Record<RARITIES, number> = {
         [RARITIES.RARE]: 3,
         [RARITIES.UNCOMMON]: 2,
         [RARITIES.COMMON]: 1,
+        // Starter items are never exchanged here. This is just for typed indexing.
+        [RARITIES.STARTER]: 0,
     };
 
     const canVendorItemBeExchanged = (item: Item) => {
@@ -295,7 +300,7 @@ const TradingPostView = ({
         );
     };
 
-    const canPlayerItemBeExchanged = (item) => {
+    const canPlayerItemBeExchanged = (item: Item) => {
         if (!tradesRemaining) {
             return false;
         }
@@ -338,7 +343,7 @@ const TradingPostView = ({
                 {isSelectedUpgradedStarter && (
                     <div>
                         {selectedVendorItem?.name} replaces{" "}
-                        {<Icon icon={starterItem.image} size="sm" />} {starterItem?.name}.
+                        {<Icon icon={starterItem?.image} size="sm" />} {starterItem?.name}.
                     </div>
                 )}
             </div>
@@ -460,7 +465,13 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
         .map((item) => (alreadyObtained[item.name] ? replacementItems[item.name] : item))
         .filter((item): item is Item => Boolean(item));
 
-    const handleTrade = ({ selectedPlayerItem, selectedVendorItem }) => {
+    const handleTrade = ({
+        selectedPlayerItem,
+        selectedVendorItem,
+    }: {
+        selectedPlayerItem: Item | null;
+        selectedVendorItem: Item | null;
+    }) => {
         if (!selectedPlayerItem || !selectedVendorItem) {
             return;
         }
