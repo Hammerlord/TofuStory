@@ -1,9 +1,28 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
 import { AbilityEffect, CombatAbility } from "../../ability/types";
 import { cardPassesFilterCondition } from "../selectCardUtils";
 import { RefObject, useMemo } from "react";
 import { CARD_WIDTH } from "../../ability/AbilityView/constants";
+
+const useStyles = createUseStyles({
+    // Key hint shown above each card, matching the number-key shortcuts (1-9 select cards 1-9, 0 selects the 10th)
+    cardIndex: {
+        display: "block",
+        textAlign: "center",
+        fontSize: "0.95rem",
+        fontWeight: 700,
+        lineHeight: "1.2",
+        marginBottom: 4,
+        color: "rgba(255, 255, 255, 0.95)",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2px black")
+            .join(", "),
+        userSelect: "none",
+        pointerEvents: "none",
+    },
+});
 
 export const getHandAuraEffects = (hand: CombatAbility[]): AbilityEffect[][] => {
     const auraEffects: AbilityEffect[][] = []; // Indexed effects. i = 0 : array of effects to apply to card in the 0th slot
@@ -50,6 +69,7 @@ const Hand = ({
     cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
     highlightIndex?: number | null;
 }) => {
+    const classes = useStyles();
     const handleAbilityMouseDown = (event: React.MouseEvent, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
             onAbilityClick(event, id);
@@ -97,6 +117,7 @@ const Hand = ({
                                 ease: [0.22, 1, 0.36, 1],
                             }}
                         >
+                            <span className={classes.cardIndex}>{(i + 1) % 10}</span>
                             <AbilityView
                                 onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
                                 isSelected={

@@ -20,6 +20,13 @@ export type KeyboardNav =
 
 const BATTLEFIELD_SIZE = 5;
 
+const getCardIndexFromNumberKey = (key: string): number | null => {
+    if (!/^[0-9]$/.test(key)) {
+        return null;
+    }
+    return key === "0" ? 9 : Number(key) - 1;
+};
+
 // The centre slot is a natural starting point when keyboard-targeting. Return the valid
 // target whose index is closest to the centre, preferring the earlier entry on ties
 // (enemy side comes before the player side, and lower indices before higher ones).
@@ -50,7 +57,8 @@ export interface KeyboardNavOutput {
 }
 
 /**
- * Arrow-key navigation of the hand and its targets, plus the E end-turn keybind.
+ * Keyboard navigation of the hand and its targets: arrow keys to move between cards/slots,
+ * number keys 1-0 to select a card at that index, plus the E end-turn keybind.
  */
 export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     const dispatch = useAppDispatch();
@@ -126,7 +134,6 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         [isKeyboardTargetValid, enemySide, playerSide],
     );
 
-    // Whether the keyboard-highlighted card could be selected by a mouse click (unplayable/locked/resource checks)
     const canSelectCardForKeyboard = useCallback(
         (card: CombatAbility | null | undefined): boolean => {
             if (!card) {
@@ -263,14 +270,26 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 e.key !== "ArrowUp" &&
                 e.key !== "ArrowDown" &&
                 e.key !== "e" &&
-                e.key !== "E"
+                e.key !== "E" &&
+                getCardIndexFromNumberKey(e.key) === null
             ) {
                 return;
             }
 
-            // E ends the turn
             if (e.key === "e" || e.key === "E") {
                 dispatch(updateBattleState(BATTLE_STATES.TURN_END));
+                return;
+            }
+
+            const numberKeyCardIndex = getCardIndexFromNumberKey(e.key);
+            if (numberKeyCardIndex !== null) {
+                if (numberKeyCardIndex >= hand.length) {
+                    return;
+                }
+                dispatch(selectAlly(null));
+                setKeyboardNav({ mode: "card", cardIndex: numberKeyCardIndex });
+                selectHandCard(numberKeyCardIndex);
+                beginTargeting(numberKeyCardIndex);
                 return;
             }
 
