@@ -58,7 +58,9 @@ export interface KeyboardNavOutput {
 
 /**
  * Keyboard navigation of the hand and its targets: arrow keys to move between cards/slots,
- * number keys 1-0 to select a card at that index, plus the E end-turn keybind.
+ * number keys 1-0 to select a card at that index and begin targeting, Enter to use the
+ * selected card on the selected target, Escape to cancel the selection, plus the E end-turn
+ * keybind.
  */
 export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     const dispatch = useAppDispatch();
@@ -271,6 +273,8 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 e.key !== "ArrowDown" &&
                 e.key !== "e" &&
                 e.key !== "E" &&
+                e.key !== "Escape" &&
+                e.key !== "Enter" &&
                 getCardIndexFromNumberKey(e.key) === null
             ) {
                 return;
@@ -290,6 +294,17 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 setKeyboardNav({ mode: "card", cardIndex: numberKeyCardIndex });
                 selectHandCard(numberKeyCardIndex);
                 beginTargeting(numberKeyCardIndex);
+                return;
+            }
+
+            if (e.key === "Escape") {
+                if (keyboardNav?.mode === "target") {
+                    setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
+                } else {
+                    setKeyboardNav(null);
+                    dispatch(selectAlly(null));
+                    dispatch(selectHandAbility(null));
+                }
                 return;
             }
 
@@ -368,6 +383,10 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                     cardIndex: keyboardNav.cardIndex,
                     target: validTargets[nextIndex],
                 });
+            } else if (e.key === "Enter") {
+                // Keep a focused button (eg. End Turn) from also activating on Enter
+                e.preventDefault();
+                handleKeyboardUseCard(keyboardNav);
             } else if (e.key === "ArrowUp") {
                 handleKeyboardUseCard(keyboardNav);
             } else if (e.key === "ArrowDown") {
