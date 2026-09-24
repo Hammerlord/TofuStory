@@ -212,7 +212,9 @@ export const getGameFile = () => {
                 acc[townName].shop = {
                     ...shop,
                     abilities: shop.abilities.map(hydrateShopAbility),
-                    items: shop.items.map(hydrateShopItem).filter((v: ShopItem) => v),
+                    items: shop.items
+                        .map(hydrateShopItem)
+                        .filter((v: ShopItem | null) => v === null || typeof v.item !== "string"),
                 };
             }
 
