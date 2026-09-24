@@ -25,14 +25,20 @@ import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
 
 const HEADER_BAR = 72;
 
-// Purchase animation: the sold item fades out while a meso bag is "placed down" at its centre.
-const MESO_BAG_NATIVE_SIZE = 23; // MesoBag.png is 23x23
-const MESO_BAG_SCALE = 2; // the bag is shown at 200% of its native size
+const MESO_BAG_NATIVE_SIZE = 23;
+const MESO_BAG_SCALE = 2;
 const ITEM_FADE_OUT_MS = 250;
 const BAG_DROP_MS = 400; // time for the bag to fade in and descend into place
 const BAG_HOLD_MS = 400; // how long the bag sits on the item before fading away
 const BAG_FADE_OUT_MS = 300;
 const BAG_START_SHIFT_PX = 50; // the bag starts this many px above the item, then drops down
+
+const RETURNING_ITEM_FADE_OUT_MS = 120;
+const RETURNING_ITEM_FADE_IN_MS = 150;
+const RETURNING_BAG_DROP_MS = 250;
+const RETURNING_BAG_HOLD_MS = 200;
+const RETURNING_BAG_FADE_OUT_MS = 200;
+const RETURNING_BAG_START_SHIFT_PX = 30;
 
 const useStyles = createUseStyles({
     ...panelKeyframes,
@@ -288,17 +294,21 @@ const ShopView = ({
                 }
 
                 setSelectedItemIndex(null);
+
+                const returningItemElement =
+                    selectedItemIndex !== null ? itemRefs.current[selectedItemIndex] : null;
+                if (returningItemElement) {
+                    animateItemPurchase(returningItemElement, true);
+                }
                 return;
             }
 
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
 
-            // The item fades out and a meso bag is placed down over it. Food stays in the shop,
-            // so only animate purchases where the item is actually removed.
             const itemElement =
                 selectedItemIndex !== null ? itemRefs.current[selectedItemIndex] : null;
             if (itemElement) {
-                animateItemPurchase(itemElement);
+                animateItemPurchase(itemElement, false);
             }
 
             const updatedItems = items.slice();
@@ -306,7 +316,6 @@ const ShopView = ({
             onUpdateShopState({ items: updatedItems });
 
             if (isConsumable) {
-                // An incense or golden hammer was bought. They become more expensive with each purchase.
                 dispatch(onPurchaseConsumable(item.name));
             }
 
@@ -314,23 +323,49 @@ const ShopView = ({
         }
     };
 
-    const animateItemPurchase = (itemElement: HTMLElement) => {
+    const animateItemPurchase = (itemElement: HTMLElement, itemReturns: boolean) => {
         const rect = itemElement.getBoundingClientRect();
 
-        const clone = itemElement.cloneNode(true) as HTMLElement;
-        copyComputedStyles(itemElement, clone);
-        Object.assign(clone.style, {
-            position: "fixed",
-            left: `${rect.left}px`,
-            top: `${rect.top}px`,
-            width: `${rect.width}px`,
-            height: `${rect.height}px`,
-            margin: "0",
-            zIndex: "9999",
-            pointerEvents: "none",
-        });
-        document.body.appendChild(clone);
-        playFadeOutAnimation({ object: clone, playbackTime: ITEM_FADE_OUT_MS, fill: "forwards" });
+        const itemFadeOutMs = itemReturns ? RETURNING_ITEM_FADE_OUT_MS : ITEM_FADE_OUT_MS;
+        const bagDropMs = itemReturns ? RETURNING_BAG_DROP_MS : BAG_DROP_MS;
+        const bagHoldMs = itemReturns ? RETURNING_BAG_HOLD_MS : BAG_HOLD_MS;
+        const bagFadeOutMs = itemReturns ? RETURNING_BAG_FADE_OUT_MS : BAG_FADE_OUT_MS;
+        const bagStartShiftPx = itemReturns ? RETURNING_BAG_START_SHIFT_PX : BAG_START_SHIFT_PX;
+
+        let clone: HTMLElement | null = null;
+
+        if (itemReturns) {
+            const fadeOut = playFadeOutAnimation({
+                object: itemElement,
+                playbackTime: itemFadeOutMs,
+                fill: "both",
+            });
+            fadeOut.finished.then(() => {
+                if (document.contains(itemElement)) {
+                    playFadeInAnimation({
+                        object: itemElement,
+                        playbackTime: RETURNING_ITEM_FADE_IN_MS,
+                        delay: bagDropMs + bagHoldMs + bagFadeOutMs,
+                        fill: "both",
+                    });
+                }
+            });
+        } else {
+            clone = itemElement.cloneNode(true) as HTMLElement;
+            copyComputedStyles(itemElement, clone);
+            Object.assign(clone.style, {
+                position: "fixed",
+                left: `${rect.left}px`,
+                top: `${rect.top}px`,
+                width: `${rect.width}px`,
+                height: `${rect.height}px`,
+                margin: "0",
+                zIndex: "9999",
+                pointerEvents: "none",
+            });
+            document.body.appendChild(clone);
+            playFadeOutAnimation({ object: clone, playbackTime: itemFadeOutMs, fill: "forwards" });
+        }
 
         const bag = document.createElement("img");
         bag.src = MesoBagImage;
@@ -348,14 +383,14 @@ const ShopView = ({
         document.body.appendChild(bag);
 
         const cleanup = () => {
-            clone.remove();
+            clone?.remove();
             bag.remove();
         };
 
         const bagDropIn = playFadeInAnimation({
             object: bag,
-            shift: -BAG_START_SHIFT_PX,
-            playbackTime: BAG_DROP_MS,
+            shift: -bagStartShiftPx,
+            playbackTime: bagDropMs,
             fill: "both",
         });
 
@@ -364,11 +399,11 @@ const ShopView = ({
                 window.setTimeout(() => {
                     const bagFadeOut = playFadeOutAnimation({
                         object: bag,
-                        playbackTime: BAG_FADE_OUT_MS,
+                        playbackTime: bagFadeOutMs,
                         fill: "forwards",
                     });
                     bagFadeOut.finished.then(cleanup).catch(cleanup);
-                }, BAG_HOLD_MS);
+                }, bagHoldMs);
             })
             .catch(cleanup);
     };
