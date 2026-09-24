@@ -16,10 +16,12 @@ import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
 import { SHOP_REFRESH_COST } from "./constants";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
+import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
 
 const HEADER_BAR = 72;
 
 const useStyles = createUseStyles({
+    ...panelKeyframes,
     root: {
         position: "fixed",
         left: 0,
@@ -105,6 +107,11 @@ const useStyles = createUseStyles({
         position: "absolute",
         right: "32px",
         paddingTop: "32px",
+    },
+    confirmContainer: {
+        minHeight: 38,
+        marginBottom: 16,
+        ...confirmButtonDropStyle,
     },
     cannotAfford: {
         filter: "saturate(0%)",
@@ -323,13 +330,16 @@ const ShopView = ({
                         <span className={classes.priceLabel}>{price}</span>
                     </div>
                 </div>
-                {i === selectedAbilityIndex && (
-                    <div>
+                <div
+                    className={classes.confirmContainer}
+                    key={i === selectedAbilityIndex ? "show" : "hide"}
+                >
+                    {i === selectedAbilityIndex && (
                         <Button color={"primary"} onClick={buy}>
                             Buy
                         </Button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         );
     };
@@ -378,13 +388,16 @@ const ShopView = ({
                         )}
                     </div>
                 </div>
-                {i === selectedItemIndex && (
-                    <div>
+                <div
+                    className={classes.confirmContainer}
+                    key={i === selectedItemIndex ? "show" : "hide"}
+                >
+                    {i === selectedItemIndex && (
                         <Button color={"primary"} onClick={buy}>
                             Buy
                         </Button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         );
     };
