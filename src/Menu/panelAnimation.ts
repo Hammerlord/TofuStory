@@ -4,6 +4,8 @@ import { playFadeInAnimation, playFadeOutAnimation } from "../character/animatio
 export const OPEN_PANEL_ANIMATION_MS = 250;
 export const CLOSE_PANEL_ANIMATION_MS = 250;
 const DIST = 48;
+export const CONFIRM_BUTTON_DROP_PX = 18;
+export const CONFIRM_BUTTON_ANIMATION_MS = 250;
 
 export const panelKeyframes = {
     "@keyframes slideDownFadeIn": {
@@ -30,6 +32,18 @@ export const panelKeyframes = {
             translate: `0 -${DIST}px`,
         },
     },
+    "@keyframes confirmButtonDrop": {
+        "0%": {
+            opacity: 0,
+            translate: `0 -${CONFIRM_BUTTON_DROP_PX}px`,
+        },
+        "90%": {
+            opacity: 1,
+        },
+        "100%": {
+            translate: "0 0",
+        },
+    },
 };
 
 export const slideFadeInStyle = {
@@ -42,6 +56,13 @@ export const slideFadeInStyle = {
 export const slideFadeOutStyle = {
     animationName: "$slideUpFadeOut",
     animationDuration: `${CLOSE_PANEL_ANIMATION_MS}ms`,
+    animationTimingFunction: "ease-out",
+    animationFillMode: "forwards",
+};
+
+export const confirmButtonDropStyle = {
+    animationName: "$confirmButtonDrop",
+    animationDuration: `${CONFIRM_BUTTON_ANIMATION_MS}ms`,
     animationTimingFunction: "ease-out",
     animationFillMode: "forwards",
 };

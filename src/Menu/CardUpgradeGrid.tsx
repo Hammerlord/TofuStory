@@ -18,6 +18,7 @@ import { scrollableCardSection } from "./cardGridStyles";
 import Overlay from "../view/Overlay";
 import UpgradedCardsView from "../scene/UpgradedCards";
 import {
+    confirmButtonDropStyle,
     panelKeyframes,
     slideFadeInStyle,
     slideFadeOutStyle,
@@ -30,8 +31,6 @@ import { GoldenHammerImage } from "../images";
 
 const HEADER_BAR = 72;
 const FADE_OUT_MS = 400;
-const CONFIRM_BUTTON_DROP_PX = 18;
-const CONFIRM_BUTTON_ANIMATION_MS = 250;
 
 const useStyles = createUseStyles({
     root: {
@@ -103,18 +102,6 @@ const UpgradeTile = ({
 
 const useGridStyles = createUseStyles({
     ...panelKeyframes,
-    "@keyframes confirmButtonDrop": {
-        "0%": {
-            opacity: 0,
-            translate: `0 -${CONFIRM_BUTTON_DROP_PX}px`,
-        },
-        "90%": {
-            opacity: 1,
-        },
-        "100%": {
-            translate: "0 0",
-        },
-    },
     root: {
         width: "100%",
         height: "100%",
@@ -147,10 +134,7 @@ const useGridStyles = createUseStyles({
     confirmContainer: {
         minHeight: 38,
         marginBottom: 16,
-        animationName: "$confirmButtonDrop",
-        animationDuration: `${CONFIRM_BUTTON_ANIMATION_MS}ms`,
-        animationTimingFunction: "ease-out",
-        animationFillMode: "forwards",
+        ...confirmButtonDropStyle,
     },
     cardSection: {
         position: "relative",

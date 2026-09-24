@@ -9,6 +9,7 @@ import Button from "../view/Button";
 import CardSortControls, { useCardSort } from "./CardSortControls";
 import { scrollableCardSection } from "./cardGridStyles";
 import {
+    confirmButtonDropStyle,
     panelKeyframes,
     slideFadeInStyle,
     slideFadeOutStyle,
@@ -81,6 +82,7 @@ const useStyles = createUseStyles({
     confirmContainer: {
         minHeight: "38px",
         marginBottom: "16px",
+        ...confirmButtonDropStyle,
     },
     divider: {
         borderBottom: "1px solid rgba(255, 255, 255, 0.6)",
@@ -216,7 +218,14 @@ const CardRemovalGrid = ({
                                         </div>
                                     )}
                                 </div>
-                                <div className={classes.confirmContainer}>
+                                <div
+                                    className={classes.confirmContainer}
+                                    key={
+                                        card.instanceId === selectedAbilityId
+                                            ? "show"
+                                            : "hide"
+                                    }
+                                >
                                     {card.instanceId === selectedAbilityId && (
                                         <Button
                                             variant={"contained"}
