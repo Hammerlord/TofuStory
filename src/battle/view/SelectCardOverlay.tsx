@@ -41,12 +41,29 @@ const useStyles = createUseStyles({
         margin: "0 24px",
         verticalAlign: "bottom",
         position: "relative",
-        "&.selected": {
-            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
-        },
-        "&.selectedForRemoval": {
-            filter: "drop-shadow(0 0 4px #ff3a3a) drop-shadow(0 0 4px #ff3a3a)",
-        },
+    },
+    selected: {
+        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+    },
+    selectedForRemoval: {
+        filter: "drop-shadow(0 0 4px #ff3a3a) drop-shadow(0 0 4px #ff3a3a)",
+    },
+    cardIndex: {
+        position: "absolute",
+        bottom: "100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        marginBottom: 4,
+        fontSize: "0.95rem",
+        fontWeight: 700,
+        lineHeight: "1.2",
+        color: "rgba(255, 255, 255, 0.95)",
+        textShadow: Array.from({ length: 10 })
+            .map(() => "0 0 2px black")
+            .join(", "),
+        userSelect: "none",
+        pointerEvents: "none",
+        whiteSpace: "nowrap",
     },
     cancel: {
         marginTop: "2rem",
@@ -87,14 +104,9 @@ const SelectCardOverlay = ({
     deck: CombatAbility[];
     discard: CombatAbility[];
 }) => {
-    const [selectedAbilityIds, setSelectedAbilityIds] = useState<string[]>([]);
-    // The card currently focused by the arrow keys.
-    const [currentIndex, setCurrentIndex] = useState(0);
     const classes = useStyles();
     const { selectCards, abilityQueued } = selectCardsPrompt || {};
     const { type, maxAmount: configuredMax, effects } = selectCards;
-    const maxAmount =
-        configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
     const [abilityChoices] = useState(
         getCardSelection({
             hand,
@@ -105,6 +117,14 @@ const SelectCardOverlay = ({
             player,
         }),
     );
+    const maxAmount =
+        configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
+    // A lone option is preselected so it can be confirmed with a single press.
+    const [selectedAbilityIds, setSelectedAbilityIds] = useState<string[]>(() =>
+        abilityChoices.length === 1 ? [abilityChoices[0].instanceId] : [],
+    );
+    // The card currently focused by the arrow keys.
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const selectedAbilities = abilityChoices.filter(({ instanceId }) =>
         selectedAbilityIds.includes(instanceId),
@@ -188,6 +208,21 @@ const SelectCardOverlay = ({
                 if (ability) {
                     setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
                 }
+            } else if (/^[0-9]$/.test(e.key)) {
+                e.preventDefault();
+                const index = e.key === "0" ? 9 : Number(e.key) - 1;
+                const ability = abilityChoices[index];
+                if (!ability) {
+                    return;
+                }
+                setCurrentIndex(index);
+                if (maxAmount === 1) {
+                    setSelectedAbilityIds([ability.instanceId]);
+                } else if (selectedAbilityIds.includes(ability.instanceId)) {
+                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
+                } else if (selectedAbilityIds.length < maxAmount) {
+                    setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
+                }
             } else if (e.key === "Enter") {
                 if (!isConfirmDisabled) {
                     e.preventDefault();
@@ -235,12 +270,7 @@ const SelectCardOverlay = ({
                         <div className={classes.abilityContainer}>
                             {abilityChoices.map((ability: CombatAbility, i: number) => (
                                 <div
-                                    className={classNames(classes.ability, {
-                                        selected: selectedAbilityIds.includes(ability.instanceId),
-                                        selectedForRemoval: isSelectedForRemoval(
-                                            ability.instanceId,
-                                        ),
-                                    })}
+                                    className={classes.ability}
                                     onClick={() => {
                                         setCurrentIndex(i);
                                         if (maxAmount === 1) {
@@ -263,9 +293,18 @@ const SelectCardOverlay = ({
                                     }}
                                     key={ability.instanceId}
                                 >
+                                    <span className={classes.cardIndex}>{(i + 1) % 10}</span>
                                     <AbilityView
                                         ability={ability}
                                         isSelected={maxAmount > 1 && currentIndex === i}
+                                        className={classNames({
+                                            [classes.selected]: selectedAbilityIds.includes(
+                                                ability.instanceId,
+                                            ),
+                                            [classes.selectedForRemoval]: isSelectedForRemoval(
+                                                ability.instanceId,
+                                            ),
+                                        })}
                                     />
                                     {isSelectedForRemoval(ability.instanceId) && (
                                         <div className={classes.x}>
