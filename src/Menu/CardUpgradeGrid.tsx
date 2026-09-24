@@ -25,9 +25,13 @@ import {
     usePanelTransition,
 } from "./panelAnimation";
 import FadeIn from "../view/FadeIn";
+import Icon from "../icon/Icon";
+import { GoldenHammerImage } from "../images";
 
 const HEADER_BAR = 72;
 const FADE_OUT_MS = 400;
+const CONFIRM_BUTTON_DROP_PX = 18;
+const CONFIRM_BUTTON_ANIMATION_MS = 250;
 
 const useStyles = createUseStyles({
     root: {
@@ -99,6 +103,18 @@ const UpgradeTile = ({
 
 const useGridStyles = createUseStyles({
     ...panelKeyframes,
+    "@keyframes confirmButtonDrop": {
+        "0%": {
+            opacity: 0,
+            translate: `0 -${CONFIRM_BUTTON_DROP_PX}px`,
+        },
+        "90%": {
+            opacity: 1,
+        },
+        "100%": {
+            translate: "0 0",
+        },
+    },
     root: {
         width: "100%",
         height: "100%",
@@ -131,6 +147,10 @@ const useGridStyles = createUseStyles({
     confirmContainer: {
         minHeight: 38,
         marginBottom: 16,
+        animationName: "$confirmButtonDrop",
+        animationDuration: `${CONFIRM_BUTTON_ANIMATION_MS}ms`,
+        animationTimingFunction: "ease-out",
+        animationFillMode: "forwards",
     },
     cardSection: {
         position: "relative",
@@ -246,6 +266,30 @@ const CardUpgradeGrid = ({
         return getUpgradeCard(card, { maxLevel: maxUpgradeLevel });
     };
 
+    const handleClickConfirmUpgrade = () => {
+        const cardToUpgrade = cards.find(({ instanceId }) => instanceId === selectedAbilityId);
+        if (!cardToUpgrade) {
+            return;
+        }
+
+        const upgradedCard = upgrade(cardToUpgrade);
+        if (!upgradedCard) {
+            return;
+        }
+
+        const updatedCards = [
+            ...cards.filter((card) => card.instanceId !== selectedAbilityId),
+            upgradedCard,
+        ];
+        setSelectedAbilityId(null);
+        setIsFadingUpgradeView(false);
+        setUpgradedCard({
+            original: cardToUpgrade,
+            upgraded: upgradedCard,
+            updatedDeck: updatedCards,
+        });
+    };
+
     return (
         <div
             className={classNames(classes.root, { panelClosing: isClosing })}
@@ -282,43 +326,27 @@ const CardUpgradeGrid = ({
                                     onClick={() => setSelectedAbilityId(card.instanceId)}
                                     isSelected={selectedAbilityId === card.instanceId}
                                 />
-                                <div className={classes.confirmContainer}>
+                                <div
+                                    className={classes.confirmContainer}
+                                    key={
+                                        selectedAbilityId === card.instanceId
+                                            ? "show"
+                                            : "hide"
+                                    }
+                                >
                                     {selectedAbilityId === card.instanceId && (
                                         <Button
                                             variant={"contained"}
                                             color={"primary"}
-                                            onClick={() => {
-                                                const cardToUpgrade = cards.find(
-                                                    ({ instanceId }) =>
-                                                        instanceId === selectedAbilityId,
-                                                );
-                                                if (!cardToUpgrade) {
-                                                    return;
-                                                }
-
-                                                const upgradedCard = upgrade(cardToUpgrade);
-                                                if (!upgradedCard) {
-                                                    return;
-                                                }
-
-                                                const updatedCards = [
-                                                    ...cards.filter(
-                                                        (card) =>
-                                                            card.instanceId !== selectedAbilityId,
-                                                    ),
-                                                    upgradedCard,
-                                                ];
-                                                setSelectedAbilityId(null);
-                                                setIsFadingUpgradeView(false);
-                                                setUpgradedCard({
-                                                    original: cardToUpgrade,
-                                                    upgraded: upgradedCard,
-                                                    updatedDeck: updatedCards,
-                                                });
-                                            }}
+                                            onClick={handleClickConfirmUpgrade}
                                             disabled={!selectedAbilityId}
                                         >
-                                            Confirm
+                                            <Icon
+                                                size="sm"
+                                                icon={GoldenHammerImage}
+                                                sx={{ mr: 1 }}
+                                            />{" "}
+                                            Upgrade
                                         </Button>
                                     )}
                                 </div>
