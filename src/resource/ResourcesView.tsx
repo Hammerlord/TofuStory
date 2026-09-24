@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef } from "react";
+import { Ref } from "react";
 import { createUseStyles } from "react-jss";
 import Icon from "../icon/Icon";
 import { LeafImage, ManaImage } from "../images";
@@ -18,9 +18,10 @@ interface ResourceInterface {
     text?: string | number;
     className?: string;
     size?: "xl" | "lg" | "md" | "sm";
+    ref?: Ref<HTMLSpanElement>;
 }
 
-export const Fury = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
+export const Fury = ({ text, className, size, ref }: ResourceInterface) => {
     const classes = useFuryStyles();
     return (
         <Icon
@@ -32,9 +33,9 @@ export const Fury = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, clas
             ref={ref}
         />
     );
-});
+};
 
-export const Mana = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
+export const Mana = ({ text, className, size, ref }: ResourceInterface) => {
     return (
         <Icon
             className={classNames(className)}
@@ -44,7 +45,7 @@ export const Mana = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, clas
             ref={ref}
         />
     );
-});
+};
 
 const useStaminaStyles = createUseStyles({
     root: {
@@ -54,7 +55,7 @@ const useStaminaStyles = createUseStyles({
     },
 });
 
-export const Stamina = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, className, size }: ResourceInterface, ref) => {
+export const Stamina = ({ text, className, size, ref }: ResourceInterface) => {
     const classes = useStaminaStyles();
 
     return (
@@ -66,4 +67,4 @@ export const Stamina = forwardRef<HTMLSpanElement, ResourceInterface>(({ text, c
             ref={ref}
         />
     );
-});
+};

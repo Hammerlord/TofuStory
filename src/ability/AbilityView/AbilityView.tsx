@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import classNames from "classnames";
-import { FC, forwardRef, useMemo } from "react";
+import { FC, Ref, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { findCombatantData } from "../../battle/actions/combatantData";
 import { canUsePlayerAbility } from "../../battle/actions/playerAbility";
@@ -290,6 +290,7 @@ interface AbilityViewProps {
     highlightResource?: boolean;
     highlightDamage?: boolean;
     highlightArmor?: boolean;
+    ref?: Ref<HTMLDivElement>;
 }
 
 const LevelView = ({ level }: { level: number }) => {
@@ -312,24 +313,21 @@ const LevelView = ({ level }: { level: number }) => {
     );
 };
 
-const AbilityView = forwardRef(
-    (
-        {
-            onClick,
-            onMouseDown,
-            isSelected,
-            ability,
-            className,
-            disableGlow,
-            disableBattleBonuses,
-            flipped,
-            highlightResource,
-            highlightDamage,
-            highlightArmor,
-            ...other
-        }: AbilityViewProps,
-        ref,
-    ) => {
+const AbilityView = ({
+    onClick,
+    onMouseDown,
+    isSelected,
+    ability,
+    className,
+    disableGlow,
+    disableBattleBonuses,
+    flipped,
+    highlightResource,
+    highlightDamage,
+    highlightArmor,
+    ref,
+    ...other
+}: AbilityViewProps) => {
         const classes = useStyles();
         const character = useAppSelector((state) => state.character);
         const battle = useAppSelector((state) => state.battle);
@@ -893,11 +891,10 @@ const AbilityView = forwardRef(
                             <LockIcon />
                         </div>
                     )}
-                    <div className={classes.refContainer} ref={ref as any} />
+                    <div className={classes.refContainer} ref={ref} />
                 </div>
             </AbilityTooltip>
         );
-    },
-);
+};
 
 export default AbilityView;

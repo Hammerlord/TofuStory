@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { forwardRef, ReactElement } from "react";
+import { ReactElement, Ref } from "react";
 import { createUseStyles } from "react-jss";
 import { GREEN } from "../ability/AbilityView/constants";
 
@@ -108,22 +108,23 @@ interface IconInterface {
     children?: ReactElement;
     highlightText?: "positive" | "negative";
     highlightIcon?: boolean;
+    ref?: Ref<HTMLSpanElement>;
     [x: string]: any;
 }
 
-const Icon = forwardRef<HTMLSpanElement, IconInterface>((props, ref) => {
-    const {
-        text,
-        icon,
-        background,
-        size = "md",
-        className,
-        style,
-        children,
-        highlightText,
-        highlightIcon,
-        ...other
-    } = props;
+const Icon = ({
+    text,
+    icon,
+    background,
+    size = "md",
+    className,
+    style,
+    children,
+    highlightText,
+    highlightIcon,
+    ref,
+    ...other
+}: IconInterface) => {
     const classes = useStyles();
     const iconSize = ["min", "xs", "sm", "md", "lg", "xl"].includes(size) ? size : undefined;
     let iconNode;
@@ -167,6 +168,6 @@ const Icon = forwardRef<HTMLSpanElement, IconInterface>((props, ref) => {
             </span>
         </span>
     );
-});
+};
 
 export default Icon;
