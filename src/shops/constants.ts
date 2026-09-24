@@ -46,6 +46,7 @@ export type ShopItem = {
     item: Item;
     isConsumable: boolean;
     isFood: boolean;
+    statChanges?: { maxHP?: number; HP?: number };
 };
 
 export type ShopAbility = {

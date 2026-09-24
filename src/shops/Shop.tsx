@@ -19,7 +19,7 @@ import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
-import { SHOP_REFRESH_COST } from "./constants";
+import { OnBuyItem, SHOP_REFRESH_COST, ShopAbility, ShopItem } from "./constants";
 import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
 
@@ -201,7 +201,8 @@ const ShopView = ({
     const [selectedAbilityIndex, setSelectedAbilityIndex] = useState<number | null>(null);
     const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-    const { player, purchasedConsumables } = useAppSelector((state) => state.character);
+    // The shop is only reachable once a player exists (after class selection).
+    const player = useAppSelector((state) => state.character?.player)!;
     const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
     const dispatch = useAppDispatch();
 
@@ -226,7 +227,7 @@ const ShopView = ({
     };
 
     // If the player acquired new equipment prior to a revisit, those equipments should not be in the shop inventory
-    const alreadyObtained = player.items.reduce((acc, item: Item) => {
+    const alreadyObtained = player.items.reduce<Record<string, boolean>>((acc, item: Item) => {
         if (item.type === ITEM_TYPES.EQUIPMENT) {
             acc[item.name] = true;
         }
@@ -234,7 +235,7 @@ const ShopView = ({
     }, {});
 
     const items = initialItems.map((item) => {
-        if (!item || !alreadyObtained[item.item?.name]) {
+        if (!item || !alreadyObtained[item.item.name]) {
             return item;
         }
 
@@ -242,7 +243,7 @@ const ShopView = ({
     });
 
     const buy = () => {
-        if (abilities[selectedAbilityIndex]) {
+        if (selectedAbilityIndex !== null && abilities[selectedAbilityIndex]) {
             const { price: initPrice, item } = abilities[selectedAbilityIndex];
             const price = applyDiscount(initPrice);
             if (player.mesos >= price) {
@@ -255,7 +256,7 @@ const ShopView = ({
             return;
         }
 
-        if (items[selectedItemIndex]) {
+        if (selectedItemIndex !== null && items[selectedItemIndex]) {
             const {
                 price: initPrice,
                 item,
@@ -374,7 +375,7 @@ const ShopView = ({
 
     const classes = useStyles();
 
-    const getShopAbility = (shopItem, i: number) => {
+    const getShopAbility = (shopItem: ShopAbility | null, i: number) => {
         if (!shopItem) {
             return (
                 <div
@@ -427,7 +428,7 @@ const ShopView = ({
         );
     };
 
-    const getShopItem = (shopItem, i: number) => {
+    const getShopItem = (shopItem: ShopItem | null, i: number) => {
         if (!shopItem) {
             return (
                 <div
@@ -489,7 +490,7 @@ const ShopView = ({
     };
 
     const handleExitClick = () => {
-        onExit();
+        onExit?.();
         setSelectedAbilityIndex(null);
         setSelectedItemIndex(null);
     };
@@ -545,16 +546,18 @@ const ShopView = ({
 };
 
 const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
-    const { deck, player, townShops } = useAppSelector((state) => state.character);
+    const { deck, player: maybeNullPlayer, townShops } = useAppSelector((state) => state.character);
+    // The shop can only be opened after a class has been selected, so a player always exists.
+    const player = maybeNullPlayer!;
 
     // Only used if `town` is not supplied, for temporary merchant shops not found in town
-    const [shopState, setShopState] = useState({
+    const [shopState, setShopState] = useState<ShopState>({
         ...generateShopInventory({ player, deck }),
         usedFreeFood: 0,
         usedNumRefreshes: 0,
     });
 
-    const shopStateRedux = townShops?.[town]?.shop;
+    const shopStateRedux = town ? townShops?.[town]?.shop : undefined;
     const dispatch = useAppDispatch();
 
     const handleRefresh = (cost: number) => {
@@ -571,7 +574,7 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
         dispatch(updateMesos(-cost));
     };
 
-    const handleBuyItem = ({ items, mesosSpent, type, statChanges }) => {
+    const handleBuyItem: OnBuyItem = ({ items, mesosSpent, type, statChanges }) => {
         const { maxHP = 0, HP = 0 } = statChanges || {};
         const effectiveMaxHP = getMaxHP(player) + maxHP;
         const newHP = clamp(0, effectiveMaxHP, player.HP + HP);
@@ -593,7 +596,7 @@ const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
         }
     };
 
-    const handleUpdateShopState = (obj) => {
+    const handleUpdateShopState = (obj: { [key in keyof ShopState]?: ShopState[key] }) => {
         if (shopStateRedux) {
             dispatch(updateTownShop({ town: town!, shopKey: "shop", shopState: obj }));
         } else {
