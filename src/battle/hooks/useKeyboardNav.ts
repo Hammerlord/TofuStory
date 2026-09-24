@@ -287,6 +287,23 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
 
             const numberKeyCardIndex = getCardIndexFromNumberKey(e.key);
             if (numberKeyCardIndex !== null) {
+                if (keyboardNav?.mode === "target") {
+                    const selectedCard = hand[keyboardNav.cardIndex];
+                    if (selectedCard) {
+                        const validTargets = getKeyboardValidTargets(selectedCard);
+                        const slotNumber = numberKeyCardIndex + 1;
+                        const slot = validTargets.find(
+                            (target) => target.index + 1 === slotNumber,
+                        );
+                        if (slot) {
+                            handleKeyboardUseCard({
+                                cardIndex: keyboardNav.cardIndex,
+                                target: slot,
+                            });
+                        }
+                    }
+                    return;
+                }
                 if (numberKeyCardIndex >= hand.length) {
                     return;
                 }

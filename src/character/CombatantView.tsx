@@ -307,6 +307,27 @@ const useStyles = createUseStyles({
     previewAttacked: {
         top: -15,
     },
+    slotNumber: {
+        position: "absolute",
+        bottom: "94%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "0.95rem",
+        fontWeight: 700,
+        color: "black",
+        background: "#CCC",
+        width: "24px",
+        height: "24px",
+        verticalAlign: "middle",
+        lineHeight: "24px",
+        borderRadius: "2px",
+        boxShadow: "1px 1px 3px rgba(0, 0, 0, 1)",
+        border: "1px solid #444",
+        userSelect: "none",
+        pointerEvents: "none",
+        zIndex: 100,
+        whiteSpace: "nowrap",
+    },
 });
 
 const CombatantView = ({
@@ -328,6 +349,7 @@ const CombatantView = ({
     onMouseEnter,
     onMouseDown,
     characterRef,
+    keyboardSlotNumber,
     ...other
 }: {
     combatant?: Combatant | Player | null;
@@ -349,6 +371,7 @@ const CombatantView = ({
     onMouseDown?: (event: React.MouseEvent, index: number) => void;
     onMouseLeave?: (event: any) => void;
     characterRef: RefObject<HTMLDivElement | null>;
+    keyboardSlotNumber?: string | null;
 }) => {
     const battle = useAppSelector((state) => state.battle);
 
@@ -589,6 +612,7 @@ const CombatantView = ({
             onMouseEnter={handleMouseEnter}
             {...other}
         >
+            {keyboardSlotNumber && <span className={classes.slotNumber}>{keyboardSlotNumber}</span>}
             <div className={classes.inner}>
                 {showReticle && !isTargeted && (
                     <span className={classes.targetAffectedIndicatorContainer}>

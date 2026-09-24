@@ -302,7 +302,26 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     // Arrow-key navigation of the hand and its targets plus the E end-turn keybind.
     const keyboard = useKeyboardNav(controls);
-    const { keyboardNav, setKeyboardNav, keyboardPreviewTarget } = keyboard;
+    const { keyboardNav, setKeyboardNav, keyboardPreviewTarget, isKeyboardTargetValid } = keyboard;
+
+    // The card being keyboard-targeted, if any. Its valid targets are marked with number keys.
+    const selectedKeyboardTargetCard =
+        keyboardNav?.mode === "target"
+            ? selectedAbilityFromHand || hand[keyboardNav.cardIndex]
+            : undefined;
+
+    const getKeyboardSlotNumber = (
+        side: BATTLEFIELD_SIDES,
+        index: number,
+    ): string | null => {
+        if (
+            !selectedKeyboardTargetCard ||
+            !isKeyboardTargetValid(selectedKeyboardTargetCard, side, index)
+        ) {
+            return null;
+        }
+        return String(index + 1);
+    };
 
     const {
         hoveredCombatant,
@@ -519,6 +538,10 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                             selectedAbility={abilityToUse}
                                             characterRef={enemyRefs[i]}
                                             index={i}
+                                            keyboardSlotNumber={getKeyboardSlotNumber(
+                                                BATTLEFIELD_SIDES.ENEMY_SIDE,
+                                                i,
+                                            )}
                                         />
                                     ),
                                 )}
@@ -612,13 +635,17 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                                     ]
                                                 }
                                                 index={i}
+                                                keyboardSlotNumber={getKeyboardSlotNumber(
+                                                    BATTLEFIELD_SIDES.PLAYER_SIDE,
+                                                    i,
+                                                )}
                                             />
                                         );
                                     })}
                                 </div>
                             </div>
                             <div className={classes.rightContainer}>
-                                {isTutorial && noMoreMoves && !disableActions && (
+                                {isTutorial && noMoreMoves && !disableActions && !keyboardNav && (
                                     <div className={classes.clickIndicator}>
                                         <Icon icon={ClickIndicatorImage} />
                                     </div>
@@ -644,7 +671,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 </div>
                 {animationCanvas}
                 <div className={classes.abilityContainer}>
-                    {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && (
+                    {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && !keyboardNav && (
                         <div className={classes.clickIndicator}>
                             Click <br />
                             <Icon icon={ClickIndicatorImage} />
@@ -657,6 +684,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         selectedAbilityId={selectedHandAbilityId}
                         onAbilityClick={handleAbilityClick}
                         highlightIndex={keyboardNav?.cardIndex ?? null}
+                        hideCardIndexes={keyboardNav?.mode === "target"}
                     />
                 </div>
                 {showWaveClear && (

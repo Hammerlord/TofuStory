@@ -61,6 +61,7 @@ const Hand = ({
     className,
     cardRefs,
     highlightIndex,
+    hideCardIndexes,
 }: {
     hand: CombatAbility[];
     onAbilityClick: (event: React.MouseEvent, id: string) => void;
@@ -68,6 +69,7 @@ const Hand = ({
     className: string;
     cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
     highlightIndex?: number | null;
+    hideCardIndexes?: boolean;
 }) => {
     const classes = useStyles();
     const handleAbilityMouseDown = (event: React.MouseEvent, id: string) => {
@@ -117,7 +119,9 @@ const Hand = ({
                                 ease: [0.22, 1, 0.36, 1],
                             }}
                         >
-                            <span className={classes.cardIndex}>{(i + 1) % 10}</span>
+                            {!hideCardIndexes && (
+                                <span className={classes.cardIndex}>{(i + 1) % 10}</span>
+                            )}
                             <AbilityView
                                 onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
                                 isSelected={
