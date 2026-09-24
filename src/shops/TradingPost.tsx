@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
-import { COMMON_STYLES } from "../constants";
+import { COMMON_STYLES, HEADER_BAR } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { KerningTowerImage, MoonBunnyImage } from "../images";
@@ -16,8 +16,6 @@ import Tooltip from "../view/Tooltip";
 import LeaveButton from "./LeaveButton";
 import { NUM_TRADING_POST_TRADES } from "./constants";
 import { generateTradingPostInventory, rollTradingPostItem } from "./tradingPostUtils";
-
-const HEADER_BAR = 72;
 
 const useStyles = createUseStyles({
     ...COMMON_STYLES,

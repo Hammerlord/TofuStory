@@ -12,6 +12,7 @@ import {
     copyComputedStyles,
 } from "../character/animations";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
+import { HEADER_BAR } from "../constants";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { MesoBagImage, MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
@@ -27,8 +28,6 @@ import {
     CARD_ANIMATION_MS,
     CARD_ANIMATION_DELAY_MS,
 } from "../Menu/panelAnimation";
-
-const HEADER_BAR = 72;
 
 const MESO_BAG_NATIVE_SIZE = 23;
 const MESO_BAG_SCALE = 2;

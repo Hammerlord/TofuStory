@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import { CombatAbility } from "../ability/types";
+import { HEADER_BAR } from "../constants";
 import { XIcon } from "../images/icons";
 import Button from "../view/Button";
 import CardSortControls, { useCardSort } from "./CardSortControls";
@@ -17,8 +18,6 @@ import {
     useCardStaggerAnimation,
     usePanelTransition,
 } from "./panelAnimation";
-
-const HEADER_BAR = 72;
 
 const REMOVAL_ANIMATION_MS = 300;
 

@@ -15,6 +15,7 @@ import { Player } from "../character/types";
 import {
     CARD_CHOICE_UPGRADE_RATE,
     COMMON_STYLES,
+    HEADER_BAR,
     NUM_CARD_CHOICES,
     RARE_CARD_CHOICE_UPGRADE_RATE,
 } from "../constants";
@@ -30,8 +31,6 @@ import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import LeaveButton from "./LeaveButton";
 import { BASE_NUM_TRANSMUTATIONS, TRANSMUTATION_PRICE } from "./constants";
-
-const HEADER_BAR = 72;
 
 const useStyles = createUseStyles({
     ...COMMON_STYLES,

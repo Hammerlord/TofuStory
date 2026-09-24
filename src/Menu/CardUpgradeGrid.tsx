@@ -7,6 +7,7 @@ import AbilityView from "../ability/AbilityView/AbilityView";
 import { DEFAULT_CARD_MAX_LEVEL, STARTER_CARD_MAX_LEVEL } from "../ability/AbilityView/constants";
 import { isOffensiveAbility } from "../ability/AbilityView/utils";
 import { CombatAbility } from "../ability/types";
+import { HEADER_BAR } from "../constants";
 import { Item } from "../item/types";
 import Button from "../view/Button";
 import { PLAYER_CLASSES } from "./types";
@@ -29,7 +30,6 @@ import FadeIn from "../view/FadeIn";
 import Icon from "../icon/Icon";
 import { GoldenHammerImage } from "../images";
 
-const HEADER_BAR = 72;
 const FADE_OUT_MS = 400;
 
 const useStyles = createUseStyles({

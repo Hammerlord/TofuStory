@@ -24,6 +24,9 @@ export const REGULAR_BATTLE_LOOT_CHANCE = 0.2;
 
 export const NUM_CARD_CHOICES = 3;
 
+// Height of the persistent header bar on full-screen overlays
+export const HEADER_BAR = 72;
+
 export const RE_PAN_TIME = 400;
 
 export const DECK_CYCLE_TIME = 1000;
