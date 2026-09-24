@@ -23,7 +23,14 @@ import {
 } from "./constants";
 
 // Bug with JSS where props are not passed to animation keyframes. Use HO function instead
-const useStyles = ({ brightness = 1, flash = 200 }) => {
+const useStyles = ({
+    brightness = 1,
+    flash = 200,
+}: {
+    brightness?: number;
+    flash?: number | boolean;
+    playbackTime?: number;
+}) => {
     return createUseStyles({
         projectile: {
             objectFit: "contain",
@@ -59,7 +66,7 @@ const useStyles = ({ brightness = 1, flash = 200 }) => {
             animation: "$flash",
             transitionTimingFunction: "ease-in-out",
             animationIterationCount: "infinite",
-            animationDuration: flash,
+            animationDuration: flash as unknown as string | number,
         },
         "@keyframes fadeOut": {
             "0%": {
@@ -118,7 +125,7 @@ export const Projectile = ({
     } = options || {};
     const { element: actorElement, combatant: actorCombatant, index: actorIndex } = actor || {};
     const ref = useRef(null);
-    const classes = useStyles({ playbackTime, flash, brightness } as any)();
+    const classes = useStyles({ playbackTime, flash, brightness })();
 
     const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {

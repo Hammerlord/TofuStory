@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { ACTION_TYPES, EffectEventTrigger } from "../../../../ability/types";
+import { ACTION_TYPES, CombatEffect, EffectEventTrigger } from "../../../../ability/types";
 import { ActionContext } from "../../../../battle/types";
 import { onEffectEventTrigger } from "../triggerEffectEvent";
+import { AppDispatch, RootState } from "../../../../store";
 
 vi.mock("../../../calculateBonus", () => ({
     calculateBonus: vi.fn(() => ({ chance: 0.1 })),
@@ -44,12 +45,13 @@ const makeEffectEvent = (chance: number): EffectEventTrigger => ({
     effects: [],
 });
 
-const makeEffect = () => ({
-    id: "test-effect",
-    name: "Test Effect",
-    type: "none" as const,
-    effects: [],
-});
+const makeEffect = (): CombatEffect =>
+    ({
+        id: "test-effect",
+        name: "Test Effect",
+        type: "none",
+        effects: [],
+    } as unknown as CombatEffect);
 
 describe("checkEffectEventTriggerGate", () => {
     it("does not trigger proc when in preview mode and chance is less than 100%", () => {
@@ -69,12 +71,12 @@ describe("checkEffectEventTriggerGate", () => {
             context,
         });
 
-        const dispatch = vi.fn((action: any) => {
+        const dispatch = vi.fn((action: unknown) => {
             if (typeof action === "function") {
                 return action(dispatch, getState);
             }
             return action;
-        });
+        }) as unknown as AppDispatch;
         const getState = vi.fn(() => ({
             battle: {
                 playerSide: [],
@@ -83,7 +85,7 @@ describe("checkEffectEventTriggerGate", () => {
                 deck: [],
                 discard: [],
             },
-        })) as () => any;
+        })) as unknown as () => RootState;
 
         thunk(dispatch, getState);
 
@@ -107,12 +109,12 @@ describe("checkEffectEventTriggerGate", () => {
             context,
         });
 
-        const dispatch = vi.fn((action: any) => {
+        const dispatch = vi.fn((action: unknown) => {
             if (typeof action === "function") {
                 return action(dispatch, getState);
             }
             return action;
-        });
+        }) as unknown as AppDispatch;
         const getState = vi.fn(() => ({
             battle: {
                 playerSide: [],
@@ -121,7 +123,7 @@ describe("checkEffectEventTriggerGate", () => {
                 deck: [],
                 discard: [],
             },
-        })) as () => any;
+        })) as unknown as () => RootState;
 
         thunk(dispatch, getState);
 
@@ -145,12 +147,12 @@ describe("checkEffectEventTriggerGate", () => {
             context,
         });
 
-        const dispatch = vi.fn((action: any) => {
+        const dispatch = vi.fn((action: unknown) => {
             if (typeof action === "function") {
                 return action(dispatch, getState);
             }
             return action;
-        });
+        }) as unknown as AppDispatch;
         const getState = vi.fn(() => ({
             battle: {
                 playerSide: [],
@@ -159,7 +161,7 @@ describe("checkEffectEventTriggerGate", () => {
                 deck: [],
                 discard: [],
             },
-        })) as () => any;
+        })) as unknown as () => RootState;
 
         thunk(dispatch, getState);
 

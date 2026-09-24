@@ -77,7 +77,7 @@ const CardAnimations = ({
     const deckCycled = useAppSelector((state) => state.battle!.deckCycled);
     const dispatch = useAppDispatch();
 
-    const addCardRefs = Array.from({ length: 5 }).map(() => useRef(null) as any);
+    const addCardRefs = Array.from({ length: 5 }).map(() => useRef<HTMLDivElement>(null));
     const deckCycleRefs = Array.from({ length: 100 }).map(() => useRef(null));
 
     const { x: discardX, y: discardY } = useMemo(() => {
@@ -91,7 +91,7 @@ const CardAnimations = ({
     const classes = useStyles();
 
     useEffect(() => {
-        const animateCardRef = (ref: RefObject<HTMLElement>, addedTo: CardPileType) => {
+        const animateCardRef = (ref: RefObject<HTMLElement | null>, addedTo: CardPileType) => {
             let props;
             if (addedTo === CARD_PILE_TYPES.DEPLETED) {
                 props = {

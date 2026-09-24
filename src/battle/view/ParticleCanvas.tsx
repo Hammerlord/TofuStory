@@ -52,7 +52,7 @@ const ParticleCanvas = ({
     // For the EventGroup refactoring we're just taking the first event here, but we probably want to aggregate it similar to other Event/EventGroup properties
     const { targetSide, allTargetIndices = [], action } = events[0] || {};
     const container = useRef<HTMLDivElement>(null);
-    const particles = useRef<any>(null);
+    const particles = useRef<Fireworks | null>(null);
     const classes = useStyles();
 
     useEffect(() => {
@@ -78,7 +78,7 @@ const ParticleCanvas = ({
                 .filter((v) => v !== undefined);
 
             setTimeout(() => {
-                particles.current.updateOptions(fireworksSettings);
+                particles.current!.updateOptions(fireworksSettings);
                 allTargets.forEach((element) => {
                     if (element) {
                         particles.current!.launch(getUnscaledCenterCoords(element));
@@ -105,7 +105,7 @@ const ParticleCanvas = ({
                     const { healthDamage = 0, rawDamage = 0 } = statUpdate || {};
                     if (healthDamage) {
                         const numParticles = clamp(5, 15, healthDamage);
-                        particles.current.updateOptions({
+                        particles.current!.updateOptions({
                             ...defaultHitSettings,
                             particles: numParticles,
                         });
@@ -120,7 +120,7 @@ const ParticleCanvas = ({
                     const blockedDamage = rawDamage - healthDamage;
                     if (blockedDamage) {
                         const numParticles = clamp(3, 10, blockedDamage);
-                        particles.current.updateOptions({
+                        particles.current!.updateOptions({
                             ...defaultHitSettings,
                             particles: numParticles,
                             hue: { min: 30, max: 40 },

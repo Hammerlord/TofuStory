@@ -1,5 +1,5 @@
 import { compose } from "ramda";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, MouseEvent, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { CombatAbility } from "../../ability/types";
 import Tooltip from "../../view/Tooltip";
@@ -91,9 +91,9 @@ const Deck = ({
     deckRef,
 }: {
     viewDeckInOrder: boolean;
-    onMouseDown?: (event: any) => void;
+    onMouseDown?: (event: MouseEvent<HTMLDivElement>) => void;
     highlightDeck: boolean;
-    deckRef;
+    deckRef: RefObject<HTMLDivElement | null>;
 }) => {
     const classes = useStyles();
     // This component only renders in battle.

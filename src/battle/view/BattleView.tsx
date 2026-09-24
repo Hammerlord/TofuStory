@@ -71,7 +71,7 @@ const useStyles = createUseStyles({
     root: {
         width: "100%",
         height: "100%",
-        backgroundImage: (props: { backgroundImage: string }) =>
+        backgroundImage: (props: { backgroundImage?: string }) =>
             `url(${props.backgroundImage || LithRegionBGImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -326,7 +326,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         index: number;
         id: string | null;
     } | null>(null);
-    const classes = useStyles({ backgroundImage } as any);
+    const classes = useStyles({ backgroundImage });
 
     const hand = useMemo(
         () =>

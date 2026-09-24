@@ -7,7 +7,6 @@ import {
     Action,
     CardBonus,
     CombatAbility,
-    Comparator,
     EFFECT_EVENT_KEYS,
     Effect,
     TARGET_TYPES,
@@ -392,13 +391,7 @@ const handleCardActionBonus = ({
             return;
         }
 
-        const passes = (
-            conditions?: {
-                property?: string;
-                value?: any;
-                comparator?: Comparator;
-            }[],
-        ) => {
+        const passes = (conditions?: CardBonus["conditions"]) => {
             if (!conditions?.length) {
                 return true;
             }

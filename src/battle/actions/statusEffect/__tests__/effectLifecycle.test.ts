@@ -2,7 +2,9 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { Effect, EFFECT_CLASSES } from "../../../../ability/types";
 import { arcaneAim } from "../../../../ability/magician/magicianAbilities";
 import { createCombatEffect } from "../../../../character/effects/createCombatEffect";
-import { ActionContext } from "../../../types";
+import { Combatant } from "../../../../character/types";
+import { BATTLEFIELD_SIDES } from "../../../types";
+import { AppDispatch, RootState } from "../../../../store";
 import { tickDownStatusEffects } from "../effectLifecycle";
 
 vi.mock("../../combatantData", () => ({
@@ -40,26 +42,26 @@ describe("tickDownStatusEffects", () => {
             name: "Player",
             HP: 100,
             effects: [arcaneAiming],
-        };
+        } as Combatant;
 
         vi.mocked(findCombatantData).mockReturnValue({
             combatant,
             index: 0,
             friendly: [combatant],
             hostile: [],
-            friendlySide: "playerSide",
-            hostileSide: "enemySide",
-        } as any);
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        });
 
-        const getState = vi.fn(() => ({ battle: {} })) as any;
-        const dispatch = vi.fn((action: any) => {
+        const getState = vi.fn(() => ({ battle: {} })) as unknown as () => RootState;
+        const dispatch = vi.fn((action: unknown) => {
             if (typeof action === "function") {
                 return action(dispatch, getState);
             }
             return action;
-        });
+        }) as unknown as AppDispatch;
 
-        tickDownStatusEffects("player", { name: "End Turn" } as ActionContext)(dispatch, getState);
+        tickDownStatusEffects("player", { name: "End Turn" })(dispatch, getState);
 
         expect(updateCombatant).toHaveBeenCalledWith({
             combatantId: "player",
@@ -90,26 +92,26 @@ describe("tickDownStatusEffects", () => {
             name: "Player",
             HP: 100,
             effects: [longLasting],
-        };
+        } as Combatant;
 
         vi.mocked(findCombatantData).mockReturnValue({
             combatant,
             index: 0,
             friendly: [combatant],
             hostile: [],
-            friendlySide: "playerSide",
-            hostileSide: "enemySide",
-        } as any);
+            friendlySide: BATTLEFIELD_SIDES.PLAYER_SIDE,
+            hostileSide: BATTLEFIELD_SIDES.ENEMY_SIDE,
+        });
 
-        const getState = vi.fn(() => ({ battle: {} })) as any;
-        const dispatch = vi.fn((action: any) => {
+        const getState = vi.fn(() => ({ battle: {} })) as unknown as () => RootState;
+        const dispatch = vi.fn((action: unknown) => {
             if (typeof action === "function") {
                 return action(dispatch, getState);
             }
             return action;
-        });
+        }) as unknown as AppDispatch;
 
-        tickDownStatusEffects("player", { name: "End Turn" } as ActionContext)(dispatch, getState);
+        tickDownStatusEffects("player", { name: "End Turn" })(dispatch, getState);
 
         expect(updateCombatant).toHaveBeenCalledWith({
             combatantId: "player",

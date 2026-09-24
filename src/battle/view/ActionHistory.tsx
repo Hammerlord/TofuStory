@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../../ability/AbilityView/constants";
@@ -285,7 +286,8 @@ const ActionHistoryItem = ({ group }: { group: EventGroup }) => {
     if (typeof image === "string") {
         actionImage = <img src={image} className={classes.action} />;
     } else if (typeof image === "function") {
-        const ActionIcon = image as any;
+        // Combat ability images / effect icons are usually strings, but can be SVG (function) components.
+        const ActionIcon = image as FC<{ className?: string }>;
         actionImage = <ActionIcon className={classes.action} />;
     }
 

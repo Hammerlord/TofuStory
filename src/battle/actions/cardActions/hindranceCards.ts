@@ -15,8 +15,7 @@ export const filterImmunedHindranceCards = ({
 }: {
     cardsToAdd?: Ability[];
     context: ActionContext;
-    // This is a thunk that returns Ability[]... how to make TS happy for the callers?
-}): any => {
+}): ((dispatch: AppDispatch, getState: () => RootState) => Ability[]) => {
     return (dispatch: AppDispatch, getState: () => RootState): Ability[] => {
         const [hindranceCards, cardsToAdd]: [Ability[], Ability[]] = partition(
             (card: Ability) => card.actions.some((a) => a.type === ACTION_TYPES.HINDER),

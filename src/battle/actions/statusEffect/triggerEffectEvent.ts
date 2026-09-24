@@ -3,6 +3,7 @@ import {
     Ability,
     AbilityEvent,
     Action,
+    ActionOptionalProperties,
     CARD_PILE_TYPES,
     CardPileType,
     CombatAbility,
@@ -39,7 +40,11 @@ import { getUpdatedStats } from "../getUpdatedStats";
 import { checkInduce } from "../inducedAction";
 import { performAction } from "../performAction";
 import { aggregateStatUpdates } from "../playbackCollector";
-import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
+import {
+    applyStatChanges,
+    triggerBeforeStatChangeEvents,
+    triggerStatChangeEvents,
+} from "../statChanges";
 import {
     autoSelectActionTarget,
     calculateTargetIndices,
@@ -180,7 +185,7 @@ const applyEffectEventStatChanges = ({
     effectEvent,
 }: {
     targets: (Combatant | null)[] | undefined;
-    other: Record<string, any>;
+    other: ActionOptionalProperties;
     effects: (Effect | string)[];
     stacks: number | undefined;
     initialTargetIds: string[];
@@ -574,7 +579,7 @@ export const onEffectEventTrigger = ({
                 checkHandleAutoCast({
                     autoCastAbilities,
                     actor: postCardActionsOwner.combatant as Player,
-                    parentAbility: parent as any,
+                    parentAbility: undefined,
                     multiplier,
                     context: procContext,
                 }),
@@ -879,7 +884,8 @@ const triggerCardEffectEvents = ({
             const pile = getState().battle![pileName];
             pile.forEach((card: CombatAbility) => {
                 const event = card[effectEventKey as keyof CombatAbility] as
-                    AbilityEvent | undefined;
+                    | AbilityEvent
+                    | undefined;
                 if (!event || (event?.inPile && !event.inPile.includes(pileName))) {
                     return card;
                 }

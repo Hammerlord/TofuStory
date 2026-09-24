@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../../../ability/AbilityView/utils", () => ({
     isOffensiveAction: () => false,
-    hasOffensiveAbility: (combatant: any) => Boolean(combatant?.abilities?.length),
+    hasOffensiveAbility: (combatant: Combatant) => Boolean(combatant?.abilities?.length),
 }));
 
 vi.mock("../../../../battle/utils", () => ({
@@ -16,15 +16,17 @@ vi.mock("../../../../battle/passesConditions", () => ({
 }));
 
 vi.mock("../../../../battle/actions/combatantData", () => {
-    const SIDES = ["playerSide", "enemySide"];
+    const SIDES = ["playerSide", "enemySide"] as const;
     return {
-        findCombatantData: (battle: any, combatantId?: string) => {
+        findCombatantData: (battle: Partial<BattleState>, combatantId?: string) => {
             if (!battle) {
                 return undefined;
             }
             for (const friendlySide of SIDES) {
                 const friendly = battle[friendlySide] || [];
-                const combatant = friendly.find((f: any) => f?.id === combatantId);
+                const combatant = friendly.find(
+                    (combatant: Combatant | null) => combatant?.id === combatantId,
+                );
                 if (combatant) {
                     const hostileSide = friendlySide === "playerSide" ? "enemySide" : "playerSide";
                     return {
@@ -56,7 +58,7 @@ import {
     TARGET_TYPES,
 } from "../../../../ability/types";
 import { Combatant } from "../../../../character/types";
-import { BATTLEFIELD_SIDES, CombatantInfo } from "../../../../battle/types";
+import { BATTLEFIELD_SIDES, BattleState, CombatantInfo } from "../../../../battle/types";
 import {
     autoSelectActionTarget,
     calculateTargetIndices,
@@ -83,6 +85,18 @@ const makeCombatant = (overrides: Partial<Combatant> = {}): Combatant => ({
     damage: 1,
     ...overrides,
 });
+
+const makeBattle = ({
+    playerSide,
+    enemySide,
+}: {
+    playerSide: (Combatant | null)[];
+    enemySide: (Combatant | null)[];
+}): BattleState =>
+    ({
+        playerSide,
+        enemySide,
+    }) as BattleState;
 
 const tauntEffect: CombatEffect = { type: EFFECT_TYPES.TAUNT } as CombatEffect;
 
@@ -285,7 +299,7 @@ describe("getValidTargetIndicesForAction", () => {
 
 describe("autoSelectActionTarget", () => {
     it("rolls a fresh target for Rollout instead of finding nothing (no-target bug)", () => {
-        const battle = { playerSide, enemySide } as any;
+        const battle = makeBattle({ playerSide, enemySide });
 
         const target = autoSelectActionTarget({
             action: rolloutAction,
@@ -311,7 +325,7 @@ describe("resolveActionTarget", () => {
             null,
         ];
 
-        const battle = { playerSide: playerSideWithPriorityTarget, enemySide } as any;
+        const battle = makeBattle({ playerSide: playerSideWithPriorityTarget, enemySide });
 
         const resolved = resolveActionTarget({
             action: hostileAttackAction,
@@ -343,7 +357,7 @@ describe("resolveActionTarget", () => {
             null,
         ];
 
-        const battle = { playerSide: playerSideWithTwoPriorityTargets, enemySide } as any;
+        const battle = makeBattle({ playerSide: playerSideWithTwoPriorityTargets, enemySide });
 
         const resolved = resolveActionTarget({
             action: hostileAttackAction,
@@ -357,7 +371,7 @@ describe("resolveActionTarget", () => {
     });
 
     it("resolves deterministically to an already-selected hostile target", () => {
-        const battle = { playerSide, enemySide } as any;
+        const battle = makeBattle({ playerSide, enemySide });
 
         const resolved = resolveActionTarget({
             action: hostileAttackAction,
@@ -387,7 +401,7 @@ describe("calculateTargetIndices", () => {
             makeCombatant({ id: "red-snail", name: "Red Snail" }),
         ];
 
-        const battle = { playerSide: playerSideWithTwoTargets, enemySide } as any;
+        const battle = makeBattle({ playerSide: playerSideWithTwoTargets, enemySide });
         const actorData: CombatantInfo = {
             combatant: enemySide[0]!,
             index: 0,

@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { BATTLEFIELD_SIDES } from "../../../../battle/types";
+import { BATTLEFIELD_SIDES, CombatantInfo } from "../../../../battle/types";
+import { Combatant } from "../../../../character/types";
 import { createCombatEffect } from "../../../../character/effects/createCombatEffect";
 import { snailStompers } from "../../../../item/items";
 import { getEnabledEffects } from "../getEnabledEffects";
 
-function makeCombatant(overrides: Record<string, any> = {}): any {
+function makeCombatant(overrides: Partial<Combatant> = {}): Combatant {
     return {
         id: "test-combatant",
         name: "Test",
@@ -12,7 +13,7 @@ function makeCombatant(overrides: Record<string, any> = {}): any {
         HP: 100,
         maxHP: 100,
         armor: 0,
-        effects: [] as any[],
+        effects: [],
         resources: 0,
         isPlayer: false,
         isBoss: false,
@@ -30,9 +31,9 @@ function makeCombatant(overrides: Record<string, any> = {}): any {
 }
 
 function makeCombatantInfo(
-    combatant: any,
-    overrides: Record<string, any> = {},
-): any {
+    combatant: Combatant,
+    overrides: Partial<CombatantInfo> = {},
+): CombatantInfo {
     return {
         combatant,
         index: 0,
@@ -49,7 +50,7 @@ describe("getEnabledEffects - Snail Stompers condition", () => {
         const player = makeCombatant({
             id: "player",
             isPlayer: true,
-            effects: [createCombatEffect(snailStompers.effects[0])],
+            effects: [createCombatEffect(snailStompers.effects![0])],
         });
         const playerInfo = makeCombatantInfo(player);
 
@@ -72,7 +73,7 @@ describe("getEnabledEffects - Snail Stompers condition", () => {
         const player = makeCombatant({
             id: "player",
             isPlayer: true,
-            effects: [createCombatEffect(snailStompers.effects[0])],
+            effects: [createCombatEffect(snailStompers.effects![0])],
         });
         const playerInfo = makeCombatantInfo(player);
 
