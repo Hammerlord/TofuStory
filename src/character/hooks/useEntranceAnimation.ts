@@ -20,7 +20,7 @@ export const useEntranceAnimation = ({
             if (object) {
                 const animation = playFadeInAnimation({
                     object,
-                    shiftUp: true,
+                    shift: 50,
                 });
 
                 animation.onfinish = () => {

@@ -236,7 +236,7 @@ const ClassSelection = ({
                 return playFadeInAnimation({
                     object: ref.current,
                     delay: (i + 1) * 50,
-                    shiftUp: true,
+                    shift: 50,
                     playbackTime: 250,
                     fill: "both",
                 });

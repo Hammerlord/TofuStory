@@ -1,14 +1,19 @@
 import classNames from "classnames";
 import { clamp } from "ramda";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
+import {
+    playFadeInAnimation,
+    playFadeOutAnimation,
+    copyComputedStyles,
+} from "../character/animations";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { MesoCoinImage } from "../images";
+import { MesoBagImage, MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
 import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
@@ -19,6 +24,15 @@ import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
 import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
 
 const HEADER_BAR = 72;
+
+// Purchase animation: the sold item fades out while a meso bag is "placed down" at its centre.
+const MESO_BAG_NATIVE_SIZE = 23; // MesoBag.png is 23x23
+const MESO_BAG_SCALE = 2; // the bag is shown at 200% of its native size
+const ITEM_FADE_OUT_MS = 250;
+const BAG_DROP_MS = 400; // time for the bag to fade in and descend into place
+const BAG_HOLD_MS = 400; // how long the bag sits on the item before fading away
+const BAG_FADE_OUT_MS = 300;
+const BAG_START_SHIFT_PX = 50; // the bag starts this many px above the item, then drops down
 
 const useStyles = createUseStyles({
     ...panelKeyframes,
@@ -184,8 +198,9 @@ const ShopView = ({
     }) => void;
     onRefresh: (cost: number) => void;
 }) => {
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState(null);
-    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState<number | null>(null);
+    const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
     const { player, purchasedConsumables } = useAppSelector((state) => state.character);
     const { abilities, items: initialItems, usedFreeFood = 0, usedNumRefreshes = 0 } = shopState;
     const dispatch = useAppDispatch();
@@ -276,6 +291,15 @@ const ShopView = ({
             }
 
             onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+
+            // The item fades out and a meso bag is placed down over it. Food stays in the shop,
+            // so only animate purchases where the item is actually removed.
+            const itemElement =
+                selectedItemIndex !== null ? itemRefs.current[selectedItemIndex] : null;
+            if (itemElement) {
+                animateItemPurchase(itemElement);
+            }
+
             const updatedItems = items.slice();
             updatedItems[selectedItemIndex] = null;
             onUpdateShopState({ items: updatedItems });
@@ -287,6 +311,65 @@ const ShopView = ({
 
             setSelectedItemIndex(null);
         }
+    };
+
+    const animateItemPurchase = (itemElement: HTMLElement) => {
+        const rect = itemElement.getBoundingClientRect();
+
+        const clone = itemElement.cloneNode(true) as HTMLElement;
+        copyComputedStyles(itemElement, clone);
+        Object.assign(clone.style, {
+            position: "fixed",
+            left: `${rect.left}px`,
+            top: `${rect.top}px`,
+            width: `${rect.width}px`,
+            height: `${rect.height}px`,
+            margin: "0",
+            zIndex: "9999",
+            pointerEvents: "none",
+        });
+        document.body.appendChild(clone);
+        playFadeOutAnimation({ object: clone, playbackTime: ITEM_FADE_OUT_MS, fill: "forwards" });
+
+        const bag = document.createElement("img");
+        bag.src = MesoBagImage;
+        const bagSize = MESO_BAG_NATIVE_SIZE * MESO_BAG_SCALE;
+        Object.assign(bag.style, {
+            position: "fixed",
+            left: `${rect.left + rect.width / 2 - bagSize / 2}px`,
+            top: `${rect.top + rect.height / 2 - bagSize / 2}px`,
+            width: `${bagSize}px`,
+            height: `${bagSize}px`,
+            opacity: "0",
+            pointerEvents: "none",
+            zIndex: "9999",
+        });
+        document.body.appendChild(bag);
+
+        const cleanup = () => {
+            clone.remove();
+            bag.remove();
+        };
+
+        const bagDropIn = playFadeInAnimation({
+            object: bag,
+            shift: -BAG_START_SHIFT_PX,
+            playbackTime: BAG_DROP_MS,
+            fill: "both",
+        });
+
+        bagDropIn.finished
+            .then(() => {
+                window.setTimeout(() => {
+                    const bagFadeOut = playFadeOutAnimation({
+                        object: bag,
+                        playbackTime: BAG_FADE_OUT_MS,
+                        fill: "forwards",
+                    });
+                    bagFadeOut.finished.then(cleanup).catch(cleanup);
+                }, BAG_HOLD_MS);
+            })
+            .catch(cleanup);
     };
 
     const classes = useStyles();
@@ -361,6 +444,9 @@ const ShopView = ({
         return (
             <div className={classes.itemContainer} key={[item.name, i].join("-")}>
                 <div
+                    ref={(el) => {
+                        itemRefs.current[i] = el;
+                    }}
                     className={classNames(classes.item, {
                         selected: i === selectedItemIndex,
                     })}

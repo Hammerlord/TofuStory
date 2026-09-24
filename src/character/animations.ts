@@ -467,7 +467,7 @@ export const playShakeAnimation = ({
     });
 };
 
-const copyComputedStyles = (source: HTMLElement, target: HTMLElement) => {
+export const copyComputedStyles = (source: HTMLElement, target: HTMLElement) => {
     const sourceStyle = window.getComputedStyle(source);
 
     for (const property of sourceStyle) {
@@ -775,13 +775,17 @@ export const playHitAnimation = ({
 export const playFadeInAnimation = ({
     object,
     playbackTime = 250,
-    shiftUp,
+    shift,
     delay,
     fill,
 }: {
     object: HTMLElement;
     playbackTime?: number;
-    shiftUp?: boolean;
+    /**
+     * How far (in px) the object starts displaced vertically before sliding into place.
+     * Positive starts it below its resting spot (it rises up), negative starts it above (it descends).
+     */
+    shift?: number;
     delay?: number;
     fill?: "forwards" | "both";
 }) => {
@@ -795,8 +799,8 @@ export const playFadeInAnimation = ({
         },
     ];
 
-    if (shiftUp) {
-        animationFrames[0].transform = "translateY(50px)";
+    if (shift) {
+        animationFrames[0].transform = `translateY(${shift}px)`;
         animationFrames[1].transform = "translateY(0px)";
     }
 

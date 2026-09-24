@@ -267,7 +267,7 @@ export const TransmutationView = ({
         transmutationOptions.forEach((_, i) => {
             playFadeInAnimation({
                 object: optionsRefs[i].current,
-                shiftUp: true,
+                shift: 50,
                 delay: i * 100,
                 fill: "forwards",
             });
