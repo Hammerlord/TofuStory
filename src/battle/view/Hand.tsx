@@ -9,18 +9,21 @@ import { CARD_WIDTH } from "../../ability/AbilityView/constants";
 const useStyles = createUseStyles({
     // Key hint shown above each card, matching the number-key shortcuts (1-9 select cards 1-9, 0 selects the 10th)
     cardIndex: {
-        display: "block",
-        textAlign: "center",
+        position: "absolute",
+        bottom: "100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        marginBottom: 4,
         fontSize: "0.95rem",
         fontWeight: 700,
         lineHeight: "1.2",
-        marginBottom: 4,
         color: "rgba(255, 255, 255, 0.95)",
         textShadow: Array.from({ length: 10 })
             .map(() => "0 0 2px black")
             .join(", "),
         userSelect: "none",
         pointerEvents: "none",
+        whiteSpace: "nowrap",
     },
 });
 
@@ -101,6 +104,7 @@ const Hand = ({
                         <motion.div
                             key={ability.instanceId}
                             layout
+                            style={{ position: "relative" }}
                             initial={{
                                 x: -i * spread,
                                 opacity: 0,
