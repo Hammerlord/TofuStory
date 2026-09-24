@@ -20,7 +20,7 @@ import { TOWNS } from "../map/types";
 import Button from "../view/Button";
 import LeaveButton from "./LeaveButton";
 import { OnBuyItem, SHOP_REFRESH_COST, ShopAbility, ShopItem } from "./constants";
-import { generateShopInventory, getShopCustomerProperties } from "./shopUtils";
+import { generateShopInventory, getShopCustomerProperties, rollShopItem } from "./shopUtils";
 import { confirmButtonDropStyle, panelKeyframes } from "../Menu/panelAnimation";
 
 const HEADER_BAR = 72;
@@ -232,7 +232,8 @@ const ShopView = ({
         return Math.ceil(price);
     };
 
-    // If the player acquired new equipment prior to a revisit, those equipments should not be in the shop inventory
+    // If the player acquired new equipment prior to a revisit, re-roll those equipment
+    // slots so the shop offers a fresh random item instead of already-obtained gear.
     const alreadyObtained = player.items.reduce<Record<string, boolean>>((acc, item: Item) => {
         if (item.type === ITEM_TYPES.EQUIPMENT) {
             acc[item.name] = true;
@@ -240,12 +241,30 @@ const ShopView = ({
         return acc;
     }, {});
 
-    const items = initialItems.map((item) => {
-        if (!item || !alreadyObtained[item.item.name]) {
-            return item;
+    const [replacementItems] = useState<(ShopItem | null)[] | null>(() => {
+        if (!initialItems.some((shopItem) => shopItem && alreadyObtained[shopItem.item.name])) {
+            return null;
         }
 
-        return null;
+        return initialItems.map((shopItem) => {
+            if (!shopItem || !alreadyObtained[shopItem.item.name]) {
+                return null;
+            }
+
+            const otherSoldItems = initialItems
+                .filter((other) => other && other.item.name !== shopItem.item.name)
+                .map((other) => other!.item);
+
+            return rollShopItem({ player, excludeItems: otherSoldItems });
+        });
+    });
+
+    const items = initialItems.map((shopItem, i) => {
+        if (!shopItem || !alreadyObtained[shopItem.item.name]) {
+            return shopItem;
+        }
+
+        return replacementItems?.[i] ?? null;
     });
 
     const buy = () => {

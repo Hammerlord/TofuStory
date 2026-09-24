@@ -45,6 +45,33 @@ export const getShopCustomerProperties = (player: Player) => {
     };
 };
 
+/**
+ * Used by {@link generateShopInventory} and to re-roll equipment slots on shop
+ * revisits. Will not roll items the player already owns (see rollItemPool).
+ */
+export const rollShopItem = ({
+    player,
+    excludeItems = [],
+}: {
+    player: Player;
+    excludeItems?: Item[];
+}): ShopItem => {
+    const item: Item = getRandomItem(
+        rollItemPool({
+            player,
+            excludeItems: [...excludeItems, mesoItem, bigMesoItem, hugeMesoItem],
+        }),
+    );
+
+    const priceRangeForRarity = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON] as [
+        number,
+        number,
+    ];
+    const price = getRandomInt(...priceRangeForRarity);
+
+    return { price, item, isConsumable: false, isFood: false };
+};
+
 export const generateShopInventory = ({
     player,
     deck,
@@ -74,25 +101,17 @@ export const generateShopInventory = ({
     });
 
     // Items
-    const itemsRolledForSale: Item[] = [];
+    const itemsRolledForSale: ShopItem[] = [];
     Array.from({ length: NUM_SHOP_ITEMS }).forEach(() => {
-        const item = getRandomItem(
-            rollItemPool({
+        itemsRolledForSale.push(
+            rollShopItem({
                 player,
-                excludeItems: [...itemsRolledForSale, mesoItem, bigMesoItem, hugeMesoItem],
+                excludeItems: itemsRolledForSale.map(({ item }) => item),
             }),
         );
-        itemsRolledForSale.push(item);
     });
 
-    const items = itemsRolledForSale.map((item) => {
-        const priceRangeForRarity = ITEMS_PRICE_RARITY_MAP[item.rarity || RARITIES.COMMON] as [
-            number,
-            number,
-        ];
-        const price = getRandomInt(...priceRangeForRarity);
-        return { price, item, isConsumable: false, isFood: false };
-    });
+    const items = [...itemsRolledForSale];
 
     const consumables = [
         {
