@@ -15,7 +15,7 @@ import Button from "../view/Button";
 import Tooltip from "../view/Tooltip";
 import LeaveButton from "./LeaveButton";
 import { NUM_TRADING_POST_TRADES } from "./constants";
-import { generateTradingPostInventory } from "./tradingPostUtils";
+import { generateTradingPostInventory, rollTradingPostItem } from "./tradingPostUtils";
 
 const HEADER_BAR = 72;
 
@@ -157,17 +157,6 @@ const TradingPostView = ({
             item.rarity !== RARITIES.STARTER &&
             item.name !== STARTER_ITEM_UPGRADE_MAP[player.class]?.name,
     );
-    // If the player acquired new equipment prior to a revisit, those equipments should not be in the inventory
-    const alreadyObtained = player.items.reduce((acc, item: Item) => {
-        if (item.type === ITEM_TYPES.EQUIPMENT) {
-            acc[item.name] = true;
-        }
-        return acc;
-    }, {});
-
-    const vendorItems = initVendorItems.filter((item) => {
-        return !alreadyObtained[item.name];
-    });
 
     useEffect(() => {
         const getDialog = () => {
@@ -198,7 +187,7 @@ const TradingPostView = ({
                     return "Oh, what a fine item. I'll offer you my best wares. Or... something else, if you want.";
                 }
 
-                if (vendorItems.some(canVendorItemBeExchanged)) {
+                if (initVendorItems.some(canVendorItemBeExchanged)) {
                     return "Yes, I'll take it. Here's what I'll offer.";
                 }
 
@@ -404,7 +393,7 @@ const TradingPostView = ({
                     </Tooltip>
                     <h4 className={classes.columnLabel}>Trading Post Items</h4>
                     <div className={classes.itemsContainer}>
-                        {vendorItems.map((item: Item) => (
+                        {initVendorItems.map((item: Item) => (
                             <div
                                 className={classNames(classes.itemContainer, {
                                     [classes.disable]: !canVendorItemBeExchanged(item),
@@ -427,12 +416,49 @@ const TradingPostView = ({
 };
 
 const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) => {
-    const { player, townShops } = useAppSelector((state) => state.character);
+    const { player: maybeNullPlayer, townShops } = useAppSelector((state) => state.character);
+    // The trading post can only be opened after a class has been selected, so a player always exists.
+    const player = maybeNullPlayer!;
     const [tradesRemaining, setTradesRemaining] = useState(NUM_TRADING_POST_TRADES);
     const [vendorItems, setVendorItems] = useState(generateTradingPostInventory(player));
     const townTradingPost = town ? townShops[town]?.tradingPost : undefined;
 
     const dispatch = useAppDispatch();
+
+    const sourceItems = townTradingPost?.items || vendorItems;
+
+    // If the player acquired new equipment prior to a revisit, re-roll those equipment
+    // items so the vendor offers fresh random items instead of already-obtained gear.
+    const alreadyObtained = player.items.reduce<Record<string, boolean>>((acc, item: Item) => {
+        if (item.type === ITEM_TYPES.EQUIPMENT) {
+            acc[item.name] = true;
+        }
+        return acc;
+    }, {});
+
+    const [replacementItems] = useState<Record<string, Item>>(() => {
+        const alreadyObtainedItems = sourceItems.filter((item) => alreadyObtained[item.name]);
+        if (!alreadyObtainedItems.length) {
+            return {};
+        }
+
+        const keptItems = sourceItems.filter((item) => !alreadyObtained[item.name]);
+        const replacements: Record<string, Item> = {};
+        alreadyObtainedItems.forEach((item) => {
+            const replacement = rollTradingPostItem({
+                player,
+                excludeItems: [...keptItems, ...Object.values(replacements)],
+            });
+            if (replacement) {
+                replacements[item.name] = replacement;
+            }
+        });
+        return replacements;
+    });
+
+    const displayVendorItems = sourceItems
+        .map((item) => (alreadyObtained[item.name] ? replacementItems[item.name] : item))
+        .filter((item): item is Item => Boolean(item));
 
     const handleTrade = ({ selectedPlayerItem, selectedVendorItem }) => {
         if (!selectedPlayerItem || !selectedVendorItem) {
@@ -445,15 +471,13 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
                     shopKey: "tradingPost",
                     shopState: {
                         numTradesRemaining: townTradingPost.numTradesRemaining - 1,
-                        items: townTradingPost.items.filter(
-                            (p) => p.name !== selectedVendorItem.name,
-                        ),
+                        items: displayVendorItems.filter((p) => p.name !== selectedVendorItem.name),
                     },
                 }),
             );
         } else {
             setTradesRemaining((prev) => prev - 1);
-            setVendorItems((prev) => prev.filter((p) => p.name !== selectedVendorItem.name));
+            setVendorItems(displayVendorItems.filter((p) => p.name !== selectedVendorItem.name));
         }
 
         dispatch(loseItems([selectedPlayerItem.name]));
@@ -465,7 +489,7 @@ const TradingPost = ({ onExit, town }: { onExit?: () => void; town?: TOWNS }) =>
             onExit={onExit}
             onTrade={handleTrade}
             player={player}
-            vendorItems={townTradingPost?.items || vendorItems}
+            vendorItems={displayVendorItems}
             tradesRemaining={townTradingPost ? townTradingPost.numTradesRemaining : tradesRemaining}
         />
     );

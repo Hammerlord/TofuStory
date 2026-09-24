@@ -167,8 +167,6 @@ const Header = ({
                 (sum, child) => sum + (child as HTMLElement).getBoundingClientRect().width,
                 0,
             );
-            // Inventory root has margin: 0 16px = 32px total
-            console.log(totalWidth, sectionWidth);
             setInventoryOverflows(totalWidth > sectionWidth - 400);
         };
         checkOverflow();
@@ -255,7 +253,12 @@ const Header = ({
                             className={classes.inventoryCarat}
                             onClick={handleToggleInventory}
                             tabIndex={0}
-                            style={{ flexShrink: 0, transform: isInventoryCollapsed ? "rotate(90deg)" : "rotate(-90deg)" }}
+                            style={{
+                                flexShrink: 0,
+                                transform: isInventoryCollapsed
+                                    ? "rotate(90deg)"
+                                    : "rotate(-90deg)",
+                            }}
                         >
                             ❯
                         </button>
