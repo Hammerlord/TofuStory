@@ -1,12 +1,13 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useEffect, useMemo, useState } from "react";
+import { MouseEvent, ReactElement, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
 import { getUpgradeCard } from "../Menu/utils";
-import { Ability, CombatAbility, Minion } from "../ability/types";
+import { Ability, CombatAbility } from "../ability/types";
 import { passesValueComparison } from "../battle/passesConditions";
+import { Wave } from "../battle/types";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -27,7 +28,7 @@ import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
-import { PuzzleCompletionPayload } from "./TreasureBox/types";
+import { PuzzleCompletionPayload, PuzzleProps } from "./TreasureBox/types";
 import UpgradedCardsView from "./UpgradedCards";
 import {
     EventScene,
@@ -264,15 +265,12 @@ const ScenePlayer = ({
 }: {
     scene: EventScene;
     player: Player;
-    updatePlayer?: (updated: any) => void;
+    updatePlayer: (updated: any) => void;
     onBattle?: (
         props: {
             addAbilities?: Ability[];
             overrideItemChoices?: Item[];
-            waves: {
-                enemies: Minion[];
-                generateEliteAffixes?: boolean;
-            }[];
+            waves: Wave[];
             backgroundImage?: string;
         },
         callback: () => void,
@@ -297,7 +295,10 @@ const ScenePlayer = ({
     const [Backdrop, setBackdrop] = useState(() => script[dialogIndex]?.scene || null);
     const [background, setBackground] = useState(script[dialogIndex]?.background);
     const [showCamp, setShowCamp] = useState(false);
-    const [treasureBoxOptions, setTreasureBoxOptions] = useState(null);
+    const [treasureBoxOptions, setTreasureBoxOptions] = useState<{
+        Puzzle?: ({ onComplete, completed, onInteraction }: PuzzleProps) => ReactElement;
+        curse?: "damage";
+    } | null>(null);
     const [isRemovingAbility, setIsRemovingAbility] = useState(false);
     const [upgradedCards, setUpgradedCards] = useState<{
         original: CombatAbility[];
@@ -325,7 +326,7 @@ const ScenePlayer = ({
         }
 
         let { itemPool = [], amount } = items;
-        const alreadyObtained = player.items.reduce((acc, item: Item) => {
+        const alreadyObtained = player.items.reduce<Record<string, boolean>>((acc, item: Item) => {
             if (item.type === ITEM_TYPES.EQUIPMENT) {
                 acc[item.name] = true;
             }
@@ -429,6 +430,8 @@ const ScenePlayer = ({
                     comparator,
                 });
             }
+
+            return false;
         };
 
         return conditions.some(passesCondition);
@@ -452,7 +455,10 @@ const ScenePlayer = ({
             if (scriptBackground) {
                 setBackground(scriptBackground);
             } else if (!background) {
-                setBackground(BG_MAP[region]);
+                const regionBackground = BG_MAP[region as keyof typeof BG_MAP];
+                if (regionBackground) {
+                    setBackground(regionBackground);
+                }
             }
         };
 
@@ -470,18 +476,20 @@ const ScenePlayer = ({
             dispatch(loseItemsAction(node.loseItems));
         }
         if (node.loseMesos) {
-            updatePlayer?.({ mesos: Math.max(0, player.mesos - node.loseMesos) });
+            updatePlayer({ mesos: Math.max(0, player.mesos - node.loseMesos) });
         }
         if (node.mesos) {
-            updatePlayer?.({ mesos: Math.max(0, player.mesos + node.mesos) });
+            updatePlayer({ mesos: Math.max(0, player.mesos + node.mesos) });
         }
         if (node.loseHP) {
-            updatePlayer?.({ HP: Math.max(1, player.HP - node.loseHP) });
+            updatePlayer({ HP: Math.max(1, player.HP - node.loseHP) });
         }
         if (node.treasureBox) {
             const { isOpen, isCursed }: ScriptNodeTreasure = node.treasureBox;
             setTreasureBoxOptions({
-                Puzzle: isOpen ? null : getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
+                Puzzle: isOpen
+                    ? undefined
+                    : getRandomItem([ReelLockPuzzle, OnOffPuzzle, RowPuzzle]),
                 curse: isCursed ? "damage" : undefined,
             });
         }
@@ -544,7 +552,9 @@ const ScenePlayer = ({
             .filter((card) => getUpgradeCard(card))
             .slice(0, numCards);
 
-        const upgraded = candidates.map((card) => getUpgradeCard(card));
+        const upgraded = candidates
+            .map((card) => getUpgradeCard(card))
+            .filter((card): card is CombatAbility => Boolean(card));
 
         const updatedDeck = deck.map((card: CombatAbility) => {
             return (
@@ -554,7 +564,7 @@ const ScenePlayer = ({
             );
         });
 
-        updateDeck(updatedDeck);
+        updateDeck?.(updatedDeck);
         setUpgradedCards({ original: candidates, upgraded });
     };
 
@@ -582,12 +592,12 @@ const ScenePlayer = ({
             }
 
             if (shop) {
-                onShop(shop);
+                onShop?.(shop);
                 if (!next) {
                     handleExit(true);
                 }
             } else if (transmutation) {
-                onWorkshop();
+                onWorkshop?.();
                 if (!next) {
                     handleExit(true);
                 }
@@ -622,7 +632,7 @@ const ScenePlayer = ({
         if (encounter) {
             //callback();
             // skip battles
-            onBattle(
+            onBattle?.(
                 {
                     ...encounter,
                     backgroundImage: background,
@@ -736,7 +746,7 @@ const ScenePlayer = ({
         );
     };
 
-    const handleSkip = (e) => {
+    const handleSkip = (e: MouseEvent) => {
         let currentScript = script;
         let nextIndex = dialogIndex + 1;
 
@@ -780,7 +790,7 @@ const ScenePlayer = ({
 
     const handleRemoveAbility = (updatedDeck: CombatAbility[]) => {
         setIsRemovingAbility(false);
-        updateDeck(updatedDeck);
+        updateDeck?.(updatedDeck);
     };
 
     const handleObtainLoot = ({ mesos = 0, items = [] }: { mesos?: number; items?: Item[] }) => {
@@ -907,7 +917,7 @@ const ScenePlayer = ({
                 />
                 <div
                     className={classes.backgroundContainer}
-                    style={background && { backgroundImage: `url(${background})` }}
+                    style={background ? { backgroundImage: `url(${background})` } : undefined}
                 />
                 <div
                     className={classNames(classes.backgroundOverlay, {
@@ -1029,8 +1039,10 @@ const ScenePlayer = ({
                         <Camp
                             deck={deck}
                             player={player}
-                            updateDeck={updateDeck}
-                            updatePlayer={updatePlayer}
+                            updateDeck={(updatedDeck) =>
+                                updateDeck?.(updatedDeck as CombatAbility[])
+                            }
+                            updatePlayer={(updated) => updatePlayer(updated)}
                             onExit={() => setShowCamp(false)}
                         />
                     </FadeIn>
