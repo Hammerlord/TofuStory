@@ -76,12 +76,16 @@ const CLOSE_ANIMATION_BUDGET_MS = 250;
 export const useCardStaggerAnimation = (): {
     setCardRef: (index: number) => (element: HTMLDivElement | null) => void;
     animateCardsOut: () => number;
+    playEntrances: () => void;
+    fadeOutCard: (index: number, playbackTime: number) => Animation | null;
 } => {
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const entranceAnimationsRef = useRef<Animation[]>([]);
     const exitAnimationsRef = useRef<Animation[]>([]);
 
-    useEffect(() => {
+    const playEntrances = useCallback(() => {
+        exitAnimationsRef.current.forEach((animation) => animation.cancel());
+        exitAnimationsRef.current = [];
         const animations = cardRefs.current
             .map((ref, index) => {
                 if (!ref) {
@@ -96,12 +100,16 @@ export const useCardStaggerAnimation = (): {
             })
             .filter((animation): animation is Animation => animation !== null);
         entranceAnimationsRef.current = animations;
+    }, []);
+
+    useEffect(() => {
+        playEntrances();
 
         return () => {
-            animations.forEach((animation) => animation.cancel());
+            entranceAnimationsRef.current.forEach((animation) => animation.cancel());
             exitAnimationsRef.current.forEach((animation) => animation.cancel());
         };
-    }, []);
+    }, [playEntrances]);
 
     const animateCardsOut = useCallback(() => {
         if (exitAnimationsRef.current.length > 0) {
@@ -136,13 +144,27 @@ export const useCardStaggerAnimation = (): {
         [],
     );
 
-    return { setCardRef, animateCardsOut };
+    const fadeOutCard = useCallback((index: number, playbackTime: number): Animation | null => {
+        const ref = cardRefs.current[index];
+        if (!ref) {
+            return null;
+        }
+        entranceAnimationsRef.current[index]?.cancel();
+        return playFadeOutAnimation({
+            object: ref,
+            playbackTime,
+            fill: "both",
+        });
+    }, []);
+
+    return { setCardRef, animateCardsOut, playEntrances, fadeOutCard };
 };
 
 export const usePanelTransition = (): {
     isClosing: boolean;
     closeDuration: number;
     close: (onFinished?: () => void, duration?: number) => void;
+    reset: () => void;
 } => {
     const [isClosing, setIsClosing] = useState(false);
     const [closeDuration, setCloseDuration] = useState(CLOSE_PANEL_ANIMATION_MS);
@@ -173,5 +195,15 @@ export const usePanelTransition = (): {
         [],
     );
 
-    return { isClosing, closeDuration, close };
+    const reset = useCallback(() => {
+        if (timeoutRef.current !== null) {
+            window.clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+        isClosingRef.current = false;
+        setCloseDuration(CLOSE_PANEL_ANIMATION_MS);
+        setIsClosing(false);
+    }, []);
+
+    return { isClosing, closeDuration, close, reset };
 };

@@ -121,8 +121,8 @@ const CardRemovalGrid = ({
     onCancel?: () => void;
 }) => {
     const classes = useStyles();
-    const { isClosing, close, closeDuration } = usePanelTransition();
-    const { setCardRef, animateCardsOut } = useCardStaggerAnimation();
+    const { isClosing, close, closeDuration, reset: resetPanel } = usePanelTransition();
+    const { setCardRef, animateCardsOut, playEntrances, fadeOutCard } = useCardStaggerAnimation();
     const [selectedAbilityId, setSelectedAbilityId] = useState<string | null>(null);
     const [isHideDuplicates, setIsHideDuplicates] = useState(false);
     const [removalInProgress, setRemovalInProgress] = useState<string | null>(null);
@@ -160,9 +160,19 @@ const CardRemovalGrid = ({
             (card: CombatAbility) => card.instanceId !== selectedAbilityId,
         );
         setRemovalInProgress(selectedAbilityId);
+        const removedIndex = sortedCards.findIndex(
+            (card: CombatAbility) => card.instanceId === selectedAbilityId,
+        );
+        fadeOutCard(removedIndex, REMOVAL_ANIMATION_MS);
         removalTimeoutRef.current = window.setTimeout(() => {
             removalTimeoutRef.current = null;
-            handleClose(() => onRemoveAbility(updatedDeck));
+            handleClose(() => {
+                onRemoveAbility(updatedDeck);
+                setSelectedAbilityId(null);
+                setRemovalInProgress(null);
+                resetPanel();
+                playEntrances();
+            });
         }, REMOVAL_ANIMATION_MS);
     };
 
