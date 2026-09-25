@@ -51,31 +51,69 @@ import { lookupEffect } from "../../character/effects/createCombatEffect";
 const useStyles = createUseStyles({
     root: {
         position: "relative",
+        // Create a stacking context so the negative-z-index border ring paints
+        // reliably behind the card's content for every state (not just when
+        // transformed/selected), and never disappears behind ancestor backgrounds.
+        isolation: "isolate",
         transition: "transform 0.15s",
         display: "inline-block",
         "&:hover": {
             transform: "scale(1.1)",
             zIndex: 5,
         },
+        "&:after": {
+            content: "''",
+            position: "absolute",
+            inset: "-3px",
+            borderRadius: "9px",
+            zIndex: -1,
+            pointerEvents: "none",
+            backgroundSize: "300% 300%",
+            animationName: "$borderFlow",
+            animationDuration: "2.5s",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "linear",
+            opacity: 0,
+            transition: "opacity 0.15s",
+        },
+        // Second ring that expands outward and fades out ("ping"), used to make the
+        // bonus borders shine. Hidden by default; enabled alongside the glow states.
+        "&:before": {
+            content: "''",
+            position: "absolute",
+            inset: "-3px",
+            borderRadius: "9px",
+            zIndex: -1,
+            pointerEvents: "none",
+            backgroundSize: "300% 300%",
+            transformOrigin: "50% 50%",
+            opacity: 0,
+            animationName: "$borderPulse",
+            animationDuration: "1.6s",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "ease-out",
+        },
         "&.-selected": {
             transform: "translateY(-16px) scale(1.1)",
             zIndex: 5,
-            "&:after": {
-                content: "''",
-                position: "absolute",
-                inset: "-3px",
-                borderRadius: "9px",
-                zIndex: -1,
-                pointerEvents: "none",
-                background:
-                    "linear-gradient(45deg, #7fd4ff, #1e90ff, #00e5ff, #3f7bff, #7fd4ff)",
-                backgroundSize: "300% 300%",
-                animationName: "$selectedBorderFlow",
-                animationDuration: "2.5s",
-                animationIterationCount: "infinite",
-                animationTimingFunction: "linear",
-                boxShadow: "0 0 12px rgba(30, 144, 255, 0.45)",
-            },
+        },
+        "&.-selected:after": {
+            background:
+                "linear-gradient(45deg, #7fd4ff, #1e90ff, #00e5ff, #3f7bff, #7fd4ff)",
+            boxShadow: "0 0 12px rgba(30, 144, 255, 0.45)",
+            opacity: 1,
+        },
+        // A card with a bonus/highlight that is also selected gets a green border
+        "&.-selected.glow:after, &.-selected.glowOrange:after": {
+            background:
+                "linear-gradient(45deg, #8dff9e, #19d94c, #00e676, #1e9e43, #8dff9e)",
+            boxShadow: "0 0 12px rgba(46, 200, 80, 0.45)",
+            opacity: 1,
+        },
+        "&.-selected.glow:before, &.-selected.glowOrange:before": {
+            background:
+                "linear-gradient(45deg, #8dff9e, #19d94c, #00e676, #1e9e43, #8dff9e)",
+            opacity: 1,
         },
     },
     inner: {
@@ -206,7 +244,7 @@ const useStyles = createUseStyles({
             opacity: 0.8,
         },
     },
-    "@keyframes selectedBorderFlow": {
+    "@keyframes borderFlow": {
         "0%": {
             backgroundPosition: "0% 50%",
         },
@@ -215,6 +253,20 @@ const useStyles = createUseStyles({
         },
         "100%": {
             backgroundPosition: "0% 50%",
+        },
+    },
+    "@keyframes borderPulse": {
+        "0%": {
+            transform: "scale(1)",
+            opacity: 0.55,
+        },
+        "70%": {
+            transform: "scale(1.18)",
+            opacity: 0,
+        },
+        "100%": {
+            transform: "scale(1.18)",
+            opacity: 0,
         },
     },
     ephemeral: {
@@ -238,10 +290,30 @@ const useStyles = createUseStyles({
         filter: "drop-shadow(0px 0px 1px #ff3a3a) drop-shadow(0px 0px 3px #ff3a3a)",
     },
     glow: {
-        filter: "drop-shadow(0px 0px 4px rgb(240, 220, 0)) drop-shadow(0px 0px 4px rgb(240, 220, 0))",
+        "&:after": {
+            background:
+                "linear-gradient(45deg, #ffed7a, #ffc400, #ffdf4d, #ffb300, #ffed7a)",
+            boxShadow: "0 0 12px rgba(255, 200, 0, 0.45)",
+            opacity: 1,
+        },
+        "&:before": {
+            background:
+                "linear-gradient(45deg, #ffed7a, #ffc400, #ffdf4d, #ffb300, #ffed7a)",
+            opacity: 1,
+        },
     },
     glowOrange: {
-        filter: "drop-shadow(0px 0px 4px rgb(255, 170, 0)) drop-shadow(0px 0px 4px rgb(255, 170, 0))",
+        "&:after": {
+            background:
+                "linear-gradient(45deg, #ffc46b, #ff9100, #ffab3d, #ff6d00, #ffc46b)",
+            boxShadow: "0 0 12px rgba(255, 140, 0, 0.45)",
+            opacity: 1,
+        },
+        "&:before": {
+            background:
+                "linear-gradient(45deg, #ffc46b, #ff9100, #ffab3d, #ff6d00, #ffc46b)",
+            opacity: 1,
+        },
     },
     abilityLevel: {
         color: "#25b814",
