@@ -200,6 +200,8 @@ const SelectCardOverlay = ({
         onSelect();
     };
 
+    const preselectLoneOption = type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW;
+
     const {
         selectedIds,
         selectedItems,
@@ -222,7 +224,7 @@ const SelectCardOverlay = ({
         cancelable: type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
         enabled: !hide,
         getId: (ability: CombatAbility) => ability.instanceId,
-        preselectLoneOption: true,
+        preselectLoneOption,
     });
 
     const isSelectedForRemoval = (instanceId: string): boolean => {
