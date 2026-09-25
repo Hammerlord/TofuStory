@@ -30,6 +30,22 @@ const getCardIndexFromNumberKey = (key: string): number | null => {
     return key === "0" ? 9 : Number(key) - 1;
 };
 
+const isEndTurnKey = (key: string): boolean => key === "e" || key === "E";
+
+const isMoveCardToDeckKey = (key: string): boolean =>
+    key === MOVE_CARD_TO_DECK_KEY || key === MOVE_CARD_TO_DECK_KEY.toUpperCase();
+
+const isHandledKey = (key: string): boolean =>
+    isEndTurnKey(key) ||
+    isMoveCardToDeckKey(key) ||
+    key === "ArrowLeft" ||
+    key === "ArrowRight" ||
+    key === "ArrowUp" ||
+    key === "ArrowDown" ||
+    key === "Escape" ||
+    key === "Enter" ||
+    getCardIndexFromNumberKey(key) !== null;
+
 // The centre slot is a natural starting point when keyboard-targeting. Return the valid
 // target whose index is closest to the centre, preferring the earlier entry on ties
 // (enemy side comes before the player side, and lower indices before higher ones).
@@ -243,6 +259,209 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         [hand, depleted, handleAbilityUse, handleSelectCardsPrerequisite, warn],
     );
 
+    const handleEndTurnKey = useCallback(() => {
+        dispatch(updateBattleState(BATTLE_STATES.TURN_END));
+    }, [dispatch]);
+
+    const handleMoveCardToDeckKey = useCallback(
+        (e: KeyboardEvent) => {
+            const card = hand.find((candidate) => candidate.instanceId === selectedHandAbilityId);
+            if (allowMoveCardFromHandToDeck && card) {
+                e.preventDefault();
+                setKeyboardNav(null);
+                handleMoveCardToDeck(card.instanceId);
+            }
+        },
+        [hand, selectedHandAbilityId, allowMoveCardFromHandToDeck, handleMoveCardToDeck],
+    );
+
+    const handleNumberKey = useCallback(
+        (e: KeyboardEvent, numberKeyCardIndex: number) => {
+            if (keyboardNav?.mode === "target") {
+                const selectedCard = hand[keyboardNav.cardIndex];
+                if (selectedCard) {
+                    const validTargets = getKeyboardValidTargets(selectedCard);
+                    const slotNumber = numberKeyCardIndex + 1;
+                    const slot = validTargets.find((target) => target.index + 1 === slotNumber);
+                    if (slot) {
+                        handleKeyboardUseCard({
+                            cardIndex: keyboardNav.cardIndex,
+                            target: slot,
+                        });
+                    }
+                }
+                return;
+            }
+            if (numberKeyCardIndex >= hand.length) {
+                return;
+            }
+            dispatch(selectAlly(null));
+            setKeyboardNav({ mode: "card", cardIndex: numberKeyCardIndex });
+            selectHandCard(numberKeyCardIndex);
+            beginTargeting(numberKeyCardIndex);
+        },
+        [
+            keyboardNav,
+            hand,
+            getKeyboardValidTargets,
+            handleKeyboardUseCard,
+            selectHandCard,
+            beginTargeting,
+            dispatch,
+        ],
+    );
+
+    const handleEscapeKey = useCallback(() => {
+        if (keyboardNav?.mode === "target" || keyboardNav?.mode === "deck") {
+            setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
+        } else {
+            setKeyboardNav(null);
+            dispatch(selectAlly(null));
+            dispatch(selectHandAbility(null));
+        }
+    }, [keyboardNav, dispatch]);
+
+    const handleNavigateWithoutNav = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowDown") {
+                if (!hand.length) {
+                    return;
+                }
+                let cardIndex = selectedHandAbilityId
+                    ? hand.findIndex((card) => card.instanceId === selectedHandAbilityId)
+                    : -1;
+                if (cardIndex < 0) {
+                    cardIndex = e.key === "ArrowLeft" ? hand.length - 1 : 0;
+                }
+                if (selectedHandAbilityId || selectedAllyId) {
+                    dispatch(selectAlly(null));
+                    dispatch(selectHandAbility(null));
+                }
+                setKeyboardNav({ mode: "card", cardIndex });
+                selectHandCard(cardIndex);
+            } else if (e.key === "ArrowUp") {
+                if (!selectedHandAbilityId) {
+                    return;
+                }
+                const cardIndex = hand.findIndex(
+                    (card) => card.instanceId === selectedHandAbilityId,
+                );
+                if (cardIndex < 0) {
+                    return;
+                }
+                dispatch(selectAlly(null));
+                setKeyboardNav({ mode: "card", cardIndex });
+                selectHandCard(cardIndex);
+                beginTargeting(cardIndex);
+            }
+        },
+        [
+            hand,
+            selectedHandAbilityId,
+            selectedAllyId,
+            selectHandCard,
+            beginTargeting,
+            dispatch,
+        ],
+    );
+
+    const handleCardModeKey = useCallback(
+        (e: KeyboardEvent, nav: Extract<KeyboardNav, { mode: "card" }>) => {
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                if (!hand.length) {
+                    return;
+                }
+                const delta = e.key === "ArrowLeft" ? hand.length - 1 : 1;
+                const cardIndex = (nav.cardIndex + delta) % hand.length;
+                setKeyboardNav({ mode: "card", cardIndex });
+                selectHandCard(cardIndex);
+            } else if (e.key === "ArrowUp") {
+                beginTargeting(nav.cardIndex);
+            }
+        },
+        [hand, selectHandCard, beginTargeting],
+    );
+
+    const handleDeckModeKey = useCallback(
+        (e: KeyboardEvent, nav: Extract<KeyboardNav, { mode: "deck" }>) => {
+            if (e.key === "ArrowUp" || e.key === "Enter") {
+                const card = hand[nav.cardIndex];
+                if (card) {
+                    e.preventDefault();
+                    setKeyboardNav(null);
+                    handleMoveCardToDeck(card.instanceId);
+                }
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                // The deck sits at the left end of the slot cycle: right steps onto the
+                // first target slot, left wraps around to the last one.
+                const card = hand[nav.cardIndex];
+                if (!card) {
+                    setKeyboardNav(null);
+                    return;
+                }
+                const validTargets = getKeyboardValidTargets(card);
+                if (!validTargets.length) {
+                    return;
+                }
+                const targetIndex = e.key === "ArrowRight" ? 0 : validTargets.length - 1;
+                setKeyboardNav({
+                    mode: "target",
+                    cardIndex: nav.cardIndex,
+                    target: validTargets[targetIndex],
+                });
+            } else if (e.key === "ArrowDown") {
+                setKeyboardNav({ mode: "card", cardIndex: nav.cardIndex });
+            }
+        },
+        [hand, getKeyboardValidTargets, handleMoveCardToDeck],
+    );
+
+    const handleTargetModeKey = useCallback(
+        (e: KeyboardEvent, nav: Extract<KeyboardNav, { mode: "target" }>) => {
+            const selectedCard = hand[nav.cardIndex];
+            if (!selectedCard) {
+                setKeyboardNav(null);
+                return;
+            }
+            const validTargets = getKeyboardValidTargets(selectedCard);
+            if (!validTargets.length) {
+                setKeyboardNav(null);
+                return;
+            }
+
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                const currentIndex = validTargets.findIndex(
+                    (target) =>
+                        target.side === nav.target.side && target.index === nav.target.index,
+                );
+                const delta = e.key === "ArrowLeft" ? validTargets.length - 1 : 1;
+                const nextIndex =
+                    currentIndex >= 0 ? (currentIndex + delta) % validTargets.length : 0;
+                if (e.key === "ArrowLeft" && allowMoveCardFromHandToDeck && currentIndex === 0) {
+                    setKeyboardNav({ mode: "deck", cardIndex: nav.cardIndex });
+                    return;
+                }
+                setKeyboardNav({
+                    mode: "target",
+                    cardIndex: nav.cardIndex,
+                    target: validTargets[nextIndex],
+                });
+            } else if (e.key === "Enter") {
+                // Keep a focused button (eg. End Turn) from also activating on Enter
+                e.preventDefault();
+                handleKeyboardUseCard(nav);
+            } else if (e.key === "ArrowUp") {
+                handleKeyboardUseCard(nav);
+            } else if (e.key === "ArrowDown") {
+                setKeyboardNav({
+                    mode: "card",
+                    cardIndex: nav.cardIndex,
+                });
+            }
+        },
+        [hand, getKeyboardValidTargets, allowMoveCardFromHandToDeck, handleKeyboardUseCard],
+    );
+
     const keyboardPreviewTarget = useMemo(() => {
         if (keyboardNav?.mode !== "target") {
             return null;
@@ -266,203 +485,39 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         }
 
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.repeat) {
+            if (e.repeat || !isHandledKey(e.key)) {
                 return;
             }
-            if (
-                e.key !== "ArrowLeft" &&
-                e.key !== "ArrowRight" &&
-                e.key !== "ArrowUp" &&
-                e.key !== "ArrowDown" &&
-                e.key !== "e" &&
-                e.key !== "E" &&
-                e.key !== "Escape" &&
-                e.key !== "Enter" &&
-                e.key !== MOVE_CARD_TO_DECK_KEY &&
-                e.key !== MOVE_CARD_TO_DECK_KEY.toUpperCase() &&
-                getCardIndexFromNumberKey(e.key) === null
-            ) {
+            if (isEndTurnKey(e.key)) {
+                handleEndTurnKey();
                 return;
             }
-
-            if (e.key === "e" || e.key === "E") {
-                dispatch(updateBattleState(BATTLE_STATES.TURN_END));
+            if (isMoveCardToDeckKey(e.key)) {
+                handleMoveCardToDeckKey(e);
                 return;
             }
-
-            if (e.key === MOVE_CARD_TO_DECK_KEY || e.key === MOVE_CARD_TO_DECK_KEY.toUpperCase()) {
-                const card = hand.find(
-                    (candidate) => candidate.instanceId === selectedHandAbilityId,
-                );
-                if (allowMoveCardFromHandToDeck && card) {
-                    e.preventDefault();
-                    setKeyboardNav(null);
-                    handleMoveCardToDeck(card.instanceId);
-                }
-                return;
-            }
-
             const numberKeyCardIndex = getCardIndexFromNumberKey(e.key);
             if (numberKeyCardIndex !== null) {
-                if (keyboardNav?.mode === "target") {
-                    const selectedCard = hand[keyboardNav.cardIndex];
-                    if (selectedCard) {
-                        const validTargets = getKeyboardValidTargets(selectedCard);
-                        const slotNumber = numberKeyCardIndex + 1;
-                        const slot = validTargets.find((target) => target.index + 1 === slotNumber);
-                        if (slot) {
-                            handleKeyboardUseCard({
-                                cardIndex: keyboardNav.cardIndex,
-                                target: slot,
-                            });
-                        }
-                    }
-                    return;
-                }
-                if (numberKeyCardIndex >= hand.length) {
-                    return;
-                }
-                dispatch(selectAlly(null));
-                setKeyboardNav({ mode: "card", cardIndex: numberKeyCardIndex });
-                selectHandCard(numberKeyCardIndex);
-                beginTargeting(numberKeyCardIndex);
+                handleNumberKey(e, numberKeyCardIndex);
                 return;
             }
-
             if (e.key === "Escape") {
-                if (keyboardNav?.mode === "target" || keyboardNav?.mode === "deck") {
-                    setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
-                } else {
-                    setKeyboardNav(null);
-                    dispatch(selectAlly(null));
-                    dispatch(selectHandAbility(null));
-                }
+                handleEscapeKey();
                 return;
             }
-
             if (!keyboardNav) {
-                if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowDown") {
-                    if (!hand.length) {
-                        return;
-                    }
-                    let cardIndex = selectedHandAbilityId
-                        ? hand.findIndex((card) => card.instanceId === selectedHandAbilityId)
-                        : -1;
-                    if (cardIndex < 0) {
-                        cardIndex = e.key === "ArrowLeft" ? hand.length - 1 : 0;
-                    }
-                    if (selectedHandAbilityId || selectedAllyId) {
-                        dispatch(selectAlly(null));
-                        dispatch(selectHandAbility(null));
-                    }
-                    setKeyboardNav({ mode: "card", cardIndex });
-                    selectHandCard(cardIndex);
-                } else if (e.key === "ArrowUp") {
-                    if (!selectedHandAbilityId) {
-                        return;
-                    }
-                    const cardIndex = hand.findIndex(
-                        (card) => card.instanceId === selectedHandAbilityId,
-                    );
-                    if (cardIndex < 0) {
-                        return;
-                    }
-                    dispatch(selectAlly(null));
-                    setKeyboardNav({ mode: "card", cardIndex });
-                    selectHandCard(cardIndex);
-                    beginTargeting(cardIndex);
-                }
+                handleNavigateWithoutNav(e);
                 return;
             }
-
             if (keyboardNav.mode === "card") {
-                if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                    if (!hand.length) {
-                        return;
-                    }
-                    const delta = e.key === "ArrowLeft" ? hand.length - 1 : 1;
-                    const cardIndex = (keyboardNav.cardIndex + delta) % hand.length;
-                    setKeyboardNav({ mode: "card", cardIndex });
-                    selectHandCard(cardIndex);
-                } else if (e.key === "ArrowUp") {
-                    beginTargeting(keyboardNav.cardIndex);
-                }
+                handleCardModeKey(e, keyboardNav);
                 return;
             }
-
             if (keyboardNav.mode === "deck") {
-                if (e.key === "ArrowUp" || e.key === "Enter") {
-                    const card = hand[keyboardNav.cardIndex];
-                    if (card) {
-                        e.preventDefault();
-                        setKeyboardNav(null);
-                        handleMoveCardToDeck(card.instanceId);
-                    }
-                } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                    // The deck sits at the left end of the slot cycle: right steps onto the
-                    // first target slot, left wraps around to the last one.
-                    const card = hand[keyboardNav.cardIndex];
-                    if (!card) {
-                        setKeyboardNav(null);
-                        return;
-                    }
-                    const validTargets = getKeyboardValidTargets(card);
-                    if (!validTargets.length) {
-                        return;
-                    }
-                    const targetIndex = e.key === "ArrowRight" ? 0 : validTargets.length - 1;
-                    setKeyboardNav({
-                        mode: "target",
-                        cardIndex: keyboardNav.cardIndex,
-                        target: validTargets[targetIndex],
-                    });
-                } else if (e.key === "ArrowDown") {
-                    setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
-                }
+                handleDeckModeKey(e, keyboardNav);
                 return;
             }
-
-            const selectedCard = hand[keyboardNav.cardIndex];
-            if (!selectedCard) {
-                setKeyboardNav(null);
-                return;
-            }
-            const validTargets = getKeyboardValidTargets(selectedCard);
-            if (!validTargets.length) {
-                setKeyboardNav(null);
-                return;
-            }
-
-            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                const currentIndex = validTargets.findIndex(
-                    (target) =>
-                        target.side === keyboardNav.target.side &&
-                        target.index === keyboardNav.target.index,
-                );
-                const delta = e.key === "ArrowLeft" ? validTargets.length - 1 : 1;
-                const nextIndex =
-                    currentIndex >= 0 ? (currentIndex + delta) % validTargets.length : 0;
-                if (e.key === "ArrowLeft" && allowMoveCardFromHandToDeck && currentIndex === 0) {
-                    setKeyboardNav({ mode: "deck", cardIndex: keyboardNav.cardIndex });
-                    return;
-                }
-                setKeyboardNav({
-                    mode: "target",
-                    cardIndex: keyboardNav.cardIndex,
-                    target: validTargets[nextIndex],
-                });
-            } else if (e.key === "Enter") {
-                // Keep a focused button (eg. End Turn) from also activating on Enter
-                e.preventDefault();
-                handleKeyboardUseCard(keyboardNav);
-            } else if (e.key === "ArrowUp") {
-                handleKeyboardUseCard(keyboardNav);
-            } else if (e.key === "ArrowDown") {
-                setKeyboardNav({
-                    mode: "card",
-                    cardIndex: keyboardNav.cardIndex,
-                });
-            }
+            handleTargetModeKey(e, keyboardNav);
         };
 
         window.addEventListener("keydown", onKeyDown);
@@ -470,16 +525,15 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     }, [
         disableActions,
         hasSelectCardsPrompt,
-        allowMoveCardFromHandToDeck,
-        handleMoveCardToDeck,
         keyboardNav,
-        hand,
-        selectedHandAbilityId,
-        selectedAllyId,
-        getKeyboardValidTargets,
-        handleKeyboardUseCard,
-        selectHandCard,
-        beginTargeting,
+        handleEndTurnKey,
+        handleMoveCardToDeckKey,
+        handleNumberKey,
+        handleEscapeKey,
+        handleNavigateWithoutNav,
+        handleCardModeKey,
+        handleDeckModeKey,
+        handleTargetModeKey,
     ]);
 
     return {
