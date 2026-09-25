@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { getZoomFactor } from "../../constants";
 
@@ -58,9 +58,20 @@ const TargetLineCanvas = ({
     // The line ends at a fixed target while keyboard-targeting, otherwise it follows the mouse.
     const lineEnd = targetCenter || lastMouseRef.current;
 
+    useEffect(() => {
+        const onWindowMouseMove = (e: MouseEvent) => {
+            lastMouseRef.current = {
+                x: e.clientX / scale,
+                y: e.clientY / scale,
+            };
+        };
+        window.addEventListener("mousemove", onWindowMouseMove);
+        return () => window.removeEventListener("mousemove", onWindowMouseMove);
+    }, [scale]);
+
     const getInitialLine = () => {
         const { x, y } = originationCenter || { x: 0, y: 0 };
-        const end = targetCenter || originationCenter || { x, y };
+        const end = lineEnd || originationCenter || { x, y };
 
         return `M ${x} ${y} Q ${end.x} ${end.y} ${end.x} ${end.y}`;
     };
