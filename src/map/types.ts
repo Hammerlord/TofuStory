@@ -58,6 +58,11 @@ export interface GeneratedRouteNode extends RouteNode {
     y?: number;
 }
 
+export type RouteNodeOverride = Partial<RouteNode> & {
+    /** Pool of encounter IDs for a `NODE_TYPES.BOSS` node; one is chosen at random when `encounter` is not set. */
+    bossPool?: string[];
+};
+
 export interface EliteMap {
     minions: Minion[];
     single: Minion[];
@@ -85,10 +90,9 @@ export interface Route {
     region: REGIONS;
     /** If this route's region changes partway through, the index it switches at and the new region. */
     regionTransition?: RegionTransition;
-    /** Index (within `numNodes`) of this route's boss encounter, if it has one. */
-    bossNodeIndex?: number;
-    /** Pool of possible encounter IDs for the boss node; one is chosen at random. */
-    bosses?: string[];
+    nodeOverrides?: {
+        [nodeIndex: string]: RouteNodeOverride[];
+    };
     /** Town this route starts at, if it's used as an entry point into the middle of travel. */
     startingTown?: TOWNS;
     /** Town at the end of this route, if applicable. */

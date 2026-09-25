@@ -36,7 +36,7 @@ import { tauromacis, taurospear } from "../../enemy/minotaur";
 import { mossyMushroom, mossySnail } from "../../enemy/mossyMushroomSnail";
 import { moveHeadToTail } from "../../utils";
 import { REGIONS } from "../regions";
-import { Route, TOWNS } from "../types";
+import { NODE_TYPES, Route, TOWNS } from "../types";
 import { curseEye, elliniaGreenMushroom, elliniaHornyMushroom } from "./../../enemy/enemy";
 import {
     ancientMixedGolemFight,
@@ -147,8 +147,9 @@ export const routeKerningToPerion: Route = {
     regionTransition: { atNodeIndex: 4, region: REGIONS.PERION },
     numNodes: 9,
     startingTown: TOWNS.KERNING,
-    bossNodeIndex: 5,
-    bosses: [stumpyFight.id, pillagingBoarFight.id],
+    nodeOverrides: {
+        "5": [{ type: NODE_TYPES.BOSS, bossPool: [stumpyFight.id, pillagingBoarFight.id] }],
+    },
     endingTown: TOWNS.PERION,
     cursedTreasureChance: 0.25,
 };
@@ -387,8 +388,14 @@ export const routeHenesysEllinia: Route = {
     regionTransition: { atNodeIndex: 5, region: REGIONS.ELLINIA },
     numNodes: 9,
     startingTown: TOWNS.HENESYS,
-    bossNodeIndex: 4,
-    bosses: [mushmomFight.id, strangePigFight.id, ancientMixedGolemFight.id],
+    nodeOverrides: {
+        "4": [
+            {
+                type: NODE_TYPES.BOSS,
+                bossPool: [mushmomFight.id, strangePigFight.id, ancientMixedGolemFight.id],
+            },
+        ],
+    },
     endingTown: TOWNS.ELLINIA,
     cursedTreasureChance: 0.25,
 };
@@ -469,8 +476,9 @@ export const routeLith: Route = {
     ],
     region: REGIONS.LITH_HARBOR,
     numNodes: 7,
-    bossNodeIndex: 6,
-    bosses: [mutantSnailFight.id, manoFight.id],
+    nodeOverrides: {
+        "6": [{ type: NODE_TYPES.BOSS, bossPool: [mutantSnailFight.id, manoFight.id] }],
+    },
     next: [toKerning, toHenesys],
 };
 

@@ -1,6 +1,6 @@
 import * as uuid from "uuid";
 import { REGIONS } from "../regions";
-import { GeneratedRouteNode, NODE_TYPES, Route, RouteNode } from "../types";
+import { GeneratedRouteNode, NODE_TYPES, Route, RouteNode, RouteNodeOverride } from "../types";
 import { getRandomInt, getRandomItem, shuffle } from "./../../utils";
 
 const MIN_NODES_PER_LEVEL = 2;
@@ -255,7 +255,7 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
 
             const node: GeneratedRouteNode = {
                 ...base,
-                id: base.town ?? uuid.v4(),
+                id: base.id ?? base.town ?? uuid.v4(),
                 type,
                 routeId,
                 previousRouteId: prevRoute?.id,
@@ -289,6 +289,31 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                 node.y = Math.max(0, Math.min(1, y));
             });
         };
+
+        const buildOverrideLevel = ({
+            overrides,
+            region,
+            prevLevel,
+        }: {
+            overrides: RouteNodeOverride[];
+            region: REGIONS;
+            prevLevel: GeneratedRouteNode[] | undefined;
+        }): GeneratedRouteNode[] =>
+            overrides.map(({ type, encounter, bossPool, ...rest }) =>
+                makeGeneratedNode({
+                    base: {
+                        region,
+                        ...rest,
+                        encounter:
+                            encounter ??
+                            (type === NODE_TYPES.BOSS && bossPool?.length
+                                ? getRandomItem(bossPool)
+                                : undefined),
+                    },
+                    forcedType: type,
+                    prevLevel,
+                }),
+            );
 
         if (route.numNodes === 0) {
             const next = route.next || [];
@@ -332,6 +357,13 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
             const region = regionAtIndex(route, i);
             const prevLevel: GeneratedRouteNode[] | undefined = levels[i - 1];
 
+            const overrides = route.nodeOverrides?.[String(i)];
+
+            if (overrides && overrides.length > 0) {
+                levels.push(buildOverrideLevel({ overrides, region, prevLevel }));
+                continue;
+            }
+
             if (i === 0 && route.startingTown !== undefined) {
                 levels.push([
                     makeGeneratedNode({
@@ -354,22 +386,6 @@ const generateTravelRoute = ({ startingRoute }: { startingRoute: Route }): Gener
                             town: route.endingTown,
                         },
                         forcedType: NODE_TYPES.TOWN,
-                        prevLevel,
-                    }),
-                ]);
-                continue;
-            }
-
-            if (i === route.bossNodeIndex) {
-                const encounter = route.bosses && getRandomItem(route.bosses);
-
-                levels.push([
-                    makeGeneratedNode({
-                        base: {
-                            region,
-                            encounter,
-                        },
-                        forcedType: NODE_TYPES.BOSS,
                         prevLevel,
                     }),
                 ]);
