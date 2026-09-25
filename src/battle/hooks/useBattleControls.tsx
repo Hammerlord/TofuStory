@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from "react";
+import { ReactElement, useCallback, useMemo } from "react";
 import * as uuid from "uuid";
 import { getDamageStatistics } from "../../ability/AbilityView/DamageIcon";
 import { ResourceIcon } from "../../ability/AbilityView/ResourceIcon";
@@ -9,14 +9,17 @@ import {
     Ability,
     CombatAbility,
     CombatEffect,
+    EFFECT_EVENT_KEYS,
     SELECT_CARD_TYPES,
     TARGET_TYPES,
 } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
 import { useAppDispatch } from "../../hooks";
 import { HasteImage } from "../../images";
+import { applyAbilityEventEffects } from "../actions/cardActions/utils";
 import { findCombatantData } from "../actions/combatantData";
 import { getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
+import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { battleWarnings } from "../constants";
 import { useBattlePhase } from "./useBattlePhase";
 import { battleStateSlice } from "../reducer";
@@ -55,7 +58,8 @@ const getPlayerSpecialMovementEffects = (player?: Player | null) => {
     return { moveCardFromHandToDeckEffects, allowFriendlyMovement };
 };
 
-const { setNotification, promptPlayerSelectCards } = battleStateSlice.actions;
+const { setNotification, promptPlayerSelectCards, selectHandAbility, updateBattle } =
+    battleStateSlice.actions;
 
 /**
  * Derived battle data and player-command closures shared by the keyboard and mouse control
@@ -225,6 +229,38 @@ export const useBattleControls = ({
         );
     };
 
+    const handleMoveCardToDeck = useCallback(
+        (cardId: string) => {
+            if (!player) {
+                return;
+            }
+            dispatch(selectHandAbility(null));
+            const newHand = baseHand.slice();
+            const newDeck = deck.slice();
+            const cardIndex = newHand.findIndex(({ instanceId }) => instanceId === cardId);
+            const [card] = newHand.splice(cardIndex, 1);
+            if (card) {
+                newDeck.unshift(
+                    applyAbilityEventEffects({
+                        event: card.onLeaveHand,
+                        ability: card,
+                        battle,
+                        player,
+                    }),
+                );
+            }
+            dispatch(updateBattle({ hand: newHand, deck: newDeck }));
+            dispatch(
+                checkEventTrigger({
+                    combatantId: player.id,
+                    effectEventKey: EFFECT_EVENT_KEYS.onMoveCardFromHandToDeck,
+                    context: { name: "Move Card To Deck" },
+                }),
+            );
+        },
+        [dispatch, baseHand, deck, battle, player],
+    );
+
     return {
         player,
         hand,
@@ -245,6 +281,7 @@ export const useBattleControls = ({
         warnNeedMoreResources,
         handleAbilityUse,
         handleSelectCardsPrerequisite,
+        handleMoveCardToDeck,
     };
 };
 

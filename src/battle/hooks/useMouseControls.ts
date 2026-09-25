@@ -1,12 +1,10 @@
 import { useCallback, useState } from "react";
-import { EFFECT_EVENT_KEYS, EFFECT_TYPES } from "../../ability/types";
+import { EFFECT_TYPES } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { applyAbilityEventEffects } from "../actions/cardActions/utils";
 import { findCombatantData, hasEffectType } from "../actions/combatantData";
 import { canUsePlayerAbility, getCardByInstanceId } from "../actions/playerAbility";
 import { onSummonAttack } from "../actions/phases/playerTurn";
-import { checkEventTrigger } from "../actions/statusEffect/triggerEffectEvent";
 import { useAbility } from "../actions/useAbility";
 import { battleWarnings } from "../constants";
 import { battleStateSlice } from "../reducer";
@@ -16,7 +14,7 @@ import { shouldShowReticleForTarget } from "../view/targetHelpers";
 import { BattleControls } from "./useBattleControls";
 import { KeyboardNavOutput } from "./useKeyboardNav";
 
-const { selectAlly, selectHandAbility, updateBattle } = battleStateSlice.actions;
+const { selectAlly, selectHandAbility } = battleStateSlice.actions;
 
 export interface UseMouseControlsArgs {
     controls: BattleControls;
@@ -33,8 +31,6 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
     const {
         playerSide,
         enemySide,
-        deck,
-        hand: baseHand,
         depleted,
         isPlayerTurn,
         selectCardsPrompt,
@@ -59,6 +55,7 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
         warnNeedMoreResources,
         handleAbilityUse,
         handleSelectCardsPrerequisite,
+        handleMoveCardToDeck,
     } = controls;
     const { keyboardNav, setKeyboardNav, isKeyboardTargetValid, keyboardPreviewTarget } = keyboard;
 
@@ -302,40 +299,7 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
         if (!selectedHandAbilityId || !allowMoveCardFromHandToDeck) {
             return;
         }
-
-        dispatch(selectHandAbility(null));
-
-        const newHand = baseHand.slice();
-        const newDeck = deck.slice();
-        const cardIndex = newHand.findIndex(
-            ({ instanceId }) => instanceId === selectedHandAbilityId,
-        );
-        const [card] = newHand.splice(cardIndex, 1);
-        if (card) {
-            newDeck.unshift(
-                applyAbilityEventEffects({
-                    event: card.onLeaveHand,
-                    ability: card,
-                    battle,
-                    player,
-                }),
-            );
-        }
-
-        dispatch(
-            updateBattle({
-                hand: newHand,
-                deck: newDeck,
-            }),
-        );
-
-        dispatch(
-            checkEventTrigger({
-                combatantId: player.id,
-                effectEventKey: EFFECT_EVENT_KEYS.onMoveCardFromHandToDeck,
-                context: { name: "Move Card To Deck" },
-            }),
-        );
+        handleMoveCardToDeck(selectedHandAbilityId);
     };
 
     const handleCombatantMouseEnter = useCallback(

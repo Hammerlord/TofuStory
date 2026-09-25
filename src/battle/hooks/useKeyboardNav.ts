@@ -16,9 +16,12 @@ export type KeyboardNav =
           mode: "target";
           cardIndex: number;
           target: { side: BATTLEFIELD_SIDES; index: number };
-      };
+      }
+    | { mode: "deck"; cardIndex: number };
 
 const BATTLEFIELD_SIZE = 5;
+
+export const MOVE_CARD_TO_DECK_KEY = "q";
 
 const getCardIndexFromNumberKey = (key: string): number | null => {
     if (!/^[0-9]$/.test(key)) {
@@ -57,10 +60,7 @@ export interface KeyboardNavOutput {
 }
 
 /**
- * Keyboard navigation of the hand and its targets: arrow keys to move between cards/slots,
- * number keys 1-0 to select a card at that index and begin targeting, Enter to use the
- * selected card on the selected target, Escape to cancel the selection, plus the E end-turn
- * keybind.
+ * Keyboard navigation of the hand and its targets.
  */
 export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     const dispatch = useAppDispatch();
@@ -85,6 +85,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         warnNeedMoreResources,
         handleAbilityUse,
         handleSelectCardsPrerequisite,
+        handleMoveCardToDeck,
     } = controls;
 
     // State for the arrow-key navigation of the hand and its targets. Reset whenever the player takes over with the mouse.
@@ -273,6 +274,8 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 e.key !== "E" &&
                 e.key !== "Escape" &&
                 e.key !== "Enter" &&
+                e.key !== MOVE_CARD_TO_DECK_KEY &&
+                e.key !== MOVE_CARD_TO_DECK_KEY.toUpperCase() &&
                 getCardIndexFromNumberKey(e.key) === null
             ) {
                 return;
@@ -283,6 +286,18 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 return;
             }
 
+            if (e.key === MOVE_CARD_TO_DECK_KEY || e.key === MOVE_CARD_TO_DECK_KEY.toUpperCase()) {
+                const card = hand.find(
+                    (candidate) => candidate.instanceId === selectedHandAbilityId,
+                );
+                if (allowMoveCardFromHandToDeck && card) {
+                    e.preventDefault();
+                    setKeyboardNav(null);
+                    handleMoveCardToDeck(card.instanceId);
+                }
+                return;
+            }
+
             const numberKeyCardIndex = getCardIndexFromNumberKey(e.key);
             if (numberKeyCardIndex !== null) {
                 if (keyboardNav?.mode === "target") {
@@ -290,9 +305,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                     if (selectedCard) {
                         const validTargets = getKeyboardValidTargets(selectedCard);
                         const slotNumber = numberKeyCardIndex + 1;
-                        const slot = validTargets.find(
-                            (target) => target.index + 1 === slotNumber,
-                        );
+                        const slot = validTargets.find((target) => target.index + 1 === slotNumber);
                         if (slot) {
                             handleKeyboardUseCard({
                                 cardIndex: keyboardNav.cardIndex,
@@ -313,7 +326,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
             }
 
             if (e.key === "Escape") {
-                if (keyboardNav?.mode === "target") {
+                if (keyboardNav?.mode === "target" || keyboardNav?.mode === "deck") {
                     setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
                 } else {
                     setKeyboardNav(null);
@@ -373,6 +386,39 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 return;
             }
 
+            if (keyboardNav.mode === "deck") {
+                if (e.key === "ArrowUp" || e.key === "Enter") {
+                    const card = hand[keyboardNav.cardIndex];
+                    if (card) {
+                        e.preventDefault();
+                        setKeyboardNav(null);
+                        handleMoveCardToDeck(card.instanceId);
+                    }
+                } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                    // The deck sits at the left end of the slot cycle: right steps onto the
+                    // first target slot, left wraps around to the last one.
+                    const card = hand[keyboardNav.cardIndex];
+                    if (!card) {
+                        setKeyboardNav(null);
+                        return;
+                    }
+                    const validTargets = getKeyboardValidTargets(card);
+                    if (!validTargets.length) {
+                        setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
+                        return;
+                    }
+                    const targetIndex = e.key === "ArrowRight" ? 0 : validTargets.length - 1;
+                    setKeyboardNav({
+                        mode: "target",
+                        cardIndex: keyboardNav.cardIndex,
+                        target: validTargets[targetIndex],
+                    });
+                } else if (e.key === "ArrowDown") {
+                    setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
+                }
+                return;
+            }
+
             const selectedCard = hand[keyboardNav.cardIndex];
             if (!selectedCard) {
                 setKeyboardNav(null);
@@ -393,6 +439,10 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 const delta = e.key === "ArrowLeft" ? validTargets.length - 1 : 1;
                 const nextIndex =
                     currentIndex >= 0 ? (currentIndex + delta) % validTargets.length : 0;
+                if (e.key === "ArrowLeft" && allowMoveCardFromHandToDeck && currentIndex === 0) {
+                    setKeyboardNav({ mode: "deck", cardIndex: keyboardNav.cardIndex });
+                    return;
+                }
                 setKeyboardNav({
                     mode: "target",
                     cardIndex: keyboardNav.cardIndex,
@@ -417,6 +467,8 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     }, [
         disableActions,
         hasSelectCardsPrompt,
+        allowMoveCardFromHandToDeck,
+        handleMoveCardToDeck,
         keyboardNav,
         hand,
         selectedHandAbilityId,

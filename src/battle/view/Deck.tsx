@@ -80,6 +80,26 @@ const useStyles = createUseStyles({
         animationIterationCount: "infinite",
         animationDirection: "alternate-reverse",
     },
+    hint: {
+        position: "absolute",
+        bottom: "calc(100% + 28px)",
+        left: "50%",
+        transform: "translateX(-50%)",
+        fontSize: "0.95rem",
+        fontWeight: 700,
+        lineHeight: "22px",
+        height: "22px",
+        padding: "0 6px",
+        color: "black",
+        background: "#CCC",
+        borderRadius: "2px",
+        boxShadow: "1px 1px 3px rgba(0, 0, 0, 1)",
+        border: "1px solid #444",
+        userSelect: "none",
+        pointerEvents: "none",
+        whiteSpace: "nowrap",
+        zIndex: 100,
+    },
 });
 
 const DECK_SIZE_CHANGE_SPEED = 50; // ms
@@ -89,11 +109,13 @@ const Deck = ({
     onMouseDown,
     highlightDeck,
     deckRef,
+    hint,
 }: {
     viewDeckInOrder: boolean;
     onMouseDown?: (event: MouseEvent<HTMLDivElement>) => void;
     highlightDeck: boolean;
     deckRef: RefObject<HTMLDivElement | null>;
+    hint?: string | null;
 }) => {
     const classes = useStyles();
     // This component only renders in battle.
@@ -245,6 +267,7 @@ const Deck = ({
                     </div>
                 </Tooltip>
                 {highlightDeck && <img src={DownArrowImage} className={classes.indicator} />}
+                {hint && <span className={classes.hint}>{hint}</span>}
             </div>
         </div>
     );

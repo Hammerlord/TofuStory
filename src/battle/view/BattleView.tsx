@@ -32,7 +32,7 @@ import WaveInfo from "./WaveInfo";
 import { getAbilityUsePreviews, getTargetedByEnemyAbilities } from "./previewHelpers";
 import { isTargetedForAbility } from "./targetHelpers";
 import { useBattleControls } from "../hooks/useBattleControls";
-import { useKeyboardNav } from "../hooks/useKeyboardNav";
+import { MOVE_CARD_TO_DECK_KEY, useKeyboardNav } from "../hooks/useKeyboardNav";
 import { useMouseControls } from "../hooks/useMouseControls";
 import ActionHistory from "./ActionHistory";
 import { usePreloadImages } from "../../hooks/usePreloadImage";
@@ -310,10 +310,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
             ? selectedAbilityFromHand || hand[keyboardNav.cardIndex]
             : undefined;
 
-    const getKeyboardSlotNumber = (
-        side: BATTLEFIELD_SIDES,
-        index: number,
-    ): string | null => {
+    const getKeyboardSlotNumber = (side: BATTLEFIELD_SIDES, index: number): string | null => {
         if (
             !selectedKeyboardTargetCard ||
             !isKeyboardTargetValid(selectedKeyboardTargetCard, side, index)
@@ -370,13 +367,16 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
 
     // Element that the target line should anchor to while keyboard-targeting a slot
     const keyboardTargetRef = useMemo(() => {
+        if (keyboardNav?.mode === "deck") {
+            return deckRef.current;
+        }
         if (keyboardNav?.mode !== "target") {
             return null;
         }
         const { target } = keyboardNav;
         const refs = target.side === BATTLEFIELD_SIDES.PLAYER_SIDE ? allyRefs : enemyRefs;
         return refs[target.index]?.current || null;
-    }, [keyboardNav]);
+    }, [keyboardNav, deckRef]);
 
     const showMovementAbility =
         allowFriendlyMovement &&
@@ -568,6 +568,11 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                             selectedHandAbilityId && allowMoveCardFromHandToDeck,
                                         )}
                                         deckRef={deckRef}
+                                        hint={
+                                            selectedHandAbilityId && allowMoveCardFromHandToDeck
+                                                ? MOVE_CARD_TO_DECK_KEY.toUpperCase()
+                                                : null
+                                        }
                                     />
                                     {allowMoveCardFromHandToDeck && (
                                         <Tooltip title="Select a card in your hand to place it onto your deck.">
@@ -671,12 +676,16 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                 </div>
                 {animationCanvas}
                 <div className={classes.abilityContainer}>
-                    {!selectedAbilityFromHand && !disableActions && isTutorial && !noMoreMoves && !keyboardNav && (
-                        <div className={classes.clickIndicator}>
-                            Click <br />
-                            <Icon icon={ClickIndicatorImage} />
-                        </div>
-                    )}
+                    {!selectedAbilityFromHand &&
+                        !disableActions &&
+                        isTutorial &&
+                        !noMoreMoves &&
+                        !keyboardNav && (
+                            <div className={classes.clickIndicator}>
+                                Click <br />
+                                <Icon icon={ClickIndicatorImage} />
+                            </div>
+                        )}
                     <Hand
                         className={classes.abilities}
                         hand={hand}
