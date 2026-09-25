@@ -12,7 +12,6 @@ import { ClearImage, ClickIndicatorImage, LithRegionBGImage, MapleLeavesImage } 
 import Tooltip from "../../view/Tooltip";
 import { checkCardActions } from "../actions/cardActions/cardActions";
 import { canUsePlayerAbility, getCardByInstanceId, useHandAbility } from "../actions/playerAbility";
-import { TURN_ANNOUNCEMENT_TIME } from "../constants";
 import { battleStateSlice } from "../reducer";
 import { BATTLE_STATES } from "../states";
 import { BATTLEFIELD_SIDES, BattleState, EventGroup } from "../types";
@@ -36,6 +35,7 @@ import { MOVE_CARD_TO_DECK_KEY, useKeyboardNav } from "../hooks/useKeyboardNav";
 import { useMouseControls } from "../hooks/useMouseControls";
 import ActionHistory from "./ActionHistory";
 import { usePreloadImages } from "../../hooks/usePreloadImage";
+import { TURN_ANNOUNCEMENT_TIME } from "../constants";
 
 const useStyles = createUseStyles({
     root: {
@@ -97,6 +97,11 @@ const useStyles = createUseStyles({
         position: "absolute",
         top: -6,
         left: -6,
+    },
+    turns: {
+        position: "absolute",
+        top: -6,
+        right: -6,
     },
     combatantContainer: {
         position: "relative",
@@ -233,7 +238,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
         isTutorial,
         selectedAllyId,
         selectedHandAbilityId,
-        showTurnAnnouncement,
+        state,
     } = battle;
     const currentEventGroup: EventGroup = eventGroups[0];
 
@@ -499,6 +504,13 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                 round={round}
                             />
                         </div>
+                        <div className={classes.turns}>
+                            <TurnAnnouncement
+                                isPlayerTurn={isPlayerTurn}
+                                battlePhase={state}
+                                duration={TURN_ANNOUNCEMENT_TIME / 2}
+                            />
+                        </div>
                         <div className={classes.combatantContainer}>
                             <div className={classes.combatants}>
                                 {(eventGroups[0]?.enemySide || enemySide).map(
@@ -708,12 +720,6 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                 ? `Next: Wave ${currentWaveIndex + 2}`
                                 : undefined
                         }
-                    />
-                )}
-                {showTurnAnnouncement && (
-                    <TurnAnnouncement
-                        isPlayerTurn={isPlayerTurn}
-                        duration={TURN_ANNOUNCEMENT_TIME}
                     />
                 )}
                 {selectCardsPrompt && !eventGroups.length && !isWinConditionTriggered && (

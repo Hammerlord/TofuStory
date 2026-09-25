@@ -1,158 +1,91 @@
-import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { BLUE, RED } from "../../../ability/AbilityView/constants";
+import { BATTLE_STATES } from "../../states";
 
 const useStyles = createUseStyles({
     root: {
-        fontSize: "32px",
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
-        position: "fixed",
-        left: "50%",
-        top: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
-        zIndex: 5,
-    },
-    inner: {
-        background:
-            "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.9) 75%, rgba(0,0,0,0) 100%)",
-        padding: "0 48px",
-        minWidth: "500px",
-        transform: "translateY(-50%)",
-        // HACK: we only want banner visible for the duration of the animation. So set it to be invisible otherwise.
-        // Issue where the banner will "flicker" back into existence after the animation has finished.
-        opacity: 0,
-
-        "&.playerTurn": {
-            color: BLUE,
-        },
-
-        "&.enemyTurn": {
-            color: RED,
-        },
-    },
-    playerTurnText: {
-        padding: "16px 0",
-        display: "inline-block",
-    },
-    divider: {
         position: "relative",
-        "&.playerTurn hr": {
-            borderBottom: `1px solid ${BLUE}`,
-        },
-        "&.enemyTurn hr": {
-            borderBottom: `1px solid ${RED}`,
-        },
+        overflow: "hidden",
+        width: "225px",
+        padding: "18px",
+        paddingRight: "32px",
+        fontSize: "1.25rem",
+        textAlign: "right",
+        color: "white",
+        fontWeight: "bold",
+        transition: "width 0.3s ease",
+        zIndex: 0,
     },
-    diamond: {
-        width: "7px",
-        height: "7px",
-        transform: "rotate(45deg) translate(-50%, 0)",
-        display: "inline-block",
+    expanded: {
+        width: "350px",
+    },
+    red: {
         position: "absolute",
-        top: "0px",
-        left: "50%",
-        "&.playerTurn": {
-            background: BLUE,
-        },
-        "&.enemyTurn": {
-            background: RED,
-        },
+        inset: 0,
+        zIndex: -1,
+        background:
+            "linear-gradient(270deg, rgb(145, 0, 14) 0%, rgba(170, 25, 40, 0.5) 70%, rgba(170, 25, 40, 0) 100%)",
+
+        transition: ({ duration }: { duration: number }) => `opacity ${duration / 1000}s ease`,
+    },
+    blue: {
+        position: "absolute",
+        inset: 0,
+        zIndex: -1,
+        background:
+            "linear-gradient(270deg, rgb(0, 80, 185) 0%, rgba(15, 70, 140, 0.5) 70%, rgba(15, 70, 140, 0) 100%)",
+
+        transition: ({ duration }: { duration: number }) => `opacity ${duration / 1000}s ease`,
+    },
+    visible: {
+        opacity: 1,
+    },
+
+    hidden: {
+        opacity: 0,
     },
 });
 
-/**
- * Duration: how long this turn announcement will persist in milliseconds
- */
 const TurnAnnouncement = ({
+    battlePhase,
     isPlayerTurn,
-    duration,
+    duration = 300,
 }: {
+    battlePhase: BATTLE_STATES;
     isPlayerTurn: boolean;
-    duration: number;
+    duration?: number;
 }) => {
-    const classes = useStyles();
-    const bannerRef: React.RefObject<HTMLDivElement> = useRef(null);
+    const classes = useStyles({ duration });
+    const [expanded, setExpanded] = useState(false);
+
+    const isStartingBattlePhase =
+        battlePhase === BATTLE_STATES.BATTLE_START || battlePhase === BATTLE_STATES.WAVE_START;
 
     useEffect(() => {
-        if (!bannerRef.current) {
+        if (isStartingBattlePhase) {
             return;
         }
 
-        const animationFrames = [
-            {
-                opacity: 0,
-                transform: "translateX(10%)",
-                easing: "ease-in-out",
-            },
-            {
-                opacity: 1,
-                transform: "translateX(0%)",
-                offset: 0.1,
-                easing: "ease-in-out",
-            },
-            {
-                opacity: 1,
-                transform: "translateX(0%)",
-                offset: 0.85,
-                easing: "ease-in-out",
-            },
-            {
-                opacity: 0,
-                transform: "translateX(-10%)",
-                easing: "ease-in-out",
-            },
-        ];
+        setExpanded(true);
 
-        const animation = bannerRef.current.animate(animationFrames, {
-            duration,
-        });
+        const timeout = setTimeout(() => {
+            setExpanded(false);
+        }, duration / 2);
 
-        return () => animation.cancel();
-    }, [isPlayerTurn]);
+        return () => clearTimeout(timeout);
+    }, [isPlayerTurn, isStartingBattlePhase]);
+
+    if (isStartingBattlePhase) {
+        return null;
+    }
+
     return (
-        <div className={classes.root}>
-            <div
-                className={classNames(classes.inner, {
-                    playerTurn: isPlayerTurn,
-                    enemyTurn: !isPlayerTurn,
-                })}
-                ref={bannerRef}
-            >
-                <div
-                    className={classNames(classes.divider, {
-                        playerTurn: isPlayerTurn,
-                        enemyTurn: !isPlayerTurn,
-                    })}
-                >
-                    <hr />
-                    <span
-                        className={classNames(classes.diamond, {
-                            playerTurn: isPlayerTurn,
-                            enemyTurn: !isPlayerTurn,
-                        })}
-                    />
-                </div>
-                <span className={classes.playerTurnText}>
-                    {isPlayerTurn ? "Player Turn" : "Enemy Turn"}
-                </span>
-                <div
-                    className={classNames(classes.divider, {
-                        playerTurn: isPlayerTurn,
-                        enemyTurn: !isPlayerTurn,
-                    })}
-                >
-                    <hr />
-                    <span
-                        className={classNames(classes.diamond, {
-                            playerTurn: isPlayerTurn,
-                            enemyTurn: !isPlayerTurn,
-                        })}
-                    />
-                </div>
-            </div>
+        <div className={`${classes.root} ${expanded ? classes.expanded : ""}`}>
+            <div className={`${classes.red} ${isPlayerTurn ? classes.hidden : classes.visible}`} />
+
+            <div className={`${classes.blue} ${isPlayerTurn ? classes.visible : classes.hidden}`} />
+
+            {isPlayerTurn ? "Player Turn" : "Enemy Turn"}
         </div>
     );
 };
