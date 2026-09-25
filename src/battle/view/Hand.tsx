@@ -65,6 +65,7 @@ const Hand = ({
     cardRefs,
     highlightIndex,
     hideCardIndexes,
+    highlightPlayable,
 }: {
     hand: CombatAbility[];
     onAbilityClick: (event: React.MouseEvent, id: string) => void;
@@ -73,6 +74,7 @@ const Hand = ({
     cardRefs: RefObject<{ [cardId: string]: HTMLElement }>;
     highlightIndex?: number | null;
     hideCardIndexes?: boolean;
+    highlightPlayable?: boolean;
 }) => {
     const classes = useStyles();
     const [bonusCardIds, setBonusCardIds] = useState<{ [cardId: string]: boolean }>({});
@@ -143,6 +145,7 @@ const Hand = ({
                                     selectedAbilityId === ability.instanceId || highlightIndex === i
                                 }
                                 ability={ability}
+                                highlightPlayable={highlightPlayable}
                                 ref={(element) => {
                                     if (element) {
                                         cardRefs.current[ability.instanceId] = element;

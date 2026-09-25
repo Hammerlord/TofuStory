@@ -97,11 +97,6 @@ const useStyles = createUseStyles({
             transform: "translateY(-16px) scale(1.1)",
             zIndex: 5,
         },
-        "&.-selected:after": {
-            background: "linear-gradient(45deg, #7fd4ff, #1e90ff, #00e5ff, #3f7bff, #7fd4ff)",
-            boxShadow: "0 0 12px rgba(30, 144, 255, 0.45)",
-            opacity: 1,
-        },
         // A card with a bonus/highlight that is also selected gets a green border
         "&.-selected.glow:after, &.-selected.glowOrange:after": {
             background: "linear-gradient(45deg, #8dff9e, #19d94c, #00e676, #1e9e43, #8dff9e)",
@@ -308,6 +303,15 @@ const useStyles = createUseStyles({
             opacity: 1,
         },
     },
+    // Light-green flowing border shown on every playable card while hovering the
+    // End Turn button, so you can see at a glance what you could still play.
+    playable: {
+        "&:after": {
+            background: "linear-gradient(45deg, #8dff9e, #19d94c, #00e676, #1e9e43, #8dff9e)",
+            boxShadow: "0 0 12px rgba(46, 200, 80, 0.45)",
+            opacity: 1,
+        },
+    },
     abilityLevel: {
         color: "#25b814",
         textShadow: Array.from({ length: 10 })
@@ -378,6 +382,7 @@ interface AbilityViewProps {
     highlightResource?: boolean;
     highlightDamage?: boolean;
     highlightArmor?: boolean;
+    highlightPlayable?: boolean;
     ref?: Ref<HTMLDivElement>;
 }
 
@@ -414,6 +419,7 @@ const AbilityView = ({
     highlightResource,
     highlightDamage,
     highlightArmor,
+    highlightPlayable,
     ref,
     ...other
 }: AbilityViewProps) => {
@@ -733,6 +739,7 @@ const AbilityView = ({
 
     const inBattle = battle && battle.state !== BATTLE_STATES.VICTORY;
     const shouldGlow = isAbilityUsable && !disableGlow && !disableConditionGlow && inBattle;
+    const isPlayableHighlight = Boolean(highlightPlayable && isAbilityUsable && inBattle);
     const glowStacks: number = [
         hasBonus,
         ...effects.map((e: AbilityEffect) => e.highlightCard),
@@ -741,8 +748,6 @@ const AbilityView = ({
         return acc + stacks;
     }, 0);
 
-    // The same predicate that decides whether the bonus border actually paints
-    // (classes.glow / classes.glowOrange), reported so parents can layer these cards.
     const isShowingBonus = Boolean(shouldGlow && glowStacks > 0);
     const onBonusChangeRef = useRef(onBonusChange);
     onBonusChangeRef.current = onBonusChange;
@@ -783,6 +788,7 @@ const AbilityView = ({
                     "-selected": isSelected,
                     [classes.glow]: shouldGlow && glowStacks === 1,
                     [classes.glowOrange]: shouldGlow && glowStacks > 1,
+                    [classes.playable]: isPlayableHighlight,
                 })}
                 {...other}
             >

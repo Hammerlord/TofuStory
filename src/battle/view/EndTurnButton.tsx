@@ -37,10 +37,12 @@ const EndTurnButton = ({
     disabled,
     onClick,
     highlight,
+    onHoverChange,
 }: {
     disabled: boolean;
     onClick;
     highlight: boolean;
+    onHoverChange?: (hovering: boolean) => void;
 }) => {
     const classes = useStyles();
     return (
@@ -52,6 +54,8 @@ const EndTurnButton = ({
             })}
             disabled={disabled}
             onClick={onClick}
+            onMouseEnter={() => onHoverChange?.(true)}
+            onMouseLeave={() => onHoverChange?.(false)}
         >
             End Turn
         </button>

@@ -1,4 +1,4 @@
-import React, { RefObject, useMemo, useRef } from "react";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { getAbilityColor } from "../../ability/AbilityView/utils";
 import { CombatAbility, Effect } from "../../ability/types";
@@ -269,6 +269,8 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
     const depleteRef: RefObject<HTMLDivElement | null> = useRef(null);
 
     const classes = useStyles({ backgroundImage });
+
+    const [isEndTurnHovered, setIsEndTurnHovered] = useState(false);
 
     const noMoreMoves =
         playerSide.every((ally) => !isEligibleToAttack(ally)) &&
@@ -660,7 +662,9 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                                     highlight={noMoreMoves}
                                     onClick={() => {
                                         dispatch(updateBattleState(BATTLE_STATES.TURN_END));
+                                        setIsEndTurnHovered(false);
                                     }}
+                                    onHoverChange={setIsEndTurnHovered}
                                 />
                                 <div className={classes.discardContainer}>
                                     <Discard
@@ -694,6 +698,7 @@ const BattlefieldContainer = ({ onWin }: { onWin?: (battle: BattleState) => void
                         onAbilityClick={handleAbilityClick}
                         highlightIndex={keyboardNav?.cardIndex ?? null}
                         hideCardIndexes={keyboardNav?.mode === "target"}
+                        highlightPlayable={isEndTurnHovered}
                     />
                 </div>
                 {showWaveClear && (
