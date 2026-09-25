@@ -88,10 +88,7 @@ const useStyles = createUseStyles({
             backgroundSize: "300% 300%",
             transformOrigin: "50% 50%",
             opacity: 0,
-            animationName: "$borderPulse",
-            animationDuration: "1.6s",
-            animationIterationCount: "infinite",
-            animationTimingFunction: "ease-out",
+            transition: "opacity 0.15s",
         },
         "&.-selected": {
             transform: "translateY(-16px) scale(1.1)",
@@ -106,6 +103,10 @@ const useStyles = createUseStyles({
         "&.-selected.glow:before, &.-selected.glowOrange:before": {
             background: "linear-gradient(45deg, #8dff9e, #19d94c, #00e676, #1e9e43, #8dff9e)",
             opacity: 1,
+            animationName: "$borderPulse",
+            animationDuration: "1.6s",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "ease-out",
         },
     },
     inner: {
@@ -290,6 +291,10 @@ const useStyles = createUseStyles({
         "&:before": {
             background: "linear-gradient(45deg, #ffed7a, #ffc400, #ffdf4d, #ffb300, #ffed7a)",
             opacity: 1,
+            animationName: "$borderPulse",
+            animationDuration: "1.6s",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "ease-out",
         },
     },
     glowOrange: {
@@ -301,6 +306,10 @@ const useStyles = createUseStyles({
         "&:before": {
             background: "linear-gradient(45deg, #ffc46b, #ff9100, #ffab3d, #ff6d00, #ffc46b)",
             opacity: 1,
+            animationName: "$borderPulse",
+            animationDuration: "1.6s",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "ease-out",
         },
     },
     // Light-green flowing border shown on every playable card while hovering the
