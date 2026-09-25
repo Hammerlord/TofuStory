@@ -13,7 +13,7 @@ import getCardSelection from "../selectCardUtils";
 import { AshesImage } from "../../images";
 import { Box } from "@mui/material";
 import { selectCardsAction } from "../actions/cardActions/selectCards";
-import { getCardByInstanceId } from "../actions/playerAbility";
+import { CARD_SELECTION_KEYBINDS, useCardSelection } from "../../hooks/useCardSelection";
 
 const useStyles = createUseStyles({
     inner: {
@@ -47,6 +47,62 @@ const useStyles = createUseStyles({
     },
     selectedForRemoval: {
         filter: "drop-shadow(0 0 4px #ff3a3a) drop-shadow(0 0 4px #ff3a3a)",
+    },
+    // Target-reticle frame shown around the card currently focused by the keyboard
+    // arrows. Uses the battle targeting red so it reads as "aimed at", distinct from
+    // the green selection glow or the red removal X.
+    reticle: {
+        position: "absolute",
+        inset: "-8px",
+        pointerEvents: "none",
+        zIndex: 10,
+        animation: "$reticlePulse 1.4s ease-in-out infinite",
+    },
+    reticleCorner: {
+        position: "absolute",
+        width: "26px",
+        height: "26px",
+        border: "3px solid #d3d3d3",
+        filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.9))",
+    },
+    reticleTopLeft: {
+        top: 0,
+        left: 0,
+        borderRight: "none",
+        borderBottom: "none",
+        borderTopLeftRadius: 10,
+    },
+    reticleTopRight: {
+        top: 0,
+        right: 0,
+        borderLeft: "none",
+        borderBottom: "none",
+        borderTopRightRadius: 10,
+    },
+    reticleBottomLeft: {
+        bottom: 0,
+        left: 0,
+        borderRight: "none",
+        borderTop: "none",
+        borderBottomLeftRadius: 10,
+    },
+    reticleBottomRight: {
+        bottom: 0,
+        right: 0,
+        borderLeft: "none",
+        borderTop: "none",
+        borderBottomRightRadius: 10,
+    },
+    "@keyframes reticlePulse": {
+        "0%": {
+            opacity: 1,
+        },
+        "50%": {
+            opacity: 0.55,
+        },
+        "100%": {
+            opacity: 1,
+        },
     },
     cardIndex: {
         position: "absolute",
@@ -88,10 +144,12 @@ const useStyles = createUseStyles({
 });
 
 // Keybinds shared between the keydown handling and the on-screen button hints.
+// The confirm/cancel bindings live in useCardSelection; only the overlay-specific
+// toggle binding is defined here.
 const OVERLAY_KEYBINDS = {
     toggle: { key: "q", hint: "Q" },
-    confirm: { key: "Enter", hint: "⏎" },
-    cancel: { key: "Escape", hint: "ESC" },
+    confirm: CARD_SELECTION_KEYBINDS.confirm,
+    cancel: CARD_SELECTION_KEYBINDS.cancel,
 } as const;
 
 const SelectCardOverlay = ({
@@ -126,16 +184,6 @@ const SelectCardOverlay = ({
     );
     const maxAmount =
         configuredMax || (type === SELECT_CARD_TYPES.DISCARD_TO_DRAW && hand?.length) || 1;
-    // A lone option is preselected so it can be confirmed with a single press.
-    const [selectedAbilityIds, setSelectedAbilityIds] = useState<string[]>(() =>
-        abilityChoices.length === 1 ? [abilityChoices[0].instanceId] : [],
-    );
-    // The card currently focused by the arrow keys.
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const selectedAbilities = abilityChoices.filter(({ instanceId }) =>
-        selectedAbilityIds.includes(instanceId),
-    );
     const dispatch = useAppDispatch();
     const [hide, setHide] = useState(false);
 
@@ -144,7 +192,7 @@ const SelectCardOverlay = ({
             selectCardsAction({
                 type,
                 effects,
-                selectedAbilities,
+                selectedAbilities: selectedItems,
                 player,
                 abilityQueued: abilityQueued?.selectedAbility,
             }),
@@ -152,20 +200,40 @@ const SelectCardOverlay = ({
         onSelect();
     };
 
+    const {
+        selectedIds,
+        selectedItems,
+        currentIndex,
+        focusSource,
+        isConfirmDisabled,
+        isSelected,
+        handleCardClick,
+        handleConfirm,
+    } = useCardSelection({
+        items: abilityChoices,
+        maxAmount,
+        onConfirm: handleSelectClick,
+        isConfirmDisabled: (selectedIds) =>
+            type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
+            !selectedIds.length &&
+            abilityChoices.length > 0,
+        onCancel,
+        // Only Deplete from hand can be safely backed out of mid-selection
+        cancelable: type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
+        enabled: !hide,
+        getId: (ability: CombatAbility) => ability.instanceId,
+        preselectLoneOption: true,
+    });
+
     const isSelectedForRemoval = (instanceId: string): boolean => {
         return (
             [
                 SELECT_CARD_TYPES.DEPLETE_FROM_HAND,
                 SELECT_CARD_TYPES.DISCARD_TO_DRAW,
                 SELECT_CARD_TYPES.HAND_TO_TOP_DECK,
-            ].includes(type) && selectedAbilityIds.includes(instanceId)
+            ].includes(type) && selectedIds.includes(instanceId)
         );
     };
-
-    const isConfirmDisabled =
-        type !== SELECT_CARD_TYPES.DISCARD_TO_DRAW &&
-        !selectedAbilityIds.length &&
-        abilityChoices.length > 0;
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -175,91 +243,12 @@ const SelectCardOverlay = ({
             if (e.key.toLowerCase() === OVERLAY_KEYBINDS.toggle.key) {
                 e.preventDefault();
                 setHide((prev) => !prev);
-                return;
-            }
-            if (hide) {
-                return;
-            }
-            if (e.key === OVERLAY_KEYBINDS.cancel.key) {
-                // Only Deplete from hand can be safely backed out of mid-selection
-                if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
-                    e.preventDefault();
-                    onCancel();
-                }
-                return;
-            }
-            if (!abilityChoices.length) {
-                return;
-            }
-            const singleSelect = maxAmount === 1;
-            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                e.preventDefault();
-                const delta = e.key === "ArrowLeft" ? abilityChoices.length - 1 : 1;
-                const nextIndex = (currentIndex + delta) % abilityChoices.length;
-                setCurrentIndex(nextIndex);
-                if (singleSelect) {
-                    // Single select can skip the intermediate highlight stage.
-                    setSelectedAbilityIds([abilityChoices[nextIndex].instanceId]);
-                }
-            } else if (e.key === "ArrowUp") {
-                if (singleSelect) {
-                    return;
-                }
-                e.preventDefault();
-                const ability = abilityChoices[currentIndex % abilityChoices.length];
-                if (ability) {
-                    setSelectedAbilityIds((prev) =>
-                        prev.includes(ability.instanceId) || prev.length >= maxAmount
-                            ? prev
-                            : [...prev, ability.instanceId],
-                    );
-                }
-            } else if (e.key === "ArrowDown") {
-                if (singleSelect) {
-                    return;
-                }
-                e.preventDefault();
-                const ability = abilityChoices[currentIndex % abilityChoices.length];
-                if (ability) {
-                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
-                }
-            } else if (/^[0-9]$/.test(e.key)) {
-                e.preventDefault();
-                const index = e.key === "0" ? 9 : Number(e.key) - 1;
-                const ability = abilityChoices[index];
-                if (!ability) {
-                    return;
-                }
-                setCurrentIndex(index);
-                if (maxAmount === 1) {
-                    setSelectedAbilityIds([ability.instanceId]);
-                } else if (selectedAbilityIds.includes(ability.instanceId)) {
-                    setSelectedAbilityIds((prev) => prev.filter((id) => id !== ability.instanceId));
-                } else if (selectedAbilityIds.length < maxAmount) {
-                    setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
-                }
-            } else if (e.key === OVERLAY_KEYBINDS.confirm.key) {
-                if (!isConfirmDisabled) {
-                    e.preventDefault();
-                    handleSelectClick();
-                }
             }
         };
 
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [
-        hide,
-        setHide,
-        type,
-        onCancel,
-        abilityChoices,
-        maxAmount,
-        currentIndex,
-        selectedAbilityIds,
-        isConfirmDisabled,
-        handleSelectClick,
-    ]);
+    }, []);
 
     return (
         <>
@@ -287,41 +276,47 @@ const SelectCardOverlay = ({
                             {abilityChoices.map((ability: CombatAbility, i: number) => (
                                 <div
                                     className={classes.ability}
-                                    onClick={() => {
-                                        setCurrentIndex(i);
-                                        if (maxAmount === 1) {
-                                            setSelectedAbilityIds([ability.instanceId]);
-                                            return;
-                                        }
-                                        if (selectedAbilityIds.includes(ability.instanceId)) {
-                                            // Deselect if selected
-                                            setSelectedAbilityIds((prev) =>
-                                                prev.filter((id) => id !== ability.instanceId),
-                                            );
-                                            return;
-                                        }
-                                        if (selectedAbilityIds.length < maxAmount) {
-                                            setSelectedAbilityIds((prev) => [
-                                                ...prev,
-                                                ability.instanceId,
-                                            ]);
-                                        }
-                                    }}
+                                    onClick={() => handleCardClick(ability, i)}
                                     key={ability.instanceId}
                                 >
                                     <span className={classes.cardIndex}>{(i + 1) % 10}</span>
                                     <AbilityView
                                         ability={ability}
-                                        isSelected={maxAmount > 1 && currentIndex === i}
                                         className={classNames({
-                                            [classes.selected]: selectedAbilityIds.includes(
-                                                ability.instanceId,
-                                            ),
+                                            [classes.selected]: isSelected(ability, i),
                                             [classes.selectedForRemoval]: isSelectedForRemoval(
                                                 ability.instanceId,
                                             ),
                                         })}
                                     />
+                                    {focusSource === "keyboard" && currentIndex === i && (
+                                        <div className={classes.reticle}>
+                                            <span
+                                                className={classNames(
+                                                    classes.reticleCorner,
+                                                    classes.reticleTopLeft,
+                                                )}
+                                            />
+                                            <span
+                                                className={classNames(
+                                                    classes.reticleCorner,
+                                                    classes.reticleTopRight,
+                                                )}
+                                            />
+                                            <span
+                                                className={classNames(
+                                                    classes.reticleCorner,
+                                                    classes.reticleBottomLeft,
+                                                )}
+                                            />
+                                            <span
+                                                className={classNames(
+                                                    classes.reticleCorner,
+                                                    classes.reticleBottomRight,
+                                                )}
+                                            />
+                                        </div>
+                                    )}
                                     {isSelectedForRemoval(ability.instanceId) && (
                                         <div className={classes.x}>
                                             <XIcon />
@@ -342,7 +337,7 @@ const SelectCardOverlay = ({
                             variant={"contained"}
                             color="primary"
                             disabled={isConfirmDisabled}
-                            onClick={handleSelectClick}
+                            onClick={handleConfirm}
                         >
                             Confirm [{OVERLAY_KEYBINDS.confirm.hint}]
                         </Button>

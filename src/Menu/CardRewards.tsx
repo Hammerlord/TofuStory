@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import * as uuid from "uuid";
 import AbilityView from "../ability/AbilityView/AbilityView";
@@ -22,6 +22,7 @@ import Button from "../view/Button";
 import Overlay from "../view/Overlay";
 import { getCardChoicesFromItems, getCardPool, getUpgradeCard } from "./utils";
 import { createCombatAbility } from "../ability/createCombatAbility";
+import { CARD_SELECTION_KEYBINDS, useCardSelection } from "../hooks/useCardSelection";
 
 const useStyles = createUseStyles({
     inner: {
@@ -50,8 +51,64 @@ const useStyles = createUseStyles({
         verticalAlign: "bottom",
     },
     ability: {
-        "&.selected": {
-            filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+        position: "relative",
+    },
+    selected: {
+        filter: "drop-shadow(0 0 4px #45ff61) drop-shadow(0 0 4px #45ff61)",
+    },
+    // Target-reticle frame shown around the card currently focused by the keyboard
+    // arrows. Same language as the battle select-cards overlay.
+    reticle: {
+        position: "absolute",
+        inset: "-8px",
+        pointerEvents: "none",
+        zIndex: 10,
+        animation: "$reticlePulse 1.4s ease-in-out infinite",
+    },
+    reticleCorner: {
+        position: "absolute",
+        width: "26px",
+        height: "26px",
+        border: "3px solid #d3d3d3",
+        filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.9))",
+    },
+    reticleTopLeft: {
+        top: 0,
+        left: 0,
+        borderRight: "none",
+        borderBottom: "none",
+        borderTopLeftRadius: 10,
+    },
+    reticleTopRight: {
+        top: 0,
+        right: 0,
+        borderLeft: "none",
+        borderBottom: "none",
+        borderTopRightRadius: 10,
+    },
+    reticleBottomLeft: {
+        bottom: 0,
+        left: 0,
+        borderRight: "none",
+        borderTop: "none",
+        borderBottomLeftRadius: 10,
+    },
+    reticleBottomRight: {
+        bottom: 0,
+        right: 0,
+        borderLeft: "none",
+        borderTop: "none",
+        borderBottomRightRadius: 10,
+    },
+    "@keyframes reticlePulse": {
+        "0%": {
+            opacity: 1,
+        },
+        "50%": {
+            opacity: 0.55,
+        },
+        "100%": {
+            opacity: 1,
         },
     },
     selectContainer: {
@@ -167,29 +224,27 @@ const CardRewards = ({
         return choices.map(createCombatAbility);
     }, []);
 
-    const [selectedAbilityIndices, setSelectedAbilityIndices] = useState<number[]>([]);
     const classes = useStyles();
 
-    const handleSelectClick = () => {
-        const cards = selectedAbilityIndices.map((index) => rolledAbilities[index]);
-        updateDeck([...cards, ...deck]);
-        onClose(rolledAbilities);
-    };
-
-    const handleCardClick = (index: number) => {
-        if (maxAmount === 1) {
-            setSelectedAbilityIndices([index]);
-            return;
-        }
-        if (selectedAbilityIndices.includes(index)) {
-            // Deselect if selected
-            setSelectedAbilityIndices((prev) => prev.filter((i) => i !== index));
-            return;
-        }
-        if (selectedAbilityIndices.length < maxAmount) {
-            setSelectedAbilityIndices((prev) => [...prev, index]);
-        }
-    };
+    const {
+        selectedIds,
+        selectedItems,
+        currentIndex,
+        focusSource,
+        isConfirmDisabled,
+        isSelected,
+        handleCardClick,
+        handleConfirm,
+    } = useCardSelection({
+        items: rolledAbilities,
+        maxAmount,
+        onConfirm: () => {
+            updateDeck([...selectedItems, ...deck]);
+            onClose(rolledAbilities);
+        },
+        getId: (ability: CombatAbility) => ability.instanceId,
+        preselectLoneOption: true,
+    });
 
     return (
         <Overlay>
@@ -212,16 +267,45 @@ const CardRewards = ({
                         <div className={classes.abilityContainer} key={ability.instanceId}>
                             <RarityTag rarity={ability.rarity} />
                             <div
-                                className={classNames(classes.ability, {
-                                    selected: selectedAbilityIndices.includes(i),
-                                })}
-                                onClick={() => handleCardClick(i)}
+                                className={classes.ability}
+                                onClick={() => handleCardClick(ability, i)}
                             >
                                 <AbilityView
                                     ability={ability}
+                                    className={classNames({
+                                        [classes.selected]: isSelected(ability, i),
+                                    })}
                                     disableGlow={true}
                                     disableBattleBonuses={true}
                                 />
+                                {focusSource === "keyboard" && currentIndex === i && (
+                                    <div className={classes.reticle}>
+                                        <span
+                                            className={classNames(
+                                                classes.reticleCorner,
+                                                classes.reticleTopLeft,
+                                            )}
+                                        />
+                                        <span
+                                            className={classNames(
+                                                classes.reticleCorner,
+                                                classes.reticleTopRight,
+                                            )}
+                                        />
+                                        <span
+                                            className={classNames(
+                                                classes.reticleCorner,
+                                                classes.reticleBottomLeft,
+                                            )}
+                                        />
+                                        <span
+                                            className={classNames(
+                                                classes.reticleCorner,
+                                                classes.reticleBottomRight,
+                                            )}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -231,20 +315,20 @@ const CardRewards = ({
                         Selections remaining:{" "}
                         <span
                             className={classNames(classes.selectionsRemainingCount, {
-                                [classes.moreThanOne]: selectedAbilityIndices.length < maxAmount,
+                                [classes.moreThanOne]: selectedIds.length < maxAmount,
                             })}
                         >
-                            {maxAmount - selectedAbilityIndices.length}
+                            {maxAmount - selectedIds.length}
                         </span>
                     </div>
                 )}
                 <div className={classes.selectContainer}>
                     <Button
                         color="primary"
-                        disabled={!selectedAbilityIndices.length}
-                        onClick={handleSelectClick}
+                        disabled={isConfirmDisabled}
+                        onClick={handleConfirm}
                     >
-                        Confirm
+                        Confirm [{CARD_SELECTION_KEYBINDS.confirm.hint}]
                     </Button>
                 </div>
                 {!disableIgnoreButton && (
