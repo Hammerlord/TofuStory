@@ -11,11 +11,16 @@ const useStyles = createUseStyles({
             opacity: 1,
         },
     },
+    "@keyframes closeIn": {
+        from: {
+            transform: "scale(1.15)",
+        },
+        to: {
+            transform: "scale(1)",
+        },
+    },
     root: {
-        animationName: "$throb",
-        animationDuration: "0.5s",
-        animationIterationCount: "infinite",
-        animationDirection: "alternate-reverse",
+        animation: "$closeIn 0.2s ease-out, $throb 0.5s infinite alternate-reverse",
     },
 });
 
