@@ -109,6 +109,7 @@ export const Projectile = ({
     delay,
     actionType,
     particles,
+    damage,
 }: {
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
     target:
@@ -120,6 +121,7 @@ export const Projectile = ({
     delay?: number;
     actionType?: ACTION_TYPES;
     particles?: ProjectileParticleConfig[];
+    damage?: number;
 }) => {
     let { image, type: animationType, options } = actionAnimation || {};
     const {
@@ -293,6 +295,7 @@ export const Projectile = ({
                 object: arrowClone,
                 playbackTime: playbackTime - adjustTimingByDistance,
                 delay,
+                damage,
             });
 
             const removeClone = () => {
@@ -415,6 +418,7 @@ export const ProjectileGroup = ({
     index,
     actionType,
     particles,
+    targetDamage,
 }: {
     actionAnimation: ActionAnimation;
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
@@ -424,6 +428,7 @@ export const ProjectileGroup = ({
     index: number;
     actionType?: ACTION_TYPES;
     particles?: ProjectileParticleConfig[];
+    targetDamage?: number[];
 }) => {
     const { options, type: animationType } = actionAnimation;
 
@@ -447,11 +452,12 @@ export const ProjectileGroup = ({
                 delay={i * 25}
                 actionType={actionType}
                 particles={particles}
+                damage={Math.max(0, ...(targetDamage || []))}
             />
         ));
     }
 
-    return allTargets.map((target) =>
+    return allTargets.map((target, targetIndex) =>
         Array.from({ length: projectileMultiplier }).map((_, i) => (
             <Projectile
                 target={target}
@@ -463,6 +469,7 @@ export const ProjectileGroup = ({
                 delay={i * 25}
                 actionType={actionType}
                 particles={particles}
+                damage={targetDamage?.[targetIndex]}
             />
         )),
     );

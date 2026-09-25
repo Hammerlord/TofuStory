@@ -148,6 +148,20 @@ const AnimationCanvas = ({
         damage: actionDamage = 0,
     } = action || {};
 
+    const statDamageByCombatantId: Record<string, number> = {};
+    eventGroup?.events.forEach((event) => {
+        Object.entries(event.statUpdates || {}).forEach(([combatantId, statUpdate]) => {
+            statDamageByCombatantId[combatantId] = statUpdate.healthDamage || 0;
+        });
+    });
+
+    const targetCombatants = targetSide === BATTLEFIELD_SIDES.PLAYER_SIDE ? playerSide : enemySide;
+    const targetDamage = allTargets.map(({ index }) => {
+        const combatant = targetCombatants[index];
+        const dealt = combatant?.id ? statDamageByCombatantId[combatant.id] : undefined;
+        return dealt === undefined ? actionDamage : dealt;
+    });
+
     const classes = useStyles();
 
     const projectileLayerRef = useRef<HTMLElement | null>(null);
@@ -330,6 +344,7 @@ const AnimationCanvas = ({
                         index={i}
                         actionType={actionType}
                         particles={projectileParticles}
+                        targetDamage={targetDamage}
                     />
                 ))}
                 <CardAnimations

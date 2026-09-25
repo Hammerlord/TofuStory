@@ -310,7 +310,8 @@ export const playArrowAnimation = ({
     rotate: initialRotation = 0,
     rotateToFaceTarget = false,
     delay,
-    tailWiggle = 4,
+    tailWiggle,
+    damage,
     impactDuration = ARROW_IMPACT_DURATION,
     tipX = 0.05,
     tipY = 0.93,
@@ -323,6 +324,7 @@ export const playArrowAnimation = ({
     rotateToFaceTarget?: boolean;
     delay?: number;
     tailWiggle?: number;
+    damage?: number;
     impactDuration?: number;
     tipX?: number;
     tipY?: number;
@@ -404,6 +406,17 @@ export const playArrowAnimation = ({
     const arrivalOffset = playbackTime / duration;
     const impactOffset = 1 - arrivalOffset;
 
+    const minWiggle = 2;
+    const maxWiggle = 4;
+    const wigglePerDamage = 0.12;
+    const wiggleMagnitude =
+        tailWiggle !== undefined
+            ? tailWiggle
+            : Math.min(
+                  maxWiggle,
+                  Math.max(minWiggle, (damage || 0) * wigglePerDamage) * getRandomArbitrary(0.7, 1.3),
+              );
+
     animationFrames.push({
         transform: `translateX(${originOffsetX - tipOffsetX}px) translateY(${originOffsetY - tipOffsetY}px) rotate(${rotation}deg)`,
         transformOrigin: tipOrigin,
@@ -452,11 +465,11 @@ export const playArrowAnimation = ({
             easing,
         });
 
-        if (tailWiggle) {
-            animationFrames.push(impactFrame(finalRotation + tailWiggle, arrivalOffset + impactOffset * 0.05, 1, "ease-out"));
-            animationFrames.push(impactFrame(finalRotation - tailWiggle, arrivalOffset + impactOffset * 0.09, 1, "ease-in-out"));
-            animationFrames.push(impactFrame(finalRotation + tailWiggle * 0.5, arrivalOffset + impactOffset * 0.13, 1, "ease-in-out"));
-            animationFrames.push(impactFrame(finalRotation - tailWiggle * 0.5, arrivalOffset + impactOffset * 0.17, 1, "ease-in-out"));
+        if (wiggleMagnitude) {
+            animationFrames.push(impactFrame(finalRotation + wiggleMagnitude, arrivalOffset + impactOffset * 0.05, 1, "ease-out"));
+            animationFrames.push(impactFrame(finalRotation - wiggleMagnitude, arrivalOffset + impactOffset * 0.09, 1, "ease-in-out"));
+            animationFrames.push(impactFrame(finalRotation + wiggleMagnitude * 0.5, arrivalOffset + impactOffset * 0.13, 1, "ease-in-out"));
+            animationFrames.push(impactFrame(finalRotation - wiggleMagnitude * 0.5, arrivalOffset + impactOffset * 0.17, 1, "ease-in-out"));
         }
 
         animationFrames.push(impactFrame(finalRotation, arrivalOffset + impactOffset * 0.24, 1, "ease-out"));
