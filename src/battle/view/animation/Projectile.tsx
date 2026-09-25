@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useRef, useMemo, useEffect, FC } from "react";
 import { createUseStyles } from "react-jss";
-import { ActionAnimation, ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
+import { ActionAnimation, ACTION_TYPES, ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
 import {
     getCenterCoords,
     playTossUpAnimation,
@@ -104,6 +104,7 @@ export const Projectile = ({
     actionAnimation,
     eventId,
     delay,
+    actionType,
     particles,
 }: {
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
@@ -114,6 +115,7 @@ export const Projectile = ({
     playbackTime: number;
     eventId: string;
     delay?: number;
+    actionType?: ACTION_TYPES;
     particles?: ProjectileParticleConfig[];
 }) => {
     let { image, type: animationType, options } = actionAnimation || {};
@@ -310,6 +312,7 @@ export const Projectile = ({
                     playbackTime={playbackTime}
                     delay={delay}
                     animationType={animationType}
+                    actionType={actionType}
                     eventId={eventId}
                 />
             </>
@@ -340,13 +343,25 @@ export const Projectile = ({
                     playbackTime={playbackTime}
                     delay={delay}
                     animationType={animationType}
+                    actionType={actionType}
                     eventId={eventId}
                 />
             </>
         );
     }
 
-    return null;
+    return (
+        <ParticleTrail
+            actor={actor}
+            target={target}
+            particles={particles}
+            playbackTime={playbackTime}
+            delay={delay}
+            animationType={animationType}
+            actionType={actionType}
+            eventId={eventId}
+        />
+    );
 };
 export const ProjectileGroup = ({
     actionAnimation,
@@ -355,6 +370,7 @@ export const ProjectileGroup = ({
     playbackTime,
     eventId,
     index,
+    actionType,
     particles,
 }: {
     actionAnimation: ActionAnimation;
@@ -363,6 +379,7 @@ export const ProjectileGroup = ({
     playbackTime: number;
     eventId: string;
     index: number;
+    actionType?: ACTION_TYPES;
     particles?: ProjectileParticleConfig[];
 }) => {
     const { options, type: animationType } = actionAnimation;
@@ -385,6 +402,7 @@ export const ProjectileGroup = ({
                 key={`projectile-${eventId}-${index}-${i}`}
                 actor={actor}
                 delay={i * 25}
+                actionType={actionType}
                 particles={particles}
             />
         ));
@@ -400,6 +418,7 @@ export const ProjectileGroup = ({
                 key={`projectile-${eventId}-${index}-${i}`}
                 actor={actor}
                 delay={i * 25}
+                actionType={actionType}
                 particles={particles}
             />
         )),

@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect, FC } from "react";
 import { createUseStyles } from "react-jss";
-import { ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
+import { ACTION_TYPES, ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
 import {
     getCenterCoords,
     getUnscaledCenterCoords,
@@ -34,6 +34,7 @@ export const ParticleTrail = ({
     playbackTime,
     delay,
     animationType,
+    actionType,
     eventId,
 }: {
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
@@ -43,7 +44,8 @@ export const ParticleTrail = ({
     particles?: ProjectileParticleConfig[];
     playbackTime: number;
     delay?: number;
-    animationType: ANIMATION_TYPES;
+    animationType?: ANIMATION_TYPES;
+    actionType?: ACTION_TYPES;
     eventId: string;
 }) => {
     const classes = useStyles();
@@ -63,6 +65,8 @@ export const ParticleTrail = ({
         if (!particles?.length) {
             return [];
         }
+
+        const isMelee = actionType === ACTION_TYPES.ATTACK;
 
         let pathX = 0;
         let pathY = 0;
@@ -85,12 +89,17 @@ export const ParticleTrail = ({
             const { image, count = 1, size = 16, spread = 20, flicker = true } = particle;
             return Array.from({ length: count }, (_, i) => {
                 const base = Math.max(spread, 16);
-                const emissionP = count > 1 ? (i + 1) / (count + 1) : 0.35;
+                const emissionP = isMelee
+                    ? (count > 1 ? (i + 1) / (count + 1) : 0.6) * 0.45
+                    : count > 1
+                      ? (i + 1) / (count + 1)
+                      : 0.35;
                 const lateral = (i - (count - 1) / 2) * base * 0.28;
+                const rise = isMelee ? -28 : 0;
                 const drift = 16 + (i % 2) * 8;
 
                 const fromX = pathX * emissionP + perpX * lateral;
-                const fromY = pathY * emissionP + perpY * lateral;
+                const fromY = pathY * emissionP + perpY * lateral + rise;
 
                 return {
                     key: `${pIndex}-${i}`,
@@ -100,12 +109,16 @@ export const ParticleTrail = ({
                     emissionP,
                     fromX,
                     fromY,
-                    toX: fromX - dirX * drift - perpX * lateral * 0.5,
-                    toY: fromY - dirY * drift - perpY * lateral * 0.5,
+                    toX: isMelee
+                        ? fromX + dirX * drift + perpX * lateral * 0.5
+                        : fromX - dirX * drift - perpX * lateral * 0.5,
+                    toY: isMelee
+                        ? fromY + dirY * drift + perpY * lateral * 0.5
+                        : fromY - dirY * drift - perpY * lateral * 0.5,
                 };
             });
         });
-    }, [particles, actorElement, target]);
+    }, [particles, actionType, actorElement, target]);
 
     const renderParticleImage = (particle: { image?: string }) => {
         if (typeof particle.image === "string") {
@@ -118,13 +131,15 @@ export const ParticleTrail = ({
         return null;
     };
 
-    const isTravelAnimation = ![
-        ANIMATION_TYPES.CONSUMABLE,
-        ANIMATION_TYPES.ACTION_EXPLODE,
-        ANIMATION_TYPES.PROJECTILE_RAIN,
-        ANIMATION_TYPES.HOMING,
-        ANIMATION_TYPES.TARGET_MARKER,
-    ].includes(animationType);
+    const isTravelAnimation = !(
+        [
+            ANIMATION_TYPES.CONSUMABLE,
+            ANIMATION_TYPES.ACTION_EXPLODE,
+            ANIMATION_TYPES.PROJECTILE_RAIN,
+            ANIMATION_TYPES.HOMING,
+            ANIMATION_TYPES.TARGET_MARKER,
+        ] as (ANIMATION_TYPES | undefined)[]
+    ).includes(animationType);
 
     useEffect(() => {
         const particleLayerElement = particleLayerRef.current;

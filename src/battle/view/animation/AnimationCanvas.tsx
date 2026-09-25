@@ -319,6 +319,7 @@ const AnimationCanvas = ({
                     playbackTime={playbackTime}
                     actor={actor}
                     index={i}
+                    actionType={actionType}
                     particles={projectileParticles}
                 />
             ))}
