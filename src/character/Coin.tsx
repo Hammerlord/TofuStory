@@ -31,7 +31,7 @@ const Coin = ({
     isDeathBlow = false,
 }: {
     action?: Action;
-    statChanges: UpdatedCombatantStats;
+    statChanges?: UpdatedCombatantStats;
     playbackDelay: number;
     combatant: Combatant;
     isDeathBlow: boolean;

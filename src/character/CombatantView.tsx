@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FC, RefObject, useCallback, useEffect, useRef } from "react";
+import { FC, ReactElement, RefObject, useCallback, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { BLUE, GREEN, RED } from "../ability/AbilityView/constants";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../ability/types";
 import { findCombatantData } from "../battle/actions/combatantData";
 import { BATTLE_STATES } from "../battle/states";
-import { BATTLEFIELD_SIDES, EventGroup } from "../battle/types";
+import { BATTLEFIELD_SIDES, CombatantInfo, EventGroup } from "../battle/types";
 import { useAppSelector } from "../hooks";
 import Armor from "../icon/Armor";
 import BlockIcon from "../icon/BlockIcon";
@@ -380,7 +380,7 @@ const CombatantView = ({
         eventGroupQueue.some((eventGroup) =>
             eventGroup.events.some(({ actorId, action }) => actorId === combatant?.id && action),
         );
-    const classes = useStyles(combatant);
+    const classes = useStyles(combatant || undefined);
     const isLifeLinked = combatant?.effects.some(
         (effect: CombatEffect) => effect.type === EFFECT_TYPES.LIFE_LINK,
     );
@@ -396,12 +396,14 @@ const CombatantView = ({
     const combatantInfo = {
         ...findCombatantData(battle!, combatant?.id),
         combatant,
-    };
+    } as CombatantInfo;
 
     const weaponRef = useRef(null);
     const characterImageRef = useRef(null);
 
-    const eventStatChanges: UpdatedCombatantStats = currentEventGroup?.statUpdates?.[combatant?.id];
+    const eventStatChanges: UpdatedCombatantStats | undefined = combatant?.id
+        ? currentEventGroup?.statUpdates?.[combatant.id]
+        : undefined;
     const isDeathBlow = Boolean(eventStatChanges?.isDeathBlow);
     // We want the damage number etc. to appear only at the (approximate) time that character is hit by the attack
     const hitPlaybackDelay = currentEventGroup?.playbackTime
@@ -459,9 +461,10 @@ const CombatantView = ({
         ({ resourceCost = 0 }) => resourceCost === "x" || resourceCost > 0,
     );
     const isApplyingEffect =
-        ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(
-            animation,
-        ) &&
+        (animation === undefined ||
+            ![ANIMATION_TYPES.SHOUT, ANIMATION_TYPES.EXPLODE, ANIMATION_TYPES.STOMP].includes(
+                animation,
+            )) &&
         (actionType === ACTION_TYPES.EFFECT || animation === ANIMATION_TYPES.CAST);
     const { animation: portraitAnimation, fadeInOut } = combatant?.imageOptions || {};
 
@@ -587,7 +590,7 @@ const CombatantView = ({
     }, [onMouseEnter, combatant, index]);
 
     const handleMouseDown = useCallback(
-        (e) => {
+        (e: React.MouseEvent) => {
             onMouseDown && onMouseDown(e, index);
         },
         [onMouseDown, index],
@@ -636,13 +639,15 @@ const CombatantView = ({
                         ref={characterRef}
                         className={classNames(classes.portrait, {
                             // Bandaid for issue where displaced combatants would flicker into their new location before being animated
-                            [classes.invisible]: currentEventGroup?.displacements?.[combatant?.id],
+                            [classes.invisible]: combatant?.id
+                                ? currentEventGroup?.displacements?.[combatant.id]
+                                : undefined,
                         })}
                     >
                         {combatant && (
                             <>
                                 <Tooltip open={Boolean(dialog)} title={dialog} placement="top">
-                                    {imageNode}
+                                    {imageNode as ReactElement}
                                 </Tooltip>
 
                                 {animation === ANIMATION_TYPES.SHOUT &&
@@ -665,7 +670,7 @@ const CombatantView = ({
                                     >
                                         <Weapon
                                             image={weapon}
-                                            target={targetRef}
+                                            target={targetRef || undefined}
                                             wielderRef={weaponRef?.current as any}
                                             wielder={combatant}
                                             event={event}

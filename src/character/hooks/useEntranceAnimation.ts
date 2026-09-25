@@ -9,7 +9,7 @@ export const useEntranceAnimation = ({
 }: {
     currentEventGroup?: EventGroup;
     combatantId?: string;
-    characterRef: RefObject<HTMLDivElement>;
+    characterRef: RefObject<HTMLDivElement | null>;
 }) => {
     const [newCombatantIds, setNewCombatantIds] = useState<string[]>([]);
 

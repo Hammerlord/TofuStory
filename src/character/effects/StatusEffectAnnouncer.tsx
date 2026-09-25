@@ -89,7 +89,7 @@ const StatusEffectAnnouncer = ({
     combatant,
     delay,
 }: {
-    statChanges: UpdatedCombatantStats;
+    statChanges?: UpdatedCombatantStats;
     combatant: Combatant;
     delay?: number;
 }) => {

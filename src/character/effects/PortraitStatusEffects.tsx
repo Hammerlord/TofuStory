@@ -205,7 +205,7 @@ const PortraitStatusEffects = ({
     statChanges,
 }: {
     combatantInfo: CombatantInfo;
-    statChanges: UpdatedCombatantStats;
+    statChanges?: UpdatedCombatantStats;
 }) => {
     const classes = useStyles();
 
