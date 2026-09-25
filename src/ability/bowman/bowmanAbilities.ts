@@ -128,7 +128,7 @@ import {
     TARGET_TYPES,
     TRIGGER_TARGET_TYPES,
 } from "../types";
-import { BullseyeIcon } from "../../images/icons";
+import { BullseyeIcon, FireIcon } from "../../images/icons";
 
 const bowmanAnimationOption = {
     rotateToFaceTarget: true,
@@ -2155,6 +2155,14 @@ export const fireStarter: Ability = {
                         effects: [{ ...burn, stacks: 1 }],
                         targetType: TRIGGER_TARGET_TYPES.ALL_TARGETS,
                     },
+                    projectileParticles: [
+                        {
+                            image: FireIcon,
+                            count: 3,
+                            size: 16,
+                            spread: 24,
+                        },
+                    ],
                 },
             ],
         },

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useRef, useMemo, useEffect, FC } from "react";
 import { createUseStyles } from "react-jss";
-import { ActionAnimation, ANIMATION_TYPES } from "../../../ability/types";
+import { ActionAnimation, ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
 import {
     getCenterCoords,
     playTossUpAnimation,
@@ -21,6 +21,7 @@ import {
     PROJECTILE_HEIGHT,
     PROJECTILE_WIDTH,
 } from "./constants";
+import { ParticleTrail } from "./ParticleTrail";
 
 // Bug with JSS where props are not passed to animation keyframes. Use HO function instead
 const useStyles = ({
@@ -103,6 +104,7 @@ export const Projectile = ({
     actionAnimation,
     eventId,
     delay,
+    particles,
 }: {
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
     target:
@@ -112,6 +114,7 @@ export const Projectile = ({
     playbackTime: number;
     eventId: string;
     delay?: number;
+    particles?: ProjectileParticleConfig[];
 }) => {
     let { image, type: animationType, options } = actionAnimation || {};
     const {
@@ -124,7 +127,7 @@ export const Projectile = ({
         mirrorX,
     } = options || {};
     const { element: actorElement, combatant: actorCombatant, index: actorIndex } = actor || {};
-    const ref = useRef(null);
+    const ref = useRef<HTMLSpanElement>(null);
     const classes = useStyles({ playbackTime, flash, brightness })();
 
     const { x: actorX, y: actorY } = useMemo(() => {
@@ -189,11 +192,13 @@ export const Projectile = ({
             return;
         }
 
-        const targets = Array.isArray(target) ? target.map((t) => t.element) : target.element;
+        const projectileTargets = Array.isArray(target)
+            ? target.map((t) => t.element)
+            : target.element;
 
         if (animationType === ANIMATION_TYPES.PROJECTILE_RAIN) {
-            if (Array.isArray(targets)) {
-                targets.forEach((t) => {
+            if (Array.isArray(projectileTargets)) {
+                projectileTargets.forEach((t) => {
                     playProjectileRainAnimation({
                         ...options,
                         to: t,
@@ -205,7 +210,7 @@ export const Projectile = ({
             } else {
                 playProjectileRainAnimation({
                     ...options,
-                    to: targets,
+                    to: projectileTargets,
                     object,
                     playbackTime,
                     delay,
@@ -216,8 +221,8 @@ export const Projectile = ({
         }
 
         if (animationType === ANIMATION_TYPES.HOMING) {
-            if (Array.isArray(targets)) {
-                targets.forEach((t) => {
+            if (Array.isArray(projectileTargets)) {
+                projectileTargets.forEach((t) => {
                     playHomingAnimation({
                         ...options,
                         to: t,
@@ -228,7 +233,7 @@ export const Projectile = ({
             } else {
                 playHomingAnimation({
                     ...options,
-                    to: targets,
+                    to: projectileTargets,
                     object,
                     playbackTime,
                 });
@@ -238,8 +243,8 @@ export const Projectile = ({
         }
 
         if (animationType === ANIMATION_TYPES.TARGET_MARKER) {
-            if (Array.isArray(targets)) {
-                targets.forEach((t) => {
+            if (Array.isArray(projectileTargets)) {
+                projectileTargets.forEach((t) => {
                     playTargetMarkerAnimation({
                         ...options,
                         to: t,
@@ -250,7 +255,7 @@ export const Projectile = ({
             } else {
                 playTargetMarkerAnimation({
                     ...options,
-                    to: targets,
+                    to: projectileTargets,
                     object,
                     playbackTime,
                 });
@@ -270,7 +275,7 @@ export const Projectile = ({
             fadeIn: animationType === ANIMATION_TYPES.BEAM,
             ...options,
             from: actorElement,
-            to: targets,
+            to: projectileTargets,
             object,
             playbackTime: playbackTime - adjustTimingByDistance,
             delay,
@@ -280,42 +285,64 @@ export const Projectile = ({
 
     if (typeof projectile === "string") {
         return (
-            <span
-                className={classNames(classes.iconProjectile, {
-                    [classes.flash]: flash,
-                    [classes.fadeOut]: fadeOut,
-                })}
-                {...props}
-            >
-                <img
-                    src={projectile}
-                    className={classNames(classes.projectileInner, {
-                        [classes.mirrorX]: mirrorX,
+            <>
+                <span
+                    className={classNames(classes.iconProjectile, {
+                        [classes.flash]: flash,
+                        [classes.fadeOut]: fadeOut,
                     })}
-                    style={{
-                        opacity,
-                    }}
+                    {...props}
+                >
+                    <img
+                        src={projectile}
+                        className={classNames(classes.projectileInner, {
+                            [classes.mirrorX]: mirrorX,
+                        })}
+                        style={{
+                            opacity,
+                        }}
+                    />
+                </span>
+                <ParticleTrail
+                    actor={actor}
+                    target={target}
+                    particles={particles}
+                    playbackTime={playbackTime}
+                    delay={delay}
+                    animationType={animationType}
+                    eventId={eventId}
                 />
-            </span>
+            </>
         );
     }
 
     if (typeof projectile === "function") {
         const Icon: FC<{ className?: string }> = projectile;
         return (
-            <span
-                className={classNames(classes.iconProjectile, {
-                    [classes.flash]: flash,
-                    [classes.fadeOut]: fadeOut,
-                })}
-                {...props}
-            >
-                <Icon
-                    className={classNames(classes.projectileInner, {
-                        [classes.mirrorX]: mirrorX,
+            <>
+                <span
+                    className={classNames(classes.iconProjectile, {
+                        [classes.flash]: flash,
+                        [classes.fadeOut]: fadeOut,
                     })}
+                    {...props}
+                >
+                    <Icon
+                        className={classNames(classes.projectileInner, {
+                            [classes.mirrorX]: mirrorX,
+                        })}
+                    />
+                </span>
+                <ParticleTrail
+                    actor={actor}
+                    target={target}
+                    particles={particles}
+                    playbackTime={playbackTime}
+                    delay={delay}
+                    animationType={animationType}
+                    eventId={eventId}
                 />
-            </span>
+            </>
         );
     }
 
@@ -328,6 +355,7 @@ export const ProjectileGroup = ({
     playbackTime,
     eventId,
     index,
+    particles,
 }: {
     actionAnimation: ActionAnimation;
     actor: { element: HTMLElement | null; combatant: Combatant; index: number };
@@ -335,6 +363,7 @@ export const ProjectileGroup = ({
     playbackTime: number;
     eventId: string;
     index: number;
+    particles?: ProjectileParticleConfig[];
 }) => {
     const { options, type: animationType } = actionAnimation;
 
@@ -356,6 +385,7 @@ export const ProjectileGroup = ({
                 key={`projectile-${eventId}-${index}-${i}`}
                 actor={actor}
                 delay={i * 25}
+                particles={particles}
             />
         ));
     }
@@ -370,6 +400,7 @@ export const ProjectileGroup = ({
                 key={`projectile-${eventId}-${index}-${i}`}
                 actor={actor}
                 delay={i * 25}
+                particles={particles}
             />
         )),
     );

@@ -102,7 +102,9 @@ const AnimationCanvas = ({
         return enemySide.findIndex((enemy) => characterId === enemy?.id);
     };
 
-    const getRefFromCharacterId = (characterId?: string): RefObject<HTMLElement | null> | undefined => {
+    const getRefFromCharacterId = (
+        characterId?: string,
+    ): RefObject<HTMLElement | null> | undefined => {
         if (!characterId) {
             return;
         }
@@ -302,6 +304,10 @@ const AnimationCanvas = ({
         index: getIndexFromCharacterId(actorId),
     };
 
+    const projectileParticles = actor.combatant?.effects.find(
+        (effect) => effect.projectileParticles,
+    )?.projectileParticles;
+
     return (
         <div className={classNames("animation-canvas", classes.root)}>
             {projectileGroups.map((group, i) => (
@@ -313,6 +319,7 @@ const AnimationCanvas = ({
                     playbackTime={playbackTime}
                     actor={actor}
                     index={i}
+                    particles={projectileParticles}
                 />
             ))}
             <CardAnimations

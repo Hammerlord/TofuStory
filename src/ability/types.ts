@@ -207,6 +207,11 @@ export type Effect = {
         displayMode: "default" | "pulse";
     };
     weaponAnimation?: "glow";
+    /**
+     * Particles to render on the effect owner's attack projectiles (eg. Firestarter).
+     * Read by AnimationCanvas when playing out an attack.
+     */
+    projectileParticles?: ProjectileParticleConfig[];
     // Stacks is the number of this effect but stored on the same effect object, rather than the traditional "n" effect objects representing "n" stacks.
     // See Volatile Magic for usage.
     stacks?: number;
@@ -622,6 +627,21 @@ export type CardBonus = {
 export type AutoPlayCards = {
     amount: number;
     filters?: { property: string; comparator: Comparator; value: any }[];
+};
+
+export type ProjectileParticles = ProjectileParticleConfig[];
+
+export type ProjectileParticleConfig = {
+    /** The particle image (an image path, or an icon component for SVGs such as FireIcon) */
+    image?: string;
+    /** Number of particles of this type to render on each projectile. Defaults to 1. */
+    count?: number;
+    /** Diameter (px) of each particle. Defaults to 16. */
+    size?: number;
+    /** Maximum distance (px) each particle can rest from the projectile's center. Defaults to 20. */
+    spread?: number;
+    /** If true (default), particles gently flicker while the projectile is in flight. */
+    flicker?: boolean;
 };
 
 export type AnimationOptions = {
