@@ -223,7 +223,6 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
             return tauntEnemies.every((enemy) => enemy.combatant.id !== target?.id);
         };
 
-        const target = enemySide[index];
         if (selectedMinion) {
             if (shouldShowReticle(BATTLEFIELD_SIDES.ENEMY_SIDE, index)) {
                 handleAllyAttack({ index });
@@ -304,6 +303,10 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
 
     const handleCombatantMouseEnter = useCallback(
         (side: BATTLEFIELD_SIDES, combatant: Combatant | null | undefined, i: number) => {
+            if (!shouldShowReticle(side, i)) {
+                return;
+            }
+
             setHoveredCombatant({
                 side,
                 index: i,
