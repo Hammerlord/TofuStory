@@ -87,6 +87,8 @@ const useStyles = createUseStyles({
     },
 });
 
+const OVERLAY_TOGGLE_KEY = "q";
+
 const SelectCardOverlay = ({
     selectCardsPrompt,
     hand,
@@ -162,7 +164,15 @@ const SelectCardOverlay = ({
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.repeat || hide) {
+            if (e.repeat) {
+                return;
+            }
+            if (e.key.toLowerCase() === OVERLAY_TOGGLE_KEY) {
+                e.preventDefault();
+                setHide((prev) => !prev);
+                return;
+            }
+            if (hide) {
                 return;
             }
             if (e.key === "Escape") {
@@ -235,6 +245,7 @@ const SelectCardOverlay = ({
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [
         hide,
+        setHide,
         type,
         onCancel,
         abilityChoices,
@@ -343,7 +354,7 @@ const SelectCardOverlay = ({
             )}
             <div className={classes.toggleOverlayButton}>
                 <Button color="secondary" onClick={() => setHide((prev) => !prev)}>
-                    {hide ? "Show" : "Hide"} Overlay
+                    {hide ? "Show" : "Hide"} Overlay [{OVERLAY_TOGGLE_KEY.toUpperCase()}]
                 </Button>
             </div>
         </>
