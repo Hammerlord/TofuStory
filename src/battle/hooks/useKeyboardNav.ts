@@ -182,6 +182,10 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
             }
             const validTargets = getKeyboardValidTargets(card);
             if (!validTargets.length) {
+                if (allowMoveCardFromHandToDeck) {
+                    dispatch(selectHandAbility(card.instanceId));
+                    setKeyboardNav({ mode: "deck", cardIndex });
+                }
                 return;
             }
             dispatch(selectHandAbility(card.instanceId));
@@ -404,7 +408,6 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                     }
                     const validTargets = getKeyboardValidTargets(card);
                     if (!validTargets.length) {
-                        setKeyboardNav({ mode: "card", cardIndex: keyboardNav.cardIndex });
                         return;
                     }
                     const targetIndex = e.key === "ArrowRight" ? 0 : validTargets.length - 1;
