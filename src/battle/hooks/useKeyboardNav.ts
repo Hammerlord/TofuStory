@@ -69,12 +69,10 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         playerSide,
         enemySide,
         depleted,
-        eventQueue: eventGroups,
         selectCardsPrompt,
         selectedHandAbilityId,
         selectedAllyId,
     } = battle;
-    const eventGroupsLength = eventGroups.length;
     const hasSelectCardsPrompt = Boolean(selectCardsPrompt);
 
     const {
@@ -258,7 +256,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     }, [disableActions]);
 
     useEffect(() => {
-        if (disableActions || eventGroupsLength || hasSelectCardsPrompt) {
+        if (disableActions || hasSelectCardsPrompt) {
             return;
         }
 
@@ -418,7 +416,6 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [
         disableActions,
-        eventGroupsLength,
         hasSelectCardsPrompt,
         keyboardNav,
         hand,
