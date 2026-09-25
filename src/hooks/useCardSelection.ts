@@ -61,10 +61,15 @@ export function useCardSelection<T>({
     getId = (_item, index) => String(index),
     preselectLoneOption = false,
 }: UseCardSelectionOptions<T>): UseCardSelectionResult<T> {
-    // A lone option is preselected so it can be confirmed with a single press.
     const [selectedIds, setSelectedIds] = useState<string[]>(() =>
         preselectLoneOption && items.length === 1 ? [getId(items[0], 0)] : [],
     );
+
+    useEffect(() => {
+        if (preselectLoneOption && items.length === 1 && selectedIds.length === 0) {
+            setSelectedIds([getId(items[0], 0)]);
+        }
+    }, [preselectLoneOption, items, getId, selectedIds]);
     // The card currently focused by the arrow keys.
     const [currentIndex, setCurrentIndex] = useState(0);
     // Whether the current focus comes from keyboard navigation or a mouse click.

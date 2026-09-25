@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { BATTLE_TYPES } from "../battle/types";
@@ -14,6 +15,7 @@ import { Item, RARITIES } from "../item/types";
 import { rollItemPool } from "../item/utils";
 import Button from "../view/Button";
 import Overlay from "../view/Overlay";
+import { CARD_SELECTION_KEYBINDS, useCardSelection } from "../hooks/useCardSelection";
 import { filterUnobtainableItems } from "./utils";
 
 const useStyles = createUseStyles({
@@ -54,6 +56,63 @@ const useStyles = createUseStyles({
     item: {
         margin: "16px",
     },
+    itemWrapper: {
+        display: "inline-block",
+        position: "relative",
+    },
+    reticle: {
+        position: "absolute",
+        inset: "-8px",
+        pointerEvents: "none",
+        zIndex: 10,
+        animation: "$reticlePulse 1.4s ease-in-out infinite",
+    },
+    reticleCorner: {
+        position: "absolute",
+        width: "26px",
+        height: "26px",
+        border: "3px solid #d3d3d3",
+        filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.9))",
+    },
+    reticleTopLeft: {
+        top: 0,
+        left: 0,
+        borderRight: "none",
+        borderBottom: "none",
+        borderTopLeftRadius: 10,
+    },
+    reticleTopRight: {
+        top: 0,
+        right: 0,
+        borderLeft: "none",
+        borderBottom: "none",
+        borderTopRightRadius: 10,
+    },
+    reticleBottomLeft: {
+        bottom: 0,
+        left: 0,
+        borderRight: "none",
+        borderTop: "none",
+        borderBottomLeftRadius: 10,
+    },
+    reticleBottomRight: {
+        bottom: 0,
+        right: 0,
+        borderLeft: "none",
+        borderTop: "none",
+        borderBottomRightRadius: 10,
+    },
+    "@keyframes reticlePulse": {
+        "0%": {
+            opacity: 1,
+        },
+        "50%": {
+            opacity: 0.55,
+        },
+        "100%": {
+            opacity: 1,
+        },
+    },
     border: {
         borderTop: 0,
         width: "250px",
@@ -79,7 +138,6 @@ const useStyles = createUseStyles({
 });
 
 const BASE_NUM_CHOICES = 3; // How many choices are offered
-const maxAmount = 1; // How many items the player can choose
 
 const ItemRewards = ({
     player,
@@ -91,6 +149,7 @@ const ItemRewards = ({
     disableAttainConsumable,
     numChoicesOffered = BASE_NUM_CHOICES,
     rareItemBonusChance = 0,
+    maxAmount = 1,
 }: {
     player: Player;
     onLoot: ({ items }: { items: Item[] }) => void;
@@ -102,11 +161,29 @@ const ItemRewards = ({
     disableAttainConsumable?: boolean;
     numChoicesOffered?: number;
     rareItemBonusChance?: number; // Pity system for rare items
+    maxAmount?: number; // How many items the player can choose (defaults to 1)
 }) => {
     const classes = useStyles();
     const [rewards, setRewards] = useState<Item[]>([]);
     const [itemChoices, setItemChoices] = useState<Item[]>([]);
-    const [selectedItemIndices, setSelectedItemIndices] = useState<number[]>([]);
+
+    const {
+        selectedItems,
+        currentIndex,
+        focusSource,
+        isConfirmDisabled,
+        isSelected,
+        handleCardClick,
+        handleConfirm,
+    } = useCardSelection({
+        items: itemChoices,
+        maxAmount,
+        onConfirm: () => {
+            onLoot({ items: selectedItems });
+            onClose(itemChoices);
+        },
+        preselectLoneOption: true,
+    });
 
     useEffect(() => {
         const items = filterUnobtainableItems({
@@ -167,31 +244,8 @@ const ItemRewards = ({
 
         setRewards(itemsToBeRewarded);
         setItemChoices(items);
-        if (items.length === 1) {
-            setSelectedItemIndices([0]);
-        }
         onLoot({ items: itemsToBeRewarded });
     }, []);
-
-    const handleClickItem = (index: number) => {
-        if (maxAmount === 1) {
-            setSelectedItemIndices([index]);
-            return;
-        }
-        if (selectedItemIndices.includes(index)) {
-            // Deselect if selected
-            setSelectedItemIndices((prev) => prev.filter((i) => i !== index));
-            return;
-        }
-        if (selectedItemIndices.length < maxAmount) {
-            setSelectedItemIndices((prev) => [...prev, index]);
-        }
-    };
-
-    const handleClickSelect = () => {
-        onLoot({ items: selectedItemIndices.map((i) => itemChoices[i]) });
-        onClose(itemChoices);
-    };
 
     return (
         <Overlay>
@@ -218,22 +272,53 @@ const ItemRewards = ({
                         {itemChoices.length > 1 && <h3>Pick an item:</h3>}
                         <div className={classes.itemChoices}>
                             {itemChoices.map((item, i) => (
-                                <ItemView
-                                    item={item}
-                                    key={[item.name, i].join("-")}
-                                    highlight={selectedItemIndices.includes(i)}
-                                    className={classes.item}
-                                    onClick={() => handleClickItem(i)}
-                                    playerClass={player.class}
-                                />
+                                <div className={classes.itemWrapper} key={[item.name, i].join("-")}>
+                                    <ItemView
+                                        item={item}
+                                        highlight={isSelected(item, i)}
+                                        className={classes.item}
+                                        onClick={() => handleCardClick(item, i)}
+                                        playerClass={player.class}
+                                    />
+                                    {maxAmount > 1 &&
+                                        focusSource === "keyboard" &&
+                                        currentIndex === i && (
+                                            <div className={classes.reticle}>
+                                                <span
+                                                    className={classNames(
+                                                        classes.reticleCorner,
+                                                        classes.reticleTopLeft,
+                                                    )}
+                                                />
+                                                <span
+                                                    className={classNames(
+                                                        classes.reticleCorner,
+                                                        classes.reticleTopRight,
+                                                    )}
+                                                />
+                                                <span
+                                                    className={classNames(
+                                                        classes.reticleCorner,
+                                                        classes.reticleBottomLeft,
+                                                    )}
+                                                />
+                                                <span
+                                                    className={classNames(
+                                                        classes.reticleCorner,
+                                                        classes.reticleBottomRight,
+                                                    )}
+                                                />
+                                            </div>
+                                        )}
+                                </div>
                             ))}
                         </div>
                         <Button
                             color="primary"
-                            onClick={handleClickSelect}
-                            disabled={!selectedItemIndices.length}
+                            onClick={handleConfirm}
+                            disabled={isConfirmDisabled}
                         >
-                            Confirm
+                            Confirm [{CARD_SELECTION_KEYBINDS.confirm.hint}]
                         </Button>
                     </div>
                 </div>
