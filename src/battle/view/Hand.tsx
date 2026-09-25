@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import AbilityView from "../../ability/AbilityView/AbilityView";
 import { AbilityEffect, CombatAbility } from "../../ability/types";
 import { cardPassesFilterCondition } from "../selectCardUtils";
-import { RefObject, useMemo } from "react";
+import { RefObject, useMemo, useState } from "react";
 import { CARD_WIDTH } from "../../ability/AbilityView/constants";
 
 const useStyles = createUseStyles({
@@ -75,6 +75,7 @@ const Hand = ({
     hideCardIndexes?: boolean;
 }) => {
     const classes = useStyles();
+    const [bonusCardIds, setBonusCardIds] = useState<{ [cardId: string]: boolean }>({});
     const handleAbilityMouseDown = (event: React.MouseEvent, id: string) => {
         if (hand.some((card: CombatAbility) => card.instanceId === id)) {
             onAbilityClick(event, id);
@@ -104,7 +105,10 @@ const Hand = ({
                         <motion.div
                             key={ability.instanceId}
                             layout
-                            style={{ position: "relative" }}
+                            style={{
+                                position: "relative",
+                                zIndex: bonusCardIds[ability.instanceId] ? 1 : undefined,
+                            }}
                             initial={{
                                 x: -i * spread,
                                 opacity: 0,
@@ -128,6 +132,13 @@ const Hand = ({
                             )}
                             <AbilityView
                                 onMouseDown={(e) => handleAbilityMouseDown(e, ability.instanceId)}
+                                onBonusChange={(hasBonus) =>
+                                    setBonusCardIds((prev) =>
+                                        prev[ability.instanceId] === hasBonus
+                                            ? prev
+                                            : { ...prev, [ability.instanceId]: hasBonus },
+                                    )
+                                }
                                 isSelected={
                                     selectedAbilityId === ability.instanceId || highlightIndex === i
                                 }
