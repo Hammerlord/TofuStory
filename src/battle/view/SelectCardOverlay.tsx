@@ -87,7 +87,12 @@ const useStyles = createUseStyles({
     },
 });
 
-const OVERLAY_TOGGLE_KEY = "q";
+// Keybinds shared between the keydown handling and the on-screen button hints.
+const OVERLAY_KEYBINDS = {
+    toggle: { key: "q", hint: "Q" },
+    confirm: { key: "Enter", hint: "⏎" },
+    cancel: { key: "Escape", hint: "ESC" },
+} as const;
 
 const SelectCardOverlay = ({
     selectCardsPrompt,
@@ -167,7 +172,7 @@ const SelectCardOverlay = ({
             if (e.repeat) {
                 return;
             }
-            if (e.key.toLowerCase() === OVERLAY_TOGGLE_KEY) {
+            if (e.key.toLowerCase() === OVERLAY_KEYBINDS.toggle.key) {
                 e.preventDefault();
                 setHide((prev) => !prev);
                 return;
@@ -175,7 +180,7 @@ const SelectCardOverlay = ({
             if (hide) {
                 return;
             }
-            if (e.key === "Escape") {
+            if (e.key === OVERLAY_KEYBINDS.cancel.key) {
                 // Only Deplete from hand can be safely backed out of mid-selection
                 if (type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND) {
                     e.preventDefault();
@@ -233,7 +238,7 @@ const SelectCardOverlay = ({
                 } else if (selectedAbilityIds.length < maxAmount) {
                     setSelectedAbilityIds((prev) => [...prev, ability.instanceId]);
                 }
-            } else if (e.key === "Enter") {
+            } else if (e.key === OVERLAY_KEYBINDS.confirm.key) {
                 if (!isConfirmDisabled) {
                     e.preventDefault();
                     handleSelectClick();
@@ -339,13 +344,13 @@ const SelectCardOverlay = ({
                             disabled={isConfirmDisabled}
                             onClick={handleSelectClick}
                         >
-                            Confirm
+                            Confirm [{OVERLAY_KEYBINDS.confirm.hint}]
                         </Button>
                         {/** You can only safely back out of Deplete from hand. This is currently a trap for other select types as you lose the card otherwise. */}
                         {type === SELECT_CARD_TYPES.DEPLETE_FROM_HAND && (
                             <div className={classes.cancel}>
                                 <Button variant={"contained"} onClick={onCancel}>
-                                    Cancel
+                                    Cancel [{OVERLAY_KEYBINDS.cancel.hint}]
                                 </Button>
                             </div>
                         )}
@@ -354,7 +359,7 @@ const SelectCardOverlay = ({
             )}
             <div className={classes.toggleOverlayButton}>
                 <Button color="secondary" onClick={() => setHide((prev) => !prev)}>
-                    {hide ? "Show" : "Hide"} Overlay [{OVERLAY_TOGGLE_KEY.toUpperCase()}]
+                    {hide ? "Show" : "Hide"} Overlay [{OVERLAY_KEYBINDS.toggle.hint}]
                 </Button>
             </div>
         </>
