@@ -32,6 +32,8 @@ const useStyles = createUseStyles({
         flexDirection: "column",
         background: "rgba(25, 25, 25, 0.9)",
         color: "white",
+        position: "absolute",
+        top: 0,
         ...slideFadeInStyle,
         "&.panelClosing": {
             ...slideFadeOutStyle,

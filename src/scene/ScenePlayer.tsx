@@ -22,7 +22,6 @@ import { REGIONS } from "../map/regions";
 import { BG_MAP } from "../map/types";
 import { getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
-import FadeIn from "../view/FadeIn";
 import Overlay from "../view/Overlay";
 import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
@@ -30,6 +29,7 @@ import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
 import { PuzzleCompletionPayload, PuzzleProps } from "./TreasureBox/types";
 import UpgradedCardsView from "./UpgradedCards";
+import { SCENE_DIALOG_KEYBINDS } from "./constants";
 import {
     EventScene,
     ScriptConditions,
@@ -37,7 +37,6 @@ import {
     ScriptNodeTreasure,
     ScriptResponse,
 } from "./types";
-import { SCENE_DIALOG_KEYBINDS } from "./constants";
 
 const isDialogAdvanceKey = (key: string): boolean =>
     (SCENE_DIALOG_KEYBINDS.advanceKeys as readonly string[]).includes(key);
@@ -1035,17 +1034,13 @@ const ScenePlayer = ({
                     )}
                 </div>
                 {showCamp && (
-                    <FadeIn>
-                        <Camp
-                            deck={deck}
-                            player={player}
-                            updateDeck={(updatedDeck) =>
-                                updateDeck?.(updatedDeck as CombatAbility[])
-                            }
-                            updatePlayer={(updated) => updatePlayer(updated)}
-                            onExit={() => setShowCamp(false)}
-                        />
-                    </FadeIn>
+                    <Camp
+                        deck={deck}
+                        player={player}
+                        updateDeck={(updatedDeck) => updateDeck?.(updatedDeck as CombatAbility[])}
+                        updatePlayer={(updated) => updatePlayer(updated)}
+                        onExit={() => setShowCamp(false)}
+                    />
                 )}
                 {itemChoices && (
                     <ItemSelection
@@ -1070,22 +1065,20 @@ const ScenePlayer = ({
                 )}
             </div>
             {treasureBoxOptions && (
-                <FadeIn>
-                    <TreasureBox
-                        onExit={() => {
-                            setTreasureBoxOptions(null);
-                            const nextIndex = dialogIndex + 1;
-                            if (script[nextIndex]) {
-                                enterNode(script[nextIndex], script, nextIndex);
-                            } else {
-                                onExit();
-                            }
-                        }}
-                        onLoot={handleObtainLoot}
-                        player={player}
-                        {...treasureBoxOptions}
-                    />
-                </FadeIn>
+                <TreasureBox
+                    onExit={() => {
+                        setTreasureBoxOptions(null);
+                        const nextIndex = dialogIndex + 1;
+                        if (script[nextIndex]) {
+                            enterNode(script[nextIndex], script, nextIndex);
+                        } else {
+                            onExit();
+                        }
+                    }}
+                    onLoot={handleObtainLoot}
+                    player={player}
+                    {...treasureBoxOptions}
+                />
             )}
         </>
     );
