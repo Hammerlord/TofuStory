@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { ACTION_TYPES, ActionAnimation, ANIMATION_TYPES } from "../../../ability/types";
 import {
@@ -13,6 +13,7 @@ import { Combatant } from "../../../character/types";
 import { BATTLEFIELD_SIDES, EventGroup } from "../../types";
 import CardAnimations from "./CardAnimations";
 import { getRotation, ProjectileGroup } from "./Projectile";
+import { ProjectileLayerContext } from "./projectileLayerContext";
 import { DISPLACEMENT_SPEED, NUM_SPACES_AWAY_DELAY } from "./constants";
 
 const useStyles = createUseStyles({
@@ -148,6 +149,8 @@ const AnimationCanvas = ({
     } = action || {};
 
     const classes = useStyles();
+
+    const projectileLayerRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
         if (!actorElement) {
@@ -309,27 +312,34 @@ const AnimationCanvas = ({
     )?.projectileParticles;
 
     return (
-        <div className={classNames("animation-canvas", classes.root)}>
-            {projectileGroups.map((group, i) => (
-                <ProjectileGroup
-                    actionAnimation={group}
-                    allTargets={allTargets}
-                    key={`${eventId}-${i}`}
-                    eventId={eventId}
-                    playbackTime={playbackTime}
-                    actor={actor}
-                    index={i}
-                    actionType={actionType}
-                    particles={projectileParticles}
+        <ProjectileLayerContext.Provider value={projectileLayerRef}>
+            <div
+                className={classNames("animation-canvas", classes.root)}
+                ref={(node) => {
+                    projectileLayerRef.current = node;
+                }}
+            >
+                {projectileGroups.map((group, i) => (
+                    <ProjectileGroup
+                        actionAnimation={group}
+                        allTargets={allTargets}
+                        key={`${eventId}-${i}`}
+                        eventId={eventId}
+                        playbackTime={playbackTime}
+                        actor={actor}
+                        index={i}
+                        actionType={actionType}
+                        particles={projectileParticles}
+                    />
+                ))}
+                <CardAnimations
+                    eventGroup={eventGroup}
+                    deckRef={deckRef}
+                    discardRef={discardRef}
+                    depleteRef={depleteRef}
                 />
-            ))}
-            <CardAnimations
-                eventGroup={eventGroup}
-                deckRef={deckRef}
-                discardRef={discardRef}
-                depleteRef={depleteRef}
-            />
-        </div>
+            </div>
+        </ProjectileLayerContext.Provider>
     );
 };
 

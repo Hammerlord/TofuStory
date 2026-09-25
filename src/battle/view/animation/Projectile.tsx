@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useRef, useMemo, useEffect, FC } from "react";
+import { useRef, useMemo, useEffect, FC, useContext } from "react";
 import { createUseStyles } from "react-jss";
 import { ActionAnimation, ACTION_TYPES, ANIMATION_TYPES, ProjectileParticleConfig } from "../../../ability/types";
 import {
@@ -9,6 +9,8 @@ import {
     playProjectileRainAnimation,
     playHomingAnimation,
     playTargetMarkerAnimation,
+    playArrowAnimation,
+    ARROW_IMPACT_DURATION,
     playTravelAnimation,
 } from "../../../character/animations";
 import { Combatant } from "../../../character/types";
@@ -22,6 +24,7 @@ import {
     PROJECTILE_WIDTH,
 } from "./constants";
 import { ParticleTrail } from "./ParticleTrail";
+import { ProjectileLayerContext } from "./projectileLayerContext";
 
 // Bug with JSS where props are not passed to animation keyframes. Use HO function instead
 const useStyles = ({
@@ -131,6 +134,7 @@ export const Projectile = ({
     const { element: actorElement, combatant: actorCombatant, index: actorIndex } = actor || {};
     const ref = useRef<HTMLSpanElement>(null);
     const classes = useStyles({ playbackTime, flash, brightness })();
+    const projectileLayerRef = useContext(ProjectileLayerContext);
 
     const { x: actorX, y: actorY } = useMemo(() => {
         if (!actorElement?.getBoundingClientRect) {
@@ -270,6 +274,45 @@ export const Projectile = ({
         if (target && !Array.isArray(target)) {
             const numSpacesAway = Math.abs(target.index - actorIndex);
             adjustTimingByDistance = 300 - numSpacesAway * NUM_SPACES_AWAY_DELAY;
+        }
+
+        if (animationType === ANIMATION_TYPES.ARROW) {
+            const arrowClone = object.cloneNode(true) as HTMLElement;
+            const overlay = projectileLayerRef?.current;
+            if (overlay) {
+                overlay.appendChild(arrowClone);
+            } else {
+                document.body.appendChild(arrowClone);
+            }
+            arrowClone.style.pointerEvents = "none";
+
+            const animations = playArrowAnimation({
+                ...options,
+                from: actorElement,
+                to: projectileTargets,
+                object: arrowClone,
+                playbackTime: playbackTime - adjustTimingByDistance,
+                delay,
+            });
+
+            const removeClone = () => {
+                if (arrowClone.isConnected) {
+                    arrowClone.remove();
+                }
+            };
+
+            if (!animations?.length) {
+                removeClone();
+                return;
+            }
+
+            animations[animations.length - 1].onfinish = removeClone;
+
+            const totalAnimationTime =
+                (delay || 0) + (playbackTime - adjustTimingByDistance) + ARROW_IMPACT_DURATION;
+            window.setTimeout(removeClone, totalAnimationTime + 250);
+
+            return;
         }
 
         playTravelAnimation({

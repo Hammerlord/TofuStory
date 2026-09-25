@@ -956,6 +956,9 @@ export enum ANIMATION_TYPES {
     // 'icon' travels from actor to target and back
     YOYO = "yoyo",
     ONE_WAY = "one-way",
+    // Arrow projectile: travels to the target, then lingers briefly at the stopping point
+    // (with a fast tail wiggle pivoting at the arrow tip) before fading out
+    ARROW = "arrow",
     DROP = "drop",
     // This is the same as ACTION_TYPES.EFFECT
     CAST = "cast",

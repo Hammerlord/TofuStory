@@ -300,6 +300,199 @@ export const playTravelAnimation = ({
     });
 };
 
+export const ARROW_IMPACT_DURATION = 650;
+
+export const playArrowAnimation = ({
+    object,
+    from,
+    to,
+    playbackTime,
+    rotate: initialRotation = 0,
+    rotateToFaceTarget = false,
+    delay,
+    tailWiggle = 4,
+    impactDuration = ARROW_IMPACT_DURATION,
+    tipX = 0.05,
+    tipY = 0.93,
+}: {
+    object?: HTMLElement | HTMLElement[] | null; // Object to move. If not supplied, `from` is used instead.
+    from: HTMLElement | null | undefined;
+    to: HTMLElement | HTMLElement[] | null | undefined;
+    playbackTime: number;
+    rotate?: number;
+    rotateToFaceTarget?: boolean;
+    delay?: number;
+    tailWiggle?: number;
+    impactDuration?: number;
+    tipX?: number;
+    tipY?: number;
+}) => {
+    if (!from || !to || (Array.isArray(to) && !to.length)) {
+        return;
+    }
+
+    const elementsToAnimate = !Array.isArray(object) ? [object || from] : object;
+    if (!elementsToAnimate[0]) {
+        return;
+    }
+
+    const animationFrames: {
+        transform?: string;
+        easing?: string;
+        offset?: number;
+        opacity?: number;
+        transformOrigin?: string;
+    }[] = [
+        {
+            transform: `unset`,
+            opacity: 1,
+        },
+    ];
+
+    const targetElements: HTMLElement[] = Array.isArray(to) ? to : [to];
+    const { x, y } = getUnscaledCenterCoords(from);
+    const objectCoords = getUnscaledCenterCoords(elementsToAnimate[0]);
+
+    // If `object` and `from` are both supplied, make sure the object starts at the `from` position
+    const originOffsetX = x - objectCoords.x;
+    const originOffsetY = y - objectCoords.y;
+
+    const boxWidth = elementsToAnimate[0].offsetWidth;
+    const boxHeight = elementsToAnimate[0].offsetHeight;
+    const tipOffsetX = (tipX - 0.5) * boxWidth;
+    const tipOffsetY = (tipY - 0.5) * boxHeight;
+
+    const tipOrigin = `${tipX * 100}% ${tipY * 100}%`;
+
+    const travelCoordinates = targetElements.reduce((acc, element: HTMLElement) => {
+        let { x: toX, y: toY } = getUnscaledCenterCoords(element);
+        const maxOffset = 3;
+        toX += getRandomArbitrary(-maxOffset, maxOffset);
+        toY += getRandomArbitrary(-maxOffset, maxOffset);
+
+        // If the target coordinates are 0,0 (upper left of the screen) then the destination is invalid
+        // (probably due to element not having rendered). Skip the animation rather than have the arrow fly to 0,0.
+        if (toX === 0 && toY === 0) {
+            return acc;
+        }
+
+        acc.push({ x, x2: toX, y, y2: toY, xDiff: toX - x + originOffsetX, yDiff: toY - y + originOffsetY });
+
+        return acc;
+    }, [] as TravelCoordinates[]);
+
+    if (!travelCoordinates.length) {
+        return;
+    }
+
+    const totalTravelDistance = getTotalTravelDistance({
+        travelCoordinates,
+        returnToOrigin: false,
+    });
+
+    let rotation = initialRotation;
+    if (rotateToFaceTarget) {
+        rotation += getRotationToFaceTarget({
+            x,
+            y,
+            x2: travelCoordinates[0]?.x2,
+            y2: travelCoordinates[0]?.y2,
+        });
+    }
+
+    const duration = playbackTime + impactDuration;
+    const arrivalOffset = playbackTime / duration;
+    const impactOffset = 1 - arrivalOffset;
+
+    animationFrames.push({
+        transform: `translateX(${originOffsetX - tipOffsetX}px) translateY(${originOffsetY - tipOffsetY}px) rotate(${rotation}deg)`,
+        transformOrigin: tipOrigin,
+        opacity: 1,
+        offset: 0,
+    });
+
+    let lastTarget: TravelCoordinates | undefined;
+
+    travelCoordinates.forEach(({ x, y, x2, y2, xDiff, yDiff }, i: number) => {
+        let rotation = initialRotation;
+
+        if (rotateToFaceTarget) {
+            rotation += getRotationToFaceTarget({ x, y, x2, y2 });
+        }
+
+        const travelDist = travelCoordinates
+            .slice(0, i + 1)
+            .reduce(
+                (acc, { xDiff, yDiff }) => acc + Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)),
+                0,
+            );
+
+        animationFrames.push({
+            transform: `translateX(${xDiff - tipOffsetX}px) translateY(${yDiff - tipOffsetY}px) rotate(${rotation}deg)`,
+            transformOrigin: tipOrigin,
+            opacity: 1,
+            offset: Math.min(arrivalOffset, (travelDist / totalTravelDistance) * arrivalOffset || 0),
+        });
+
+        lastTarget = { x, y, x2, y2, xDiff, yDiff };
+    });
+
+    if (lastTarget) {
+        const { xDiff, yDiff, x2, y2 } = lastTarget;
+
+        const finalRotation = rotateToFaceTarget
+            ? initialRotation + getRotationToFaceTarget({ x, y, x2, y2 })
+            : initialRotation;
+
+        const impactFrame = (rotationDeg: number, offset: number, opacity = 1, easing?: string) => ({
+            transform: `translateX(${xDiff - tipOffsetX}px) translateY(${yDiff - tipOffsetY}px) rotate(${rotationDeg}deg)`,
+            transformOrigin: tipOrigin,
+            opacity,
+            offset,
+            easing,
+        });
+
+        if (tailWiggle) {
+            animationFrames.push(impactFrame(finalRotation + tailWiggle, arrivalOffset + impactOffset * 0.05, 1, "ease-out"));
+            animationFrames.push(impactFrame(finalRotation - tailWiggle, arrivalOffset + impactOffset * 0.09, 1, "ease-in-out"));
+            animationFrames.push(impactFrame(finalRotation + tailWiggle * 0.5, arrivalOffset + impactOffset * 0.13, 1, "ease-in-out"));
+            animationFrames.push(impactFrame(finalRotation - tailWiggle * 0.5, arrivalOffset + impactOffset * 0.17, 1, "ease-in-out"));
+        }
+
+        animationFrames.push(impactFrame(finalRotation, arrivalOffset + impactOffset * 0.24, 1, "ease-out"));
+        animationFrames.push(impactFrame(finalRotation, arrivalOffset + impactOffset * 0.36, 1));
+        animationFrames.push(impactFrame(finalRotation, 1, 0, "ease-in"));
+    }
+
+    animationFrames[0].easing = "ease-out";
+    animationFrames[animationFrames.length - 1].easing = "ease-in";
+
+    // Guard against the Web Animations API throwing when offsets are not
+    // monotonically non-decreasing. Don't know why this is happening all of a sudden though...
+    let previousOffset = 0;
+
+    const safeAnimationFrames = animationFrames.map((frame) => {
+        if (frame.offset == null || !Number.isFinite(frame.offset)) {
+            return frame;
+        }
+
+        const offset = Math.max(previousOffset, Math.min(1, frame.offset));
+        previousOffset = offset;
+
+        return {
+            ...frame,
+            offset,
+        };
+    });
+
+    return elementsToAnimate.map((el, i) => {
+        return el.animate(safeAnimationFrames, {
+            duration,
+            delay: delay || i * 50,
+        });
+    });
+};
+
 /**
  * Scale up an `object` at the `from` location rapidly to simulate an 'exploding' effect.
  */
