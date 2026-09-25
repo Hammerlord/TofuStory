@@ -16,3 +16,9 @@ export const SCENE_STYLES = {
         height: "65px",
     },
 };
+
+export const SCENE_DIALOG_KEYBINDS = {
+    advanceKeys: ["Enter", " ", "Spacebar"],
+    navigateUp: "ArrowUp",
+    navigateDown: "ArrowDown",
+} as const;

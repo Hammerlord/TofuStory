@@ -1,24 +1,24 @@
 import classNames from "classnames";
 import Handlebars from "handlebars";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
-import Camp from "../map/Camp";
-import { REGIONS } from "../map/regions";
-import { BG_MAP } from "../map/types";
 import CardRemovalGrid from "../Menu/CardRemovalGrid";
 import { PLAYER_CLASSES } from "../Menu/types";
-import { aggregateItemEffects, getUpgradeCard } from "../Menu/utils";
-import AbilityView from "../ability/AbilityView/AbilityView";
-import { Ability, CombatAbility, Effect, Minion } from "../ability/types";
+import { getUpgradeCard } from "../Menu/utils";
+import { Ability, CombatAbility, Minion } from "../ability/types";
 import { passesValueComparison } from "../battle/passesConditions";
 import { playerStateSlice } from "../character/playerReducer";
 import { Player } from "../character/types";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Icon from "../icon/Icon";
 import { BronzeIncenseBurnerImage, GoldenHammerImage, SkullPatchImage } from "../images";
+import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
 import ItemSelection from "../item/ItemSelection";
 import { mesoItem } from "../item/items";
 import { ITEM_TYPES, Item } from "../item/types";
+import Camp from "../map/Camp";
+import { REGIONS } from "../map/regions";
+import { BG_MAP } from "../map/types";
 import { getRandomItem, shuffle } from "../utils";
 import Button from "../view/Button";
 import FadeIn from "../view/FadeIn";
@@ -27,6 +27,8 @@ import OnOffPuzzle from "./TreasureBox/OnOffPuzzle";
 import ReelLockPuzzle from "./TreasureBox/ReelLockPuzzle";
 import RowPuzzle from "./TreasureBox/RowPuzzle";
 import TreasureBox from "./TreasureBox/TreasureBox";
+import { PuzzleCompletionPayload } from "./TreasureBox/types";
+import UpgradedCardsView from "./UpgradedCards";
 import {
     EventScene,
     ScriptConditions,
@@ -34,10 +36,10 @@ import {
     ScriptNodeTreasure,
     ScriptResponse,
 } from "./types";
-import { PuzzleCompletionPayload } from "./TreasureBox/types";
-import { CrossedSwordsIcon, DoorIcon, MoneyBagIcon } from "../images/icons";
-import { partition } from "ramda";
-import UpgradedCardsView from "./UpgradedCards";
+import { SCENE_DIALOG_KEYBINDS } from "./constants";
+
+const isDialogAdvanceKey = (key: string): boolean =>
+    (SCENE_DIALOG_KEYBINDS.advanceKeys as readonly string[]).includes(key);
 
 const useStyles = createUseStyles({
     root: {
@@ -184,6 +186,14 @@ const useStyles = createUseStyles({
             content: "'◆'",
         },
     },
+    responseFocused: {
+        background:
+            "linear-gradient(90deg, rgba(0,212,255,0) 0%, rgba(0,140,255,0.35) 30%, rgba(0,140,255,0.35) 50%, rgba(0,140,255,0.35) 70%, rgba(0,212,255,0) 100%)",
+
+        "& > span:before": {
+            content: "'◆'",
+        },
+    },
     dialogArrow: {
         animationName: "$fade",
         animationDuration: "1.5s",
@@ -278,6 +288,7 @@ const ScenePlayer = ({
 }) => {
     const { battleHistory = [], activityHistory = [] } =
         useAppSelector((state) => state?.character) || {};
+    const battle = useAppSelector((state) => state?.battle) || null;
     const dispatch = useAppDispatch();
 
     const [dialogIndex, setDialogIndex] = useState(0);
@@ -293,6 +304,9 @@ const ScenePlayer = ({
         upgraded: CombatAbility[];
     } | null>(null);
     const [hasEnteredInitialNode, setHasEnteredInitialNode] = useState(false);
+    // Index of the response highlighted by the arrow keys for keyboard selection.
+    // null means nothing is focused yet (required for multiple responses).
+    const [focusedResponseIndex, setFocusedResponseIndex] = useState<number | null>(null);
 
     const classes = useStyles();
 
@@ -782,6 +796,97 @@ const ScenePlayer = ({
         return true;
     });
 
+    // A lone response is pre-focused for immediate confirmation; with multiple
+    // responses the player must navigate with the arrow keys before proceeding.
+    useEffect(() => {
+        setFocusedResponseIndex(responses?.length === 1 ? 0 : null);
+    }, [responses, dialogIndex, script]);
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) {
+                return;
+            }
+
+            // Let screens rendered above the scene handle their own input.
+            if (
+                Puzzle ||
+                showCamp ||
+                isRemovingAbility ||
+                treasureBoxOptions ||
+                itemChoices ||
+                upgradedCards ||
+                battle
+            ) {
+                return;
+            }
+
+            if (
+                e.key === SCENE_DIALOG_KEYBINDS.navigateUp ||
+                e.key === SCENE_DIALOG_KEYBINDS.navigateDown
+            ) {
+                if (!responses?.length) {
+                    return;
+                }
+                e.preventDefault();
+                const lastIndex = responses.length - 1;
+                if (focusedResponseIndex === null) {
+                    setFocusedResponseIndex(
+                        e.key === SCENE_DIALOG_KEYBINDS.navigateUp ? lastIndex : 0,
+                    );
+                } else if (e.key === SCENE_DIALOG_KEYBINDS.navigateUp) {
+                    setFocusedResponseIndex(
+                        focusedResponseIndex === 0 ? lastIndex : focusedResponseIndex - 1,
+                    );
+                } else {
+                    setFocusedResponseIndex(
+                        focusedResponseIndex === lastIndex ? 0 : focusedResponseIndex + 1,
+                    );
+                }
+                return;
+            }
+
+            if (isDialogAdvanceKey(e.key)) {
+                if (responses?.length) {
+                    // Multiple options must be navigated to with the arrow keys first,
+                    // which is why the focus is only pre-set for a single response.
+                    if (focusedResponseIndex === null) {
+                        return;
+                    }
+                    e.preventDefault();
+                    handleClickResponse(responses[focusedResponseIndex]);
+                    return;
+                }
+
+                if (items) {
+                    e.preventDefault();
+                    handleClickItemsObtained();
+                    return;
+                }
+
+                e.preventDefault();
+                onProceedDialog();
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [
+        Puzzle,
+        showCamp,
+        isRemovingAbility,
+        treasureBoxOptions,
+        itemChoices,
+        upgradedCards,
+        battle,
+        responses,
+        focusedResponseIndex,
+        items,
+        handleClickResponse,
+        handleClickItemsObtained,
+        onProceedDialog,
+    ]);
+
     const canSkip = !responses && !items && !itemChoices && dialogIndex < script.length - 1;
 
     return (
@@ -866,9 +971,16 @@ const ScenePlayer = ({
                                                 className={classNames(
                                                     classes.option,
                                                     classes.response,
+                                                    {
+                                                        [classes.responseFocused]:
+                                                            i === focusedResponseIndex,
+                                                    },
                                                 )}
                                                 key={i}
-                                                onClick={() => handleClickResponse(response)}
+                                                onClick={() => {
+                                                    setFocusedResponseIndex(i);
+                                                    handleClickResponse(response);
+                                                }}
                                             >
                                                 <span>
                                                     {response.infamy && (
