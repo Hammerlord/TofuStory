@@ -58,8 +58,24 @@ const useStyles = createUseStyles({
             zIndex: 5,
         },
         "&.-selected": {
-            transform: "scale(1.1)",
+            transform: "translateY(-16px) scale(1.1)",
             zIndex: 5,
+            "&:after": {
+                content: "''",
+                position: "absolute",
+                inset: "-3px",
+                borderRadius: "9px",
+                zIndex: -1,
+                pointerEvents: "none",
+                background:
+                    "linear-gradient(45deg, #7fd4ff, #1e90ff, #00e5ff, #3f7bff, #7fd4ff)",
+                backgroundSize: "300% 300%",
+                animationName: "$selectedBorderFlow",
+                animationDuration: "2.5s",
+                animationIterationCount: "infinite",
+                animationTimingFunction: "linear",
+                boxShadow: "0 0 12px rgba(30, 144, 255, 0.45)",
+            },
         },
     },
     inner: {
@@ -160,11 +176,6 @@ const useStyles = createUseStyles({
         transform: "translateX(-50%)",
         top: -10,
     },
-    selectedAbility: {
-        border: "1px solid rgba(0, 0, 0, 0.5)",
-        background: "#ead27c",
-        transform: "translateY(-16px)",
-    },
     body: {
         minHeight: "80px",
         marginTop: "124px",
@@ -193,6 +204,17 @@ const useStyles = createUseStyles({
         },
         "100%": {
             opacity: 0.8,
+        },
+    },
+    "@keyframes selectedBorderFlow": {
+        "0%": {
+            backgroundPosition: "0% 50%",
+        },
+        "50%": {
+            backgroundPosition: "100% 50%",
+        },
+        "100%": {
+            backgroundPosition: "0% 50%",
         },
     },
     ephemeral: {
@@ -704,7 +726,6 @@ const AbilityView = ({
                             onClick={onClick}
                             onMouseDown={onMouseDown}
                             className={classNames(classes.inner, {
-                                [classes.selectedAbility]: isSelected,
                                 [classes.ephemeral]: removeAfterTurn,
                                 "-flipped": flipped,
                             })}
