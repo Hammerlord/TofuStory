@@ -26,6 +26,7 @@ import Pan from "./Pan";
 import { BG_MAP, GeneratedRouteNode, NODE_TYPES, RouteNode } from "./types";
 import { getRandomItem } from "../utils";
 import { toLith } from "./routes/routes";
+import useMapKeyboardNav from "./useMapKeyboardNav";
 
 const NODE_ICON_SIZE = 24;
 const X_SIZE = 32;
@@ -150,6 +151,12 @@ const Map = ({
         }
         onSelectNode(node);
     };
+
+    useMapKeyboardNav({
+        nextNodes: playerLocationNode?.next,
+        onSelectNode: handleClickNode,
+        enabled: !disableClick,
+    });
 
     const drawRouteNode = ({
         prev,

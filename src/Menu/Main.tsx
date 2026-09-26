@@ -694,7 +694,12 @@ const Main = () => {
                     playerLocationNode={currentLocation}
                     playerImage={player?.image}
                     visited={nodesVisited}
-                    disableClick={Boolean(scene) || hideMapClickIndicator || showTransitionOverlay}
+                    disableClick={
+                        hideMapClickIndicator ||
+                        Boolean(showTransitionOverlay) ||
+                        Boolean(isActivityOpen) ||
+                        Boolean(town)
+                    }
                 />
             </div>
             {town && <div className={classes.activityContainer}>{getTown()}</div>}
