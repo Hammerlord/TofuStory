@@ -200,6 +200,11 @@ type ShopEntry =
 
 const getEntryId = (entry: ShopEntry): string => `${entry.type}:${entry.index}`;
 
+const SHOP_KEYBINDS = {
+    refresh: "r",
+    exit: "q",
+} as const;
+
 const ShopView = ({
     onBuyItem,
     onExit,
@@ -682,6 +687,36 @@ const ShopView = ({
 
     const shopRefreshCost = numRefreshes > 0 ? 0 : SHOP_REFRESH_COST;
 
+    const handleRefreshClick = () => {
+        if (player.mesos < shopRefreshCost) {
+            return;
+        }
+
+        onRefresh(shopRefreshCost);
+        setRefreshCount((count) => count + 1);
+        resetSelection();
+    };
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.repeat) {
+                return;
+            }
+
+            const key = event.key.toLowerCase();
+            if (key === SHOP_KEYBINDS.refresh) {
+                event.preventDefault();
+                handleRefreshClick();
+            } else if (key === SHOP_KEYBINDS.exit) {
+                event.preventDefault();
+                handleExitClick();
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [handleRefreshClick, handleExitClick]);
+
     return (
         <div className={classes.root}>
             <div className={classes.inner}>
@@ -710,11 +745,7 @@ const ShopView = ({
                     </span>
                     <Button
                         color={"secondary"}
-                        onClick={() => {
-                            onRefresh(shopRefreshCost);
-                            setRefreshCount((count) => count + 1);
-                            resetSelection();
-                        }}
+                        onClick={handleRefreshClick}
                         disabled={player.mesos < shopRefreshCost}
                     >
                         Refresh
