@@ -125,10 +125,15 @@ export function useCardSelection<T>({
                 }
                 return;
             }
-            if (!items.length) {
+            const singleSelect = maxAmount === 1;
+            const isConfirmOrCancelKey =
+                event.key === CARD_SELECTION_KEYBINDS.confirm.key ||
+                event.key === CARD_SELECTION_KEYBINDS.cancel.key;
+
+            if (!items.length && !isConfirmOrCancelKey) {
                 return;
             }
-            const singleSelect = maxAmount === 1;
+
             if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
                 event.preventDefault();
                 setFocusSource("keyboard");
