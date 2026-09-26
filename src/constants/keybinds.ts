@@ -22,5 +22,14 @@ export const isCancelKey = (key: string): boolean => CANCEL_KEYS.includes(key as
 /**
  * Check if a key is either a confirm or cancel key.
  */
-export const isConfirmOrCancelKey = (key: string): boolean =>
-    isConfirmKey(key) || isCancelKey(key);
+export const isConfirmOrCancelKey = (key: string): boolean => isConfirmKey(key) || isCancelKey(key);
+
+/**
+ * Check if a key press was aimed at a focusable control (eg. a button) rather than at the
+ * page, so keyboard shortcuts don't fire twice for a control that already handles the key.
+ */
+export const isInteractiveTarget = (target: EventTarget | null): boolean =>
+    target instanceof Element &&
+    Boolean(
+        target.closest("button, a[href], input, select, textarea, [role='button'], [tabindex]"),
+    );

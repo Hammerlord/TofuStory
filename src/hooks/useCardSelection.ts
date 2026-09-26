@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { CONFIRM_KEYS, CANCEL_KEYS, isConfirmKey, isCancelKey } from "../constants/keybinds";
+import {
+    CONFIRM_KEYS,
+    CANCEL_KEYS,
+    isConfirmKey,
+    isCancelKey,
+    isConfirmOrCancelKey,
+    isInteractiveTarget,
+} from "../constants/keybinds";
 
 export const CARD_SELECTION_KEYBINDS = {
     confirm: { key: CONFIRM_KEYS[0], hint: "⏎" },
@@ -11,13 +18,20 @@ export interface UseCardSelectionOptions<T> {
     items: T[];
     /** The maximum number of cards that can be selected (1 = single select). */
     maxAmount: number;
-    /** Called when the selection is confirmed (Enter key or handleConfirm). */
-    onConfirm?: () => void;
+    /**
+     * Called when the selection is confirmed (Enter key or handleConfirm), with the
+     * item the keyboard is focused on and its index.
+     */
+    onConfirm?: (focusedItem: T | undefined, focusedIndex: number) => void;
     /**
      * Determines whether confirming is currently disallowed. Enter does nothing
      * when disabled. Defaults to disallowing confirm while nothing is selected.
      */
-    isConfirmDisabled?: (selectedIds: string[]) => boolean;
+    isConfirmDisabled?: (
+        selectedIds: string[],
+        focusedItem: T | undefined,
+        index: number,
+    ) => boolean;
     /** Called when Escape is pressed while `cancelable` is true. */
     onCancel?: () => void;
     /** Whether Escape should invoke `onCancel`. */
@@ -48,6 +62,11 @@ export interface UseCardSelectionResult<T> {
     handleCardClick: (item: T, index: number) => void;
     /** Confirm the current selection, unless disabled. */
     handleConfirm: () => void;
+    /**
+     * Drop the current selection and focus. Use it once a selection has been consumed
+     * (eg. bought), so the focus marker doesn't linger on an unrelated item.
+     */
+    resetSelection: () => void;
 }
 
 export function useCardSelection<T>({
@@ -78,7 +97,10 @@ export function useCardSelection<T>({
 
     const selectedItems = items.filter((item, index) => selectedIds.includes(getId(item, index)));
 
-    const isConfirmDisabledValue = isConfirmDisabled(selectedIds);
+    // The item the keyboard is pointing at, which may be missing if the list just shrank.
+    const focusedItem = items[currentIndex];
+
+    const isConfirmDisabledValue = isConfirmDisabled(selectedIds, focusedItem, currentIndex);
 
     const isSelected = (item: T, index: number) => selectedIds.includes(getId(item, index));
 
@@ -106,8 +128,15 @@ export function useCardSelection<T>({
 
     const handleConfirm = () => {
         if (!isConfirmDisabledValue) {
-            onConfirm?.();
+            onConfirm?.(focusedItem, currentIndex);
         }
+    };
+
+    const resetSelection = () => {
+        setSelectedIds([]);
+        setCurrentIndex(0);
+        // Back to "mouse" so the focus marker stays hidden until the keyboard is used again.
+        setFocusSource("mouse");
     };
 
     useEffect(() => {
@@ -115,9 +144,11 @@ export function useCardSelection<T>({
             if (event.repeat) {
                 return;
             }
+
             if (!enabled) {
                 return;
             }
+
             if (isCancelKey(event.key)) {
                 if (cancelable) {
                     event.preventDefault();
@@ -125,10 +156,16 @@ export function useCardSelection<T>({
                 }
                 return;
             }
-            const singleSelect = maxAmount === 1;
-            const isConfirmOrCancelKey = isConfirmKey(event.key) || isCancelKey(event.key);
 
-            if (!items.length && !isConfirmOrCancelKey) {
+            if (isConfirmKey(event.key) && isInteractiveTarget(event.target)) {
+                // A focused control (eg. a "Buy" button) reacts to Enter/Space itself.
+                return;
+            }
+
+            const singleSelect = maxAmount === 1;
+            const isConfirmOrCancelKeyPressed = isConfirmOrCancelKey(event.key);
+
+            if (!items.length && !isConfirmOrCancelKeyPressed) {
                 return;
             }
 
@@ -188,7 +225,7 @@ export function useCardSelection<T>({
             } else if (isConfirmKey(event.key)) {
                 if (!isConfirmDisabledValue) {
                     event.preventDefault();
-                    onConfirm?.();
+                    onConfirm?.(items[currentIndex], currentIndex);
                 }
             }
         };
@@ -217,5 +254,6 @@ export function useCardSelection<T>({
         isSelected,
         handleCardClick,
         handleConfirm,
+        resetSelection,
     };
 }

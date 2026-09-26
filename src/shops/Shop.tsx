@@ -13,12 +13,14 @@ import {
 } from "../character/animations";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
 import { HEADER_BAR } from "../constants";
+import { CARD_SELECTION_KEYBINDS, useCardSelection } from "../hooks/useCardSelection";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { MesoBagImage, MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
 import { ITEM_TYPES, Item } from "../item/types";
 import { TOWNS } from "../map/types";
 import Button from "../view/Button";
+import KeyboardReticle from "../view/KeyboardReticle";
 import LeaveButton from "./LeaveButton";
 import { OnBuyItem, SHOP_REFRESH_COST, ShopAbility, ShopItem } from "./constants";
 import { generateShopInventory, getShopCustomerProperties, rollShopItem } from "./shopUtils";
@@ -86,6 +88,9 @@ const useStyles = createUseStyles({
     container: {
         margin: "40px 0",
         verticalAlign: "top",
+    },
+    shopObjectContainer: {
+        position: "relative",
     },
     ability: {
         verticalAlign: "bottom",
@@ -184,6 +189,17 @@ const {
     refreshTownItemShop,
 } = playerStateSlice.actions;
 
+/**
+ * A single purchasable slot of the shop. Abilities and items are shown in separate
+ * columns, but the keyboard controls treat them as one list: the abilities first (in
+ * their own slot order), then the items.
+ */
+type ShopEntry =
+    | { type: "ability"; index: number; ability: ShopAbility }
+    | { type: "item"; index: number; shopItem: ShopItem };
+
+const getEntryId = (entry: ShopEntry): string => `${entry.type}:${entry.index}`;
+
 const ShopView = ({
     onBuyItem,
     onExit,
@@ -208,8 +224,6 @@ const ShopView = ({
     }) => void;
     onRefresh: (cost: number) => void;
 }) => {
-    const [selectedAbilityIndex, setSelectedAbilityIndex] = useState<number | null>(null);
-    const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
     const abilityRefs = useRef<(HTMLDivElement | null)[]>([]);
     const itemContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -275,78 +289,156 @@ const ShopView = ({
         return replacementItems?.[i] ?? null;
     });
 
-    const buy = () => {
-        if (selectedAbilityIndex !== null && abilities[selectedAbilityIndex]) {
-            const { price: initPrice, item } = abilities[selectedAbilityIndex];
-            const price = applyDiscount(initPrice);
-            if (player.mesos >= price) {
-                onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
-                const updatedAbilities = abilities.slice();
-                updatedAbilities[selectedAbilityIndex] = null;
-                onUpdateShopState({ abilities: updatedAbilities });
-                setSelectedAbilityIndex(null);
+    const getEntryPrice = (entry: ShopEntry): number => {
+        return entry.type === "ability"
+            ? applyDiscount(entry.ability.price)
+            : getFinalConsumableItemPrice(entry.shopItem.item, entry.shopItem.price);
+    };
+
+    const canAffordEntry = (entry: ShopEntry | undefined): boolean => {
+        if (!entry) {
+            return false;
+        }
+
+        if (entry.type === "ability") {
+            return player.mesos >= getEntryPrice(entry);
+        }
+
+        // Food is free while the player has a free food charge available.
+        const { isFood } = entry.shopItem;
+        return (isFood && hasFreeFood) || player.mesos >= getEntryPrice(entry);
+    };
+
+    const buyAbility = (index: number) => {
+        const shopAbility = abilities[index];
+        if (!shopAbility) {
+            return;
+        }
+
+        const entry: ShopEntry = { type: "ability", index, ability: shopAbility };
+        if (!canAffordEntry(entry)) {
+            return;
+        }
+
+        const { price: initPrice, item } = shopAbility;
+        const price = applyDiscount(initPrice);
+        onBuyItem({ items: [item], mesosSpent: price, type: "ability" });
+
+        const updatedAbilities = abilities.slice();
+        updatedAbilities[index] = null;
+        onUpdateShopState({ abilities: updatedAbilities });
+    };
+
+    const buyItem = (index: number) => {
+        const shopItem = items[index];
+        if (!shopItem) {
+            return;
+        }
+
+        const entry: ShopEntry = { type: "item", index, shopItem };
+        if (!canAffordEntry(entry)) {
+            return;
+        }
+
+        const { price: initPrice, item, isConsumable, isFood, statChanges } = shopItem;
+        const price = getFinalConsumableItemPrice(item, initPrice);
+
+        if (isFood) {
+            if (hasFreeFood) {
+                onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
+                if (statChanges) {
+                    onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
+                } else {
+                    onBuyItem({ items: [item], mesosSpent: 0, type: "item" });
+                }
+            } else {
+                if (statChanges) {
+                    onBuyItem({
+                        items: [],
+                        mesosSpent: price,
+                        type: "item",
+                        statChanges,
+                    });
+                } else {
+                    onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+                }
+            }
+
+            const returningItemElement = itemRefs.current[index];
+            if (returningItemElement) {
+                animateItemPurchase(returningItemElement, true);
             }
             return;
         }
 
-        if (selectedItemIndex !== null && items[selectedItemIndex]) {
-            const {
-                price: initPrice,
-                item,
-                isConsumable,
-                isFood,
-                statChanges,
-            } = items[selectedItemIndex];
-            const price = getFinalConsumableItemPrice(item, initPrice);
+        onBuyItem({ items: [item], mesosSpent: price, type: "item" });
 
-            if (isFood) {
-                if (hasFreeFood) {
-                    onUpdateShopState({ usedFreeFood: usedFreeFood + 1 });
-                    if (statChanges) {
-                        onBuyItem({ items: [], mesosSpent: 0, type: "item", statChanges });
-                    } else {
-                        onBuyItem({ items: [item], mesosSpent: 0, type: "item" });
-                    }
-                } else {
-                    if (statChanges) {
-                        onBuyItem({
-                            items: [],
-                            mesosSpent: price,
-                            type: "item",
-                            statChanges,
-                        });
-                    } else {
-                        onBuyItem({ items: [item], mesosSpent: price, type: "item" });
-                    }
-                }
+        const itemElement = itemRefs.current[index];
+        if (itemElement) {
+            animateItemPurchase(itemElement, false);
+        }
 
-                setSelectedItemIndex(null);
+        const updatedItems = items.slice();
+        updatedItems[index] = null;
+        onUpdateShopState({ items: updatedItems });
 
-                const returningItemElement =
-                    selectedItemIndex !== null ? itemRefs.current[selectedItemIndex] : null;
-                if (returningItemElement) {
-                    animateItemPurchase(returningItemElement, true);
-                }
-                return;
-            }
+        if (isConsumable) {
+            dispatch(onPurchaseConsumable(item.name));
+        }
+    };
 
-            onBuyItem({ items: [item], mesosSpent: price, type: "item" });
+    const entries: ShopEntry[] = [
+        ...abilities.flatMap((ability, index) =>
+            ability ? [{ type: "ability" as const, index, ability }] : [],
+        ),
+        ...items.flatMap((shopItem, index) =>
+            shopItem ? [{ type: "item" as const, index, shopItem }] : [],
+        ),
+    ];
 
-            const itemElement =
-                selectedItemIndex !== null ? itemRefs.current[selectedItemIndex] : null;
-            if (itemElement) {
-                animateItemPurchase(itemElement, false);
-            }
+    const buyEntry = (entry: ShopEntry | undefined) => {
+        if (!entry) {
+            return;
+        }
 
-            const updatedItems = items.slice();
-            updatedItems[selectedItemIndex] = null;
-            onUpdateShopState({ items: updatedItems });
+        if (entry.type === "ability") {
+            buyAbility(entry.index);
+        } else {
+            buyItem(entry.index);
+        }
 
-            if (isConsumable) {
-                dispatch(onPurchaseConsumable(item.name));
-            }
+        resetSelection();
+    };
 
-            setSelectedItemIndex(null);
+    const {
+        selectedIds,
+        currentIndex,
+        focusSource,
+        handleCardClick,
+        handleConfirm,
+        resetSelection,
+    } = useCardSelection<ShopEntry>({
+        items: entries,
+        maxAmount: 1,
+        getId: getEntryId,
+        isConfirmDisabled: (ids, focusedEntry) => !ids.length || !canAffordEntry(focusedEntry),
+        onConfirm: (focusedEntry) => buyEntry(focusedEntry),
+    });
+
+    const focusedEntry = entries[currentIndex];
+
+    const isEntryFocused = (entry: ShopEntry): boolean =>
+        focusSource === "keyboard" &&
+        focusedEntry?.type === entry.type &&
+        focusedEntry.index === entry.index;
+
+    const isEntrySelected = (entry: ShopEntry): boolean =>
+        selectedIds.includes(getEntryId(entry)) && canAffordEntry(entry);
+
+    const handleEntryClick = (entry: ShopEntry) => {
+        const listIndex = entries.findIndex((other) => getEntryId(other) === getEntryId(entry));
+        if (listIndex >= 0) {
+            handleCardClick(entry, listIndex);
         }
     };
 
@@ -458,8 +550,8 @@ const ShopView = ({
         };
     }, [refreshCount]);
 
-    const getShopAbility = (shopItem: ShopAbility | null, i: number) => {
-        if (!shopItem) {
+    const getShopAbility = (shopAbility: ShopAbility | null, i: number) => {
+        if (!shopAbility) {
             return (
                 <div
                     ref={(el) => {
@@ -471,8 +563,10 @@ const ShopView = ({
             );
         }
 
-        const { item, price: initPrice } = shopItem;
+        const { item, price: initPrice } = shopAbility;
         const price = applyDiscount(initPrice);
+        const entry: ShopEntry = { type: "ability", index: i, ability: shopAbility };
+        const isSelected = isEntrySelected(entry);
 
         return (
             <div
@@ -483,35 +577,30 @@ const ShopView = ({
                 key={[item.name, i].join("-")}
             >
                 <RarityTag rarity={item.rarity} />
-                <div
-                    className={classNames(classes.ability, {
-                        selected: i === selectedAbilityIndex,
-                    })}
-                    onClick={() => {
-                        if (player.mesos >= price) {
-                            setSelectedAbilityIndex(i);
-                            setSelectedItemIndex(null);
-                        }
-                    }}
-                >
-                    <AbilityView ability={item} />
+                <div className={classes.shopObjectContainer}>
+                    <div
+                        className={classNames(classes.ability, {
+                            selected: isSelected,
+                        })}
+                        onClick={() => handleEntryClick(entry)}
+                    >
+                        <AbilityView ability={item} />
+                    </div>
+                    {isEntryFocused(entry) && <KeyboardReticle />}
                 </div>
                 <div className={classes.priceContainer}>
                     <div
                         className={classNames(classes.priceContainerInner, {
-                            [classes.cannotAfford]: player.mesos < price,
+                            [classes.cannotAfford]: !canAffordEntry(entry),
                         })}
                     >
                         <img src={MesoCoinImage} alt={"Mesos"} />
                         <span className={classes.priceLabel}>{price}</span>
                     </div>
                 </div>
-                <div
-                    className={classes.confirmContainer}
-                    key={i === selectedAbilityIndex ? "show" : "hide"}
-                >
-                    {i === selectedAbilityIndex && (
-                        <Button color={"primary"} onClick={buy}>
+                <div className={classes.confirmContainer} key={isSelected ? "show" : "hide"}>
+                    {isSelected && (
+                        <Button color={"primary"} onClick={handleConfirm}>
                             Buy
                         </Button>
                     )}
@@ -533,9 +622,10 @@ const ShopView = ({
             );
         }
 
-        const { item, price: initPrice, isFood } = shopItem;
-        const price = getFinalConsumableItemPrice(item, initPrice);
-        const cannotAfford = (!isFood || !hasFreeFood) && player.mesos < price;
+        const { item, isFood } = shopItem;
+        const price = getFinalConsumableItemPrice(item, shopItem.price);
+        const entry: ShopEntry = { type: "item", index: i, shopItem };
+        const isSelected = isEntrySelected(entry);
 
         return (
             <div
@@ -545,26 +635,24 @@ const ShopView = ({
                 className={classes.itemContainer}
                 key={[item.name, i].join("-")}
             >
-                <div
-                    ref={(el) => {
-                        itemRefs.current[i] = el;
-                    }}
-                    className={classNames(classes.item, {
-                        selected: i === selectedItemIndex,
-                    })}
-                    onClick={() => {
-                        if (!cannotAfford) {
-                            setSelectedAbilityIndex(null);
-                            setSelectedItemIndex(i);
-                        }
-                    }}
-                >
-                    <ItemView item={item} playerClass={player.class} />
+                <div className={classes.shopObjectContainer}>
+                    <div
+                        ref={(el) => {
+                            itemRefs.current[i] = el;
+                        }}
+                        className={classNames(classes.item, {
+                            selected: isSelected,
+                        })}
+                        onClick={() => handleEntryClick(entry)}
+                    >
+                        <ItemView item={item} playerClass={player.class} />
+                    </div>
+                    {isEntryFocused(entry) && <KeyboardReticle />}
                 </div>
                 <div className={classes.priceContainer}>
                     <div
                         className={classNames(classes.priceContainerInner, {
-                            [classes.cannotAfford]: cannotAfford,
+                            [classes.cannotAfford]: !canAffordEntry(entry),
                         })}
                     >
                         {isFood && hasFreeFood && <span className={classes.free}>FREE</span>}
@@ -576,12 +664,9 @@ const ShopView = ({
                         )}
                     </div>
                 </div>
-                <div
-                    className={classes.confirmContainer}
-                    key={i === selectedItemIndex ? "show" : "hide"}
-                >
-                    {i === selectedItemIndex && (
-                        <Button color={"primary"} onClick={buy}>
+                <div className={classes.confirmContainer} key={isSelected ? "show" : "hide"}>
+                    {isSelected && (
+                        <Button color={"primary"} onClick={handleConfirm}>
                             Buy
                         </Button>
                     )}
@@ -592,8 +677,7 @@ const ShopView = ({
 
     const handleExitClick = () => {
         onExit?.();
-        setSelectedAbilityIndex(null);
-        setSelectedItemIndex(null);
+        resetSelection();
     };
 
     const shopRefreshCost = numRefreshes > 0 ? 0 : SHOP_REFRESH_COST;
@@ -629,6 +713,7 @@ const ShopView = ({
                         onClick={() => {
                             onRefresh(shopRefreshCost);
                             setRefreshCount((count) => count + 1);
+                            resetSelection();
                         }}
                         disabled={player.mesos < shopRefreshCost}
                     >
