@@ -411,14 +411,14 @@ const Main = () => {
     };
 
     // Opens item rewards if applicable.
-    const handleCloseCardRewards = (rolledAbilities: Ability[]) => {
+    const handleCloseCardRewards = (rolledAbilities?: Ability[]) => {
         setCardRewardsOpen(false);
         if (!battle) {
             return;
         }
 
         if (!battle.isTutorial) {
-            const isRolledRare = rolledAbilities.some((a) => a.rarity === RARITIES.RARE);
+            const isRolledRare = (rolledAbilities || []).some((a) => a.rarity === RARITIES.RARE);
             if (isRolledRare) {
                 dispatch(resetRareCardChance());
             } else {
