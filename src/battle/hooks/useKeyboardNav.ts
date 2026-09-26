@@ -524,7 +524,49 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
         hand,
         selectedHandAbilityId,
         selectedAllyId,
-        canSelectCardForKeyboard,
+        selectHandCard,
+    ]);
+
+    const previousSelection = useRef<{ instanceId: string; index: number } | null>(null);
+
+    useEffect(() => {
+        const selectedIndex = selectedHandAbilityId
+            ? hand.findIndex((card) => card.instanceId === selectedHandAbilityId)
+            : -1;
+
+        const previous = previousSelection.current;
+
+        previousSelection.current =
+            selectedHandAbilityId && selectedIndex >= 0
+                ? { instanceId: selectedHandAbilityId, index: selectedIndex }
+                : null;
+
+        if (!previous || hand.some((card) => card.instanceId === previous.instanceId)) {
+            return;
+        }
+
+        if (!isKeyboardMode || !isPlayerTurn || disableActions || hasSelectCardsPrompt) {
+            return;
+        }
+
+        let index = previous.index;
+        if (index >= hand.length) {
+            index = hand.length - 1;
+        }
+
+        if (index < 0) {
+            return;
+        }
+
+        setKeyboardNav({ mode: "card", cardIndex: index });
+        selectHandCard(index);
+    }, [
+        hand,
+        selectedHandAbilityId,
+        isKeyboardMode,
+        isPlayerTurn,
+        disableActions,
+        hasSelectCardsPrompt,
         selectHandCard,
     ]);
 
