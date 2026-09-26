@@ -183,7 +183,8 @@ const Main = () => {
         rareCardBonusChance,
         rareItemBonusChance,
     } = character || {};
-    const [openClassSelection, setOpenClassSelection] = useState(true);
+    // !player checks: prevent hot reload from showing the "You gained abilities" screen.
+    const [openClassSelection, setOpenClassSelection] = useState(!player);
     const [hideMapClickIndicator, setHideMapClickIndicator] = useState(false);
 
     const resetTravels = () => {
@@ -196,10 +197,6 @@ const Main = () => {
     };
 
     usePreloadImages(LithRegionBGImage, LithHarborImage);
-
-    useEffect(() => {
-        resetTravels();
-    }, []);
 
     useEffect(() => {
         if (!player) {
@@ -316,6 +313,8 @@ const Main = () => {
     };
 
     useEffect(() => {
+        dispatch(newGame());
+
         return () => {
             clearTransitionTimeout();
         };
@@ -535,7 +534,7 @@ const Main = () => {
         }
     };
 
-    if (!player || openClassSelection) {
+    if (openClassSelection) {
         return (
             <>
                 <ClassSelection
