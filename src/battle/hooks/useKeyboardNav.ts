@@ -44,6 +44,7 @@ const isHandledKey = (key: string): boolean =>
     key === "ArrowDown" ||
     key === "Escape" ||
     key === "Enter" ||
+    key === "Spacebar" ||
     getCardIndexFromNumberKey(key) !== null;
 
 // The centre slot is a natural starting point when keyboard-targeting. Return the valid
@@ -355,14 +356,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                 beginTargeting(cardIndex);
             }
         },
-        [
-            hand,
-            selectedHandAbilityId,
-            selectedAllyId,
-            selectHandCard,
-            beginTargeting,
-            dispatch,
-        ],
+        [hand, selectedHandAbilityId, selectedAllyId, selectHandCard, beginTargeting, dispatch],
     );
 
     const handleCardModeKey = useCallback(
@@ -446,7 +440,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                     cardIndex: nav.cardIndex,
                     target: validTargets[nextIndex],
                 });
-            } else if (e.key === "Enter") {
+            } else if (e.key === "Enter" || e.key === "Spacebar") {
                 // Keep a focused button (eg. End Turn) from also activating on Enter
                 e.preventDefault();
                 handleKeyboardUseCard(nav);
