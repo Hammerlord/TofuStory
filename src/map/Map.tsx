@@ -153,6 +153,7 @@ const Map = ({
     };
 
     useMapKeyboardNav({
+        playerNode: playerLocationNode,
         nextNodes: playerLocationNode?.next,
         onSelectNode: handleClickNode,
         enabled: !disableClick,
