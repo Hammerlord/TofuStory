@@ -7,6 +7,7 @@ import { Player } from "../../character/types";
 import { useAppDispatch } from "../../hooks";
 import { XIcon } from "../../images/icons";
 import Button from "../../view/Button";
+import KeyboardReticle from "../../view/KeyboardReticle";
 import Overlay from "../../view/Overlay";
 import { PlayerSelectCardsPrompt } from "../types";
 import getCardSelection from "../selectCardUtils";
@@ -47,62 +48,6 @@ const useStyles = createUseStyles({
     },
     selectedForRemoval: {
         filter: "drop-shadow(0 0 4px #ff3a3a) drop-shadow(0 0 4px #ff3a3a)",
-    },
-    // Target-reticle frame shown around the card currently focused by the keyboard
-    // arrows. Uses the battle targeting red so it reads as "aimed at", distinct from
-    // the green selection glow or the red removal X.
-    reticle: {
-        position: "absolute",
-        inset: "-8px",
-        pointerEvents: "none",
-        zIndex: 10,
-        animation: "$reticlePulse 1.4s ease-in-out infinite",
-    },
-    reticleCorner: {
-        position: "absolute",
-        width: "26px",
-        height: "26px",
-        border: "3px solid #d3d3d3",
-        filter: "drop-shadow(0 0 3px rgba(0, 0, 0, 0.9))",
-    },
-    reticleTopLeft: {
-        top: 0,
-        left: 0,
-        borderRight: "none",
-        borderBottom: "none",
-        borderTopLeftRadius: 10,
-    },
-    reticleTopRight: {
-        top: 0,
-        right: 0,
-        borderLeft: "none",
-        borderBottom: "none",
-        borderTopRightRadius: 10,
-    },
-    reticleBottomLeft: {
-        bottom: 0,
-        left: 0,
-        borderRight: "none",
-        borderTop: "none",
-        borderBottomLeftRadius: 10,
-    },
-    reticleBottomRight: {
-        bottom: 0,
-        right: 0,
-        borderLeft: "none",
-        borderTop: "none",
-        borderBottomRightRadius: 10,
-    },
-    "@keyframes reticlePulse": {
-        "0%": {
-            opacity: 1,
-        },
-        "50%": {
-            opacity: 0.55,
-        },
-        "100%": {
-            opacity: 1,
-        },
     },
     cardIndex: {
         position: "absolute",
@@ -292,32 +237,7 @@ const SelectCardOverlay = ({
                                         })}
                                     />
                                     {focusSource === "keyboard" && currentIndex === i && (
-                                        <div className={classes.reticle}>
-                                            <span
-                                                className={classNames(
-                                                    classes.reticleCorner,
-                                                    classes.reticleTopLeft,
-                                                )}
-                                            />
-                                            <span
-                                                className={classNames(
-                                                    classes.reticleCorner,
-                                                    classes.reticleTopRight,
-                                                )}
-                                            />
-                                            <span
-                                                className={classNames(
-                                                    classes.reticleCorner,
-                                                    classes.reticleBottomLeft,
-                                                )}
-                                            />
-                                            <span
-                                                className={classNames(
-                                                    classes.reticleCorner,
-                                                    classes.reticleBottomRight,
-                                                )}
-                                            />
-                                        </div>
+                                        <KeyboardReticle />
                                     )}
                                     {isSelectedForRemoval(ability.instanceId) && (
                                         <div className={classes.x}>
