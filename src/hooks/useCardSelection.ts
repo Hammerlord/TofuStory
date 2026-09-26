@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     CONFIRM_KEYS,
     CANCEL_KEYS,
@@ -7,6 +7,7 @@ import {
     isConfirmOrCancelKey,
     isInteractiveTarget,
 } from "../constants/keybinds";
+import { useAppSelector } from "../hooks";
 
 export const CARD_SELECTION_KEYBINDS = {
     confirm: { key: CONFIRM_KEYS[0], hint: "⏎" },
@@ -84,16 +85,37 @@ export function useCardSelection<T>({
         preselectLoneOption && items.length === 1 ? [getId(items[0], 0)] : [],
     );
 
+    const isKeyboardMode = useAppSelector((state) => state.input.isKeyboardMode);
+
     useEffect(() => {
         if (preselectLoneOption && items.length === 1 && selectedIds.length === 0) {
             setSelectedIds([getId(items[0], 0)]);
         }
     }, [preselectLoneOption, items, getId, selectedIds]);
+
+    const getInitialFocusIndex = (): number =>
+        isKeyboardMode && items.length ? Math.floor(items.length / 2) : 0;
+
+    const hasMovedFocus = useRef(false);
+
     // The card currently focused by the arrow keys.
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(getInitialFocusIndex);
     // Whether the current focus comes from keyboard navigation or a mouse click.
-    // Starts as "mouse" so a focus marker only appears after keyboard use.
-    const [focusSource, setFocusSource] = useState<"keyboard" | "mouse">("mouse");
+    const [focusSource, setFocusSource] = useState<"keyboard" | "mouse">(() =>
+        isKeyboardMode ? "keyboard" : "mouse",
+    );
+
+    const applyInitialFocus = () => {
+        setCurrentIndex(getInitialFocusIndex());
+        setFocusSource(isKeyboardMode ? "keyboard" : "mouse");
+    };
+
+    useEffect(() => {
+        if (hasMovedFocus.current || !items.length) {
+            return;
+        }
+        applyInitialFocus();
+    }, [isKeyboardMode, items.length]);
 
     const selectedItems = items.filter((item, index) => selectedIds.includes(getId(item, index)));
 
@@ -121,6 +143,7 @@ export function useCardSelection<T>({
     };
 
     const handleCardClick = (item: T, index: number) => {
+        hasMovedFocus.current = true;
         setCurrentIndex(index);
         setFocusSource("mouse");
         toggleSelection(item, index);
@@ -134,9 +157,8 @@ export function useCardSelection<T>({
 
     const resetSelection = () => {
         setSelectedIds([]);
-        setCurrentIndex(0);
-        // Back to "mouse" so the focus marker stays hidden until the keyboard is used again.
-        setFocusSource("mouse");
+        hasMovedFocus.current = false;
+        applyInitialFocus();
     };
 
     useEffect(() => {
@@ -171,6 +193,7 @@ export function useCardSelection<T>({
 
             if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
                 event.preventDefault();
+                hasMovedFocus.current = true;
                 setFocusSource("keyboard");
                 const delta = event.key === "ArrowLeft" ? items.length - 1 : 1;
                 const nextIndex = (currentIndex + delta) % items.length;
@@ -184,6 +207,7 @@ export function useCardSelection<T>({
                     return;
                 }
                 event.preventDefault();
+                hasMovedFocus.current = true;
                 setFocusSource("keyboard");
                 const itemIndex = currentIndex % items.length;
                 const item = items[itemIndex];
@@ -198,6 +222,7 @@ export function useCardSelection<T>({
                     return;
                 }
                 event.preventDefault();
+                hasMovedFocus.current = true;
                 setFocusSource("keyboard");
                 const itemIndex = currentIndex % items.length;
                 const item = items[itemIndex];
@@ -207,6 +232,7 @@ export function useCardSelection<T>({
                 }
             } else if (/^[0-9]$/.test(event.key)) {
                 event.preventDefault();
+                hasMovedFocus.current = true;
                 setFocusSource("keyboard");
                 const index = event.key === "0" ? 9 : Number(event.key) - 1;
                 const item = items[index];

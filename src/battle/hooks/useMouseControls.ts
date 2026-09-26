@@ -14,8 +14,10 @@ import { isUntargetable } from "../utils";
 import { shouldShowReticleForTarget } from "../view/targetHelpers";
 import { BattleControls } from "./useBattleControls";
 import { KeyboardNavOutput } from "./useKeyboardNav";
+import { inputStateSlice } from "../../input/inputReducer";
 
 const { selectAlly, selectHandAbility } = battleStateSlice.actions;
+const { setKeyboardMode } = inputStateSlice.actions;
 
 export interface UseMouseControlsArgs {
     controls: BattleControls;
@@ -317,11 +319,12 @@ export const useMouseControls = ({ controls, keyboard }: UseMouseControlsArgs) =
             if (keyboardNav?.mode === "target") {
                 const card = hand[keyboardNav.cardIndex];
                 if (card && isKeyboardTargetValid(card, side, i)) {
+                    dispatch(setKeyboardMode(false));
                     setKeyboardNav(null);
                 }
             }
         },
-        [keyboardNav, hand, isKeyboardTargetValid],
+        [keyboardNav, hand, isKeyboardTargetValid, dispatch],
     );
 
     const handleEnemyMouseEnter = useCallback(

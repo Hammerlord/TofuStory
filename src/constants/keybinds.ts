@@ -33,3 +33,28 @@ export const isInteractiveTarget = (target: EventTarget | null): boolean =>
     Boolean(
         target.closest("button, a[href], input, select, textarea, [role='button'], [tabindex]"),
     );
+
+const NON_GAMEPLAY_KEYS = new Set([
+    "Alt",
+    "AltGraph",
+    "CapsLock",
+    "ContextMenu",
+    "Control",
+    "Dead",
+    "Fn",
+    "FnLock",
+    "Hyper",
+    "Meta",
+    "NumLock",
+    "OS",
+    "Pause",
+    "ScrollLock",
+    "Shift",
+    "Super",
+    "Symbol",
+    "SymbolLock",
+    "Unidentified",
+]);
+
+export const isGameplayKeyPress = (event: KeyboardEvent): boolean =>
+    !NON_GAMEPLAY_KEYS.has(event.key) && !event.ctrlKey && !event.metaKey && !event.altKey;

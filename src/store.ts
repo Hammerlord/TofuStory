@@ -1,6 +1,7 @@
 import { configureStore, Middleware } from "@reduxjs/toolkit";
 import { battleStateSlice } from "./battle/reducer";
 import { playerStateSlice } from "./character/playerReducer";
+import { inputStateSlice } from "./input/inputReducer";
 
 const characterPersistenceActions = new Set([
     "player/setTown",
@@ -34,6 +35,7 @@ export const getConfiguredStore = () =>
         reducer: {
             character: playerStateSlice.reducer,
             battle: battleStateSlice.reducer,
+            input: inputStateSlice.reducer,
         },
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware({

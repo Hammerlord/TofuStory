@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CombatAbility } from "../../ability/types";
 import { Combatant } from "../../character/types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -83,10 +83,12 @@ export interface KeyboardNavOutput {
 export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
     const dispatch = useAppDispatch();
     const battle = useAppSelector((state) => state.battle)!;
+    const isKeyboardMode = useAppSelector((state) => state.input.isKeyboardMode);
     const {
         playerSide,
         enemySide,
         depleted,
+        isPlayerTurn,
         selectCardsPrompt,
         selectedHandAbilityId,
         selectedAllyId,
@@ -473,6 +475,58 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
             setKeyboardNav(null);
         }
     }, [disableActions]);
+
+    const previousInput = useRef({ isKeyboardMode: false, isPlayerTurn: false });
+    const isAwaitingStartingCard = useRef(false);
+
+    useEffect(() => {
+        const startedDriving = isKeyboardMode && !previousInput.current.isKeyboardMode;
+        const startedTurn = isPlayerTurn && !previousInput.current.isPlayerTurn;
+        previousInput.current = { isKeyboardMode, isPlayerTurn };
+
+        if (!isKeyboardMode) {
+            isAwaitingStartingCard.current = false;
+            setKeyboardNav(null);
+            return;
+        }
+
+        if (!isPlayerTurn) {
+            isAwaitingStartingCard.current = false;
+            return;
+        }
+
+        if (startedDriving || startedTurn) {
+            isAwaitingStartingCard.current = true;
+        }
+
+        if (!isAwaitingStartingCard.current) {
+            return;
+        }
+
+        if (disableActions || hasSelectCardsPrompt || !hand.length) {
+            return;
+        }
+
+        isAwaitingStartingCard.current = false;
+
+        if (selectedHandAbilityId || selectedAllyId) {
+            return;
+        }
+
+        const cardIndex = 0;
+        setKeyboardNav({ mode: "card", cardIndex });
+        selectHandCard(cardIndex);
+    }, [
+        isKeyboardMode,
+        isPlayerTurn,
+        disableActions,
+        hasSelectCardsPrompt,
+        hand,
+        selectedHandAbilityId,
+        selectedAllyId,
+        canSelectCardForKeyboard,
+        selectHandCard,
+    ]);
 
     useEffect(() => {
         if (disableActions || hasSelectCardsPrompt) {
