@@ -1,20 +1,26 @@
 import classNames from "classnames";
 import { clamp } from "ramda";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
+import {
+    CARD_ANIMATION_DELAY_MS,
+    CARD_ANIMATION_MS,
+    confirmButtonDropStyle,
+    panelKeyframes,
+} from "../Menu/panelAnimation";
 import AbilityView from "../ability/AbilityView/AbilityView";
 import RarityTag from "../ability/AbilityView/RarityTag";
 import { Ability } from "../ability/types";
 import { getMaxHP } from "../battle/utils";
 import {
+    copyComputedStyles,
     playFadeInAnimation,
     playFadeOutAnimation,
-    copyComputedStyles,
 } from "../character/animations";
 import { ShopState, playerStateSlice } from "../character/playerReducer";
 import { HEADER_BAR } from "../constants";
-import { CARD_SELECTION_KEYBINDS, useCardSelection } from "../hooks/useCardSelection";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { useCardSelection } from "../hooks/useCardSelection";
 import { MesoBagImage, MesoCoinImage } from "../images";
 import ItemView from "../item/ItemView";
 import { ITEM_TYPES, Item } from "../item/types";
@@ -24,12 +30,6 @@ import KeyboardReticle from "../view/KeyboardReticle";
 import LeaveButton from "./LeaveButton";
 import { OnBuyItem, SHOP_REFRESH_COST, ShopAbility, ShopItem } from "./constants";
 import { generateShopInventory, getShopCustomerProperties, rollShopItem } from "./shopUtils";
-import {
-    confirmButtonDropStyle,
-    panelKeyframes,
-    CARD_ANIMATION_MS,
-    CARD_ANIMATION_DELAY_MS,
-} from "../Menu/panelAnimation";
 
 const MESO_BAG_NATIVE_SIZE = 23;
 const MESO_BAG_SCALE = 2;
