@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { CONFIRM_KEYS, CANCEL_KEYS, isConfirmKey, isCancelKey } from "../constants/keybinds";
 
-// Keybinds shared between the keydown handling and the on-screen button hints.
 export const CARD_SELECTION_KEYBINDS = {
-    confirm: { key: "Enter", hint: "⏎" },
-    cancel: { key: "Escape", hint: "ESC" },
+    confirm: { key: CONFIRM_KEYS[0], hint: "⏎" },
+    cancel: { key: CANCEL_KEYS[0], hint: "ESC" },
 } as const;
 
 export interface UseCardSelectionOptions<T> {
@@ -118,7 +118,7 @@ export function useCardSelection<T>({
             if (!enabled) {
                 return;
             }
-            if (event.key === CARD_SELECTION_KEYBINDS.cancel.key) {
+            if (isCancelKey(event.key)) {
                 if (cancelable) {
                     event.preventDefault();
                     onCancel?.();
@@ -126,9 +126,7 @@ export function useCardSelection<T>({
                 return;
             }
             const singleSelect = maxAmount === 1;
-            const isConfirmOrCancelKey =
-                event.key === CARD_SELECTION_KEYBINDS.confirm.key ||
-                event.key === CARD_SELECTION_KEYBINDS.cancel.key;
+            const isConfirmOrCancelKey = isConfirmKey(event.key) || isCancelKey(event.key);
 
             if (!items.length && !isConfirmOrCancelKey) {
                 return;
@@ -187,7 +185,7 @@ export function useCardSelection<T>({
                 } else if (selectedIds.length < maxAmount) {
                     setSelectedIds((prev) => [...prev, id]);
                 }
-            } else if (event.key === CARD_SELECTION_KEYBINDS.confirm.key) {
+            } else if (isConfirmKey(event.key)) {
                 if (!isConfirmDisabledValue) {
                     event.preventDefault();
                     onConfirm?.();

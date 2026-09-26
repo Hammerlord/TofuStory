@@ -17,8 +17,10 @@ export const SCENE_STYLES = {
     },
 };
 
+import { CONFIRM_KEYS } from "../constants/keybinds";
+
 export const SCENE_DIALOG_KEYBINDS = {
-    advanceKeys: ["Enter", " ", "Spacebar"],
+    advanceKeys: CONFIRM_KEYS,
     navigateUp: "ArrowUp",
     navigateDown: "ArrowDown",
 } as const;

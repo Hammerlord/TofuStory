@@ -9,6 +9,7 @@ import { BATTLEFIELD_SIDES } from "../types";
 import { canUsePlayerAbility } from "../actions/playerAbility";
 import { shouldShowReticleForTarget } from "../view/targetHelpers";
 import { BattleControls } from "./useBattleControls";
+import { isConfirmKey } from "../../constants/keybinds";
 
 export type KeyboardNav =
     | { mode: "card"; cardIndex: number }
@@ -440,7 +441,7 @@ export const useKeyboardNav = (controls: BattleControls): KeyboardNavOutput => {
                     cardIndex: nav.cardIndex,
                     target: validTargets[nextIndex],
                 });
-            } else if (e.key === "Enter" || e.key === "Spacebar") {
+            } else if (isConfirmKey(e.key)) {
                 // Keep a focused button (eg. End Turn) from also activating on Enter
                 e.preventDefault();
                 handleKeyboardUseCard(nav);
