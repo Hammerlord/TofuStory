@@ -14,7 +14,7 @@ import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvent
 import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
-const { updateBattle, updateBattleState } = battleStateSlice?.actions || {};
+const { updateBattle, updateBattleState } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const handleOnKill = (context: ActionContext) => {

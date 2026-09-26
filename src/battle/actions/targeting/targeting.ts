@@ -18,8 +18,8 @@ import {
     NonCombatPlayerInfo,
 } from "../../types";
 import { hasTruesight, isStealthed, isUntargetable } from "../../utils";
-import { findCombatantData, hasEffectType } from "../combatantData";
-import { getEnabledEffects } from "../statusEffect/getEnabledEffects";
+import { findCombatantData } from "../combatantData";
+import { getEnabledEffects, hasEffectType } from "../statusEffect/getEnabledEffects";
 
 export const calculateTargetIndices = ({
     action,

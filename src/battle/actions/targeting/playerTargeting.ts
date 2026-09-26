@@ -4,7 +4,7 @@ import { passesConditions } from "../../passesConditions";
 import { BattleState } from "../../types";
 import { BATTLEFIELD_SIDES, TRIGGER_SOURCE_TYPES, CombatantInfo, ActionContext } from "../../types";
 import { isUntargetable, isStealthed } from "../../utils";
-import { hasEffectType } from "../combatantData";
+import { hasEffectType } from "../statusEffect/getEnabledEffects";
 import { calculateActionArea } from "./targeting";
 
 export const isValidTargetForPlayerAbility = ({

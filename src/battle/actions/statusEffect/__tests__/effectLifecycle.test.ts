@@ -9,6 +9,9 @@ import { tickDownStatusEffects } from "../effectLifecycle";
 
 vi.mock("../../combatantData", () => ({
     findCombatantData: vi.fn(),
+}));
+
+vi.mock("../../updateCombatant", () => ({
     updateCombatant: vi.fn(),
 }));
 
@@ -24,8 +27,9 @@ vi.mock("../triggerEffectEvent", () => ({
     onEffectEventTrigger: vi.fn(),
 }));
 
-import { findCombatantData, updateCombatant } from "../../combatantData";
+import { findCombatantData } from "../../combatantData";
 import { enqueueEvent } from "../../enqueueEvent";
+import { updateCombatant } from "../../updateCombatant";
 
 beforeEach(() => {
     vi.clearAllMocks();

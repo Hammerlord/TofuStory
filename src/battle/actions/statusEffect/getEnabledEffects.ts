@@ -1,10 +1,23 @@
-import { CombatEffect, EFFECT_CLASSES } from "../../../ability/types";
+import { CombatEffect, EFFECT_CLASSES, EFFECT_TYPES } from "../../../ability/types";
 import { passesConditions } from "../../passesConditions";
 import { BattleState } from "../../types";
 import { ActionContext, CombatantInfo, NonCombatPlayerInfo } from "../../types";
 import { isSilenced } from "../../utils";
 import { findCombatantData } from "../combatantData";
 import { isTurnToTrigger } from "./effectLifecycle";
+
+export const hasEffectType = (
+    target: CombatantInfo | undefined,
+    effectType: EFFECT_TYPES | EFFECT_TYPES[],
+): boolean => {
+    if (!target) {
+        return false;
+    }
+
+    return getEnabledEffects({ combatantInfo: target }).some(({ type }) =>
+        Array.isArray(effectType) ? effectType.includes(type) : type === effectType,
+    );
+};
 
 /**
  * Given a character, return its effects that have not been canceled due to silence or failing conditions.

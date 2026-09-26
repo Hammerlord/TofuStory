@@ -1,7 +1,8 @@
 import { TARGET_TYPES, ACTION_TYPES, ANIMATION_TYPES } from "../../ability/types";
 import { TRIGGER_SOURCE_TYPES, ActionContext } from "../types";
 import { performAction } from "./performAction";
-import { findCombatantData, updateCombatant } from "./combatantData";
+import { findCombatantData } from "./combatantData";
+import { updateCombatant } from "./updateCombatant";
 import { PlaybackCollector } from "./playbackCollector";
 
 export const useItem = ({

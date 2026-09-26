@@ -41,12 +41,12 @@ vi.mock("../../../../battle/actions/combatantData", () => {
             }
             return undefined;
         },
-        hasEffectType: () => false,
     };
 });
 
 vi.mock("../../../../battle/actions/statusEffect/getEnabledEffects", () => ({
     getEnabledEffects: () => [],
+    hasEffectType: () => false,
 }));
 
 import {

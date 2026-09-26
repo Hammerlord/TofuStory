@@ -9,7 +9,7 @@ import { isDisplacementImmune } from "../utils";
 import { ActionContext } from "./../types";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 export const checkHandleVacuum = ({
     vacuum,

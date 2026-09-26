@@ -17,7 +17,7 @@ import { applyAbilityEventEffects } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
 
 const { updateBattle, promptPlayerSelectCards, pushEventQueue, addCardsToHand } =
-    battleStateSlice?.actions || {};
+    battleStateSlice.actions;
 
 /**
  * Remove a card from existence based on its id.

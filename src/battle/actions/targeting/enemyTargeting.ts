@@ -5,10 +5,11 @@ import { ActionTarget, Combatant } from "../../../character/types";
 import { AppDispatch, RootState } from "../../../store";
 import { BattleState } from "../../types";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES } from "../../types";
-import { findCombatantData, updateCombatant } from "../combatantData";
+import { findCombatantData } from "../combatantData";
 import { performAction } from "../performAction";
 import { getUpdatedBattleActionTargets } from "../phases/enemyTurn";
 import { getCombatantMoveOrder } from "../phases/getCombatantMoveOrder";
+import { updateCombatant } from "../updateCombatant";
 import { autoSelectActionTarget, getValidTargetIndicesForAction } from "./targeting";
 
 /**

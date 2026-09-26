@@ -14,7 +14,7 @@ import { onCombatantDeath } from "./onKill";
 import { checkEventTrigger, onEffectEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { updateEnemyTargetingAfterEffectsApplied } from "./targeting/enemyTargeting";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 const { updatePlayer } = playerStateSlice?.actions || {};
 
 export const triggerBeforeStatChangeEvents =

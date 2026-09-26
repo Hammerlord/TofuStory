@@ -14,7 +14,7 @@ import { enqueueEvent } from "../enqueueEvent";
 import { triggerAddCardsToHandEvent } from "./cardActions";
 import { AppDispatch, RootState } from "../../../store";
 
-const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice.actions;
 
 export const handleMoveCards = ({
     moveCards,

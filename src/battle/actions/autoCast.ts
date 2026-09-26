@@ -25,7 +25,7 @@ import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { AppDispatch, RootState } from "../../store";
 import _ from "lodash";
 
-const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice.actions;
 
 export const checkHandleAutoCast = ({
     autoCastAbilities,

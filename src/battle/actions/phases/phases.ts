@@ -22,11 +22,12 @@ import {
 } from "../../types";
 import { calculateMesoMultiplier } from "../../utils";
 import { checkCardActions } from "../cardActions/cardActions";
-import { findCombatantData, updateCombatant } from "../combatantData";
+import { findCombatantData } from "../combatantData";
 import { playbackCollector } from "../playbackCollector";
 import { tickDownStatusEffects } from "../statusEffect/effectLifecycle";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
+import { updateCombatant } from "../updateCombatant";
 import { getUseAbilityIndex } from "./enemyTurn";
 import { getCombatantMoveOrder } from "./getCombatantMoveOrder";
 

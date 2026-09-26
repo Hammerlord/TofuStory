@@ -34,7 +34,7 @@ import { getPossibleSummonIndices, onSummonTriggers } from "./summon";
 import { AppDispatch, RootState } from "../../../store";
 import { createCombatEffect } from "../../../character/effects/createCombatEffect";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 /**
  * Handle action that transforms combatants to another combatant, eg. Mutant Snail casts Mutate and transforms Blue Snails to Red Snails

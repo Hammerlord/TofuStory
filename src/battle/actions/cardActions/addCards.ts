@@ -11,7 +11,7 @@ import { filterImmunedHindranceCards } from "./hindranceCards";
 import { AppDispatch, RootState } from "../../../store";
 import { createCombatAbility } from "../../../ability/createCombatAbility";
 
-const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice.actions;
 
 export const addCardsToHandWithEvents = (cards: CombatAbility[], context: ActionContext) => {
     return (dispatch: AppDispatch, getState: () => RootState) => {

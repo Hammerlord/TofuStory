@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
-import "../../battle/actions/phases/phases";
 import { Ability } from "../../ability/types";
 import { warriorDefaultAttack } from "../../ability/warrior/warriorAbilities";
 import { playerStateSlice } from "../../character/playerReducer";

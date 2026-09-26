@@ -5,7 +5,7 @@ import { ActionContext, TRIGGER_SOURCE_TYPES } from "../../types";
 import { enqueueEvent } from "../enqueueEvent";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 /**
  * Send `abilities` to the deplete pile and trigger the onDeplete effect event.

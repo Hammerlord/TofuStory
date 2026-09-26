@@ -18,9 +18,8 @@ import { passesValueComparison } from "../passesConditions";
 import { calculateMesoMultiplier } from "../utils";
 import { ActionContext, ActionParent, BATTLEFIELD_SIDES, CombatantInfo } from "./../types";
 import { getMaxHP } from "./../utils";
-import { hasEffectType } from "./combatantData";
 import { getHalveArmorAmount } from "./phases/checkHalveArmor";
-import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
+import { getEnabledEffects, hasEffectType } from "./statusEffect/getEnabledEffects";
 import { createCombatEffect, lookupEffect } from "../../character/effects/createCombatEffect";
 import { isNegatedByStealth } from "./targeting/targeting";
 

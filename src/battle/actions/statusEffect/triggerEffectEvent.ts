@@ -34,7 +34,7 @@ import { isSilenced, isStunnedOrFrozen } from "../../utils";
 import { checkHandleAutoCast } from "../autoCast";
 import { checkCardActions, handleDrawOriginalAbility } from "../cardActions/cardActions";
 import { applyAbilityEventEffects } from "../cardActions/utils";
-import { findCombatantData, isTurnActionPrevented, updateCombatant } from "../combatantData";
+import { findCombatantData, isTurnActionPrevented } from "../combatantData";
 import { enqueueEvent } from "../enqueueEvent";
 import { getUpdatedStats } from "../getUpdatedStats";
 import { checkInduce } from "../inducedAction";
@@ -51,9 +51,10 @@ import {
     isNegatedByStealth,
 } from "../targeting/targeting";
 import { onUseAbility, useAbility } from "../useAbility";
+import { updateCombatant } from "../updateCombatant";
 import { checkUpdateEffectLifecycle, isTurnToTrigger } from "./effectLifecycle";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 /**
  * Checks conditions, chance, and silence/stun to determine if an effect event may proceed, updating the effect's lifecycle if so.

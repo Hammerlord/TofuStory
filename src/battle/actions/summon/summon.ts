@@ -36,7 +36,7 @@ import { updateEnemyTargetingAfterEffectsApplied } from "../targeting/enemyTarge
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { AppDispatch, RootState } from "../../../store";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 /*
  * Handle action that summons a combatant in an empty slot on the board

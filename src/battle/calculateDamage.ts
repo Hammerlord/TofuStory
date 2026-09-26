@@ -10,8 +10,7 @@ import {
     SkillBonus,
 } from "../ability/types";
 import { Item } from "../item/types";
-import { hasEffectType } from "./actions/combatantData";
-import { getEnabledEffects } from "./actions/statusEffect/getEnabledEffects";
+import { getEnabledEffects, hasEffectType } from "./actions/statusEffect/getEnabledEffects";
 import { isNegatedByStealth } from "./actions/targeting/targeting";
 import { DAMAGE_COEFF } from "./constants";
 import { getMultiplier } from "./getMultiplier";

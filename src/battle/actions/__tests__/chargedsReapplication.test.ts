@@ -25,12 +25,9 @@ vi.mock("../../utils", () => ({
     getMaxHP: vi.fn((c) => c.HP),
 }));
 
-vi.mock("../../combatantData", () => ({
-    hasEffectType: vi.fn(() => false),
-}));
-
 vi.mock("../statusEffect/getEnabledEffects", () => ({
     getEnabledEffects: vi.fn(() => []),
+    hasEffectType: vi.fn(() => false),
 }));
 
 vi.mock("../../targeting/targeting", () => ({

@@ -1,9 +1,10 @@
 import { partition } from "ramda";
 import { CombatEffect, EFFECT_EVENT_KEYS, EffectEventTrigger } from "../../../ability/types";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
-import { findCombatantData, updateCombatant } from "../combatantData";
+import { findCombatantData } from "../combatantData";
 import { enqueueEvent } from "../enqueueEvent";
 import { triggerStatChangeEvents } from "../statChanges";
+import { updateCombatant } from "../updateCombatant";
 import { onEffectEventTrigger } from "./triggerEffectEvent";
 import { AppDispatch, RootState } from "../../../store";
 import { Combatant } from "../../../character/types";

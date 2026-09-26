@@ -17,16 +17,17 @@ import { passesValueComparison } from "../../passesConditions";
 import { battleStateSlice } from "../../reducer";
 import { BattleState } from "../../types";
 import { ActionContext, TRIGGER_SOURCE_TYPES, TriggerSource } from "../../types";
-import { findCombatantData, updateCombatant } from "../combatantData";
+import { findCombatantData } from "../combatantData";
 import { getUpdatedStats } from "../getUpdatedStats";
 import { applyStatChanges, triggerBeforeStatChangeEvents, triggerStatChangeEvents } from "../statChanges";
 import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { useAbility } from "../useAbility";
+import { updateCombatant } from "../updateCombatant";
 import { applyAbilityEventEffects } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
 import { enqueueEvent } from "../enqueueEvent";
 
-const { updateBattle, addCardsToHand } = battleStateSlice?.actions || {};
+const { updateBattle, addCardsToHand } = battleStateSlice.actions;
 
 export const drawCards = ({
     effects = [],

@@ -22,7 +22,7 @@ import { applyStatChanges, triggerStatChangeEvents } from "./statChanges";
 import { checkSummonMinion } from "./summon/summon";
 import { resolveActionTarget } from "./targeting/targeting";
 import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
-import { updateCombatant } from "./combatantData";
+import { updateCombatant } from "./updateCombatant";
 import { handleAddCardsToHand } from "./cardActions/addCards";
 import { cloneDeep } from "lodash";
 import { AppDispatch, RootState } from "../../store";

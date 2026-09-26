@@ -1,11 +1,6 @@
 import { CombatEffect, EFFECT_TYPES } from "../../ability/types";
 import { Combatant, Player } from "../../character/types";
-import { AppDispatch, RootState } from "../../store";
-import { battleStateSlice } from "../reducer";
 import { BATTLEFIELD_SIDES, CombatantInfo, TRIGGER_SOURCE_TYPES, TriggerSource } from "../types";
-import { getEnabledEffects } from "./statusEffect/getEnabledEffects";
-
-const { updateBattle } = battleStateSlice?.actions || {};
 
 /**
  * Gets a combatant and details about its position and allies on the battlefield.
@@ -51,35 +46,6 @@ export const findCombatantData = (
     }
 };
 
-/**
- * Updates a combatant given its ID. This overwrites the combatant.
- */
-export const updateCombatant = ({
-    combatantId,
-    newProperties,
-}: {
-    combatantId: string;
-    newProperties: { [key in keyof Combatant]?: Combatant[key] };
-}) => {
-    return (dispatch: AppDispatch, getState: () => RootState) => {
-        // Due to morph, the combatant may no longer exist
-        const combatantData = findCombatantData(getState().battle!, combatantId);
-        if (!combatantData) {
-            return;
-        }
-        const { combatant: oldCombatant, friendlySide, friendly } = combatantData;
-        const newCombatant = { ...oldCombatant, ...newProperties };
-
-        dispatch(
-            updateBattle({
-                [friendlySide]: friendly.map((combatant: Combatant | null) =>
-                    combatant?.id !== combatantId ? combatant : newCombatant,
-                ),
-            }),
-        );
-    };
-};
-
 export const updateCombatants = (
     characters: (Combatant | null)[],
     updateFn: (character: Combatant) => Combatant,
@@ -91,19 +57,6 @@ export const updateCombatants = (
 
         return updateFn(character);
     });
-};
-
-export const hasEffectType = (
-    target: CombatantInfo | undefined,
-    effectType: EFFECT_TYPES | EFFECT_TYPES[],
-): boolean => {
-    if (!target) {
-        return false;
-    }
-
-    return getEnabledEffects({ combatantInfo: target }).some(({ type }) =>
-        Array.isArray(effectType) ? effectType.includes(type) : type === effectType,
-    );
 };
 
 /*

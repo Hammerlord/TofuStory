@@ -35,7 +35,7 @@ import { handleSelectCards } from "./selectCards";
 import { applyAbilityEventEffects, prepareForDiscard } from "./utils";
 import { AppDispatch, RootState } from "../../../store";
 
-const { updateBattle, setNotification } = battleStateSlice?.actions || {};
+const { updateBattle, setNotification } = battleStateSlice.actions;
 
 /**
  * Remove a card from existence based on its id.

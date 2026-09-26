@@ -19,7 +19,6 @@ import { isStunnedOrFrozen } from "../../utils";
 import {
     findCombatantData,
     isTurnActionPrevented,
-    updateCombatant,
     updateCombatants,
 } from "../combatantData";
 import { performAction } from "../performAction";
@@ -29,6 +28,7 @@ import { checkEventTrigger } from "../statusEffect/triggerEffectEvent";
 import { checkValidEnemyTargeting } from "../targeting/enemyTargeting";
 import { autoSelectActionTarget } from "../targeting/targeting";
 import { useAbility } from "../useAbility";
+import { updateCombatant } from "../updateCombatant";
 import { useItem } from "../useItem";
 import { checkHalveArmor } from "./checkHalveArmor";
 import { checkTurnResourceGain } from "./checkTurnResourceGain";

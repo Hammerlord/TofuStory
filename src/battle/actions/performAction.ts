@@ -26,7 +26,7 @@ import {
 } from "../types";
 import { checkHandleAutoCast } from "./autoCast";
 import { checkCardActions, deleteCard } from "./cardActions/cardActions";
-import { findCombatantData, updateCombatant } from "./combatantData";
+import { findCombatantData } from "./combatantData";
 import { enqueueEvent } from "./enqueueEvent";
 import { UpdatedCombatantStats, UpdatedStatsProps, getUpdatedStats } from "./getUpdatedStats";
 import { checkInduce } from "./inducedAction";
@@ -38,8 +38,9 @@ import { checkEventTrigger } from "./statusEffect/triggerEffectEvent";
 import { checkHandleMorph } from "./summon/morphMerge";
 import { checkHandleActionSummon } from "./summon/summon";
 import { autoSelectActionTarget, calculateTargetIndices } from "./targeting/targeting";
+import { updateCombatant } from "./updateCombatant";
 
-const { updateBattle } = battleStateSlice?.actions || {};
+const { updateBattle } = battleStateSlice.actions;
 
 export const performAction = ({
     action,
