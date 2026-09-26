@@ -211,6 +211,7 @@ const ShopView = ({
     shopState,
     onUpdateShopState,
     onRefresh,
+    disabled,
 }: {
     onBuyItem: ({
         items,
@@ -228,6 +229,7 @@ const ShopView = ({
         [key in keyof ShopState]?: ShopState[key];
     }) => void;
     onRefresh: (cost: number) => void;
+    disabled?: boolean;
 }) => {
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
     const abilityRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -428,6 +430,7 @@ const ShopView = ({
         getId: getEntryId,
         isConfirmDisabled: (ids, focusedEntry) => !ids.length || !canAffordEntry(focusedEntry),
         onConfirm: (focusedEntry) => buyEntry(focusedEntry),
+        enabled: !disabled,
     });
 
     const focusedEntry = entries[currentIndex];
@@ -765,7 +768,7 @@ const ShopView = ({
     );
 };
 
-const Shop = ({ town, ...other }: { town?: TOWNS; onExit?: () => void }) => {
+const Shop = ({ town, ...other }: { town?: TOWNS; disabled?: boolean; onExit?: () => void }) => {
     const { deck, player: maybeNullPlayer, townShops } = useAppSelector((state) => state.character);
     // The shop can only be opened after a class has been selected, so a player always exists.
     const player = maybeNullPlayer!;
